@@ -1,0 +1,18 @@
+[Version:1]
+DataContent 
+{
+	ContentTags 
+	{
+		var Tags = Array
+		{
+			"OperationHistory"
+		}
+	}
+	DataBuilder 
+	{
+		var Name = "HistoryWindowLevel"
+		var ResourceId = 0x580ffbe460cc34a1
+		var LoaderType = "Level"
+		var Version = 0
+	}
+}

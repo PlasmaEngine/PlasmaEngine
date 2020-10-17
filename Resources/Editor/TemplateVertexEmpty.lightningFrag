@@ -1,0 +1,9 @@
+// MIT Licensed (see LICENSE.md).
+
+[Vertex]
+struct RESOURCE_NAME_
+{
+	function Main()
+	{
+	}
+}

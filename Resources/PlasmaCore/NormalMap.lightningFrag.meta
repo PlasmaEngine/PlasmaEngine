@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "NormalMap"
+		var ResourceId = 0x58132fbc2f509543
+	}
+}

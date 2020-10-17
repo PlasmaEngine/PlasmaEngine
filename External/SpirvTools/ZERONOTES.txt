@@ -1,0 +1,2 @@
+You must build the PlasmaEngineSpirvTools repo with PlasmaEngineSpirvHeaders checked out in "PlasmaEngineSpirvTools/externals/".
+After building, copy the *.inc and DebugInfo.h from the PlasmaEngineSpirvTools root directory into our "Libraries/SpirvTools/Build/".

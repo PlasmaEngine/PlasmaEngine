@@ -1,0 +1,23 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "Opaque"
+		var ResourceId = 0x581cffd64d449122
+		var LoaderType = "RenderGroup"
+		var Version = 0
+	}
+	ResourceTemplate 
+	{
+		var DisplayName = "Default"
+		var Description = ""
+		var SortWeight = 0
+		var Category = ""
+		var CategorySortWeight = 0
+	}
+	ContentEditorOptions
+	{
+		var ShowInEditor = true
+	}
+}

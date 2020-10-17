@@ -1,0 +1,16 @@
+[Pixel]
+struct MOSMap
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [Input] var MOSMap : SampledImage2d;
+
+    [Output] var Roughness : Real;
+    [Output] var Metallic : Real;
+  
+    function Main()
+    {
+        var mosMap = this.MOSMap.Sample(this.Uv);
+        this.Roughness = 1 - mosMap.X;
+        this.Metallic = mosMap.W;
+    }
+}

@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "ApiPerspectiveOutput"
+		var ResourceId = 0x5ece44a4ac6c8a7d
+	}
+}

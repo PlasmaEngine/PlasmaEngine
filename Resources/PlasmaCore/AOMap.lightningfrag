@@ -1,0 +1,27 @@
+// MIT Licensed (see LICENSE.md).
+
+// Shader input attribute definitions
+// [AppBuiltInInput] Input comes from predefined data given by the graphics engine
+// [StageInput]      Input comes from the previous hardware stage (mesh -> vertex -> geometry -> pixel)
+// [FragmentInput]   Input comes from a previous fragment in the same stage
+// [PropertyInput]   Input comes from this fragment
+// [Input]           Input auto resolves from any of the previous in the order
+//                   [FragmentInput][StageInput][AppBuiltInInput][PropertyInput]
+//
+// Pixel fragment Example:
+// [FragmentInput][StageInput] var ViewNormal : Real3;
+// Input will come from a previous pixel fragment that outputs ViewNormal
+// otherwise, input will come from the vertex shader
+
+[Pixel]
+struct AOMap
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [Input] var AOMap : SampledImage2d;
+    [FragmentInput][Output] var Albedo : Real3;
+
+    function Main()
+    {
+        this.Albedo *= this.AOMap.Sample(this.Uv).X;
+    }
+}

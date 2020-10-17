@@ -1,0 +1,21 @@
+[Pixel]
+struct MetallicMaskMap
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [Input] var MetallicMaskMap : SampledImage2d;
+    [Input] var MainMetallic : Real;
+    [Input] var SecondaryMetallic : Real;
+    [Input] var VisorMetallic : Real;
+
+    [FragmentInput][Output] var Metallic : Real;
+
+    function Main()
+    {
+        var metallicMask = this.MetallicMaskMap.Sample(this.Uv);
+        var metallic = this.Metallic;
+        metallic = Math.Lerp(metallic, metallic + this.MainMetallic, metallicMask.X);
+        metallic = Math.Lerp(metallic, metallic + this.SecondaryMetallic, metallicMask.Y);
+        metallic = Math.Lerp(metallic, metallic + this.VisorMetallic, metallicMask.Z);
+        this.Metallic = metallic;
+    }
+}

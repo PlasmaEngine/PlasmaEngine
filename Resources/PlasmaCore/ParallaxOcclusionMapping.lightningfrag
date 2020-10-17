@@ -1,0 +1,76 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct ParallaxOcclusionMapping
+{    
+	[AppBuiltInInput] var ViewToPerspective : Real4x4;
+	
+	[AppBuiltInInput] var FarPlane : Real;
+	
+    [FragmentInput][StageInput][Output] var Uv : Real2;
+    
+    [FragmentInput][StageInput] var ViewNormal : Real3;
+    [FragmentInput][StageInput] var ViewTangent : Real3;
+   [FragmentInput][StageInput] var ViewBitangent : Real3;
+    
+    [FragmentInput][StageInput][Output] var ViewPosition : Real3;
+    
+    [Input] var ParallaxMap : SampledImage2d;
+    [Input] var UVScale : Real2 = Real2(1,1);
+    [Input] var HeightScale : Real = 10;
+    [Input] var Samples : Real = 16.0;
+    [Input] var Invert : Boolean = false;
+
+    function Main()
+    {
+    
+        var viewDirection = Math.Normalize(-this.ViewPosition);
+        
+        var samples = this.Samples;
+        var layerDepth = 1.0 / samples;
+        var currentLayerDepth = 0.0;
+        
+        var normal = Math.Normalize(this.ViewNormal);
+        var tangent = Math.Normalize(this.ViewTangent);
+        var bitangent = Math.Normalize(this.ViewBitangent);
+        
+        var tbn = Real3x3(tangent.X, tangent.Y, tangent.Z, bitangent.X, bitangent.Y, bitangent.Z, normal.X, normal.Y, normal.Z);
+        
+        var view = Math.Multiply(tbn, viewDirection);
+        viewDirection.XYZ = view.XYZ;
+        
+        this.Uv.X = this.Uv.X * this.UVScale.X;
+        this.Uv .Y = this.Uv.Y * this.UVScale.Y;
+        
+        var uv = this.Uv;
+                
+        var height = this.ParallaxMap.Sample(this.Uv).X;
+        if(this.Invert)
+            height = 1-height;
+      
+        var parallax = (viewDirection.XY / (-viewDirection.Z / this.FarPlane) ) * (-this.HeightScale / 10000);
+        var deltaTexCoods = parallax / samples;
+        
+        while(currentLayerDepth < height)
+        {
+            uv -= deltaTexCoods;
+            height = this.ParallaxMap.Sample(uv).X;
+            if(this.Invert)
+                height = 1-height;
+            currentLayerDepth += layerDepth;
+        }
+        
+        if(uv.X < 0.0 || uv.X > this.UVScale.X || uv.Y < 0.0 || uv.Y > this.UVScale.Y)
+            ShaderIntrinsics.Kill();
+        
+        var prevTexCoord = uv + deltaTexCoods;
+        var afterDepth = height - currentLayerDepth;
+        var beforeDepth = (-viewDirection.Z / this.FarPlane) - height + layerDepth;
+                
+        var weight = afterDepth / (afterDepth - beforeDepth);
+        
+        var finalUv =  prevTexCoord * weight + uv * (1.0 - weight);
+        
+        this.Uv = finalUv;
+    }
+}

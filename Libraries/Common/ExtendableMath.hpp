@@ -1,0 +1,86 @@
+// MIT Licensed (see LICENSE.md).
+#pragma once
+
+namespace Math
+{
+
+struct PlasmaShared ExtendableVector
+{
+  void Resize(uint size);
+
+  real& operator[](uint index);
+  real operator[](uint index) const;
+
+  uint GetSize() const;
+
+  uint mSize;
+  Plasma::Array<real> mData;
+};
+
+struct PlasmaShared ExtendableMatrix
+{
+  void Resize(uint sizeX, uint sizeY);
+
+  real& operator()(uint y, uint x);
+  real operator()(uint y, uint x) const;
+
+  uint mSizeX;
+  uint mSizeY;
+  Plasma::Array<real> mData;
+};
+
+// A vector who's max size is compile-time but who's
+// working size can be changed up to the fixed size.
+// Currently used in position correction.
+template <typename DataType, size_t FixedSize>
+struct PlasmaSharedTemplate FixedVector
+{
+  void Resize(size_t size)
+  {
+    if (size > FixedSize)
+    {
+      Error("Cannot set size greater than the fixed size.");
+      size = FixedSize;
+    }
+
+    mSize = size;
+  }
+
+  DataType& operator[](uint index)
+  {
+    ErrorIf(index >= mSize, "Access array out of bounds");
+    return mData[index];
+  }
+  DataType operator[](uint index) const
+  {
+    ErrorIf(index >= mSize, "Access array out of bounds");
+    return mData[index];
+  }
+
+  size_t GetSize() const
+  {
+    return mSize;
+  }
+
+  size_t mSize;
+  DataType mData[FixedSize];
+};
+
+template <size_t SizeX, size_t SizeY>
+struct PlasmaSharedTemplate FixedMatrix
+{
+  real& operator()(uint y, uint x)
+  {
+    ErrorIf(y > SizeY || x > SizeX, "Access matrix out of bounds");
+    return mData[x + SizeX * y];
+  }
+  real operator()(uint y, uint x) const
+  {
+    ErrorIf(y > SizeY || x > SizeX, "Access matrix out of bounds");
+    return mData[x + SizeX * y];
+  }
+
+  real mData[SizeX * SizeY];
+};
+
+} // namespace Math

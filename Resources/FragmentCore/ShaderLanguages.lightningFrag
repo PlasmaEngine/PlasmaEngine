@@ -1,0 +1,8 @@
+// MIT Licensed (see LICENSE.md).
+
+enum ShaderLanguage
+{
+  Glsl = 0,
+  Hlsl,
+  SpirV
+}

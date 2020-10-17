@@ -1,0 +1,20 @@
+// MIT Licensed (see LICENSE.md).
+
+// Roughness input for lighting opaque geometry.
+// Output values are mapped from a texture over the surface.
+[Pixel]
+struct RoughnessMap
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  [Input] var RoughnessMap : SampledImage2d;
+  [Input] var Invert : Boolean;
+  
+  [Output] var Roughness : Real;
+  
+  function Main()
+  {
+    this.Roughness = this.RoughnessMap.Sample(this.Uv).X;
+    if(this.Invert)
+        this.Roughness = 1.0 - this.Roughness;
+  }
+}

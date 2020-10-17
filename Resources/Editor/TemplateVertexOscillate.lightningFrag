@@ -1,0 +1,19 @@
+// MIT Licensed (see LICENSE.md).
+
+[Vertex]
+struct RESOURCE_NAME_
+{
+	[AppBuiltInInput] var FrameTime : Real;
+	[AppBuiltInInput] var ViewToPerspective : Real4x4;
+
+	[Input][Output] var ViewPosition : Real3;
+	[Input] var ViewNormal : Real3;
+
+	[Output] var PerspectivePosition : Real4;
+
+	function Main()
+	{
+		this.ViewPosition += this.ViewNormal * 0.1 * Math.Sin(this.FrameTime);
+		this.PerspectivePosition = Math.Multiply(this.ViewToPerspective, Real4(this.ViewPosition, 1.0));
+	}
+}

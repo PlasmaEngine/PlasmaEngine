@@ -1,0 +1,23 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "AlphaCut"
+		var ResourceId = 0x58f4ed04b8b67cbf
+		var LoaderType = "Material"
+		var Version = 0
+	}
+	ResourceTemplate 
+	{
+		var DisplayName = ""
+		var Description = "A material template"
+		var SortWeight = 100
+		var Category = ""
+		var CategorySortWeight = 100
+	}
+	ContentEditorOptions
+	{
+		var ShowInEditor = true
+	}
+}

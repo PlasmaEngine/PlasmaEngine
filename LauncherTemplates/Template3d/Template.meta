@@ -1,0 +1,18 @@
+[Version:1]
+Cog 
+{
+	var Name = ""
+	PlasmaTemplate 
+	{
+		var SKU = "Template3d"
+		var VersionId = "0-"
+		var DisplayName = "EMPTY 3D\\nPROJECT"
+		var Author = "Plasma Foundation"
+		var Description = "A template project for 3d games."
+		var Date = "10/21/2019"
+		var SortPriority = 0
+		var Tags = ""
+		var IconUrl = "Icon.png"
+		var PreviewUrl = ""
+	}
+}

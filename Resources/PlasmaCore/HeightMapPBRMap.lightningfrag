@@ -1,0 +1,138 @@
+// MIT Licensed (see LICENSE.md).
+
+// Albedo input for lighting opaque geometry.
+// Output values are mapped from a weighted blend textures over the surface.
+[Pixel]
+struct HeightMapPBRMap
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [FragmentInput] var HeightMapTextureWeights : Real4;
+    [FragmentInput][StageInput] var HeightMapWeights : SampledImage2d;
+
+    [Input] var UVScale : Real2 = Real2(1,1);
+
+    [FragmentInput][StageInput][Output] var ViewNormal : Real3;
+    [StageInput] var ViewTangent : Real3;
+    [StageInput] var ViewBitangent : Real3;
+    
+    // Plasma generates tangents/bitangents in the increasing u/v directions
+    // Normal maps are assumed to use increasing red/green for the right/up directions
+    // If a normal map is authored differently, these properties will invert
+    // the respective axis so that surfaces point in the correct direction
+    [Input] var RedLeft : Boolean = false;
+    [Input] var GreenDown : Boolean = false;
+    [Input] var Bumpiness : Real = 1.0;
+    
+    [Input] var Material0_Diffuse : SampledImage2d;
+    [Input] var Material0_Normal : SampledImage2d;
+    [Input] var Material0_Roughness : SampledImage2d;
+    [Input] var Material0_Metallic : SampledImage2d;
+    [Input] var Roughness0Value : Real;
+    [Input] var Metallic0Value : Real;
+
+    [Input] var Material1_Diffuse : SampledImage2d;
+    [Input] var Material1_Normal : SampledImage2d;
+    [Input] var Material1_Roughness : SampledImage2d;
+    [Input] var Material1_Metallic : SampledImage2d;
+    [Input] var Roughness1Value : Real;
+    [Input] var Metallic1Value : Real;
+    
+    [Input] var Material2_Diffuse : SampledImage2d;
+    [Input] var Material2_Normal : SampledImage2d;
+    [Input] var Material2_Roughness : SampledImage2d;
+    [Input] var Material2_Metallic : SampledImage2d;
+    [Input] var Roughness2Value : Real;
+    [Input] var Metallic2Value : Real;
+    
+    [Input] var Material3_Diffuse : SampledImage2d;
+    [Input] var Material3_Normal : SampledImage2d;
+    [Input] var Material3_Roughness : SampledImage2d;
+    [Input] var Material3_Metallic : SampledImage2d;
+    [Input] var Roughness3Value : Real;
+    [Input] var Metallic3Value : Real;
+
+    [Input] var Debug : Boolean;
+
+    [Output] var Albedo : Real3;
+    [Output] var Roughness : Real;
+    [Output] var Metallic : Real;
+
+    function Main()
+    {
+        var normal = Math.Normalize(this.ViewNormal);
+        var tangent = Math.Normalize(this.ViewTangent);
+        var bitangent = Math.Normalize(this.ViewBitangent);
+        
+        var scaledUV = this.Uv * this.UVScale;
+        var material0_Diffuse = this.Material0_Diffuse.Sample(scaledUV).XYZ;
+        var material1_Diffuse = this.Material1_Diffuse.Sample(scaledUV).XYZ;
+        var material2_Diffuse = this.Material2_Diffuse.Sample(scaledUV).XYZ;
+        var material3_Diffuse = this.Material3_Diffuse.Sample(scaledUV).XYZ;
+        
+        var material0_Normal = this.Material0_Normal.Sample(scaledUV).XY;
+        var material1_Normal = this.Material1_Normal.Sample(scaledUV).XY;
+        var material2_Normal = this.Material2_Normal.Sample(scaledUV).XY;
+        var material3_Normal = this.Material3_Normal.Sample(scaledUV).XY;
+        
+        var material0_Roughness = this.Material0_Roughness.Sample(scaledUV).X;
+        var material1_Roughness = this.Material1_Roughness.Sample(scaledUV).X;
+        var material2_Roughness = this.Material2_Roughness.Sample(scaledUV).X;
+        var material3_Roughness = this.Material3_Roughness.Sample(scaledUV).X;
+        
+        var material0_Metallic = this.Material0_Metallic.Sample(scaledUV).X;
+        var material1_Metallic = this.Material1_Metallic.Sample(scaledUV).X;
+        var material2_Metallic = this.Material2_Metallic.Sample(scaledUV).X;
+        var material3_Metallic = this.Material3_Metallic.Sample(scaledUV).X;
+          
+        var weights = Real4(0);  
+
+        if(Math.Length(this.HeightMapTextureWeights) > 0.01)
+        {
+            weights = this.HeightMapTextureWeights;
+        }
+        else
+        {
+            weights = this.HeightMapWeights.Sample(this.Uv);
+        }
+
+        // Mix albedo values based on the painted weights
+        this.Albedo += material0_Diffuse * weights.X;
+        this.Albedo += material1_Diffuse * weights.Y;
+        this.Albedo += material2_Diffuse * weights.Z;
+        this.Albedo += material3_Diffuse * weights.W;
+        
+        // Mix roughness values based on the painted weights
+        this.Roughness += (material0_Roughness + this.Roughness0Value) * weights.X;
+        this.Roughness += (material1_Roughness + this.Roughness1Value) * weights.Y;
+        this.Roughness += (material2_Roughness + this.Roughness2Value) * weights.Z;
+        this.Roughness += (material3_Roughness + this.Roughness3Value) * weights.W;
+        
+        // Mix metallic values based on the painted weights
+        this.Metallic += (material0_Metallic + this.Metallic0Value) * weights.X;
+        this.Metallic += (material1_Metallic + this.Metallic1Value) * weights.Y;
+        this.Metallic += (material2_Metallic + this.Metallic2Value) * weights.Z;
+        this.Metallic += (material3_Metallic + this.Metallic3Value) * weights.W;
+        
+        // Mix normal values based on the painted weights
+        var normalSample = material0_Normal * weights.X;
+        normalSample += material1_Normal * weights.Y;
+        normalSample += material2_Normal * weights.Z;
+        normalSample += material3_Normal * weights.W;
+        normalSample = Math.Normalize(normalSample);
+        
+        normalSample = (normalSample - Real2(128.0 / 255.0)) * 2.0;
+        
+        // Invert tangent directions if needed
+        var xSign = Math.Lerp(1.0, -1.0, this.RedLeft as Real);
+        var ySign = Math.Lerp(-1.0, 1.0, this.GreenDown as Real);
+
+        // Add tangent directions to perturb the surface normal
+        normal += (tangent * normalSample.X * xSign + bitangent * normalSample.Y * ySign) * this.Bumpiness;
+        this.ViewNormal = Math.Normalize(normal);
+        
+        if(this.Debug)
+        {
+            this.Albedo = weights.XYZ;
+        }
+    }
+}

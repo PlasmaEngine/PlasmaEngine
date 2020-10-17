@@ -1,0 +1,24 @@
+// MIT Licensed (see LICENSE.md).
+
+class UiChangeCursor : LightningComponent
+{
+  [Property] var Cursor : Cursor = Cursor.Arrow;
+  var OldCursor : Cursor;
+  
+  function Initialize(init : CogInitializer)
+  {
+    Plasma.Connect(this.Owner, Events.MouseEnterHierarchy, this.OnMouseEnter);
+    Plasma.Connect(this.Owner, Events.MouseExitHierarchy, this.OnMouseExit);
+  }
+
+  function OnMouseExit(event : ViewportMouseEvent)
+  {
+    Plasma.Mouse.Cursor = this.OldCursor;
+  }
+
+  function OnMouseEnter(event : ViewportMouseEvent)
+  {
+    this.OldCursor = Plasma.Mouse.Cursor;
+    Plasma.Mouse.Cursor = this.Cursor;
+  }
+}

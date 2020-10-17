@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "UVProperties"
+		var ResourceId = 0x5ed005e426b421ff
+	}
+}

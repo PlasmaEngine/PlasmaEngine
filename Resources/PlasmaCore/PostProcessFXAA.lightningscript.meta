@@ -1,0 +1,16 @@
+[Version:1]
+TextContent 
+{
+	LightningScriptBuilder 
+	{
+		var Name = "PostProcessFXAA"
+		var ResourceId = 0x5f7ff6a252c25932
+	}
+	ContentTags 
+	{
+		var Tags = Array
+		{
+			"LightningScript"
+		}
+	}
+}

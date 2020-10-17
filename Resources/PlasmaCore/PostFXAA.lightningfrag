@@ -1,0 +1,72 @@
+// MIT Licensed (see LICENSE.md).
+
+// PostProcess fragments are intended to be constructed in script
+// and passed directly to the AddRenderTaskPostProcess method.
+[Pixel][PostProcess]
+struct PostFXAA
+{
+    [AppBuiltInInput] var InverseViewportSize : Real2;
+    [StageInput] var Uv : Real2;
+    [Input] var Texture : SampledImage2d;
+
+    [Output] var Target0 : Real4;
+    
+    var Luma = Real3(0.299, 0.587, 0.114);
+    [Input] var SpanMax : Real;
+    [Input] var ReduceMin : Real;
+    [Input] var ReduceMul : Real;
+
+
+    function Main()
+    {
+        var reduceMin = Real(1.0 / this.ReduceMin);
+        var reduceMul = Real(1.0 / this.ReduceMul);
+        
+        var rgbNW = this.Texture.Sample(this.Uv + (Real2(-1.0, -1.0) + this.InverseViewportSize)).XYZ;
+        var rgbNE = this.Texture.Sample(this.Uv + (Real2(1.0, -1.0) + this.InverseViewportSize)).XYZ;
+        var rgbSW = this.Texture.Sample(this.Uv + (Real2(-1.0, 1.0) + this.InverseViewportSize)).XYZ;
+        var rgbSE = this.Texture.Sample(this.Uv + (Real2(1.0, 1.0) + this.InverseViewportSize)).XYZ;
+        var rgbM = this.Texture.Sample(this.Uv).XYZ;
+        
+        var lumaNW = Math.Dot(rgbNW, this.Luma);
+        var lumaNE = Math.Dot(rgbNE, this.Luma);
+        var lumaSW = Math.Dot(rgbSW, this.Luma);
+        var lumaSE = Math.Dot(rgbSE, this.Luma);
+        var lumaM = Math.Dot(rgbM, this.Luma);
+
+        var blurDir = Real2.Zero;
+        blurDir.X = -((lumaNW + lumaNE) - (lumaSW + lumaSE));
+        blurDir.Y = ((lumaNW + lumaSW) - (lumaNE + lumaSE));
+
+        var cornerLuma = (lumaNW + lumaNE + lumaSW + lumaSE);
+        var dirReduce = Math.Max(cornerLuma * (0.25 * reduceMul), reduceMin);
+
+        var rcpDirMin = 1.0 / (Math.Min(Math.Abs(blurDir.X), Math.Abs(blurDir.Y)) + dirReduce);
+        
+        blurDir = Math.Min(Real2(this.SpanMax, this.SpanMax), 
+                           Math.Max(Real2(-this.SpanMax, -this.SpanMax), blurDir * rcpDirMin)) * this.InverseViewportSize;
+                           
+        var sample0 = 0.5 * (this.Texture.Sample(this.Uv + blurDir * (1.0/3.0 - 0.5)).XYZ +
+                            this.Texture.Sample(this.Uv + blurDir * (2.0 / 3.0 - 0.5)).XYZ);
+
+        var sample1 = sample0 * 0.5 + 0.25 * (
+                            this.Texture.Sample(this.Uv + blurDir * (0.0/3.0 - 0.5)).XYZ +
+                            this.Texture.Sample(this.Uv + blurDir * (3.0 / 3.0 - 0.5)).XYZ);
+                            
+        var luma1 = Math.Dot(sample1, this.Luma);
+        
+        var lumaMin = Math.Min(lumaM, Math.Min(Math.Min(lumaNW, lumaNE), Math.Min(lumaSW, lumaSE)));
+        var lumaMax = Math.Max(lumaM, Math.Max(Math.Max(lumaNW, lumaNE), Math.Max(lumaSW, lumaSE)));
+        
+        if((luma1 < lumaMin) || (luma1 > lumaMax))
+        {
+            this.Target0.XYZ = sample0;
+        }
+        else
+        {
+            this.Target0.XYZ = sample1;
+        }
+
+        this.Target0.W = 1.0;
+    }
+}

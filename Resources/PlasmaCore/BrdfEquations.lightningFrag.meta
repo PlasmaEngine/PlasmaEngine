@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "BrdfEquations"
+		var ResourceId = 0x58132fbc2f406fdd
+	}
+}

@@ -1,0 +1,20 @@
+// MIT Licensed (see LICENSE.md).
+
+// Metallic input for lighting opaque geometry.
+// Output values are mapped from a texture over the surface.
+[Pixel]
+struct MetallicMap
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  [Input] var MetallicMap : SampledImage2d;
+  [Input] var Invert : Boolean;
+  
+  [Output] var Metallic : Real;
+  
+  function Main()
+  {
+    this.Metallic = this.MetallicMap.Sample(this.Uv).X;
+    if(this.Invert)
+        this.Metallic = 1.0 - this.Metallic;
+  }
+}

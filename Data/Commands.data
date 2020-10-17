@@ -1,0 +1,931 @@
+Commands commands =
+{
+	// Project Commands
+
+	Command =
+	{
+		string Name = "NewProject",
+		string Description = "Create a new project",
+		string Shortcut = "Ctrl+Shift+N",
+		string Tags = "Project File",
+	},
+
+	Command =
+	{
+		string Name = "OpenProject",
+		string Description = "Open a project",
+		string Shortcut = "Ctrl+O",
+		string Tags = "Project File",
+	},
+
+	Command =
+	{
+		string Name = "ReloadProject",
+		string Description = "Reload the current project",
+		string Tags = "Project",
+	},
+
+	Command =
+	{
+		string Name = "SaveProject",
+		string Description = "Save project and all resources",
+		string IconName = "Save",
+		string Shortcut = "Ctrl+S",
+		string Tags = "Project File",
+	},
+
+	Command =
+	{
+		string Name = "ArchiveProject",
+		string Description = "Archive a project into a file",
+		string Tags = "Project",
+	},
+
+	Command =
+	{
+		string Name = "BackupProject",
+		string Description = "Back up project to time stamped archive",
+		string Tags = "Project",
+	},
+
+	Command =
+	{
+		string Name = "ShowProjectFolder",
+		string Description = "Show the folder the project is located in the file system",
+		string Tags = "Project",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "ShowContentOutput",
+		string Description = "Show the project's content output folder",
+		string Tags = "Project",
+		bool ReadOnly = true,
+	},
+
+	// Editor Commands
+	Command =
+	{
+		string Name = "Exit",
+		string Description = "Exit the editor",
+		string Shortcut = "Alt+F4",
+		string Tags = "File",
+	},
+
+	Command =
+	{
+		string Name = "Restart",
+		string Description = "Restart the editor",
+		string Tags = "File",
+	},
+
+	Command =
+	{
+		string Name = "Add",
+		string Description = "Add a new content item to the project",
+		string IconName = "AddResource",
+		string Shortcut = "Ctrl+N",
+		string Tags = "Editor",
+	},
+
+	//-----------------------------------------------------Edit Commands
+	Command =
+	{
+		string Name = "Undo",
+		string Description = "Undo last operation",
+		string IconName = "Undo",
+		string Shortcut = "Ctrl+Z",
+		string Tags = "Edit",
+	},
+
+	Command =
+	{
+		string Name = "Redo",
+		string Description = "Redo last undo operation",
+		string IconName = "Redo",
+		string Shortcut = "Ctrl+Y",
+		string Tags = "Edit",
+	},
+
+	Command =
+	{
+		string Name = "Cut",
+		string Description = "Cut selected objects and save them to clipboard",
+		string IconName = "Cut",
+		string Shortcut = "Cut",
+		string Tags = "Edit",
+	},
+
+	Command =
+	{
+		string Name = "Paste",
+		string Description = "Paste objects on clipboard to space",
+		string IconName = "Paste",
+		string Shortcut = "Paste",
+		string Tags = "Edit",
+	},
+
+	Command =
+	{
+		string Name = "Copy",
+		string Description = "Copy objects to clipboard",
+		string IconName = "Copy",
+		string Shortcut = "Copy",
+		string Tags = "Edit",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "Delete",
+		string Description = "Delete selected objects",
+		string Shortcut = "Delete",
+		string Tags = "Edit",
+	},
+
+	Command =
+	{
+		string Name = "Duplicate",
+		string Description = "Duplicate select objects",
+		string Shortcut = "Ctrl+D",
+		string Tags = "Edit",
+	},
+
+	//------------------------------------------------------------ Editor Select
+	Command =
+	{
+		string Name = "PreviousSelection",
+		string Description = "",
+		string Shortcut = "Alt+Left",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "NextSelection",
+		string Description = "",
+		string Shortcut = "Alt+Right",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "SelectNone",
+		string Description = "Select no objects",
+		string Shortcut = "Shift+D",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "SelectParent",
+		string Description = "Select parent of current object",
+		string IconName = "Up",
+		string Shortcut = "Shift+W",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "SelectRoot",
+		string Description = "Select root of tree",
+		string IconName = "DoubleUp",
+		string Shortcut = "Shift+Q",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "SelectChild",
+		string Description = "Select the first child",
+		string IconName = "Down",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "SelectSibling",
+		string Description = "Select the next sibling",
+		string IconName = "Right",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "SelectAllInTree",
+		string Description = "Select all in tree",
+		string IconName = "DoubleDown",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "SelectAll",
+		string Description = "Select all in scene",
+		string IconName = "BigPlus",
+		string Shortcut = "Shift+A",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "SelectGame",
+		string Description = "Select game",
+		string IconName = "",
+		string Shortcut = "Shift+G",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "SelectSpace",
+		string Description = "Select the space",
+		string IconName = "",
+		string Shortcut = "Shift+S",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "CenterSelected",
+		string Description = "Center the object in the view",
+		string IconName = "",
+		string Shortcut = "F",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "FrameSelected",
+		string Description = "Center and frame the object in the view",
+		string IconName = "",
+		string Shortcut = "FF",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+
+
+	//------------------------------------------ Hide
+
+	Command =
+	{
+		string Name = "UnhideAll",
+		string Description = "Unhide all objects",
+		string Tags = "Hide",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "HideSelected",
+		string Description = "Hide selected objects",
+		string Tags = "Hide",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "UnhideSelected",
+		string Description = "Unhide selected objects",
+		string Tags = "Hide",
+		bool ReadOnly = true,
+	},
+
+	//---------------------------------------------  Game
+
+	Command =
+	{
+		string Name = "PlayGame",
+		string Description = "Play the game with the current level",
+		string IconName = "PlayGame",
+		string Shortcut = "F5",
+		string Function = "Editor.PlaySingleGame",
+		string Tags = "Game",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "PlayNewGame",
+		string Description = "Play the game in an additional window",
+		string IconName = "PlayGame",
+		string Shortcut = "Ctrl+F5",
+		string Function = "Editor.PlayNewGame",
+		string Tags = "Game",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "PauseGame",
+		string Description = "Pause / resume the game",
+		string IconName = "PauseGame",
+		string Shortcut = "F6",
+		string Function = "Editor.ToggleGamePaused",
+		string Tags = "Game",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "StepGame",
+		string Description = "Step the game forward one frame",
+		string IconName = "StepGame",
+		string Shortcut = "F7",
+		string Function = "Editor.StepGame",
+		string Tags = "Game",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "StopGame",
+		string Description = "Stop the game",
+		string IconName = "StopGame",
+		string Shortcut = "F8",
+		string Function = "Editor.StopGame",
+		string Tags = "Game",
+		bool ReadOnly = true,
+	},
+
+	//------------------------------------------ Export
+
+	Command =
+	{
+		string Name = "ExportAndPlayGame",
+		string Description = "Export the game and play it",
+		string Tags = "Export",
+	},
+
+	Command =
+	{
+		string Name = "ExportGame",
+		string Description = "Export game to a standalone exe",
+		string Tags = "Export",
+	},
+
+	Command =
+	{
+		string Name = "ExportContent",
+		string Description = "Export content to a folder for an installer",
+		string Tags = "Export",
+	},
+
+   //----------------------------------------------------------- Editor Windows
+
+	Command =
+	{
+		string Name = "Console",
+		string Description = "Toggle the Console Window",
+		string IconName = "Console",
+		string Shortcut = "~",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+
+  Command =
+  {
+    string Name = "ShowConsole",
+    string Description = "Show the Console Window",
+    string IconName = "Console",
+    string Tags = "Windows",
+  },
+
+  Command =
+  {
+    string Name = "HideConsole",
+    string Description = "Hide the Console Window",
+    string IconName = "Console",
+    string Tags = "Windows",
+  },
+
+	Command =
+	{
+		string Name = "Market",
+		string Description = "Show the Plasma Market where you can download content for your projects",
+		string IconName = "Market",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "Chat",
+		string Description = "A place where users can talk to each other and share content",
+		string IconName = "Chat",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+	
+	Command =
+	{
+		string Name = "Animator",
+		string Description = "Show the Animator Window",
+		string IconName = "Animator",
+		string Tags = "Windows",
+		bool DevOnly = false,
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "FindNext",
+		string Description = "Show the Find/Replace Window to search the current document",
+		string IconName = "FindReplace",
+		string Shortcut = "Ctrl+F",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "FindAll",
+		string Description = "Show the Find/Replace Window to search all documents",
+		string IconName = "FindReplace",
+		string Shortcut = "Ctrl+Shift+F",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "ReplaceNext",
+		string Description = "Show the Find/Replace Window to replace in the current document",
+		string IconName = "FindReplace",
+		string Shortcut = "Ctrl+H",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "ReplaceAll",
+		string Description = "Show the Find/Replace Window to replace in all documents",
+		string IconName = "FindReplace",
+		string Shortcut = "Ctrl+Shift+H",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "ReportBug",
+		string Description = "Report a bug",
+		string IconName = "BugIcon",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "Commands",
+		string Description = "Show the Command List Viewer",
+		string IconName = "Commands",
+		string Shortcut = "Ctrl+Shift+C",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+	
+  Command =
+ 	{
+ 		string Name = "OperationHistory",
+ 		string Description = "Show the Operation Queue",
+ 		string IconName = "OperationHistory",
+ 		string Shortcut = "Ctrl+Shift+O",
+ 		string Tags = "Windows",
+		bool ReadOnly = true,
+ 	},
+
+	Command =
+	{
+		string Name = "Tools",
+		string Description = "Show the Tools Window",
+		string IconName = "Tools",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "Properties",
+		string Description = "Show the Property Window",
+		string IconName = "Properties",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "Library",
+		string Description = "Show the Library Window",
+		string IconName = "Library",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "Objects",
+		string Description = "Show the Objects Window",
+		string IconName = "Tree",
+		string Tags = "Windows",
+		bool ReadOnly = true,
+	},
+  
+	Command =
+	{
+		string Name = "Help",
+		string Description = "Display documentation for the engine",
+		string Tags = "Editor Help",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "EditColorScheme",
+		string Description = "Edit color scheme",
+		string IconName = "CautionTriangle",
+		string Tags = "Editor",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "ClearConsole",
+		string Description = "Clears output text from the console",
+		string IconName = "Commands",
+		string Tags = "Editor",
+	},
+
+	Command =
+	{
+		string Name = "SelectProject",
+		string Description = "Show the Project in the Property Window",
+		string IconName = "Properties",
+		string Shortcut = "Shift+P",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+	
+	Command =
+	{
+		string Name = "SelectEditorConfig",
+		string Description = "Show the Editor Config in the Property Window",
+		string IconName = "Properties",
+		string Shortcut = "Shift+E",
+		string Tags = "Select",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "VolumeMeter",
+		string Description = "Show the Volume Meter Window",
+		string Tags = "Windows Sound",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "SoundNodeGraph",
+		string Description = "Show the Sound Node Graph Window",
+		string Tags = "Windows Sound",
+		bool ReadOnly = true,
+	},
+	
+	Command =
+	{
+		string Name = "RenderGroupHierarchies",
+		string Description = "Show the RenderGroup Hierarchies Window",
+		string Tags = "Editor",
+	},
+	
+	// ------------------------------------------ More editor commands	
+
+	Command =
+	{
+		string Name = "DebuggerResume",
+		string Description = "Resumes execution if the debugger is paused",
+		string IconName = "DebuggerResume",
+		string Shortcut = "Alt+F5",
+		string Function = "Editor.DebuggerResume",
+		string Tags = "Debugger",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "DebuggerPause",
+		string Description = "Pauses where script is currently executing",
+		string IconName = "DebuggerPause",
+		string Shortcut = "Ctrl+Break",
+		string Function = "Editor.DebuggerPause",
+		string Tags = "Debugger",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "DebuggerStepIn",
+		string Description = "Steps into a function or over a line of code",
+		string IconName = "DebuggerStepIn",
+		string Shortcut = "Alt+Right",
+		string Function = "Editor.DebuggerStepIn",
+		string Tags = "Debugger",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "DebuggerStepOver",
+		string Description = "Steps over a function call or line of code",
+		string IconName = "DebuggerStepOver",
+		string Shortcut = "Alt+Down",
+		string Function = "Editor.DebuggerStepOver",
+		string Tags = "Debugger",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "DebuggerStepOut",
+		string Description = "Steps out of the current function",
+		string IconName = "DebuggerStepOut",
+		string Shortcut = "Alt+Left",
+		string Function = "Editor.DebuggerStepOut",
+		string Tags = "Debugger",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "GoToDefinition",
+		string Description = "Using the current cursor in the current open script we will attempt to go to the definition of that type, member, or variable",
+		string Tags = "Editor Script",
+		string Shortcut = "F12",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "StressTest",
+		string Description = "Stress test the engine by doing a bunch of random stuff",
+		string Tags = "Editor",
+	},
+
+	Command =
+	{
+		string Name = "BuildVersion",
+		string Description = "Print this version date and revision number in the console and copies them to the clipboard",
+		string IconName = "Console",
+		string Tags = "Editor",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "Performance",
+		string Description = "Displays a performance graph",
+		string IconName = "Performance",
+		string Tags = "Editor",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "Graph",
+		string Description = "Displays a graph",
+		string IconName = "Performance",
+		string Tags = "Editor",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "BeginTracing",
+		string Description = "Start recording performance trace events (for use with chrome://tracing)",
+		string IconName = "Performance",
+		string Tags = "Editor",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "EndTracing",
+		string Description = "Stop recording performance trace events and save to a file (for use with chrome://tracing)",
+		string IconName = "Performance",
+		string Tags = "Editor",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "BroadPhaseTracker",
+		string Description = "Used to compare broad phase performance",
+		string IconName = "Performance",
+		string Tags = "Editor",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "ClearObjectStore",
+		string Description = "Clear the Object Store on this computer",
+		string IconName = "ClearObjectStore",
+		string Tags = "Editor",
+	},
+
+	Command =
+	{
+		string Name = "ParentToPrimary",
+		string Description = "Parents all selected objects to the primary selected object (highlighted in orange)",
+		string Tags = "Editor",
+	},
+
+	Command =
+	{
+		string Name = "GroupSelected",
+		string Description = "Create a transform at the center of the selected objects and parent them to it",
+		string Shortcut = "Ctrl+G",
+		string Tags = "Editor",
+	},
+
+	// ------------------------------------------ Tool commands
+	Command =
+	{
+		string Name = "SelectTool",
+		string Description = "Picks objects in the scene.",
+		string Shortcut = "",
+		string IconName = "SelectTool",
+		string Tags = "Tool",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "TranslateTool",
+		string Description = "Enables the Translate Tool",
+		string Shortcut = "",
+		string IconName = "TranslateGizmo",
+		string Tags = "Tool",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "RotateTool",
+		string Description = "Enables the Rotate Tool",
+		string Shortcut = "",
+		string IconName = "RotateGizmo",
+		string Tags = "Tool",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "ScaleTool",
+		string Description = "Enables the Scale Tool",
+		string Shortcut = "",
+		string IconName = "ScaleGizmo",
+		string Tags = "Tool",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "ManipulatorTool",
+		string Shortcut = "",
+		string Description = "Enables the Manipulator Tool",
+		string IconName = "ManipulatorGizmo",
+		string Tags = "Tool",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "TileEditor2D",
+		string Shortcut = "",
+		string Description = "Enables the TileEditor2D tool",
+		string IconName = "TileEditor2D",
+		string Tags = "Tool",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "HeightMapTool",
+		string Shortcut = "",
+		string Description = "Enables the HeightMapTool tool",
+		string IconName = "HeightMapTool",
+		string Tags = "Tool",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "JointTool",
+		string Shortcut = "",
+		string Description = "Enables the JointTool tool",
+		string IconName = "JointTool",
+		string Tags = "Tool",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "CreationTool",
+		string Shortcut = "",
+		string Description = "Enables the CreationTool tool",
+		string IconName = "CreationTool",
+		string Tags = "Tool",
+		bool ReadOnly = true,
+	},
+  
+  Command =
+	{
+		string Name = "ParentingTool",
+		string Shortcut = "",
+		string Description = "Enables the ParentingTool tool",
+		string IconName = "ParentingTool",
+		string Tags = "Tool",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "ShowCoreLibrary",
+		string Tags = "Tool",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "ResetCamera",
+		string Description = "Resets the camera to look at the origin",
+		string Tags = "Camera",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "AlignSelectedCameraToCamera",
+		string Description = "Aligns the selected camera to the editor's camera",
+		string Tags = "Camera",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "AlignCameraToSelectedCamera",
+		string Description = "Aligns the editor camera to the selected camera",
+		string Tags = "Camera",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "AddComponent",
+		string Description = "Add component to object",
+		string Tags = "",
+		string Shortcut = "Ctrl+M",
+	},
+
+	Command =
+	{
+		string Name = "TakeProjectScreenshot",
+		string Description = "Takes a screen shot for the project. Disables automatically taking a project screen shot every time you save.",
+		string Tags = "",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "EnableAutoProjectScreenshot",
+		string Description = "Enables automatically taking a project screen shot every time you save.",
+		string Tags = "",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "DisableAutoProjectScreenshot",
+		string Description = "Disables automatically taking a project screen shot every time you save. Use the 'TakeProjectScreenshot' command to take the screen shot manually.",
+		string Tags = "",
+		bool ReadOnly = true,
+	},
+
+},

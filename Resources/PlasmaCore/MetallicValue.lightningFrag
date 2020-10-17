@@ -1,0 +1,17 @@
+// MIT Licensed (see LICENSE.md).
+
+// Metallic input for lighting opaque geometry.
+// Output values are constant over the surface.
+[Pixel]
+struct MetallicValue
+{
+  [Input] var MetallicValue : Real = 0.0;
+  
+  [FragmentInput][StageInput][Output] var Metallic : Real;
+  
+  function Main()
+  {
+    this.Metallic = Math.Max(this.Metallic, 0);
+    this.Metallic += this.MetallicValue;
+  }
+}

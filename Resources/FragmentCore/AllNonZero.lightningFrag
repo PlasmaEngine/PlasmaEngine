@@ -1,0 +1,52 @@
+// MIT Licensed (see LICENSE.md).
+
+struct MathAllNonPlasmaImplements
+{
+  [Static][Extension(typeid(Math))][Implements]
+  function AllNonPlasma(value : Real) : Boolean
+  {
+    return Math.AllNonPlasma(value as Boolean);
+  }
+  
+  [Static][Extension(typeid(Math))][Implements]
+  function AllNonPlasma(value : Real2) : Boolean
+  {
+    return Math.AllNonPlasma(value as Boolean2);
+  }
+  
+  [Static][Extension(typeid(Math))][Implements]
+  function AllNonPlasma(value : Real3) : Boolean
+  {
+    return Math.AllNonPlasma(value as Boolean3);
+  }
+  
+  [Static][Extension(typeid(Math))][Implements]
+  function AllNonPlasma(value : Real4) : Boolean
+  {
+    return Math.AllNonPlasma(value as Boolean4);
+  }
+  
+  [Static][Extension(typeid(Math))][Implements]
+  function AllNonPlasma(value : Integer) : Boolean
+  {
+    return Math.AllNonPlasma(value as Boolean);
+  }
+  
+  [Static][Extension(typeid(Math))][Implements]
+  function AllNonPlasma(value : Integer2) : Boolean
+  {
+    return Math.AllNonPlasma(value as Boolean2);
+  }
+  
+  [Static][Extension(typeid(Math))][Implements]
+  function AllNonPlasma(value : Integer3) : Boolean
+  {
+    return Math.AllNonPlasma(value as Boolean3);
+  }
+  
+  [Static][Extension(typeid(Math))][Implements]
+  function AllNonPlasma(value : Integer4) : Boolean
+  {
+    return Math.AllNonPlasma(value as Boolean4);
+  }
+}

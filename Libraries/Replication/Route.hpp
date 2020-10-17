@@ -1,0 +1,30 @@
+// MIT Licensed (see LICENSE.md).
+#pragma once
+
+namespace Plasma
+{
+
+//                                    Route //
+
+/// Network Route
+/// Identifies a set of link targets
+class Route
+{
+public:
+  /// Constants
+  static const Route All;
+  static const Route None;
+
+  /// Constructors
+  Route(RouteMode::Enum mode = RouteMode::Exclude, ReplicatorIdSet targets = ReplicatorIdSet());
+  Route(RouteMode::Enum mode, ReplicatorId replicatorId);
+  Route(ReplicatorId replicatorId);
+  Route(ReplicatorLink* replicatorLink);
+  Route(PeerLink* link);
+
+  /// Data
+  RouteMode::Enum mMode;    /// Routing mode
+  ReplicatorIdSet mTargets; /// Route link targets
+};
+
+} // namespace Plasma

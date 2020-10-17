@@ -1,0 +1,86 @@
+// MIT Licensed (see LICENSE.md).
+
+struct MathAnyNonPlasmaMatrixImplements
+{
+  [Static][Extension(typeid(Math))][Implements]
+  function AnyNonPlasma(param0 : Real2x2) : Boolean
+  {
+    var result = false;
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[0]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[1]));
+    return result;
+  }
+  [Static][Extension(typeid(Math))][Implements]
+  function AnyNonPlasma(param0 : Real2x3) : Boolean
+  {
+    var result = false;
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[0]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[1]));
+    return result;
+  }
+  [Static][Extension(typeid(Math))][Implements]
+  function AnyNonPlasma(param0 : Real2x4) : Boolean
+  {
+    var result = false;
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[0]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[1]));
+    return result;
+  }
+  [Static][Extension(typeid(Math))][Implements]
+  function AnyNonPlasma(param0 : Real3x2) : Boolean
+  {
+    var result = false;
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[0]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[1]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[2]));
+    return result;
+  }
+  [Static][Extension(typeid(Math))][Implements]
+  function AnyNonPlasma(param0 : Real3x3) : Boolean
+  {
+    var result = false;
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[0]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[1]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[2]));
+    return result;
+  }
+  [Static][Extension(typeid(Math))][Implements]
+  function AnyNonPlasma(param0 : Real3x4) : Boolean
+  {
+    var result = false;
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[0]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[1]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[2]));
+    return result;
+  }
+  [Static][Extension(typeid(Math))][Implements]
+  function AnyNonPlasma(param0 : Real4x2) : Boolean
+  {
+    var result = false;
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[0]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[1]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[2]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[3]));
+    return result;
+  }
+  [Static][Extension(typeid(Math))][Implements]
+  function AnyNonPlasma(param0 : Real4x3) : Boolean
+  {
+    var result = false;
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[0]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[1]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[2]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[3]));
+    return result;
+  }
+  [Static][Extension(typeid(Math))][Implements]
+  function AnyNonPlasma(param0 : Real4x4) : Boolean
+  {
+    var result = false;
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[0]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[1]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[2]));
+    result = ShaderIntrinsics.LogicalOr(result, Math.AnyNonPlasma(param0[3]));
+    return result;
+  }
+}

@@ -1,0 +1,190 @@
+[Version:1]
+Cog 
+{
+	var Name = "SplineParticles"
+	Transform 
+	{
+		var Translation = Real3{0, 0, 0}
+		var Scale = Real3{1, 1, 1}
+		var Rotation = Quaternion{0, 0, 0, 1}
+	}
+	HierarchySpline 
+	{
+		var Closed = false
+		var SplineType = SplineType.CatmullRom
+		var Error = 0.00999999978
+		var DebugDrawSpline = true
+		var SplineColor = Real4{0, 0, 0, 1}
+	}
+	SpriteParticleSystem 
+	{
+		var Visible = true
+		var ViewCulling = true
+		var VisibilityEvents = true
+		var OverrideBoundingBox = true
+		var LocalAabbCenter = Real3{0, 0, 0}
+		var LocalAabbHalfExtents = Real3{4.30000019, 2.29999995, 0.5}
+		var GroupSortValue = 0
+		var Material = "582c50d330d372c3:AdditiveSprite"
+		var BoundingBoxSize = 2
+		var ChildSystem = false
+		var SystemSpace = SystemSpace.WorldSpace
+		var WarmUpTime = 0
+		var PreviewInEditor = true
+		var VertexColor = Real4{1, 1, 1, 1}
+		var GeometryMode = SpriteParticleGeometryMode.Billboarded
+		var SpriteSource = "59a4f6f4a01bac09:SoftCircle"
+		var ParticleAnimation = SpriteParticleAnimationMode.Single
+		var ParticleSort = SpriteParticleSortMode.None
+		var BeamBaseScale = 1
+		var BeamVelocityScale = 1
+	}
+	SplineParticleEmitter 
+	{
+		var Active = true
+		var EmitCount = 0
+		var EmitDelay = 0
+		var EmitRate = 25
+		var EmitVariance = 0
+		var EmitRateSoftStartTime = 0
+		var Size = 0.200000003
+		var SizeVariance = 0.100000001
+		var Lifetime = 1.99662781
+		var LifetimeVariance = 0
+		var Spin = 0
+		var SpinVariance = 50
+		var RandomSpin = true
+		var Fill = 1
+		var EmitterVelocityPercent = 0
+		var StartVelocity = Real3{0, 0, 0}
+		var RandomVelocity = Real3{0, 0, 0}
+		var TangentVelocity = Real3{0, 0, 0}
+		var EmitterSize = Real3{0, 0, 0}
+		var FastMovingEmitter = false
+		var EmitRadius = 0
+		var SpawnT = 0
+		var SpawnTVariance = 0
+		var ClampT = true
+		var TargetSplineCog = CogPath
+		{
+			var Path = "."
+			var ErrorOnResolveToNull = false
+			var ErrorOnPathCantCompute = false
+			var ErrorOnDirectLinkFail = false
+			var UpdateCogOnPathChange = true
+			var UpdatePathOnCogChange = true
+			var UpdateCogOnInitialize = true
+			var ResolvedNullErrorOccurred = false
+			var Cog = 4294967293
+			var PathPreference0 = CogPathPreference.CogRelative
+			var PathPreference1 = CogPathPreference.SpaceRelative
+			var PathPreference2 = CogPathPreference.Absolute
+		}
+	}
+	SplineParticleAnimator 
+	{
+		var Speed = 6
+		var AutoCalculateLifetime = true
+		var Helix = false
+		var HelixRadius = 0.5
+		var HelixWaveLength = 3
+		var HelixOffset = 0
+		var Mode = SplineAnimatorMode.Exact
+		var SpringFrequencyHz = 6
+		var SpringDampingRatio = 0.200000003
+	}
+	ParticleColorAnimator 
+	{
+		var TimeGradient = "591abd225f232eaa:FadeInOut"
+		var VelocityGradient = "null"
+		var MaxParticleSpeed = 5
+	}
+	SelectionIcon 
+	{
+		var Visible = true
+		var VisibilityEvents = true
+		var Material = "56581e2bb81777be:DebugDrawOnTop"
+		var SpriteSource = "59937d65f2659971:ParticleIcon"
+		var ViewScale = 1
+		var OverrideSelections = true
+	}
+	Hierarchy 
+	{
+		Cog [Id:0x59a4ff0724b8b78a]
+		{
+			var Name = "ControlPoint"
+			Transform 
+			{
+				var Translation = Real3{-4, -2, 0}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{0, 0, 0, 1}
+			}
+			SelectionIcon 
+			{
+				var Visible = true
+				var VisibilityEvents = true
+				var Material = "56581e2bb81777be:DebugDrawOnTop"
+				var SpriteSource = "58f8e4be736fa133:SelectIcon"
+				var ViewScale = 0.600000024
+				var OverrideSelections = true
+			}
+		}
+		Cog [Id:0x59a4fa03b8d1806a]
+		{
+			var Name = "ControlPoint"
+			Transform 
+			{
+				var Translation = Real3{-2, 1, 0}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{0, 0, 0, 1}
+			}
+			SelectionIcon 
+			{
+				var Visible = true
+				var VisibilityEvents = true
+				var Material = "56581e2bb81777be:DebugDrawOnTop"
+				var SpriteSource = "58f8e4be736fa133:SelectIcon"
+				var ViewScale = 0.600000024
+				var OverrideSelections = true
+			}
+		}
+		Cog [Id:0x59a4fa01b87864f4]
+		{
+			var Name = "ControlPoint"
+			Transform 
+			{
+				var Translation = Real3{2, -1, 0}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{0, 0, 0, 1}
+			}
+			SelectionIcon 
+			{
+				var Visible = true
+				var VisibilityEvents = true
+				var Material = "56581e2bb81777be:DebugDrawOnTop"
+				var SpriteSource = "58f8e4be736fa133:SelectIcon"
+				var ViewScale = 0.600000024
+				var OverrideSelections = true
+			}
+		}
+		Cog [Id:0x59a4fa1cba019b30]
+		{
+			var Name = "ControlPoint"
+			Transform 
+			{
+				var Translation = Real3{4, 2, 0}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{0, 0, 0, 1}
+			}
+			SelectionIcon 
+			{
+				var Visible = true
+				var VisibilityEvents = true
+				var Material = "56581e2bb81777be:DebugDrawOnTop"
+				var SpriteSource = "58f8e4be736fa133:SelectIcon"
+				var ViewScale = 0.600000024
+				var OverrideSelections = true
+			}
+		}
+	}
+}

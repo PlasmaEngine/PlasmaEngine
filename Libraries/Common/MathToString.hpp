@@ -1,0 +1,19 @@
+// MIT Licensed (see LICENSE.md).
+
+#pragma once
+
+namespace Plasma
+{
+
+String ToString(Math::IntVec2Param value, bool shortFormat = false);
+String ToString(Math::IntVec3Param value, bool shortFormat = false);
+String ToString(Math::IntVec4Param value, bool shortFormat = false);
+String ToString(Math::Vec2Param value, bool shortFormat = false);
+String ToString(Math::Vec3Param value, bool shortFormat = false);
+String ToString(Math::Vec4Param value, bool shortFormat = false);
+String ToString(Math::QuatParam value, bool shortFormat = false);
+String ToString(Math::Mat2Param value, bool shortFormat = false);
+String ToString(Math::Mat3Param value, bool shortFormat = false);
+String ToString(Math::Mat4Param value, bool shortFormat = false);
+
+} // namespace Plasma

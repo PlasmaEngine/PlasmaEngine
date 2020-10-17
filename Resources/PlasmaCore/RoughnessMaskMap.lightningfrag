@@ -1,0 +1,21 @@
+[Pixel]
+struct RoughnessMaskMap
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [Input] var RoughnessMaskMap : SampledImage2d;
+    [Input] var MainRoughness : Real;
+    [Input] var SecondaryRoughness : Real;
+    [Input] var VisorRoughness : Real;
+
+    [FragmentInput][Output] var Roughness : Real;
+
+    function Main()
+    {
+        var roughnessMask = this.RoughnessMaskMap.Sample(this.Uv);
+        var roughness = this.Roughness;
+        roughness = Math.Lerp(roughness, roughness + this.MainRoughness, roughnessMask.X);
+        roughness = Math.Lerp(roughness, roughness + this.SecondaryRoughness, roughnessMask.Y);
+        roughness = Math.Lerp(roughness, roughness + this.VisorRoughness, roughnessMask.Z);
+        this.Roughness = roughness;
+    }
+}

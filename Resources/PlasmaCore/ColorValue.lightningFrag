@@ -1,0 +1,15 @@
+// MIT Licensed (see LICENSE.md).
+
+// Color input for generic use. Color is not used in lighting, see Albedo.
+// Output values are constant over the surface.
+[Pixel]
+struct ColorValue
+{
+    [Input] var ColorValue : Real4 = Real4.One;
+    [Output] var Color : Real4;
+
+    function Main()
+    {
+      this.Color = this.ColorValue; 
+    }
+}

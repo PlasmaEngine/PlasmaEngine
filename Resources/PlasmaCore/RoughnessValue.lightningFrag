@@ -1,0 +1,17 @@
+// MIT Licensed (see LICENSE.md).
+
+// Roughness input for lighting opaque geometry.
+// Output values are constant over the surface.
+[Pixel]
+struct RoughnessValue
+{
+  [Input] var RoughnessValue : Real = 0.0;
+  
+  [FragmentInput][StageInput][Output] var Roughness : Real;
+  
+  function Main()
+  {
+    this.Roughness = Math.Max(this.Roughness, 0);
+    this.Roughness += this.RoughnessValue;
+  }
+}
