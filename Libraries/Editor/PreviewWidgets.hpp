@@ -16,37 +16,37 @@ public:
 class ScriptPreview : public IconPreview
 {
 public:
-  ScriptPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "ScriptIcon"){};
+  explicit ScriptPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "ScriptIcon"){};
 };
 
 class RenderGroupPreview : public IconPreview
 {
 public:
-  RenderGroupPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "RenderGroupIcon"){};
+  explicit RenderGroupPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "RenderGroupIcon"){};
 };
 
 class SoundPreview : public IconPreview
 {
 public:
-  SoundPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "SoundIcon"){};
+  explicit SoundPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "SoundIcon"){};
 };
 
 class NetworkingPreview : public IconPreview
 {
 public:
-  NetworkingPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "NetworkingIcon"){};
+  explicit NetworkingPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "NetworkingIcon"){};
 };
 
 class PhysicsPreview : public IconPreview
 {
 public:
-  PhysicsPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "PhysicsIcon"){};
+  explicit PhysicsPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "PhysicsIcon"){};
 };
 
 class LevelPreview : public IconPreview
 {
 public:
-  LevelPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "LevelIcon"){};
+  explicit LevelPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "LevelIcon"){};
 };
 
 class SoundCuePreview : public IconPreview
@@ -54,20 +54,20 @@ class SoundCuePreview : public IconPreview
 public:
   typedef SoundCuePreview LightningSelf;
 
-  SoundCuePreview(PreviewWidgetInitializer& initializer);
+  explicit SoundCuePreview(PreviewWidgetInitializer& initializer);
   void OnLeftClick(MouseEvent* event);
 };
 
 class PhysicsMaterialPreview : public IconPreview
 {
 public:
-  PhysicsMaterialPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "PhysicsMaterial"){};
+  explicit PhysicsMaterialPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "PhysicsMaterial"){};
 };
 
 class EmptyPreview : public IconPreview
 {
 public:
-  EmptyPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "LargeFolder")
+  explicit EmptyPreview(PreviewWidgetInitializer& initializer) : IconPreview(initializer, "LargeFolder")
   {
     mIcon->SetColor(Vec4(0, 0, 0, 0));
   }
@@ -129,7 +129,7 @@ public:
   bool mOwnsSpace;
   bool mHasGraphical;
   CogId mCamera;
-  CogId mObject;
+  //CogId mObject;
   // Distance the camera is from the previewed object
   float mLookAtDistance;
   // Angle the look at vector is from the y-axis from [Pi/2, -Pi/2]
@@ -141,31 +141,31 @@ public:
 class MaterialPreview : public SpacePreview
 {
 public:
-  MaterialPreview(PreviewWidgetInitializer& initializer);
+  explicit MaterialPreview(PreviewWidgetInitializer& initializer);
 };
 
 class MeshPreview : public SpacePreview
 {
 public:
-  MeshPreview(PreviewWidgetInitializer& initializer);
+ explicit  MeshPreview(PreviewWidgetInitializer& initializer);
 };
 
 class PhysicsMeshPreview : public SpacePreview
 {
 public:
-  PhysicsMeshPreview(PreviewWidgetInitializer& initializer);
+  explicit PhysicsMeshPreview(PreviewWidgetInitializer& initializer);
 };
 
 class ConvexMeshPreview : public SpacePreview
 {
 public:
-  ConvexMeshPreview(PreviewWidgetInitializer& initializer);
+  explicit ConvexMeshPreview(PreviewWidgetInitializer& initializer);
 };
 
 class MultiConvexMeshPreview : public SpacePreview
 {
 public:
-  MultiConvexMeshPreview(PreviewWidgetInitializer& initializer);
+  explicit MultiConvexMeshPreview(PreviewWidgetInitializer& initializer);
 };
 
 class ArchetypePreview : public SpacePreview
@@ -173,7 +173,7 @@ class ArchetypePreview : public SpacePreview
 public:
   typedef ArchetypePreview LightningSelf;
 
-  ArchetypePreview(PreviewWidgetInitializer& initializer);
+  explicit ArchetypePreview(PreviewWidgetInitializer& initializer);
   Handle GetEditObject() override;
 
   const float cSpritePreviewThreshold = 0.1f;
@@ -182,7 +182,7 @@ public:
 class SpriteSourcePreview : public SpacePreview
 {
 public:
-  SpriteSourcePreview(PreviewWidgetInitializer& initializer);
+  explicit SpriteSourcePreview(PreviewWidgetInitializer& initializer);
 };
 
 class AnimationPreview : public SpacePreview
@@ -190,7 +190,7 @@ class AnimationPreview : public SpacePreview
 public:
   typedef AnimationPreview LightningSelf;
 
-  AnimationPreview(PreviewWidgetInitializer& initializer);
+  explicit AnimationPreview(PreviewWidgetInitializer& initializer);
 
   Handle GetEditObject() override;
   void OnReload(ResourceEvent* event);
@@ -201,13 +201,13 @@ public:
 class CogPreview : public SpacePreview
 {
 public:
-  CogPreview(PreviewWidgetInitializer& initializer);
+  explicit CogPreview(PreviewWidgetInitializer& initializer);
 };
 
 class TexturePreview : public PreviewWidget
 {
 public:
-  TexturePreview(PreviewWidgetInitializer& initializer);
+  explicit TexturePreview(PreviewWidgetInitializer& initializer);
   void UpdateTransform();
 
   TextureView* mImage;
@@ -217,13 +217,13 @@ public:
 class FontPreview : public SpacePreview
 {
 public:
-  FontPreview(PreviewWidgetInitializer& initializer);
+  explicit FontPreview(PreviewWidgetInitializer& initializer);
 };
 
 class TilePaletteSourcePreview : public PreviewWidget
 {
 public:
-  TilePaletteSourcePreview(PreviewWidgetInitializer& initializer);
+  explicit TilePaletteSourcePreview(PreviewWidgetInitializer& initializer);
   void SizeToContents();
   void UpdateTransform();
 
@@ -235,7 +235,7 @@ private:
 class ColorGradientPreview : public PreviewWidget
 {
 public:
-  ColorGradientPreview(PreviewWidgetInitializer& initializer);
+  explicit ColorGradientPreview(PreviewWidgetInitializer& initializer);
   ~ColorGradientPreview();
 
   void UpdateTransform() override;
@@ -261,10 +261,10 @@ public:
 class SampleCurvePreview : public PreviewWidget
 {
 public:
-  SampleCurvePreview(PreviewWidgetInitializer& initializer);
+  explicit SampleCurvePreview(PreviewWidgetInitializer& initializer);
   void UpdateTransform() override;
 
-  Element* mBackground;
+  //Element* mBackground;
   GraphWidget* mGraph;
   SampleCurveDrawer* mDrawer;
 };
@@ -272,7 +272,7 @@ public:
 class ResourceTablePreview : public PreviewWidget
 {
 public:
-  ResourceTablePreview(PreviewWidgetInitializer& initializer);
+  explicit ResourceTablePreview(PreviewWidgetInitializer& initializer);
 
   void AnimatePreview(PreviewAnimate::Enum value) override;
   void UpdateTransform() override;

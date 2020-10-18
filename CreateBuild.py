@@ -23,7 +23,7 @@ def PrintFlush(text):
 def ZipDirectory(zip, path, relative="", filter=None):
   if not os.path.isdir(path):
     raise Exception("Attempting to zip '" + path + "' failed because it was not a directory")
-  for root, dirs, files in os.walk(path):
+  for root, files in os.walk(path):
     for file in files:
       if not filter or filter(root, file):
         zip.write(os.path.join(root, file), os.path.join(relative, os.path.relpath(root, path), file))
