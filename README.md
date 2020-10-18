@@ -1,4 +1,7 @@
 # Plasma Engine
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/80c719056cfe489692ce358756143673)](https://www.codacy.com/gh/PlasmaEngine/PlasmaEngine/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=PlasmaEngine/PlasmaEngine&amp;utm_campaign=Badge_Grade)
+[![Windows Build Status (Does not currently represent windows build process)](https://travis-ci.org/PlasmaEngine/PlasmaEngine.svg?branch=master)](https://travis-ci.org/PlasmaEngine/PlasmaEngine) (Travis does not support VS 2019 currently from what i can tell)
+
 [![Plasma Logo](https://raw.githubusercontent.com/PlasmaEngine/PlasmaEngine/master/GithubMedia/LargeLogo.png)](https://plasmagameengine.com/)
 
 ## Overview
