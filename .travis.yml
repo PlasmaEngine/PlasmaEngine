@@ -31,6 +31,8 @@ jobs:
     node_js:
     - 13
     install:
+    - git submodule init
+    - git submodule update
     - npm install
     - choco install doxygen.install
     - choco install llvm --version=6.0.1 --allow-downgrade
