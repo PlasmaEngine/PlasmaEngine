@@ -35,6 +35,9 @@ jobs:
     - choco install doxygen.install
     - choco install llvm --version=6.0.1 --allow-downgrade
     - choco install ninja
+    - choco install visualstudio2019community
+    - choco install visualstudio2019-workload-nativedesktop
+    - export VS160COMNTOOLS="/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools"
     - df -h
     - rm -rf "C:\ProgramData\docker\windowsfilter" 2> /dev/null || true
     - rm -rf "C:\ProgramData\Package Cache" 2> /dev/null || true
