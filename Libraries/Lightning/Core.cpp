@@ -4531,34 +4531,6 @@ void Core::SetupBindingMath(LibraryBuilder& builder)
                           "WhiteNoise",
                           "x")
       ->Description = LightningDocumentString("Returns a point from a 1D White Noise Texture");
-    LightningFullBindMethod(builder,
-                          math,
-                          &Math::PerlinNoise,
-                          (Real(*)(Real, Real, Real, Real, Real)),
-                          "PerlinNoise",
-                          "persistance, frequency, limit, x, y")
-      ->Description = LightningDocumentString("Returns a point from a 2D Perlin Noise Texture");
-  LightningFullBindMethod(builder,
-                          math,
-                          &Math::PerlinNoise,
-                          (Real(*)(Real, Real, Real, Real)),
-                          "PerlinNoise",
-                          "persistance, frequency, limit, x")
-      ->Description = LightningDocumentString("Returns a point from a 1D Perlin Noise Texture");
-  LightningFullBindMethod(builder,
-                          math,
-                          &Math::WhiteNoise,
-                          (Real(*)(Integer, Integer)),
-                          "WhiteNoise",
-                          "x, y")
-      ->Description = LightningDocumentString("Returns a point from a 2D White Noise Texture");
-  LightningFullBindMethod(builder, 
-                          math, 
-                          &Math::WhiteNoise, 
-                          (Real(*)(Integer)), 
-                          "WhiteNoise",
-                          "x")
-      ->Description = LightningDocumentString("Returns a point from a 1D White Noise Texture");
   LightningFullBindMethod(builder, math, &Math::SmoothNoise, (Real(*)(Integer, Integer)), "SmoothNoise", "x, y")
           ->Description = LightningDocumentString("Returns a point from a 2D Smooth Noise Texture");
   LightningFullBindMethod(builder, math, &Math::SmoothNoise, (Real(*)(Integer)), "SmoothNoise", "x")
