@@ -91,7 +91,6 @@ void LightningShaderGenerator::InitializeSpirV()
   Lightning::BoundType* int4Type = LightningTypeId(Lightning::Integer4);
   Lightning::BoundType* real3x3Type = LightningTypeId(Lightning::Real3x3);
   Lightning::BoundType* real4x4Type = LightningTypeId(Lightning::Real4x4);
-  Lightning::BoundType* sampledImage2dType = LightningTypeId(Lightning::SampledImage2d);
 
   // Vertex Attributes
   VertexDefinitionDescription& vertexDefDesc = settings->mVertexDefinitions;
@@ -151,9 +150,10 @@ void LightningShaderGenerator::InitializeSpirV()
   Lightning::BoundType* boneTransformsType =
       Lightning::ShaderIntrinsicsLibrary::GetInstance().GetLibrary()->BoundTypes["FixedArray[Real4x4, 80]"];
   UniformBufferDescription miscData(3);
+  //Lightning::BoundType* sampledImage2dType = Lightning::ShaderIntrinsicsLibrary::GetInstance().GetLibrary()->BoundTypes["SampledImage2d"];
   miscData.mDebugName = "MiscData";
   miscData.AddField(boneTransformsType, "BoneTransforms");
-  miscData.AddField(sampledImage2dType, "HeightMapWeights");
+ // miscData.AddField(sampledImage2dType, "HeightMapWeights");
   settings->AddUniformBufferDescription(miscData);
 
   settings->AutoSetDefaultUniformBufferDescription();
