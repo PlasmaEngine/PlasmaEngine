@@ -24,10 +24,10 @@ LauncherConfig::LauncherConfig()
 {
   mRunDebuggerMode = false;
   mRestartOnClose = false;
-  mShowDevelopmentBuilds = false;
+  mShowDevelopmentBuilds = true;
   mDisplayOnlyPreferredPlatform = true;
   mAutoCheckForLauncherUpdates = true;
-  mShowExperimentalBranches = false;
+  mShowExperimentalBranches = true;
   // Check every hour
   mAutoUpdateFrequencyInSeconds = mDefaultReloadFrequency;
 }
@@ -41,10 +41,10 @@ void LauncherConfig::Serialize(Serializer& stream)
                        FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Projects"));
   SerializeNameDefault(mDownloadPath, FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Downloads"));
   SerializeNameDefault(mDisplayBuildOnProjects, false);
-  SerializeNameDefault(mShowDevelopmentBuilds, false);
+  SerializeNameDefault(mShowDevelopmentBuilds, true);
   SerializeRename(mShowDevelopmentBuilds, "ShowNightlies");
   SerializeNameDefault(mAutoCheckForLauncherUpdates, true);
-  SerializeNameDefault(mShowExperimentalBranches, false);
+  SerializeNameDefault(mShowExperimentalBranches, true);
   SerializeNameDefault(mForcedUpdateVersion, 0);
   SerializeNameDefault(mAutoUpdateFrequencyInSeconds, mDefaultReloadFrequency);
   float everyTwelveHours = 60 * 60 * 12;

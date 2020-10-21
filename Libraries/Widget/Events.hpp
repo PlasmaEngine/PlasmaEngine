@@ -123,9 +123,11 @@ public:
 class DispatchAtParams
 {
 public:
-  DispatchAtParams() : ObjectHit(false), Ignore(NULL), BubbleEvent(true)
+  DispatchAtParams()
+    : ObjectHit(false), EventObject(nullptr), Ignore(NULL), BubbleEvent(true)
   {
   }
+
   bool ObjectHit;
   Vec2 Position;
   String EventId;

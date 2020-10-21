@@ -21,7 +21,8 @@ class BinaryBuilder : public DirectBuilderComponent
 public:
   LightningDeclareType(BinaryBuilder, TypeCopyMode::ReferenceType);
 
-  BinaryBuilder() : DirectBuilderComponent(0, ".bin", String())
+  BinaryBuilder()
+    : DirectBuilderComponent(0, ".bin", String()), Version(0)
   {
   }
 

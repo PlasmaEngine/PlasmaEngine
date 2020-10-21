@@ -216,7 +216,7 @@ inline bool BufferIsZeroed(const byte (&buffer)[N])
   static const byte plasmaBuffer[N] = {};
 
   // Given buffer is identical to plasma buffer?
-  return (memcmp(buffer, plasmaBuffer, N) == 0);
+  return (memcmp(buffer, plasmaBuffer, N) == 0); //-V575
 }
 
 /// Returns true if memA and memB are overlapping

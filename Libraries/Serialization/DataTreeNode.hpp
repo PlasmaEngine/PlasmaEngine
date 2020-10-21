@@ -44,7 +44,7 @@ typedef PatchResolveMethod::Enum (*ResolveInheritedData)(StringRange inheritId, 
 struct DataTreeContext
 {
   DataTreeContext()
-  {
+    : Loader(nullptr) {
     Error = false;
     PatchRequired = false;
   }

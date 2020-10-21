@@ -17,7 +17,8 @@ public:
 class GraphicalHeightPatch
 {
 public:
-  GraphicalHeightPatch() : mWeightTexture(nullptr)
+  GraphicalHeightPatch()
+    : mGraphicalEntryData(), mWeightTexture(nullptr)
   {
   }
 

@@ -5,6 +5,7 @@ namespace Plasma
 {
 
 ByteBuffer::BlockRange::BlockRange(ByteBuffer* buffer)
+  : mCurrent()
 {
   mBlock = buffer->mBlocks.Data();
   mLast = buffer->mBlocks.End();

@@ -76,6 +76,7 @@ class AddContentItemInfo
 {
 public:
   AddContentItemInfo()
+    : AddedContentItem(nullptr)
   {
     Library = NULL;
     Options = NULL;

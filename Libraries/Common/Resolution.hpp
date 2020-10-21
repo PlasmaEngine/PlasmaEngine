@@ -21,7 +21,7 @@ struct PlasmaShared Resolution
 
   bool operator==(const Resolution& other) const
   {
-    return other.Width == Width && other.Height * Height;
+    return other.Width == Width && other.Height == Height;
   }
 
   bool operator<(const Resolution& other) const

@@ -403,7 +403,7 @@ void BaseSplitScriptEditor::OnLeftMouseDown(MouseEvent* e)
 //  return current;
 //}
 
-FragmentSplitScriptEditor::FragmentSplitScriptEditor(Composite* parent) : BaseSplitScriptEditor(parent)
+FragmentSplitScriptEditor::FragmentSplitScriptEditor(Composite* parent) : BaseSplitScriptEditor(parent), mFragment()
 {
   // This has to be called here so that the virtual functions will be properly
   // set
@@ -445,7 +445,7 @@ void FragmentSplitScriptEditor::SetResource(LightningFragment* fragment)
   editor->SetResource(fragment);
 }
 
-MaterialSplitScriptEditor::MaterialSplitScriptEditor(Composite* parent) : BaseSplitScriptEditor(parent)
+MaterialSplitScriptEditor::MaterialSplitScriptEditor(Composite* parent) : BaseSplitScriptEditor(parent), mMaterial()
 {
   mDisplayMode = TranslationDisplayMode::Pixel;
   // This has to be called here so that the virtual functions will be properly

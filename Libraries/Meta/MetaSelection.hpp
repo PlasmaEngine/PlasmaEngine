@@ -14,9 +14,10 @@ DeclareEvent(SelectionFinal);
 struct SelectionChangedEvent : public Event
 {
   LightningDeclareType(SelectionChangedEvent, TypeCopyMode::ReferenceType);
-  SelectionChangedEvent() : Updated(false)
-  {
+  SelectionChangedEvent()
+    : Selection(nullptr), Updated(false) {
   }
+
   MetaSelection* Selection;
 
   /// The two most common ways the selection changes is when the user

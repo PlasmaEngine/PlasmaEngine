@@ -224,9 +224,10 @@ class DataSelection : public EventObject
 {
 public:
   DataSource* mSource;
-  DataSelection() : mSupportsMultiSelect(true)
-  {
+  DataSelection()
+    : mSource(nullptr), mSupportsMultiSelect(true) {
   }
+
   virtual ~DataSelection(){};
 
   /// Get all selected objects
@@ -440,6 +441,7 @@ class CStrSource : public ListSource
 {
 public:
   CStrSource()
+    : mSize(0)
   {
     mData = nullptr;
   }

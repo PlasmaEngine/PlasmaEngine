@@ -366,6 +366,7 @@ void ShaderTranslationDebugHelper::OnRunTranslation(Event* e)
 {
   GraphicsEngine* graphicsEngine = PL::gEngine->has(GraphicsEngine);
   mShaderGenerator = graphicsEngine->mShaderGenerator;
+  Assert(mShaderGenerator);
   LightningShaderGenerator& generator = *mShaderGenerator;
 
   // Clear the old results

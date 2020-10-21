@@ -50,7 +50,10 @@ class CurveEvent : public Event
 {
 public:
   LightningDeclareType(CurveEvent, TypeCopyMode::ReferenceType);
-  CurveEvent() : mControlPoint(NULL){};
+  CurveEvent()
+    : mCurve(nullptr), mControlPoint(NULL)
+  {
+  };
 
   /// The curve that was modified.
   CurveObject* mCurve;

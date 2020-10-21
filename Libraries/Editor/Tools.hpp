@@ -26,7 +26,8 @@ class SelectToolFrustumEvent : public Event
 public:
   LightningDeclareType(SelectToolFrustumEvent, TypeCopyMode::ReferenceType);
 
-  SelectToolFrustumEvent() : Handled(false), HandledEventScript(false)
+  SelectToolFrustumEvent()
+    : Handled(false), HandledEventScript(false), mSpace(nullptr)
   {
   }
 

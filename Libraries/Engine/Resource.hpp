@@ -44,8 +44,8 @@ DeclareEnum3(ResourceNotFound,
 class ResourceHandleData
 {
 public:
-  ResourceHandleData() : mRawObject(nullptr)
-  {
+  ResourceHandleData()
+    : mDebugResource(nullptr), mRawObject(nullptr) {
   }
 
   // This will always be set for visual studio visualizers. If it's garbage,

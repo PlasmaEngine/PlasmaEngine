@@ -105,6 +105,7 @@ private:
 
   T& operator=(const T& lhs)
   {
+    return lhs;
   }
 };
 

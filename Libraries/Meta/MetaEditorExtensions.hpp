@@ -135,6 +135,7 @@ public:
 class TemplateFilterBase
 {
 public:
+  virtual ~TemplateFilterBase() = default;
   virtual bool Filter(Member* prop, HandleParam instance) = 0;
 };
 

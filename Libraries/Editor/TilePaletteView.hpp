@@ -22,7 +22,8 @@ struct TilePaletteChange
   TilePaletteChange()
   {
   }
-  TilePaletteChange(IntVec2 location) : mLocation(location)
+  TilePaletteChange(IntVec2 location)
+    : mLocation(location), mChangeType()
   {
   }
 

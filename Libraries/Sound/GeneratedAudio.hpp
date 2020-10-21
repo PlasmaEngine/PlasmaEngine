@@ -134,7 +134,8 @@ public:
       mWaveType(type)
   {
   }
-  HarmonicData() : mFrequencyMultiplier(0.0f), mVolume(0.0f)
+  HarmonicData()
+    : mFrequencyMultiplier(0.0f), mVolume(0.0f), mWaveType(SynthWaveType::Noise)
   {
   }
 

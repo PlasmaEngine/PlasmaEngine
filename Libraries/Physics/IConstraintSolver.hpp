@@ -28,9 +28,11 @@ public:
   typedef InList<Joint, &Joint::SolverLink> JointList;
 
   IConstraintSolver()
+    : mSolverConfig(nullptr)
   {
     mHeap = nullptr;
-  };
+  }
+  ;
   virtual ~IConstraintSolver(){};
 
   void SetConfiguration(PhysicsSolverConfig* config)

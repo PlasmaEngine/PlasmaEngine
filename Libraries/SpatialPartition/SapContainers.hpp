@@ -103,6 +103,7 @@ struct SapEndPoint
   static const uint sMinBit = static_cast<uint>((uint)1 << (sizeof(uint) * 8 - 1));
 
   SapEndPoint()
+    : mVal(0)
   {
     // Set the index to the largest unsigned int value.
     mIndex = static_cast<uint>(-1);

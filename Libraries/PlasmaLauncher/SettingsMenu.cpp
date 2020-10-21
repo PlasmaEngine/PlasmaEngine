@@ -177,7 +177,7 @@ SettingsMenu::SettingsMenu(Modal* parent, LauncherWindow* launcher) :
     new Spacer(this, SizePolicy::Fixed, Pixels(0, -9));
 
     mShowDevelopCheckBox = new CheckBox(this);
-    mShowDevelopCheckBox->SetChecked(false);
+    mShowDevelopCheckBox->SetChecked(true);
     mShowDevelopCheckBox->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(12));
     ConnectThisTo(mShowDevelopCheckBox, Events::ValueChanged, OnShowDevelopModified);
     mWidgetsToAnimate.PushBack(mShowDevelopCheckBox);
@@ -193,7 +193,7 @@ SettingsMenu::SettingsMenu(Modal* parent, LauncherWindow* launcher) :
     new Spacer(this, SizePolicy::Fixed, Pixels(0, -9));
 
     mShowExperimentalBranchesCheckBox = new CheckBox(this);
-    mShowExperimentalBranchesCheckBox->SetChecked(false);
+    mShowExperimentalBranchesCheckBox->SetChecked(true);
     mShowExperimentalBranchesCheckBox->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(12));
     ConnectThisTo(mShowExperimentalBranchesCheckBox, Events::ValueChanged, OnShowExperimentalBranchesModified);
     mWidgetsToAnimate.PushBack(mShowExperimentalBranchesCheckBox);
