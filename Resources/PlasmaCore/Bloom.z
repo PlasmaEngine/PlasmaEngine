@@ -12,6 +12,12 @@ class Bloom : LightningComponent
   // The minimum luminance needed to invoke bloom.
   [Group("Settings")]
   [Property] var Threshold : Real = 1.0;
+  // Lens dirst texture
+  [Group("Settings")]
+  [Property] var LensDirt : Texture;
+  [Group("Settings")]
+  [Property] var LensDirtIntensity : Real;
+  
   // If output should be replace with just the result that's added to the scene for visualizing the effect.
   [Group("Debug")]
   [Property] var DebugBuffer : Boolean = false;
@@ -49,10 +55,12 @@ class Bloom : LightningComponent
     var bloom5 = event.GetRenderTarget((bufferSize * 0.03125) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
     
     // The bright pass separates sufficiently bright parts of the image from the rest
-    var bloomBrightPass = BloomBrightPass();
+    var bloomBrightPass = BloomBrightPass(); 
     bloomBrightPass.Texture = lightBuffer.Texture;
+    bloomBrightPass.LensDirt = this.LensDirt;
     bloomBrightPass.Intensity = this.Intensity;
     bloomBrightPass.Threshold = this.Threshold;
+    bloomBrightPass.LensDirtIntensity = this.LensDirtIntensity;
     event.AddRenderTaskPostProcess(bloom0, bloomBrightPass);
     
     // Progressive downsample and blur
