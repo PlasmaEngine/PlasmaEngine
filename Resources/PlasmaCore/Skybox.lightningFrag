@@ -19,6 +19,6 @@ struct Skybox
     var viewDirection = Math.Normalize(viewPosition.XYZ / viewPosition.W);
     var worldDirection = Math.MultiplyNormal(this.ViewToWorld, viewDirection);
     
-    this.Target0 = this.Skybox.SampleLod(worldDirection, 0.0);
+    this.Target0 = Math.Saturate(this.Skybox.SampleLod(worldDirection, 0.0));
   }
 }

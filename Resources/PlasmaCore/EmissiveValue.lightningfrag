@@ -1,0 +1,19 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct EmissiveValue
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [FragmentInput][Input] var EmissiveColor : Real4 = Real4.One;
+    [Input] var EmissivePower : Real = 5.0;
+    [Input] var GammaCorrect : Boolean = true;
+    
+    [FragmentInput][Output] var Emissive : Real3 = Real3.One;
+
+    function Main()
+    {
+        var power = Math.Lerp(Real3(1.0), Real3(2.2), this.GammaCorrect as Real);
+        this.EmissiveColor.XYZ = Math.Pow(this.EmissiveColor.XYZ, power);
+        this.Emissive *= Math.Saturate(this.EmissiveColor.XYZ) * this.EmissivePower;
+    }
+}

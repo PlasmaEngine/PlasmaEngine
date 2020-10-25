@@ -1,0 +1,12 @@
+// MIT Licensed (see LICENSE.md).
+
+class RenderResources
+{
+    var GBufferNormalDepthRoughnessRT : RenderTarget;
+    var GBufferAlbedoMetallicSpec : RenderTarget;
+    var GBufferEmissiveAO : RenderTarget;
+    
+    var Depth : RenderTarget;
+    
+    var FinalOutput : RenderTarget;
+}

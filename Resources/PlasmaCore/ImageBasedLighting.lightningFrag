@@ -32,6 +32,7 @@ struct ImageBasedLighting
   [Input] var EnvironmentBrdfLut : SampledImage2d;
   [Input] var Skybox : SampledImageCube;
   [Input] var Intensity : Real = 1.0;
+  [Input] var MaxIntensity : Real = 50;
   
   [Input] var GeometryBuffer0 : SampledImage2d;
   [Input] var GeometryBuffer1 : SampledImage2d;
@@ -66,7 +67,7 @@ struct ImageBasedLighting
     // Remove color banding
     color = Utility.ApplyDither(color, &this.DitherTexture, this.Uv, this.ViewportSize);
     
-    this.Target0 = Real4(color * this.Intensity, 1.0);
+    this.Target0 = Real4(Math.Min(color * this.Intensity, Real3(this.MaxIntensity)), 1.0);
   }
   
   [Static]

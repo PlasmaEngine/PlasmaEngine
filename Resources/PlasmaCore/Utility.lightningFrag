@@ -123,7 +123,7 @@ struct FullscreenTriangle
 [Pixel][RenderPass]
 struct ColorOutput
 {
-  [FragmentInput] var Color : Real4 = Real4(0.0);
+  [Input] var Color : Real4 = Real4(0.0);
   [Output] var Target0 : Real4;
   function Main()
   {

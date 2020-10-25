@@ -20,6 +20,8 @@ class DeferredRenderer : LightningComponent
   // Arbitrary scalar for the output of IndirectLighting.
   [Group("Settings")]
   [Property] var IndirectIntensity : Real = 1.0;
+  [Group("Settings")]
+  [Property] var MaxIntensity : Real = 50.0;
   // If a filmic tonemap should be used when converting lighting results from linear to gamma for monitor display.
   [Group("Settings")]
   [Property] var ToneMap : Boolean = true;
@@ -41,7 +43,7 @@ class DeferredRenderer : LightningComponent
   // If skybox should be used for the background, uses ClearColor for background if false.
   [Group("Debug")]
   [Property] var RenderSkybox : Boolean = true;
-  
+    
   function Initialize(init : CogInitializer)
   {
     Plasma.Connect(this.Owner, Events.RenderTasksUpdate, this.OnRenderTasksUpdate);
@@ -49,18 +51,22 @@ class DeferredRenderer : LightningComponent
 
   function OnRenderTasksUpdate(event : RenderTasksEvent)
   {
+    var resources = RenderResources();
+
     var viewportSize = event.ViewportSize;
-    var final = event.GetFinalTarget(viewportSize, TextureFormat.RGBA8);
+    resources.FinalOutput = event.GetFinalTarget(viewportSize, TextureFormat.RGBA8);
     
     // Geometry pass
-    var geometryBuffer0 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
-    var geometryBuffer1 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
-    var depthStencil = event.GetRenderTarget(viewportSize, TextureFormat.Depth24Stencil8);
+    resources.GBufferNormalDepthRoughnessRT = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
+    resources.GBufferAlbedoMetallicSpec = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
+    resources.GBufferEmissiveAO = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
+    resources.Depth = event.GetRenderTarget(viewportSize, TextureFormat.Depth24Stencil8);
     
     var geometryPassSettings = RenderSettings();
-    geometryPassSettings.MultiRenderTarget.ColorTarget0 = geometryBuffer0;
-    geometryPassSettings.MultiRenderTarget.ColorTarget1 = geometryBuffer1;
-    geometryPassSettings.DepthTarget = depthStencil;
+    geometryPassSettings.MultiRenderTarget.ColorTarget0 = resources.GBufferNormalDepthRoughnessRT;
+    geometryPassSettings.MultiRenderTarget.ColorTarget1 = resources.GBufferAlbedoMetallicSpec;
+    geometryPassSettings.MultiRenderTarget.ColorTarget2 = resources.GBufferEmissiveAO;
+    geometryPassSettings.DepthTarget = resources.Depth;
     
     geometryPassSettings.DepthSettings.DepthMode = DepthMode.Write;
     geometryPassSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
@@ -75,6 +81,9 @@ class DeferredRenderer : LightningComponent
     // Clearing depth to 1 (the farplane) the way it is currently stored, and normals to +z
     event.AddRenderTaskClearTarget(geometryPassSettings, Real4(0.0, 0.0, 1.0, 1.0), 1.0, 0);
     
+    
+    
+    ////////////////////////////////////////////////
     geometryPassSettings.CullMode = CullMode.BackFace;
     event.AddRenderTaskRenderPass(geometryPassSettings, RenderGroup.Opaque, GeometryPass());
     
@@ -87,7 +96,7 @@ class DeferredRenderer : LightningComponent
     
     var lightSettings = RenderSettings();
     lightSettings.ColorTarget = lightBuffer;
-    lightSettings.DepthTarget = depthStencil;
+    lightSettings.DepthTarget = resources.Depth;
     
     // Only process background pixels
     lightSettings.DepthSettings.StencilMode = StencilMode.Enabled;
@@ -117,11 +126,12 @@ class DeferredRenderer : LightningComponent
     if (this.GeometryDebug != GeometryValue.None)
     {
       // Bring skybox to gamma space for monitor display
-      this.LinearToGamma(event, lightBuffer, final);
+      this.LinearToGamma(event, lightBuffer, resources.FinalOutput);
       
       var geometryDebug = GeometryDebug();
-      geometryDebug.GeometryBuffer0 = geometryBuffer0.Texture;
-      geometryDebug.GeometryBuffer1 = geometryBuffer1.Texture;
+      geometryDebug.GeometryBuffer0 = resources.GBufferNormalDepthRoughnessRT.Texture;
+      geometryDebug.GeometryBuffer1 = resources.GBufferAlbedoMetallicSpec.Texture;
+      geometryDebug.GeometryBuffer2 = resources.GBufferEmissiveAO.Texture;
       
       if (this.GeometryDebug == GeometryValue.Normal)
         geometryDebug.ShowNormal = true;
@@ -135,15 +145,19 @@ class DeferredRenderer : LightningComponent
         geometryDebug.ShowMetallic = true;
       else if (this.GeometryDebug == GeometryValue.Specular)
         geometryDebug.ShowSpecular = true;
+      else if (this.GeometryDebug == GeometryValue.Emissive)
+        geometryDebug.ShowEmissive = true;
+      else if (this.GeometryDebug == GeometryValue.AO)
+        geometryDebug.ShowAO = true;
       
       var geometryDebugSettings = RenderSettings();
-      geometryDebugSettings.ColorTarget = final;
-      geometryDebugSettings.DepthTarget = depthStencil;
+      geometryDebugSettings.ColorTarget = resources.FinalOutput;
+      geometryDebugSettings.DepthTarget = resources.Depth;
       geometryDebugSettings.DepthSettings = lightSettings.DepthSettings;
       
       event.AddRenderTaskPostProcess(geometryDebugSettings, geometryDebug);
       
-      this.DrawDebugObjects(event, final, depthStencil);
+      this.DrawDebugObjects(event, resources.FinalOutput, resources.Depth);
         
       return;
     }
@@ -155,8 +169,9 @@ class DeferredRenderer : LightningComponent
       imageBasedLighting.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
       imageBasedLighting.Skybox = this.Skybox;
       imageBasedLighting.Intensity = this.IndirectIntensity;
-      imageBasedLighting.GeometryBuffer0 = geometryBuffer0.Texture;
-      imageBasedLighting.GeometryBuffer1 = geometryBuffer1.Texture;
+      imageBasedLighting.MaxIntensity = this.MaxIntensity;
+      imageBasedLighting.GeometryBuffer0 = resources.GBufferNormalDepthRoughnessRT.Texture;
+      imageBasedLighting.GeometryBuffer1 = resources.GBufferAlbedoMetallicSpec.Texture;
       imageBasedLighting.RenderDiffuse = this.RenderDiffuse;
       imageBasedLighting.RenderSpecular = this.RenderSpecular;
     
@@ -166,12 +181,12 @@ class DeferredRenderer : LightningComponent
     // Ssao
     if (this.Owner.Ssao != null)
     {
-      this.Owner.Ssao.AddRenderTasks(event, lightBuffer, geometryBuffer0);
+      this.Owner.Ssao.AddRenderTasks(event, lightBuffer, resources.GBufferNormalDepthRoughnessRT);
       if (this.Owner.Ssao.DebugBuffer && this.Owner.Ssao.Active)
       {
         // Don't do any other lighting if debugging ssao buffer
-        this.LinearToGamma(event, lightBuffer, final);
-        this.DrawDebugObjects(event, final, depthStencil);
+        this.LinearToGamma(event, lightBuffer, resources.FinalOutput);
+        this.DrawDebugObjects(event, resources.FinalOutput, resources.Depth);
         return;
       }
     }
@@ -179,8 +194,9 @@ class DeferredRenderer : LightningComponent
     if (this.DirectLighting)
     {
       var geometryInputs = ShaderInputs.Create();
-      geometryInputs.Add("GeometryInput", "GeometryBuffer0", geometryBuffer0.Texture);
-      geometryInputs.Add("GeometryInput", "GeometryBuffer1", geometryBuffer1.Texture);
+      geometryInputs.Add("GeometryInput", "GeometryBuffer0", resources.GBufferNormalDepthRoughnessRT.Texture);
+      geometryInputs.Add("GeometryInput", "GeometryBuffer1", resources.GBufferAlbedoMetallicSpec.Texture);
+      geometryInputs.Add("GeometryInput", "GeometryBuffer2", resources.GBufferEmissiveAO.Texture);
       
       lightSettings.GlobalShaderInputs = geometryInputs;
       lightSettings.CullMode = CullMode.FrontFace;
@@ -202,7 +218,7 @@ class DeferredRenderer : LightningComponent
     // Additive materials
     var alphaSettings = RenderSettings();
     alphaSettings.ColorTarget = lightBuffer;
-    alphaSettings.DepthTarget = depthStencil;
+    alphaSettings.DepthTarget = resources.Depth;
     alphaSettings.CullMode = CullMode.Disabled;
     alphaSettings.BlendSettings.BlendMode = BlendMode.Separate;
     alphaSettings.BlendSettings.BlendEquation = BlendEquation.Add;
@@ -219,18 +235,18 @@ class DeferredRenderer : LightningComponent
       this.Owner.Bloom.AddRenderTasks(event, lightBuffer);
     
     // Bring final lighting to gamma space for monitor display
-    this.LinearToGamma(event, lightBuffer, final);
+    this.LinearToGamma(event, lightBuffer, resources.FinalOutput);
     
     // FXAA
     if(this.Owner.PostProcessFXAA != null)
-        this.Owner.PostProcessFXAA.AddRenderTasks(event, final);
+        this.Owner.PostProcessFXAA.AddRenderTasks(event, resources.FinalOutput);
         
     // Alpha materials
-    alphaSettings.ColorTarget = final;
+    alphaSettings.ColorTarget = resources.FinalOutput;
     alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
     event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AlphaBlend, ColorOutput());
     
-    this.DrawDebugObjects(event, final, depthStencil);
+    this.DrawDebugObjects(event, resources.FinalOutput, resources.Depth);
   }
   
   function LinearToGamma(event : RenderTasksEvent, inputBuffer : RenderTarget, outputBuffer : RenderTarget)
@@ -286,5 +302,7 @@ enum GeometryValue
   Roughness,
   Albedo,
   Metallic,
-  Specular
+  Specular,
+  Emissive,
+  AO
 }
