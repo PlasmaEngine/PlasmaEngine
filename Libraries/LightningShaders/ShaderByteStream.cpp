@@ -86,7 +86,7 @@ size_t ShaderStreamWriter::GetPaddedByteCount(StringParam text)
 {
   size_t byteCount = text.SizeInBytes();
   size_t paddedByteCount = byteCount + 1;
-  int totalSize = (paddedByteCount) / 4;
+  size_t totalSize = (paddedByteCount) / 4;
   if ((paddedByteCount % 4) != 0)
     ++totalSize;
   totalSize *= 4;

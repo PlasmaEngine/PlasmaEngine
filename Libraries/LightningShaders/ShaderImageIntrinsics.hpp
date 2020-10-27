@@ -49,17 +49,17 @@ class SampledImageCube
 // translate
 struct ImageUserData
 {
-  ImageUserData(int optionalOperands, int flags, Lightning::BoundType* sampledImageType = nullptr)
+  ImageUserData(u32 optionalOperands, u32 flags, Lightning::BoundType* sampledImageType = nullptr)
   {
     mOptionalOperands = optionalOperands;
     mImageOperandFlags = flags;
     mSampledImageType = sampledImageType;
   }
   // How many optional operands exist
-  int mOptionalOperands;
+  u32 mOptionalOperands;
   // Flags that have to come before the before the optional
   // operands that specify what the extra operands are.
-  int mImageOperandFlags;
+  u32 mImageOperandFlags;
   // The combined SampledImage type that some functions use. Added here to make
   // it easier to not have to look up the type of the SampledImage when needed.
   Lightning::BoundType* mSampledImageType;

@@ -31,14 +31,14 @@ struct LightningTypeGroups
 	// SpirV does not support non-floating point matrix types
 	// Array<Lightning::BoundType*> mIntegerMatrixTypes;
 
-	Lightning::BoundType* GetMatrixType(int y, int x)
+	Lightning::BoundType* GetMatrixType(u32 y, u32 x)
 	{
 	y -= 2;
 	x -= 2;
 	return mRealMatrixTypes[x + y * 3];
 	}
 };
-	
+
 /// Helper struct to pass around groups of types for generating library
 /// translation
 struct ShaderTypeGroups

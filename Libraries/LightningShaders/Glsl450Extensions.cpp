@@ -263,7 +263,7 @@ void CreateFloatMatrixFunctions(SpirVExtensionLibrary* extLibrary, LightningType
   Lightning::Core& core = Lightning::Core::GetInstance();
   Lightning::BoundType* mathType = core.MathType;
 
-  for (size_t i = 2; i <= 4; ++i)
+  for (u32 i = 2; i <= 4; ++i)
   {
     Lightning::BoundType* lightningType = types.GetMatrixType(i, i);
     String lightningTypeName = lightningType->Name;
@@ -466,7 +466,7 @@ void AddGlslExtensionIntrinsicOps(Lightning::LibraryBuilder& builder,
   }
 
   // Matrices
-  for (size_t i = 2; i <= 4; ++i)
+  for (u32 i = 2; i <= 4; ++i)
   {
     Lightning::BoundType* lightningType = types.GetMatrixType(i, i);
     AddGlslIntrinsic(

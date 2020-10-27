@@ -134,7 +134,7 @@ LightningShaderIRType* LightningSpirVFrontEnd::MakeTypeAndPointer(LightningShade
 
 LightningShaderIRType* LightningSpirVFrontEnd::MakeCoreType(LightningShaderIRLibrary* shaderLibrary,
                                                     ShaderIRTypeBaseType::Enum baseType,
-                                                    size_t components,
+                                                    u32 components,
                                                     LightningShaderIRType* componentType,
                                                     Lightning::BoundType* lightningType,
                                                     bool makePointerType)
@@ -312,7 +312,7 @@ void LightningSpirVFrontEnd::ParseAttributes(Lightning::Array<Lightning::Attribu
   ParseLightningAttributes(lightningAttributes, attributeNodes, shaderAttributes);
   ValidateAllowedAttributes(shaderAttributes, nameSettings.mAllowedClassAttributes, "types");
 
-  Array<int> fragmentTypeAttributeIndices;
+  Array<size_t> fragmentTypeAttributeIndices;
   for (size_t i = 0; i < shaderAttributes.Size(); ++i)
   {
     ShaderIRAttribute* shaderAttribute = shaderAttributes[i];
@@ -2458,7 +2458,7 @@ void LightningSpirVFrontEnd::WalkMemberAccessNode(Lightning::MemberAccessNode*& 
     // First map the name to an index.
     String memberName = node->AccessedMember->Name;
     ErrorIf(!leftOperandType->mMemberNamesToIndex.ContainsKey(memberName), "Invalid member name");
-    int memberIndex = leftOperandType->mMemberNamesToIndex.FindValue(memberName, 0);
+    u32 memberIndex = leftOperandType->FindMemberIndex(memberName);
     // Then use that index to get the type of the member
     LightningShaderIRType* memberType = leftOperandType->GetSubType(memberIndex);
 
@@ -2563,7 +2563,7 @@ void LightningSpirVFrontEnd::WalkIfRootNode(Lightning::IfRootNode*& node, Lightn
     // else's with no ifs earlier). In this case do a small optimization of
     // making the ifFalse and mergePoint be the same block. This makes code
     // generation a little easier and makes the resultant code look cleaner.
-    int lastIndex = ifParts - 1;
+    size_t lastIndex = ifParts - 1;
     if (i != lastIndex)
       data.mIfFalse = BuildBlockNoStack(BuildString("ifFalse", indexStr), context);
     else
@@ -2659,7 +2659,7 @@ void LightningSpirVFrontEnd::WalkIfRootNode(Lightning::IfRootNode*& node, Lightn
   // previous block's merge point.
   for (size_t i = 0; i < blockPairs.Size(); ++i)
   {
-    int blockIndex = blockPairs.Size() - i - 1;
+    size_t blockIndex = blockPairs.Size() - i - 1;
     BasicBlock* block = blockPairs[blockIndex].mMergePoint;
     // If this is not the first block then add a branch on the merge point to
     // the previous block's merge point
@@ -3169,6 +3169,15 @@ LightningShaderIROp* LightningSpirVFrontEnd::GetIntegerConstant(int value, Light
   return constantIntOp;
 }
 
+  LightningShaderIROp* LightningSpirVFrontEnd::GetIntegerConstant(u32 value, LightningSpirVFrontEndContext* context)
+{
+  int intValue = static_cast<int>(value);
+  Lightning::BoundType* zilchIntType = LightningTypeId(int);
+  LightningShaderIRType* shaderIntType = mLibrary->FindType(zilchIntType);
+  LightningShaderIROp* constantIntOp = GetConstant(shaderIntType, intValue, context);
+  return constantIntOp;
+}
+
 LightningShaderIROp* LightningSpirVFrontEnd::GetConstant(LightningShaderIRType* type,
                                                  StringParam value,
                                                  LightningSpirVFrontEndContext* context)
@@ -3298,7 +3307,7 @@ LightningShaderIROp* LightningSpirVFrontEnd::AddSpecializationConstantRecursivel
         CreateSpecializationConstant(key, OpType::OpSpecConstantComposite, varType, context);
     specConstantCompositeOp->mDebugResultName = propertyName;
 
-    for (size_t i = 0; i < varType->mParameters.Size(); ++i)
+    for (u32 i = 0; i < varType->GetSubTypeCount(); ++i)
     {
       String memberName = varType->GetMemberName(i);
       String fullSubVarName = BuildString(varName, ".", memberName);
@@ -3540,7 +3549,7 @@ LightningShaderIROp* LightningSpirVFrontEnd::BuildDecorationOp(BasicBlock* block
 LightningShaderIROp* LightningSpirVFrontEnd::BuildDecorationOp(BasicBlock* block,
                                                        ILightningShaderIR* decorationTarget,
                                                        spv::Decoration decorationType,
-                                                       int decorationValue,
+                                                       u32 decorationValue,
                                                        LightningSpirVFrontEndContext* context)
 {
   LightningShaderIRConstantLiteral* decorationTypeLiteral = GetOrCreateConstantIntegerLiteral(decorationType);
@@ -3551,7 +3560,7 @@ LightningShaderIROp* LightningSpirVFrontEnd::BuildDecorationOp(BasicBlock* block
 
 LightningShaderIROp* LightningSpirVFrontEnd::BuildMemberDecorationOp(BasicBlock* block,
                                                              ILightningShaderIR* decorationTarget,
-                                                             int memberOffset,
+                                                             u32 memberOffset,
                                                              spv::Decoration decorationType,
                                                              LightningSpirVFrontEndContext* context)
 {
@@ -3563,9 +3572,9 @@ LightningShaderIROp* LightningSpirVFrontEnd::BuildMemberDecorationOp(BasicBlock*
 
 LightningShaderIROp* LightningSpirVFrontEnd::BuildMemberDecorationOp(BasicBlock* block,
                                                              ILightningShaderIR* decorationTarget,
-                                                             int memberOffset,
+                                                             u32 memberOffset,
                                                              spv::Decoration decorationType,
-                                                             int decorationValue,
+                                                             u32 decorationValue,
                                                              LightningSpirVFrontEndContext* context)
 {
   LightningShaderIROp* resultOp = BuildIROp(block, OpType::OpMemberDecorate, nullptr, decorationTarget, context);
@@ -3576,6 +3585,11 @@ LightningShaderIROp* LightningSpirVFrontEnd::BuildMemberDecorationOp(BasicBlock*
 }
 
 LightningShaderIRConstantLiteral* LightningSpirVFrontEnd::GetOrCreateConstantIntegerLiteral(int value)
+{
+  return GetOrCreateConstantLiteral(value);
+}
+
+LightningShaderIRConstantLiteral* LightningSpirVFrontEnd::GetOrCreateConstantIntegerLiteral(u32 value)
 {
   return GetOrCreateConstantLiteral(value);
 }
@@ -3734,11 +3748,6 @@ void LightningSpirVFrontEnd::WriteFunctionCallArguments(Lightning::FunctionCallN
                                                     LightningShaderIROp* functionCallOp,
                                                     LightningSpirVFrontEndContext* context)
 {
-  // @JoshD: This function is somewhat legacy and would be nice to remove
-  // eventually and unify with the below one. The issue right now is with
-  // calling extended instructions.
-  BasicBlock* currentBlock = context->GetCurrentBlock();
-
   for (size_t i = 0; i < node->Arguments.Size(); ++i)
   {
     ILightningShaderIR* argument = WalkAndGetResult(node->Arguments[i], context);
@@ -3759,9 +3768,7 @@ void LightningSpirVFrontEnd::WriteFunctionCallArguments(Array<ILightningShaderIR
                                                     LightningShaderIROp* functionCallOp,
                                                     LightningSpirVFrontEndContext* context)
 {
-  BasicBlock* currentBlock = context->GetCurrentBlock();
-
-  for (size_t i = 0; i < arguments.Size(); ++i)
+  for (u32 i = 0; i < arguments.Size(); ++i)
   {
     ILightningShaderIR* argument = arguments[i];
     LightningShaderIRType* paramType = functionType->GetSubType(i + 1);

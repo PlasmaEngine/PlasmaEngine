@@ -21,7 +21,7 @@ bool LightningSpirVDisassemblerBackend::RunTranslationPass(ShaderTranslationPass
 
   ShaderByteStream& inputByteStream = inputData.mByteStream;
   uint32_t* data = (uint32_t*)inputByteStream.Data();
-  uint32 wordCount = inputByteStream.WordCount();
+  size_t wordCount = inputByteStream.WordCount();
 
   spv_text text;
   spv_diagnostic diagnostic = nullptr;

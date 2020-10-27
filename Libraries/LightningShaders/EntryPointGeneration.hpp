@@ -58,6 +58,11 @@ public:
       mDecorationType = type;
       mValue = value;
     }
+    explicit DecorationParam(spv::Decoration type, u32 value)
+    {
+      mDecorationType = type;
+      mValue = static_cast<int>(value);
+    }
     spv::Decoration mDecorationType;
     int mValue;
   };
@@ -117,7 +122,7 @@ struct ShaderInterfaceField
 
   // The index of this field within it's owning data structure. Needed to get a
   // pointer to the actual memory address.
-  int mFieldIndex;
+  u32 mFieldIndex;
   // Name of the field to generate. Should not be used for linking purposes.
   String mFieldName;
   // The meta (uniquely owned by this type) for the field. Stores all attributes
@@ -492,7 +497,7 @@ public:
                              spv::StorageClass sourceStorageClass);
   LightningShaderIROp* GetMemberInstanceFrom(BasicBlock* block,
                                          LightningShaderIROp* source,
-                                         int sourceOffset,
+                                         u32 sourceOffset,
                                          spv::StorageClass sourceStorageClass);
   LightningShaderIROp* GetNamedMemberInstanceFrom(BasicBlock* block,
                                               LightningShaderIROp* source,
@@ -533,8 +538,7 @@ public:
                                      LightningShaderIRType* structType,
                                      ShaderStageResource& stageResource);
 
-  int FindBindingId(HashSet<int>& usedIds);
-  int FindBindingId(HashSet<int>& usedIds1, HashSet<int>& usedIds2);
+  u32 FindBindingId();
 
   // Copy reflection data from the internal interface info to the entry point
   void CopyReflectionDataToEntryPoint(EntryPointInfo* entryPointInfo, ShaderInterfaceInfo& interfaceInfo);
@@ -550,7 +554,7 @@ public:
 
   // Create a shader interface field from the interface group and the field
   // index.
-  void CreateShaderInterfaceField(ShaderInterfaceField& interfaceField, InterfaceInfoGroup& interfaceGroup, int index);
+  void CreateShaderInterfaceField(ShaderInterfaceField& interfaceField, InterfaceInfoGroup& interfaceGroup, u32 index);
 
   // Some types aren't allowed in any interface declarations (uniform/in/out).
   // This function converts them to the next best thing (e.g. bool -> int)
@@ -582,6 +586,9 @@ public:
   Array<ShaderInterfaceType*> mBuiltIns;
   Array<ShaderInterfaceType*> mInputs;
   Array<ShaderInterfaceType*> mOutputs;
+  HashSet<LightningShaderIRType*> mUniqueTypes;
+  HashSet<LightningShaderIROp*> mUniqueOps;
+  HashSet<u32> mUsedBindingIds;
 };
 
 } // namespace Plasma

@@ -189,12 +189,12 @@ size_t ShaderIRAttributeList::Size()
   return mAttributes.Size();
 }
 
-ShaderIRAttribute* ShaderIRAttributeList::GetAtIndex(int index)
+ShaderIRAttribute* ShaderIRAttributeList::GetAtIndex(size_t index)
 {
   return &mAttributes[index];
 }
 
-ShaderIRAttribute* ShaderIRAttributeList::operator[](int index)
+ShaderIRAttribute* ShaderIRAttributeList::operator[](size_t index)
 {
   return GetAtIndex(index);
 }

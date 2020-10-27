@@ -24,7 +24,7 @@ void FixedArrayBackupConstructor(LightningSpirVFrontEnd* translator,
 bool ValidateIndexLiteral(LightningSpirVFrontEnd* translator,
                           Lightning::ExpressionNode* node,
                           LightningShaderIROp* indexOperand,
-                          int maxValue,
+                          u32 maxValue,
                           LightningSpirVFrontEndContext* context)
 {
   // Check if this is a constant (literal). If not we can't validate.
@@ -33,7 +33,7 @@ bool ValidateIndexLiteral(LightningSpirVFrontEnd* translator,
 
   // Get the literal value
   LightningShaderIRConstantLiteral* literal = indexOperand->mArguments[0]->As<LightningShaderIRConstantLiteral>();
-  int indexLiteral = literal->mValue.Get<int>();
+  u32 indexLiteral = literal->mValue.Get<u32>();
   // If it's in the valid range then this index is valid;
   if (0 <= indexLiteral && indexLiteral < maxValue)
     return true;
@@ -331,14 +331,15 @@ void ResolveRuntimeArrayCount(LightningSpirVFrontEnd* translator,
   // the array is contained in as well as the member index offset into the
   // struct for where the runtime array is actually contained.
   LightningShaderIRType* intType = translator->FindType(LightningTypeId(int), functionCallNode);
+  LightningShaderIRType* uintType = translator->FindType(LightningTypeId(Lightning::UnsignedInt), functionCallNode);
   // Get the wrapper struct instance that contains the real runtime array
   ILightningShaderIR* structOwnerOp = translator->WalkAndGetResult(memberAccessNode->LeftOperand, context);
   // We create the runtime array wrapper struct such that the real array is
   // always at member index 0
   LightningShaderIRConstantLiteral* plasmaLiteral = translator->GetOrCreateConstantIntegerLiteral(0);
-  ILightningShaderIR* lengthResult =
-      translator->BuildCurrentBlockIROp(OpType::OpArrayLength, intType, structOwnerOp, plasmaLiteral, context);
-  context->PushIRStack(lengthResult);
+  ILightningShaderIR* uintLengthResult = translator->BuildCurrentBlockIROp(OpType::OpArrayLength, uintType, structOwnerOp, plasmaLiteral, context);
+  ILightningShaderIR* intLengthResult = translator->BuildCurrentBlockIROp(OpType::OpArrayLength, intType, uintLengthResult, context);
+  context->PushIRStack(intLengthResult);
 }
 
 void RuntimeArrayResolver(LightningSpirVFrontEnd* translator, Lightning::BoundType* lightningRuntimeArrayType)

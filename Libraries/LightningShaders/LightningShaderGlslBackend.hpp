@@ -46,7 +46,7 @@ protected:
                         ShaderResourceReflectionData& reflectionData);
   void PopulateMemberTypeInfo(GlslBackendInternalData& internalData,
                               spirv_cross::SPIRType& parentType,
-                              int memberIndex,
+                              u32 memberIndex,
                               ShaderResourceReflectionData& reflectionData,
                               bool isInterfaceType);
   void PopulateTypeInfo(GlslBackendInternalData& internalData,

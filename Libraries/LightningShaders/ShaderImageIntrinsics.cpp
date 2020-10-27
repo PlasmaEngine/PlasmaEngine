@@ -160,17 +160,17 @@ ParameterArray FiveParameters(Type* type1,
 void WriteImageArguments(LightningSpirVFrontEnd* translator,
                          Lightning::FunctionCallNode* functionCallNode,
                          LightningShaderIROp* result,
-                         int index,
+                         u32 index,
                          ImageUserData& imageData,
                          LightningSpirVFrontEndContext* context)
 {
   // Find out how many arguments we have to write out before optional image
   // operands
-  int nonOptionalOperands = functionCallNode->Arguments.Size() - index - imageData.mOptionalOperands;
+  size_t nonOptionalOperands = functionCallNode->Arguments.Size() - index - imageData.mOptionalOperands;
   // Write all of the non optional operands from the start index. We might
   // actually skip some initial operands if they were processed on the outside
   // (e.g. combining image + sampler into SampledImage)
-  for (int i = 0; i < nonOptionalOperands; ++i)
+  for (size_t i = 0; i < nonOptionalOperands; ++i)
   {
     LightningShaderIROp* arg = translator->WalkAndGetValueTypeResult(functionCallNode->Arguments[index], context);
     result->mArguments.PushBack(arg);
@@ -184,7 +184,7 @@ void WriteImageArguments(LightningSpirVFrontEnd* translator,
     LightningShaderIRConstantLiteral* literal = translator->GetOrCreateConstantIntegerLiteral(imageData.mImageOperandFlags);
     result->mArguments.PushBack(literal);
 
-    for (int i = 0; i < imageData.mOptionalOperands; ++i)
+    for (size_t i = 0; i < imageData.mOptionalOperands; ++i)
     {
       LightningShaderIROp* arg = translator->WalkAndGetValueTypeResult(functionCallNode->Arguments[index], context);
       result->mArguments.PushBack(arg);

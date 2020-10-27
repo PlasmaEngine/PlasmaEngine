@@ -56,9 +56,9 @@ public:
   /// as any stage can split or merge some of these types together.
   struct SampledImageRemappingData
   {
-    Array<int> mSampledImageIds;
-    Array<int> mImageIds;
-    Array<int> mSamplerIds;
+    Array<size_t> mSampledImageIds;
+    Array<size_t> mImageIds;
+    Array<size_t> mSamplerIds;
   };
 
   /// Describes how to find the reflection data for a ssbo.
@@ -137,7 +137,7 @@ public:
   ShaderStageInterfaceReflection mReflection;
 
 private:
-  typedef HashMap<String, int> NameToIndexMap;
+  typedef HashMap<String, size_t> NameToIndexMap;
 
   // Internal helper class used to remap uniform buffers between stages to each
   // other.

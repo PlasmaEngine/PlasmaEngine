@@ -86,8 +86,8 @@ public:
   Range All();
   size_t Size();
 
-  ShaderIRAttribute* GetAtIndex(int index);
-  ShaderIRAttribute* operator[](int index);
+  ShaderIRAttribute* GetAtIndex(size_t index);
+  ShaderIRAttribute* operator[](size_t index);
 
 private:
   Array<ShaderIRAttribute> mAttributes;

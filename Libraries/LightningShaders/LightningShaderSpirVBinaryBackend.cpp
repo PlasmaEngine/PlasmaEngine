@@ -551,21 +551,21 @@ void LightningShaderSpirVBinaryBackend::WriteDebug(LightningShaderIRType* type, 
 {
   WriteDebugName(type, type->mDebugResultName, context);
 
-  // @JoshD: Fix to be a consistent order (this is hashmap order)
-  AutoDeclare(memberNameRange, type->mMemberNamesToIndex.All());
-  for (; !memberNameRange.Empty(); memberNameRange.PopFront())
+  for(u32 i = 0; i < type->mParameters.Size(); ++i)
   {
-    AutoDeclare(pair, memberNameRange.Front());
+    String memberName = type->GetMemberName(i);
+    if(memberName.Empty())
+      continue;
 
     ShaderStreamWriter& streamWriter = *context->mStreamWriter;
-    size_t byteCount = streamWriter.GetPaddedByteCount(pair.first);
+    size_t byteCount = streamWriter.GetPaddedByteCount(memberName);
     size_t wordCount = byteCount / 4;
 
     int typeId = context->FindId(type);
     streamWriter.WriteInstruction(3 + (int16)wordCount, OpType::OpMemberName);
     streamWriter.Write(typeId);
-    streamWriter.Write(pair.second);
-    streamWriter.Write(pair.first);
+    streamWriter.Write(i);
+    streamWriter.Write(memberName);
   }
 }
 
@@ -734,6 +734,8 @@ void LightningShaderSpirVBinaryBackend::WriteType(LightningShaderIRType* type, L
     streamWriter.WriteInstruction(2, OpType::OpTypeBool, context->FindId(type));
   else if (type->mBaseType == ShaderIRTypeBaseType::Int)
     streamWriter.WriteInstruction(4, OpType::OpTypeInt, context->FindId(type), 32, 1);
+  else if (type->mBaseType == ShaderIRTypeBaseType::Uint)
+    streamWriter.WriteInstruction(4, OpType::OpTypeInt, context->FindId(type), 32,0);
   else if (type->mBaseType == ShaderIRTypeBaseType::Float)
     streamWriter.WriteInstruction(3, OpType::OpTypeFloat, context->FindId(type), 32);
   else if (type->mBaseType == ShaderIRTypeBaseType::Vector)

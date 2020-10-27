@@ -114,7 +114,7 @@ void SimplifiedShaderReflectionData::CreateUniformReflectionData(LightningShader
   HashMap<String, UniformReflectionData> memberRemappings;
   HashMap<String, SimpleResourceRemappingData> bufferRenames;
   ShaderStageInterfaceReflection& firstStageData = passResults[0]->mReflectionData;
-  ShaderStageInterfaceReflection* lastStageData = &firstStageData;
+  ShaderStageInterfaceReflection* lastStageData = &passResults[passResults.Size() -1]->mReflectionData;
 
   // Walk all uniforms in the first stage, building a mapping of the
   // buffer names and the member names within each buffer
@@ -385,21 +385,21 @@ void SimplifiedShaderReflectionData::BuildFinalSampledImageMappings(SampledImage
   for (size_t i = 0; i < resourceMappings->mImageRemappings.Size(); ++i)
   {
     String name = resourceMappings->mImageRemappings[i];
-    int* resultIndex = imageIndices.FindPointer(name);
+    size_t* resultIndex = imageIndices.FindPointer(name);
     if (resultIndex != nullptr)
       results.mImageIds.PushBack(*resultIndex);
   }
   for (size_t i = 0; i < resourceMappings->mSamplerRemappings.Size(); ++i)
   {
     String name = resourceMappings->mSamplerRemappings[i];
-    int* resultIndex = samplerIndices.FindPointer(name);
+    size_t* resultIndex = samplerIndices.FindPointer(name);
     if (resultIndex != nullptr)
       results.mSamplerIds.PushBack(*resultIndex);
   }
   for (size_t i = 0; i < resourceMappings->mSampledImageRemappings.Size(); ++i)
   {
     String name = resourceMappings->mSampledImageRemappings[i];
-    int* resultIndex = sampledImageIndices.FindPointer(name);
+    size_t* resultIndex = sampledImageIndices.FindPointer(name);
     if (resultIndex != nullptr)
       results.mSampledImageIds.PushBack(*resultIndex);
   }
@@ -419,17 +419,17 @@ void SimplifiedShaderReflectionData::PopulateSamplerAndImageData(HashMap<String,
   // re-use this is much cleaner.
   for (size_t i = 0; i < remapData->mImageIds.Size(); ++i)
   {
-    int imageIndex = remapData->mImageIds[i];
+    size_t imageIndex = remapData->mImageIds[i];
     results.PushBack(&mReflection.mImages[imageIndex].mReflectionData);
   }
   for (size_t i = 0; i < remapData->mSamplerIds.Size(); ++i)
   {
-    int samplerIndex = remapData->mSamplerIds[i];
+    size_t samplerIndex = remapData->mSamplerIds[i];
     results.PushBack(&mReflection.mSamplers[samplerIndex].mReflectionData);
   }
   for (size_t i = 0; i < remapData->mSampledImageIds.Size(); ++i)
   {
-    int index = remapData->mSampledImageIds[i];
+    size_t index = remapData->mSampledImageIds[i];
     results.PushBack(&mReflection.mSampledImages[index].mReflectionData);
   }
 }
@@ -485,6 +485,12 @@ void SimplifiedShaderReflectionData::CreateSimpleOpaqueTypeReflectionData(Lightn
         // Store the remapped data if it exists
         if (remappingData != nullptr)
           fragLookup.mStructedStorageBuffers[fieldName] = *remappingData;
+        else
+        {
+          remappingData = storageBufferMappings.FindPointer(fieldName);
+          if(remappingData != nullptr)
+            fragLookup.mStructedStorageBuffers[fieldName] = *remappingData;
+        }
         continue;
       }
       // Check if this is a storage image

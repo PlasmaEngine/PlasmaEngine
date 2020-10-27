@@ -41,9 +41,9 @@ LightningShaderIRCore::LightningShaderIRCore()
     mLightningTypes.mRealVectorTypes.PushBack(core.Real4Type);
 
 	// Make all of the matrix types
-	for (size_t y = 2; y <= 4; ++y)
+	for (u32 y = 2; y <= 4; ++y)
 	{
-	for (size_t x = 2; x <= 4; ++x)
+	for (u32 x = 2; x <= 4; ++x)
 	{
         Lightning::BoundType* basisType = mLightningTypes.mRealVectorTypes[x - 1];
         String matrixName = BuildString("Real", ToString(y), "x", ToString(x));

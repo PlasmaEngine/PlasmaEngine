@@ -389,15 +389,16 @@ void LightningShaderSpirVSettings::AddUniformBufferDescription(UniformBufferDesc
   mUniformBufferDescriptions.PushBack(description);
 }
 
-void LightningShaderSpirVSettings::AutoSetDefaultUniformBufferDescription(int descriptorSetId, StringParam debugName)
+void LightningShaderSpirVSettings::AutoSetDefaultUniformBufferDescription(u32 descriptorSetId, StringParam debugName)
 {
   ReturnIf(mFinalized, , "Cannot set built-in names once finalized");
 
-  SetDefaultUniformBufferDescription(mUniformBufferDescriptions.Size(), descriptorSetId, debugName);
+  u32 bindingId = static_cast<u32>(mUniformBufferDescriptions.Size());
+  SetDefaultUniformBufferDescription(bindingId, descriptorSetId, debugName);
 }
 
-void LightningShaderSpirVSettings::SetDefaultUniformBufferDescription(int bindingId,
-                                                                  int descriptorSetId,
+void LightningShaderSpirVSettings::SetDefaultUniformBufferDescription(u32 bindingId,
+                                                                  u32 descriptorSetId,
                                                                   StringParam debugName)
 {
   ReturnIf(mFinalized, , "Cannot set built-in names once finalized");

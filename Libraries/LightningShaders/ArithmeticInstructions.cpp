@@ -284,9 +284,9 @@ void RegisterArithmeticOps(LightningSpirVFrontEnd* translator, LightningShaderIR
   }
 
   // Register all real matrix instructions.
-  for (size_t y = 2; y <= 4; ++y)
+  for (u32 y = 2; y <= 4; ++y)
   {
-    for (size_t x = 2; x <= 4; ++x)
+    for (u32 x = 2; x <= 4; ++x)
     {
       Lightning::BoundType* lightningType = types.GetMatrixType(y, x);
       String lightningTypeName = lightningType->ToString();
@@ -303,7 +303,7 @@ void RegisterArithmeticOps(LightningSpirVFrontEnd* translator, LightningShaderIR
       // Iterate over all of the other matrix dimensions to make the
       // multiplication functions (e.g. Real2x3 * real3x2, Real2x3 * Real3x3,
       // etc...)
-      for (size_t z = 2; z <= 4; ++z)
+      for (u32 z = 2; z <= 4; ++z)
       {
         Lightning::BoundType* rhsMatrixType = types.GetMatrixType(x, z);
         mathTypeResolver.RegisterFunctionResolver(

@@ -26,7 +26,7 @@ bool BaseSpirVOptimizerPass::RunOptimizer(int primaryPass,
   CreateOptimizerOptions(options, primaryPass, flags);
 
   // Construct spirv binary data from out byte stream
-  uint32_t wordCount = inputByteStream.WordCount();
+  size_t wordCount = inputByteStream.WordCount();
   uint32_t* code = (uint32_t*)inputByteStream.Data();
   spv_const_binary_t binary{code, wordCount};
 
@@ -143,7 +143,7 @@ bool SpirVValidatorPass::RunTranslationPass(ShaderTranslationPassResult& inputDa
   spv_validator_options options = spvValidatorOptionsCreate();
 
   // Construct spirv binary data from out byte stream
-  uint32_t wordCount = inputData.mByteStream.WordCount();
+  size_t wordCount = inputData.mByteStream.WordCount();
   uint32_t* code = (uint32_t*)inputData.mByteStream.Data();
   spv_const_binary_t binary{code, wordCount};
 

@@ -1,4 +1,5 @@
 // MIT Licensed (see LICENSE.md).
+// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 #include "ShaderErrors.hpp"
@@ -170,6 +171,8 @@ BoundType* InstantiateGeometryStreamMover(LibraryBuilder& builder,
 LightningDefineStaticLibrary(ShaderIntrinsicsLibrary)
 {
   builder.CreatableInScriptDefault = false;
+
+  LightningInitializeType(UnsignedInt);
 
   // BoundType Components
   LightningInitializeType(GeometryStreamUserData);

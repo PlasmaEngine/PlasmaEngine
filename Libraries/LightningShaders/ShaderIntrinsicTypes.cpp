@@ -313,9 +313,9 @@ void AddMathOps(Lightning::LibraryBuilder& builder, Lightning::BoundType* type, 
         builder, type, lightningType, "Select", vectorBoolType, "condition", lightningType, "obj1", lightningType, "obj2");
   }
 
-  for (size_t y = 2; y <= 4; ++y)
+  for (u32 y = 2; y <= 4; ++y)
   {
-    for (size_t x = 2; x <= 4; ++x)
+    for (u32 x = 2; x <= 4; ++x)
     {
       Lightning::BoundType* lightningType = types.GetMatrixType(y, x);
 
@@ -451,6 +451,11 @@ ComputeFragmentUserData::ComputeFragmentUserData()
   mLocalSizeX = 1;
   mLocalSizeY = 1;
   mLocalSizeZ = 1;
+}
+
+LightningDefineType(UnsignedInt, builder, type)
+{
+  LightningBindDefaultCopyDestructor();
 }
 
 } // namespace Lightning

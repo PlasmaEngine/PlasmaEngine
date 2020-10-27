@@ -138,9 +138,9 @@ public:
   void AddField(Lightning::BoundType* type, StringParam fieldName);
 
   /// The register id that this buffer will be bound to.
-  int mBindingId;
+  u32 mBindingId;
   /// The descriptor set (hlsl: space) for this buffer.
-  int mDescriptorSetId;
+  u32 mDescriptorSetId;
   /// Debug name to emit this buffer with.
   String mDebugName;
   /// The fields that belong to this buffer.
@@ -297,9 +297,9 @@ public:
   void AddUniformBufferDescription(UniformBufferDescription& description);
   /// Sets the default uniform buffer description to the last available binding
   /// id (based upon number bound).
-  void AutoSetDefaultUniformBufferDescription(int descriptorSetId = 0, StringParam debugName = "Material");
+  void AutoSetDefaultUniformBufferDescription(u32 descriptorSetId = 0, StringParam debugName = "Material");
   /// Sets the default uniform buffer description values.
-  void SetDefaultUniformBufferDescription(int bindingId, int descriptorSetId, StringParam debugName);
+  void SetDefaultUniformBufferDescription(u32 bindingId, u32 descriptorSetId, StringParam debugName);
   /// Checks if the given field matches any uniform constant buffer
   /// for the given fragment type. Used for attribute validation.
   bool IsValidUniform(FragmentType::Enum fragmentType, StringParam fieldType, StringParam fieldName);

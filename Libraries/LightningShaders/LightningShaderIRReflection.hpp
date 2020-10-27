@@ -19,21 +19,21 @@ struct ShaderResourceReflectionData
   String mTypeName;
   /// If this is a member within a struct, this is the offset in bytes from the
   /// start of the parent struct that the memory of this object starts at.
-  size_t mOffsetInBytes;
+  u32 mOffsetInBytes;
   /// The size of this object in bytes.
-  size_t mSizeInBytes;
+  u32 mSizeInBytes;
   /// What descriptor set this object is in. Currently always set to 0.
-  int mDescriptorSet;
+  u32 mDescriptorSet;
   /// The binding index of this object (if applicable). This can be used to
   /// directly set a variable without going through an individual api's
   /// reflection.
-  int mBinding;
+  u32 mBinding;
   /// The bound location of this object (if applicable)
-  int mLocation;
+  u32 mLocation;
   /// If this is a matrix, the stride represents the offset of each column of
   /// the matrix. (e.g. Real3x3 has a stride of 16 because each Real3 still has
   /// to be aligned to Real4 boundaries).
-  int mStride;
+  u32 mStride;
 };
 
 /// Represents one top-level resource in a shader stage. This could be an input
@@ -48,7 +48,7 @@ struct ShaderStageResource
   /// previous translation stage had a member variable named "MyVariable" then
   /// the location of the member variable can be found with this map which can
   /// be used to find the new name of said variable.
-  HashMap<String, int> mLookupMap;
+  HashMap<String, size_t> mLookupMap;
 };
 
 /// A collection of all of the reflection data for the interface of one shader

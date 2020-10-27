@@ -317,16 +317,16 @@ void TranslateMatrixFullConstructor(LightningSpirVFrontEnd* translator,
   // of the arguments have been created
   LightningShaderIROp* matrixConstructOp =
       translator->BuildIROpNoBlockAdd(OpType::OpCompositeConstruct, matrixType, context);
-  for (size_t i = 0; i < matrixType->mComponents; ++i)
+  for (u32 i = 0; i < matrixType->mComponents; ++i)
   {
     // Create each vector type but delay add it for the same reason as the
     // matrix
     LightningShaderIROp* componentConstructOp =
         translator->BuildIROpNoBlockAdd(spv::OpCompositeConstruct, componentType, context);
-    for (size_t j = 0; j < componentType->mComponents; ++j)
+    for (u32 j = 0; j < componentType->mComponents; ++j)
     {
       // Walk the given parameter and add it the the vector
-      int argIndex = i * componentType->mComponents + j;
+      u32 argIndex = i * componentType->mComponents + j;
       ILightningShaderIR* param = translator->WalkAndGetValueTypeResult(fnCallNode->Arguments[argIndex], context);
       componentConstructOp->mArguments.PushBack(param);
     }
@@ -605,19 +605,19 @@ void ResolverVectorSwizzleSetter(LightningSpirVFrontEnd* translator,
   // vector.
 
   // Keep track of how many components this vector has
-  int instanceComponentCount = instanceValue->mResultType->mComponents;
+  u32 instanceComponentCount = instanceValue->mResultType->mComponents;
   // Hard-coded max of 4 (vectors cannot be bigger)
-  int indices[4] = {0, 1, 2, 3};
+  u32 indices[4] = {0, 1, 2, 3};
 
-  for (size_t i = 0; i < memberName.SizeInBytes(); ++i)
+  for(u32 i = 0; i < static_cast<u32>(memberName.SizeInBytes()); ++i)
   {
     byte memberValue = *(memberName.Data() + i);
-    int index = (memberValue - 'X' + 4) % 4;
+    u32 index = (memberValue - 'X' + 4) % 4;
     indices[index] = i + instanceComponentCount;
   }
 
   // Actually create all of the arguments (have to create literals)
-  for (size_t i = 0; i < (size_t)instanceComponentCount; ++i)
+  for (u32 i = 0; i < instanceComponentCount; ++i)
   {
     LightningShaderIRConstantLiteral* literal = translator->GetOrCreateConstantIntegerLiteral(indices[i]);
     shuffleOp->mArguments.PushBack(literal);
@@ -976,7 +976,7 @@ void ResolveColor(LightningSpirVFrontEnd* translator,
 
   // Composite construct the color
   LightningShaderIROp* constructOp = translator->BuildIROpNoBlockAdd(OpType::OpCompositeConstruct, resultType, context);
-  for (size_t i = 0; i < 4; ++i)
+  for (uint i = 0; i < 4; ++i)
   {
     Lightning::Any constantLiteral(propertyValue[i]);
     ILightningShaderIR* component = translator->GetConstant(componentType, constantLiteral, context);

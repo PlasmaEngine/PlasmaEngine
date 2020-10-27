@@ -7,9 +7,10 @@ namespace Plasma
 TypeDependencyCollector::TypeDependencyCollector(LightningShaderIRLibrary* owningLibrary)
 {
   mOwningLibrary = owningLibrary;
-  mCapabilities.InsertOrIgnore(spv::CapabilityLinkage);
+  //This can't always be on in vulkan. Figure out how to experiment with linkage later.
+  //mCapabilities.InsertOrIgnore(spv::CapabilityLinkage);
   mCapabilities.InsertOrIgnore(spv::CapabilityShader);
-  // @JoshD: Parse from spirv grammar later. Just prototyping now.
+  //Parse from spirv grammar later. Just prototyping now.
   mRequiredCapabilities[spv::OpImageQuerySize] = spv::CapabilityImageQuery;
   mRequiredCapabilities[spv::OpImageQuerySizeLod] = spv::CapabilityImageQuery;
   mRequiredCapabilities[spv::OpImageQueryLod] = spv::CapabilityImageQuery;
@@ -24,7 +25,7 @@ void TypeDependencyCollector::Collect(LightningShaderIRType* type)
   if (mReferencedTypes.ContainsKey(type))
     return;
 
-  // @JoshD: Value types should always be visited before pointers...
+  //Value types should always be visited before pointers...
   if (!mReferencedTypes.ContainsKey(type->mDereferenceType))
     Collect(type->mDereferenceType);
 

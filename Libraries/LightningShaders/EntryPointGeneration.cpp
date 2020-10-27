@@ -85,7 +85,8 @@ LightningShaderIROp* ShaderInterfaceStruct::GetFieldPointerByIndex(LightningShad
                                                                BasicBlock* block,
                                                                spv::StorageClass storageClass)
 {
-  return entryPointGeneration->GetMemberInstanceFrom(block, instance, index, storageClass);
+  u32 sourceOffset = static_cast<u32>(index);
+  return entryPointGeneration->GetMemberInstanceFrom(block, instance, sourceOffset, storageClass);
 }
 
 void ShaderInterfaceStruct::DeclareInterfaceType(EntryPointGeneration* entryPointGeneration,
@@ -108,7 +109,7 @@ void ShaderInterfaceStruct::DeclareInterfaceType(EntryPointGeneration* entryPoin
   translator->MakeShaderTypeMeta(blockType, nullptr);
   blockType->mDebugResultName = fullBlockName;
 
-  for (size_t i = 0; i < fieldList.Size(); ++i)
+  for(u32 i = 0; i < static_cast<u32>(fieldList.Size()); ++i)
   {
     // Create the shader interface field from the interface group field
     ShaderInterfaceField& interfaceField = mFields.PushBack();
@@ -159,8 +160,9 @@ void ShaderInterfaceStruct::DecorateInterfaceType(EntryPointGeneration* entryPoi
   // member itself)
   for (size_t i = 0; i < fieldList.Size(); ++i)
   {
+    u32 u32literal = static_cast<u32>(i);
     InterfaceInfoGroup::FieldInfo& fieldInfo = fieldList[i];
-    LightningShaderIRConstantLiteral* memberIndexLiteral = translator->GetOrCreateConstantIntegerLiteral(i);
+    LightningShaderIRConstantLiteral* memberIndexLiteral = translator->GetOrCreateConstantIntegerLiteral(u32literal);
 
     entryPointGeneration->WriteMemberDecorations(fieldInfo.mDecorations, decorationBlock, mType, memberIndexLiteral);
   }
@@ -220,9 +222,9 @@ void ShaderInterfaceStruct::CopyInterfaceType(EntryPointGeneration* entryPointGe
       if (!currentType->mMemberNamesToIndex.ContainsKey(linkedFieldName))
         continue;
 
-      int blockMemberIndex = fieldInfo.mFieldIndex;
+      u32 blockMemberIndex = fieldInfo.mFieldIndex;
       LightningShaderIRType* blockFieldMemberType = fieldInfo.mFieldType;
-      int memberIndex = currentType->mMemberNamesToIndex.FindValue(linkedFieldName, -1);
+      u32 memberIndex = currentType->FindMemberIndex(linkedFieldName);
       LightningShaderIRType* memberType = currentType->GetSubType(memberIndex);
       LightningShaderIRType* memberPtrType = memberType->mPointerType;
 
@@ -410,7 +412,7 @@ void ShaderInterfaceGlobals::CopyInterfaceType(EntryPointGeneration* entryPointG
       if (!currentType->mMemberNamesToIndex.ContainsKey(linkedFieldName))
         continue;
 
-      int memberIndex = currentType->mMemberNamesToIndex.FindValue(linkedFieldName, -1);
+      int memberIndex = currentType->FindMemberIndex(linkedFieldName);
       LightningShaderIRType* memberType = currentType->GetSubType(memberIndex);
       LightningShaderIRType* memberPtrType = memberType->mPointerType;
 
@@ -767,6 +769,10 @@ void EntryPointGeneration::Clear()
   DeleteObjectsIn(mBuiltIns);
   DeleteObjectsIn(mInputs);
   DeleteObjectsIn(mOutputs);
+
+  mUniqueTypes.Clear();
+  mUniqueOps.Clear();
+  mUsedBindingIds.Clear();
 }
 
 void EntryPointGeneration::CreateEntryPointFunction(Lightning::GenericFunctionNode* node,
@@ -1808,6 +1814,9 @@ EntryPointGeneration::ProcessUniformBlock(LightningShaderIRFunction* function,
     reflectionData.mInstanceName = uniformGroup.mName;
   }
 
+  // Mark that we've used this binding id
+  mUsedBindingIds.Insert(uniformBlock->mBindingId);
+
   // If this is a user defined buffer then the entire buffer must match all at
   // once. This means we just copy all fields from the user defined description.
   if (!isDefaultBuffer)
@@ -1931,7 +1940,7 @@ void EntryPointGeneration::CopyField(BasicBlock* targetFnBlock,
     // class on the type.
     LightningShaderIROp* sourceValue =
         translator->BuildIROp(targetFnBlock, OpType::OpLoad, sourceValueType, source, context);
-    for (size_t i = 0; i < sourceValueType->mComponents; ++i)
+    for (u32 i = 0; i < sourceValueType->mComponents; ++i)
     {
       // Extract from the source (by value)
       LightningShaderIRConstantLiteral* indexLiteral = translator->GetOrCreateConstantIntegerLiteral(i);
@@ -2057,7 +2066,7 @@ void EntryPointGeneration::CopyFromInterfaceType(BasicBlock* block,
 
 LightningShaderIROp* EntryPointGeneration::GetMemberInstanceFrom(BasicBlock* block,
                                                              LightningShaderIROp* source,
-                                                             int sourceOffset,
+                                                             u32 sourceOffset,
                                                              spv::StorageClass sourceStorageClass)
 {
   LightningSpirVFrontEnd* translator = mTranslator;
@@ -2093,9 +2102,9 @@ LightningShaderIROp* EntryPointGeneration::GetNamedMemberInstanceFrom(BasicBlock
 
   // Find the member index by name
   LightningShaderIRType* sourceValueType = source->mResultType->mDereferenceType;
-  int sourceOffset = sourceValueType->mMemberNamesToIndex.FindValue(memberName, -1);
+  u32 sourceOffset = sourceValueType->FindMemberIndex(memberName);
   // If this member didn't exist then we can't get the member so return null
-  if (sourceOffset == -1)
+  if (sourceOffset == LightningShaderIRType::cInvalidIndex)
     return nullptr;
 
   // Otherwise, return the member found via index
@@ -2111,9 +2120,9 @@ LightningShaderIROp* EntryPointGeneration::GetNamedMemberInstanceFrom(BasicBlock
 
   // Find the member index by name
   LightningShaderIRType* sourceValueType = source->mResultType->mDereferenceType;
-  int sourceOffset = sourceValueType->mMemberKeysToIndex.FindValue(fieldKey, -1);
+  u32 sourceOffset = sourceValueType->FindMemberIndex(fieldKey);
   // If this member didn't exist then we can't get the member so return null
-  if (sourceOffset == -1)
+  if (sourceOffset == LightningShaderIRType::cInvalidIndex)
     return nullptr;
 
   // Otherwise, return the member found via index
@@ -2144,7 +2153,7 @@ void EntryPointGeneration::AddOffsetDecorations(InterfaceInfoGroup& infoGroup)
   LightningSpirVFrontEnd* translator = mTranslator;
   LightningSpirVFrontEndContext* context = mContext;
 
-  size_t currentByteOffset = 0;
+  u32 currentByteOffset = 0;
   InterfaceInfoGroup::FieldList& fieldList = infoGroup.mFields;
   for (size_t i = 0; i < fieldList.Size(); ++i)
   {
@@ -2155,8 +2164,8 @@ void EntryPointGeneration::AddOffsetDecorations(InterfaceInfoGroup& infoGroup)
 
     // Different types have different alignment requirements.
     // Roughly speaking, alignment is 1 float, 2 float, and 4 float.
-    size_t requiredAlignment = memberType->GetByteAlignment();
-    size_t requiredSize = memberType->GetByteSize();
+    u32 requiredAlignment = memberType->GetByteAlignment();
+    u32 requiredSize = memberType->GetByteSize();
     // Compute the starting byte offset so it lines up with this type's required
     // alignment
     currentByteOffset = GetSizeAfterAlignment(currentByteOffset, requiredAlignment);
@@ -2199,7 +2208,7 @@ void EntryPointGeneration::AddMemberTypeDecorations(LightningShaderIRType* membe
     // @JoshD: Hardcode to matrix/vector/scalar types for now.
     // Eventually could be bigger if structs are allowed to be bound as
     // uniforms.
-    int stride = GetStride(elementType, 16.0f);
+    u32 stride = GetStride(elementType, 16.0f);
     fieldInfo.mTypeDecorations.PushBack(InterfaceInfoGroup::DecorationParam(spv::DecorationArrayStride, stride));
     memberReflection.mStride = stride;
     // Recursively add any element type decorations (e.g. an array of matrices)
@@ -2211,10 +2220,10 @@ void EntryPointGeneration::AddVertexLocationDecorations(InterfaceInfoGroup& info
 {
   VertexDefinitionDescription& vertexDefinitions = mTranslator->mSettings->mVertexDefinitions;
 
-  HashMap<ShaderFieldKey, int> vertexDefinitionLocations;
-  int lastVertexDefinitionIndex = vertexDefinitions.mFields.Size();
+  HashMap<ShaderFieldKey, u32> vertexDefinitionLocations;
+  u32 lastVertexDefinitionIndex = static_cast<u32>(vertexDefinitions.mFields.Size());
   // Find the locations of the pre-defined vertex definition settings
-  for (size_t i = 0; i < vertexDefinitions.mFields.Size(); ++i)
+  for (u32 i = 0; i < static_cast<u32>(vertexDefinitions.mFields.Size()); ++i)
   {
     ShaderIRFieldMeta* fieldMeta = vertexDefinitions.mFields[i];
     vertexDefinitionLocations[fieldMeta->MakeFieldKey()] = i;
@@ -2226,15 +2235,16 @@ void EntryPointGeneration::AddVertexLocationDecorations(InterfaceInfoGroup& info
   {
     InterfaceInfoGroup::FieldInfo& fieldInfo = fieldList[i];
 
-    int location;
+    u32 location;
+    constexpr u32 invalidLocation = static_cast<u32>(-1);
     // If this property is in the vertex definition settings then use that id,
     // otherwise just start appending after the last vertex definition id.
-    location = vertexDefinitionLocations.FindValue(fieldInfo.mFieldMeta->MakeFieldKey(), -1);
-    if (location == -1)
+    location = vertexDefinitionLocations.FindValue(fieldInfo.mFieldMeta->MakeFieldKey(), invalidLocation);
+    if (location == invalidLocation)
       location = lastVertexDefinitionIndex++;
 
     fieldInfo.mDecorations.PushBack(InterfaceInfoGroup::DecorationParam(spv::DecorationLocation, location));
-    fieldInfo.mReflectionData.mLocation = i;
+    fieldInfo.mReflectionData.mLocation = static_cast<int>(i);
   }
 }
 
@@ -2243,10 +2253,10 @@ void EntryPointGeneration::AddPixelLocationDecorations(InterfaceInfoGroup& infoG
   Lightning::StringArray& renderTargetNames = mTranslator->mSettings->mRenderTargetNames;
   Lightning::BoundType* renderTargetType = mTranslator->mSettings->mRenderTargetType;
 
-  HashMap<ShaderFieldKey, int> renderTargetLocations;
-  int lastRenderTargetIndex = renderTargetNames.Size();
+  HashMap<ShaderFieldKey, u32> renderTargetLocations;
+  u32 lastRenderTargetIndex = static_cast<u32>(renderTargetNames.Size());
   // Find the locations of the pre-defined render target names
-  for (size_t i = 0; i < renderTargetNames.Size(); ++i)
+  for (u32 i = 0; i < static_cast<u32>(renderTargetNames.Size()); ++i)
   {
     ShaderFieldKey renderTargetKey(renderTargetNames[i], renderTargetType->ToString());
     renderTargetLocations[renderTargetKey] = i;
@@ -2258,15 +2268,16 @@ void EntryPointGeneration::AddPixelLocationDecorations(InterfaceInfoGroup& infoG
   {
     InterfaceInfoGroup::FieldInfo& fieldInfo = fieldList[i];
 
-    int location;
+    u32 location;
+    constexpr u32 invalidLocation = static_cast<u32>(-1);
     // If this property is a valid render target then use that id,
     // otherwise just start appending after the last id (probably doesn't make sense here...).
-    location = renderTargetLocations.FindValue(fieldInfo.mFieldMeta->MakeFieldKey(), -1);
-    if (location == -1)
+    location = renderTargetLocations.FindValue(fieldInfo.mFieldMeta->MakeFieldKey(), invalidLocation);
+    if(location == invalidLocation)
       location = lastRenderTargetIndex++;
 
     fieldInfo.mDecorations.PushBack(InterfaceInfoGroup::DecorationParam(spv::DecorationLocation, location));
-    fieldInfo.mReflectionData.mLocation = i;
+    fieldInfo.mReflectionData.mLocation = static_cast<u32>(i);
   }
 }
 
@@ -2382,9 +2393,6 @@ void EntryPointGeneration::DecorateImagesAndSamplers(TypeDependencyCollector& co
   LightningSpirVFrontEnd* translator = mTranslator;
   LightningSpirVFrontEndContext* context = mContext;
 
-  // Keep track of used sampler and image ids (they can overlap).
-  HashSet<int> samplerIds;
-  HashSet<int> imageIds;
   ShaderStageInterfaceReflection& stageReflectionData = entryPointInfo->mStageReflectionData;
 
   AutoDeclare(range, collector.mReferencedGlobals.All());
@@ -2397,7 +2405,7 @@ void EntryPointGeneration::DecorateImagesAndSamplers(TypeDependencyCollector& co
     String resourceName = globalVarInstance->mDebugResultName;
 
     // Find the correct id for this variable depending on its base type
-    int resourceBindingId = 0;
+    u32 resourceBindingId = 0;
     ShaderStageResource* resourceInfo = nullptr;
     ShaderStageInterfaceReflection::SampledImageRemappings* remappings = nullptr;
     if (baseType == ShaderIRTypeBaseType::Image)
@@ -2412,13 +2420,13 @@ void EntryPointGeneration::DecorateImagesAndSamplers(TypeDependencyCollector& co
       else
         resourceInfo = &stageReflectionData.mImages.PushBack();
 
-      resourceBindingId = FindBindingId(imageIds);
+      resourceBindingId = FindBindingId();
       remappings = &stageReflectionData.mImageRemappings[resourceName];
       remappings->mImageRemappings.PushBack(resourceName);
     }
     else if (baseType == ShaderIRTypeBaseType::Sampler)
     {
-      resourceBindingId = FindBindingId(samplerIds);
+      resourceBindingId = FindBindingId();
       resourceInfo = &stageReflectionData.mSamplers.PushBack();
       remappings = &stageReflectionData.mSamplerRemappings[resourceName];
       remappings->mSamplerRemappings.PushBack(resourceName);
@@ -2427,7 +2435,7 @@ void EntryPointGeneration::DecorateImagesAndSamplers(TypeDependencyCollector& co
     {
       // Sampled images are special as they use an image and sampler id.
       // We need to find an id that is empty in both the sampler and image sets.
-      resourceBindingId = FindBindingId(imageIds, samplerIds);
+      resourceBindingId = FindBindingId();
       resourceInfo = &stageReflectionData.mSampledImages.PushBack();
       remappings = &stageReflectionData.mSampledImageRemappings[resourceName];
       remappings->mSampledImageRemappings.PushBack(resourceName);
@@ -2438,7 +2446,7 @@ void EntryPointGeneration::DecorateImagesAndSamplers(TypeDependencyCollector& co
       continue;
 
     // @JoshD: How should descriptor sets be handled?
-    int descriptorSetId = 0;
+    u32 descriptorSetId = 0;
     // Add the binding and descriptor set decorations to the instance
     BasicBlock* decorationBlock = &entryPointInfo->mDecorations;
     translator->BuildDecorationOp(
@@ -2464,8 +2472,7 @@ void EntryPointGeneration::DecorateRuntimeArrays(TypeDependencyCollector& collec
   LightningSpirVFrontEndContext* context = mContext;
   BasicBlock* decorationBlock = &entryPointInfo->mDecorations;
 
-  int bindingId = 0;
-  int descriptorSetId = 0;
+  u32 descriptorSetId = 0;
   AutoDeclare(range, collector.mReferencedGlobals.All());
   for (; !range.Empty(); range.PopFront())
   {
@@ -2485,10 +2492,10 @@ void EntryPointGeneration::DecorateRuntimeArrays(TypeDependencyCollector& collec
     LightningShaderIRType* elementType = spirvRuntimeArrayType->mParameters[0]->As<LightningShaderIRType>();
 
     // Decorate the instance with the correct binding and descriptor set
+    u32 bindingId = FindBindingId();
     translator->BuildDecorationOp(decorationBlock, globalVarInstance, spv::DecorationBinding, bindingId, context);
     translator->BuildDecorationOp(
         decorationBlock, globalVarInstance, spv::DecorationDescriptorSet, descriptorSetId, context);
-    ++bindingId;
 
     // Decorate the struct wrapper type. This requires
     // marking it as a block and adding the offset of the actual runtime array.
@@ -2525,8 +2532,8 @@ void EntryPointGeneration::AddRuntimeArrayDecorations(BasicBlock* decorationBloc
 
   // Walk over the element type and determine its size and required
   // alignment. Also decorate the type if required.
-  size_t maxAlignment = 0;
-  size_t totalSize = 0;
+  u32 maxAlignment = 0;
+  u32 totalSize = 0;
   switch (elementType->mBaseType)
   {
   // This is a struct, we have to recursively decorate the struct
@@ -2573,7 +2580,7 @@ void EntryPointGeneration::AddRuntimeArrayDecorations(BasicBlock* decorationBloc
   }
   // Compute the stride of this type, making sure to pad out to the correct
   // alignment
-  int stride = GetSizeAfterAlignment(totalSize, maxAlignment);
+  u32 stride = GetSizeAfterAlignment(totalSize, maxAlignment);
   reflectionData.mSizeInBytes = totalSize;
   reflectionData.mStride = stride;
   // Now we can actually decorate the runtime array's rull stride
@@ -2597,19 +2604,19 @@ void EntryPointGeneration::RecursivelyDecorateStructType(BasicBlock* decorationB
 
   ShaderResourceReflectionData& reflectionData = stageResource.mReflectionData;
 
-  size_t maxAlignment = 0;
-  size_t currentByteOffset = 0;
+  u32 maxAlignment = 0;
+  u32 currentByteOffset = 0;
 
   // Walk all parameters in the struct and figure out how to decorate them
-  for (size_t i = 0; i < structType->mParameters.Size(); ++i)
+  for (u32 i = 0; i < static_cast<u32>(structType->mParameters.Size()); ++i)
   {
     // Find the type of the member
     LightningShaderIRType* memberType = structType->mParameters[i]->As<LightningShaderIRType>();
 
     // Different types have different alignment requirements.
     // Roughly speaking, alignment is 1 float, 2 float, and 4 float.
-    size_t requiredSize = memberType->GetByteSize();
-    size_t requiredAlignment = memberType->GetByteAlignment();
+    u32 requiredSize = memberType->GetByteSize();
+    u32 requiredAlignment = memberType->GetByteAlignment();
     maxAlignment = Math::Max(requiredAlignment, maxAlignment);
     currentByteOffset = GetSizeAfterAlignment(currentByteOffset, requiredAlignment);
 
@@ -2629,7 +2636,7 @@ void EntryPointGeneration::RecursivelyDecorateStructType(BasicBlock* decorationB
     {
       // Hardcode stride to size of a vec4 for performance reasons.
       // @JoshD: Maybe make a packing option for this later?
-      int matrixStride = 16;
+      u32 matrixStride = 16;
       translator->BuildMemberDecorationOp(
           decorationBlock, structType, i, spv::DecorationMatrixStride, matrixStride, context);
       translator->BuildMemberDecorationOp(decorationBlock, structType, i, spv::DecorationColMajor, context);
@@ -2653,7 +2660,7 @@ void EntryPointGeneration::RecursivelyDecorateStructType(BasicBlock* decorationB
       // Get the stride of the element type (everything less than
       // 16 bytes has to be padded up to 16 bytes in a fixed array)
       LightningShaderIRType* elementType = memberType->mParameters[0]->As<LightningShaderIRType>();
-      int stride = GetStride(elementType, 16.0f);
+      u32 stride = GetStride(elementType, 16.0f);
       translator->BuildDecorationOp(decorationBlock, memberType, spv::DecorationArrayStride, stride, context);
 
       // Recursively decorate the contained type. If this is a
@@ -2675,35 +2682,21 @@ void EntryPointGeneration::RecursivelyDecorateStructType(BasicBlock* decorationB
   reflectionData.mStride = stride;
 }
 
-int EntryPointGeneration::FindBindingId(HashSet<int>& usedIds)
+u32 EntryPointGeneration::FindBindingId()
 {
   // Find the first unused id in the map
-  int id = 0;
+  u32 id = 0;
   while (true)
   {
-    if (!usedIds.Contains(id))
+    if(!mUsedBindingIds.Contains(id))
     {
-      usedIds.Insert(id);
+      mUsedBindingIds.Insert(id);
       return id;
     }
     ++id;
   }
-}
-
-int EntryPointGeneration::FindBindingId(HashSet<int>& usedIds1, HashSet<int>& usedIds2)
-{
-  // Find the first unused id in both maps
-  int id = 0;
-  while (true)
-  {
-    if (!usedIds1.Contains(id) && !usedIds2.Contains(id))
-    {
-      usedIds1.Insert(id);
-      usedIds2.Insert(id);
-      return id;
-    }
-    ++id;
-  }
+  Error("This should never happen");
+  return 0;
 }
 
 void EntryPointGeneration::CopyReflectionDataToEntryPoint(EntryPointInfo* entryPointInfo,
@@ -2766,7 +2759,7 @@ void EntryPointGeneration::CopyReflectionDataGlobals(Array<ShaderStageResource>&
 
 void EntryPointGeneration::CreateShaderInterfaceField(ShaderInterfaceField& interfaceField,
                                                       InterfaceInfoGroup& interfaceGroup,
-                                                      int index)
+                                                      u32 index)
 {
   // @JoshD: Potentially make the interface group store shader interface fields
   // at some point?
@@ -2901,7 +2894,7 @@ void EntryPointGeneration::PerspectiveTransformAppendVertexCallback(AppendCallba
     return;
 
   // Find the perspective position field pointer on the output vertex type
-  int* index = appendVertexDataType->mMemberKeysToIndex.FindPointer(perspectivePositionFieldMeta->MakeFieldKey());
+  u32* index = appendVertexDataType->mMemberKeysToIndex.FindPointer(perspectivePositionFieldMeta->MakeFieldKey());
 
   // Find the api perspective position field pointer from the output interface
   // types (should find the hardware built-in interface block)

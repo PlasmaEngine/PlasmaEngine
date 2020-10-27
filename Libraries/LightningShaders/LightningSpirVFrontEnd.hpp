@@ -61,7 +61,7 @@ public:
                                         spv::StorageClass pointerStorageClass);
   LightningShaderIRType* MakeCoreType(LightningShaderIRLibrary* shaderLibrary,
                                   ShaderIRTypeBaseType::Enum baseType,
-                                  size_t components,
+                                  u32 components,
                                   LightningShaderIRType* componentType,
                                   Lightning::BoundType* lightningType,
                                   bool makePointerType = true);
@@ -310,6 +310,7 @@ public:
   ILightningShaderIR* PerformTypeCast(Lightning::TypeCastNode*& node, OpType opType, LightningSpirVFrontEndContext* context);
 
   LightningShaderIROp* GetIntegerConstant(int value, LightningSpirVFrontEndContext* context);
+  LightningShaderIROp* GetIntegerConstant(u32 value, LightningSpirVFrontEndContext* context);
   LightningShaderIROp* GetConstant(LightningShaderIRType* type, StringParam value, LightningSpirVFrontEndContext* context);
   LightningShaderIROp* GetConstant(LightningShaderIRType* type, Lightning::Any value, LightningSpirVFrontEndContext* context);
   LightningShaderIROp* ConstructCompositeFromScalar(BasicBlock* block,
@@ -406,20 +407,21 @@ public:
   LightningShaderIROp* BuildDecorationOp(BasicBlock* block,
                                      ILightningShaderIR* decorationTarget,
                                      spv::Decoration decorationType,
-                                     int decorationValue,
+                                     u32 decorationValue,
                                      LightningSpirVFrontEndContext* context);
   LightningShaderIROp* BuildMemberDecorationOp(BasicBlock* block,
                                            ILightningShaderIR* decorationTarget,
-                                           int memberOffset,
+                                           u32 memberOffset,
                                            spv::Decoration decorationType,
                                            LightningSpirVFrontEndContext* context);
   LightningShaderIROp* BuildMemberDecorationOp(BasicBlock* block,
                                            ILightningShaderIR* decorationTarget,
-                                           int memberOffset,
+                                           u32 memberOffset,
                                            spv::Decoration decorationType,
-                                           int decorationValue,
+                                           u32 decorationValue,
                                            LightningSpirVFrontEndContext* context);
   LightningShaderIRConstantLiteral* GetOrCreateConstantIntegerLiteral(int value);
+  LightningShaderIRConstantLiteral* GetOrCreateConstantIntegerLiteral(u32 value);
   LightningShaderIRConstantLiteral* GetOrCreateConstantLiteral(Lightning::Any value);
   LightningShaderIROp* BuildOpVariable(LightningShaderIRType* resultType, LightningSpirVFrontEndContext* context);
   LightningShaderIROp* BuildOpVariable(BasicBlock* block,
