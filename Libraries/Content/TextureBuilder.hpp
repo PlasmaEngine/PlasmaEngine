@@ -84,6 +84,12 @@ public:
   void BuildContent(BuildOptions& buildOptions) override;
   void Rename(StringParam newName) override;
 
+  bool AlbedoString(String name);
+  bool NormalString(String name);
+  bool RoughnessString(String name);
+  bool MetallicString(String name);
+  bool AOString(String name);
+
   // Properties
 
   /// Name for the Texture resource.

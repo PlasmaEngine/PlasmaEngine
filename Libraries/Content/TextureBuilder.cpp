@@ -147,19 +147,42 @@ void TextureBuilder::Generate(ContentInitializer& initializer)
     mAddressingX = TextureAddressing::Clamp;
     mAddressingY = TextureAddressing::Clamp;
   }
-  else if (filename.Contains("albedo"))
+  else if (AlbedoString(filename))
   {
     mCompression = TextureCompression::BC1;
     mGammaCorrection = true;
   }
-  else if (filename.Contains("normal"))
+  else if (NormalString(filename))
     mCompression = TextureCompression::BC5;
-  else if ((filename.Contains("metallic") || filename.Contains("metalness")) && filename.Contains("roughness"))
+  else if (MetallicString(filename) && RoughnessString(filename))
     mCompression = TextureCompression::BC5;
-  else if (filename.Contains("metallic") || filename.Contains("metalness"))
+  else if (MetallicString(filename) || RoughnessString(filename) || AOString(filename))
     mCompression = TextureCompression::BC4;
-  else if (filename.Contains("roughness"))
-    mCompression = TextureCompression::BC4;
+}
+
+bool TextureBuilder::AlbedoString(String name)
+{
+  return name.Contains("albedo") || name.Contains("a") || name.Contains("diff") || name.Contains("diffuse");
+}
+
+bool TextureBuilder::NormalString(String name)
+{
+  return name.Contains("normal") || name.Contains("norm") || name.Contains("n");
+}
+
+bool TextureBuilder::MetallicString(String name)
+{
+  return name.Contains("metallic") || name.Contains("metalness") || name.Contains("m") || name.Contains("mtl") || name.Contains("metal");
+}
+
+bool TextureBuilder::RoughnessString(String name)
+{
+  return name.Contains("roughness") || name.Contains("rough") || name.Contains("r");
+}
+
+bool TextureBuilder::AOString(String name)
+{
+  return name.Contains("ao") || name.Contains("occlusion");
 }
 
 bool TextureBuilder::NeedsBuilding(BuildOptions& options)
