@@ -6,7 +6,7 @@
 struct HeightMapPBRMap
 {
     [FragmentInput][StageInput] var Uv : Real2;
-    [FragmentInput] var HeightMapTextureWeights : Real4;
+    [PropertyInput] var HeightMapTextureWeights : Real4;
     [FragmentInput][StageInput] var HeightMapWeights : SampledImage2d;
 
     [Input] var UVScale : Real2 = Real2(1,1);
@@ -96,7 +96,7 @@ struct HeightMapPBRMap
         }
 
         // Mix albedo values based on the painted weights
-        this.Albedo += material0_Diffuse * weights.X;
+        this.Albedo = material0_Diffuse * weights.X;
         this.Albedo += material1_Diffuse * weights.Y;
         this.Albedo += material2_Diffuse * weights.Z;
         this.Albedo += material3_Diffuse * weights.W;
