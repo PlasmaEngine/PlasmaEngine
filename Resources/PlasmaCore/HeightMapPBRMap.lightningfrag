@@ -6,7 +6,6 @@
 struct HeightMapPBRMap
 {
     [FragmentInput][StageInput] var Uv : Real2;
-    [PropertyInput] var HeightMapTextureWeights : Real4;
     [FragmentInput][StageInput] var HeightMapWeights : SampledImage2d;
 
     [Input] var UVScale : Real2 = Real2(1,1);
@@ -27,6 +26,7 @@ struct HeightMapPBRMap
     [Input] var Material0_Normal : SampledImage2d;
     [Input] var Material0_Roughness : SampledImage2d;
     [Input] var Material0_Metallic : SampledImage2d;
+    [Input] var Albedo0Value : Real4 = Real4.One;
     [Input] var Roughness0Value : Real;
     [Input] var Metallic0Value : Real;
 
@@ -34,6 +34,7 @@ struct HeightMapPBRMap
     [Input] var Material1_Normal : SampledImage2d;
     [Input] var Material1_Roughness : SampledImage2d;
     [Input] var Material1_Metallic : SampledImage2d;
+    [Input] var Albedo1Value : Real4 = Real4.One;
     [Input] var Roughness1Value : Real;
     [Input] var Metallic1Value : Real;
     
@@ -41,6 +42,7 @@ struct HeightMapPBRMap
     [Input] var Material2_Normal : SampledImage2d;
     [Input] var Material2_Roughness : SampledImage2d;
     [Input] var Material2_Metallic : SampledImage2d;
+    [Input] var Albedo2Value : Real4 = Real4.One;
     [Input] var Roughness2Value : Real;
     [Input] var Metallic2Value : Real;
     
@@ -48,6 +50,7 @@ struct HeightMapPBRMap
     [Input] var Material3_Normal : SampledImage2d;
     [Input] var Material3_Roughness : SampledImage2d;
     [Input] var Material3_Metallic : SampledImage2d;
+    [Input] var Albedo3Value : Real4 = Real4.One;
     [Input] var Roughness3Value : Real;
     [Input] var Metallic3Value : Real;
 
@@ -64,10 +67,10 @@ struct HeightMapPBRMap
         var bitangent = Math.Normalize(this.ViewBitangent);
         
         var scaledUV = this.Uv * this.UVScale;
-        var material0_Diffuse = this.Material0_Diffuse.Sample(scaledUV).XYZ;
-        var material1_Diffuse = this.Material1_Diffuse.Sample(scaledUV).XYZ;
-        var material2_Diffuse = this.Material2_Diffuse.Sample(scaledUV).XYZ;
-        var material3_Diffuse = this.Material3_Diffuse.Sample(scaledUV).XYZ;
+        var material0_Diffuse = this.Material0_Diffuse.Sample(scaledUV).XYZ * this.Albedo0Value.XYZ * 2;
+        var material1_Diffuse = this.Material1_Diffuse.Sample(scaledUV).XYZ * this.Albedo1Value.XYZ * 2;
+        var material2_Diffuse = this.Material2_Diffuse.Sample(scaledUV).XYZ * this.Albedo2Value.XYZ * 2;
+        var material3_Diffuse = this.Material3_Diffuse.Sample(scaledUV).XYZ * this.Albedo3Value.XYZ * 2;
         
         var material0_Normal = this.Material0_Normal.Sample(scaledUV).XY;
         var material1_Normal = this.Material1_Normal.Sample(scaledUV).XY;
@@ -86,14 +89,7 @@ struct HeightMapPBRMap
           
         var weights = Real4(0);  
 
-        if(Math.Length(this.HeightMapTextureWeights) > 0.01)
-        {
-            weights = this.HeightMapTextureWeights;
-        }
-        else
-        {
-            weights = this.HeightMapWeights.Sample(this.Uv);
-        }
+        weights = this.HeightMapWeights.Sample(this.Uv);
 
         // Mix albedo values based on the painted weights
         this.Albedo = material0_Diffuse * weights.X;
