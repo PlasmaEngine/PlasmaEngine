@@ -162,27 +162,27 @@ void TextureBuilder::Generate(ContentInitializer& initializer)
 
 bool TextureBuilder::AlbedoString(String name)
 {
-  return name.Contains("albedo") || name.Contains("a") || name.Contains("diff") || name.Contains("diffuse");
+  return name.Contains("albedo") || name.Contains("_a") || name.Contains("diff") || name.Contains("diffuse");
 }
 
 bool TextureBuilder::NormalString(String name)
 {
-  return name.Contains("normal") || name.Contains("norm") || name.Contains("n");
+  return name.Contains("normal") || name.Contains("norm") || name.Contains("_n");
 }
 
 bool TextureBuilder::MetallicString(String name)
 {
-  return name.Contains("metallic") || name.Contains("metalness") || name.Contains("m") || name.Contains("mtl") || name.Contains("metal");
+  return name.Contains("metallic") || name.Contains("metalness") || name.Contains("_m") || name.Contains("mtl") || name.Contains("metal");
 }
 
 bool TextureBuilder::RoughnessString(String name)
 {
-  return name.Contains("roughness") || name.Contains("rough") || name.Contains("r");
+  return name.Contains("roughness") || name.Contains("rough") || name.Contains("_r");
 }
 
 bool TextureBuilder::AOString(String name)
 {
-  return name.Contains("ao") || name.Contains("occlusion");
+  return name.Contains("_ao") || name.Contains("occlusion");
 }
 
 bool TextureBuilder::NeedsBuilding(BuildOptions& options)
