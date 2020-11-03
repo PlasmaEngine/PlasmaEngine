@@ -54,14 +54,10 @@ class DeferredRenderer : LightningComponent
     var resources = RenderResources();
 
     var viewportSize = event.ViewportSize;
-    resources.FinalOutput = event.GetFinalTarget(viewportSize, TextureFormat.RGBA8);
     
-    // Geometry pass
-    resources.GBufferNormalDepthRoughnessRT = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
-    resources.GBufferAlbedoMetallicSpec = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
-    resources.GBufferEmissiveAO = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
-    resources.Depth = event.GetRenderTarget(viewportSize, TextureFormat.Depth24Stencil8);
+    resources.ResizeBuffers(event);
     
+        
     var geometryPassSettings = RenderSettings();
     geometryPassSettings.MultiRenderTarget.ColorTarget0 = resources.GBufferNormalDepthRoughnessRT;
     geometryPassSettings.MultiRenderTarget.ColorTarget1 = resources.GBufferAlbedoMetallicSpec;

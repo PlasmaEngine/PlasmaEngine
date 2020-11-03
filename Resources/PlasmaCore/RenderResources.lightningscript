@@ -2,11 +2,36 @@
 
 class RenderResources
 {
+
     var GBufferNormalDepthRoughnessRT : RenderTarget;
     var GBufferAlbedoMetallicSpec : RenderTarget;
     var GBufferEmissiveAO : RenderTarget;
     
     var Depth : RenderTarget;
+    var VelPosBuffer : RenderTarget;
+    
+    var LastFrame : RenderTarget;
     
     var FinalOutput : RenderTarget;
+    
+    function ResizeBuffers(event : RenderTasksEvent)
+    {
+        var viewportSize = event.ViewportSize;
+        
+        this.FinalOutput = event.GetFinalTarget(viewportSize, TextureFormat.RGBA8);
+        
+        this.GBufferNormalDepthRoughnessRT = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
+        this.GBufferAlbedoMetallicSpec = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
+        this.GBufferEmissiveAO = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
+        
+        this.Depth = event.GetRenderTarget(viewportSize, TextureFormat.Depth24Stencil8);
+        
+        if(this.VelPosBuffer == null)
+            this.VelPosBuffer = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
+            
+        if(this.LastFrame == null)
+            this.LastFrame = event.GetRenderTarget(viewportSize, TextureFormat.RGBA8);
+            
+        
+    }
 }
