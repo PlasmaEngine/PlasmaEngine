@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningScriptBuilder 
+	{
+		var Name = "PostProcessSSR"
+		var ResourceId = 0x5f7345d578b9e90e
+	}
+}

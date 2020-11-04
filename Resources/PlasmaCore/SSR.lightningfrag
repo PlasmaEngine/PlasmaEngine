@@ -1,0 +1,204 @@
+// MIT Licensed (see LICENSE.md).
+
+// Shader input attribute definitions
+// [AppBuiltInInput] Input comes from predefined data given by the graphics engine
+// [StageInput]      Input comes from the previous hardware stage (mesh -> vertex -> geometry -> pixel)
+// [FragmentInput]   Input comes from a previous fragment in the same stage
+// [PropertyInput]   Input comes from this fragment
+// [Input]           Input auto resolves from any of the previous in the order
+//                   [FragmentInput][StageInput][AppBuiltInInput][PropertyInput]
+//
+// Pixel fragment Example:
+// [FragmentInput][StageInput] var ViewNormal : Real3;
+// Input will come from a previous pixel fragment that outputs ViewNormal
+// otherwise, input will come from the vertex shader
+
+[Pixel][PostProcess]
+struct SSRApply
+{
+    [StageInput] var Uv : Real2;
+    
+    [Input] var SSRBuffer : SampledImage2d;
+    [Input] var ScreenBuffer : SampledImage2d;
+    [Output] var Target0 : Real4;
+    function Main()
+    {
+        var ssrSample = this.SSRBuffer.Sample(this.Uv);
+        var screenSample = this.ScreenBuffer.Sample(this.Uv).XYZ;
+        
+        if(ssrSample.W < 0.5)
+            ShaderIntrinsics.Kill();
+        
+        this.Target0 = Real4(ssrSample.XYZ + screenSample, 1.0);
+    }
+}
+
+[Pixel][PostProcess]
+struct SSR
+{
+[AppBuiltInInput] var ViewToWorld : Real4x4;
+    [AppBuiltInInput] var FarPlane : Real;
+    [AppBuiltInInput] var PerspectiveToView : Real4x4;
+    [AppBuiltInInput] var ViewToPerspective : Real4x4;
+ 
+ 
+    [StageInput] var Uv : Real2;
+    [StageInput] var PerspectivePosition : Real4;
+ 
+    [Input] var GeometryBuffer0 : SampledImage2d;
+    [Input] var GeometryBuffer1 : SampledImage2d;
+    [Input] var ScreenBuffer : SampledImage2d;
+    [Input] var RoughnessCutoff : Real;
+    [Input] var Debug : Boolean;
+    [Input] var Brighness :Real;
+    [Input] var EnvironmentBrdfLut : SampledImage2d;
+    [Input] var Jiiter : Boolean;
+ 
+    [Output] var Target0 : Real4;
+ 
+    function FresnelSchlick(cosTheta : Real, f0 : Real3) : Real3
+    {
+        return f0 + (Real3.One - f0) * Math.Pow(1.0 - cosTheta, 5.0);
+    }
+ 
+    function Hash(input : Real3, roughness : Real) : Real3
+    {
+        input = Math.Frac(input * roughness);
+        input += Real3(Math.Dot(input, input.YXZ + Real3(19.19)));
+        return Math.Frac((input.XXY + input.YXX) * input.ZYX);
+    }   
+ 
+    function ToUv( ndcPos : Real2) : Real2
+    {
+        return ndcPos * 0.5 + Real2(0.5);
+    }
+    
+    function ImportanceSampleGGX( xi : Real2, roughness : Real) : Real3
+    {
+        var roughness2 = roughness * roughness;
+        var phi = 2 * Math.Pi * xi.X;
+        var cos = Math.Sqrt((1 - xi.Y) / (1 + (roughness2 * roughness2 - 1) * xi.Y));
+        var sin = Math.Sqrt(1 - cos * cos);
+        
+        return Real3(sin * Math.Cos(phi), sin * Math.Sin(phi), cos);
+    }
+ 
+    function Main()
+    {
+        // Sample Buffers
+        var geometrySample0 = this.GeometryBuffer0.Sample(this.Uv);
+        var geometrySample1 = this.GeometryBuffer1.Sample(this.Uv);
+        var screenSampled = this.ScreenBuffer.Sample(this.Uv);
+ 
+        var normal = GeometryPass.GetNormal(geometrySample0);
+        var roughness = GeometryPass.GetRoughness(geometrySample0);
+        var metallic = GeometryPass.GetMetallic(geometrySample1);
+        var specular = GeometryPass.GetSpecular(geometrySample1);
+        var viewPosition = GeometryPass.ReconstructViewPosition(geometrySample0, this.PerspectiveToView, this.PerspectivePosition, this.FarPlane);
+        var depth = -GeometryPass.GetDepth(geometrySample0) * this.FarPlane;
+ 
+        var worldPosition = Math.Multiply(this.ViewToWorld, Real4(viewPosition.XYZ, 1.0));
+ 
+        if(roughness > this.RoughnessCutoff)
+            ShaderIntrinsics.Kill();
+ 
+        var dotnv = Math.Dot(Math.Normalize(normal), Math.Normalize(viewPosition.XYZ));
+        var brdfSpec = this.EnvironmentBrdfLut.Sample(Real2(dotnv, roughness)).XY;
+ 
+        var reflected = Math.Normalize(Math.ReflectAcrossPlane(Math.Normalize(viewPosition.XYZ), Math.Normalize(normal.XYZ)));
+ 
+        var hitPosition = viewPosition.XYZ;
+        var pDepth = 0.0;
+        
+        var f0 = Real3(0.04);
+        f0 = Math.Lerp(f0, screenSampled.XYZ, metallic);
+        var fresnel = this.FresnelSchlick(Math.Max(dotnv, 0.0), f0);
+ 
+        // Ray March
+        var direction = reflected * Math.Max(0.1, -viewPosition.Z);
+ 
+        if(this.Jiiter)
+        {
+            var jitter = Math.Lerp(Real3.Zero, this.Hash(worldPosition.XYZ, roughness), specular);
+            direction += jitter;
+        }
+        direction *= Real3(0.1);
+ 
+        var steps = 0.0;
+        var projectedCoords = Real4.Zero;
+        var foundResult = 0.0;
+        var rayDepth = 0.0;
+ 
+        for(var i = 0; i < 30; ++i)
+        {
+            hitPosition += direction;
+ 
+            projectedCoords = Math.Multiply(this.ViewToPerspective,Real4(hitPosition, 1.0));
+            projectedCoords.XY /= projectedCoords.W;
+            projectedCoords.XY = this.ToUv(projectedCoords.XY);
+            projectedCoords.Y = 1.0 - projectedCoords.Y;
+ 
+            var rayGeometrySample = this.GeometryBuffer0.Sample(projectedCoords.XY);
+            rayDepth = -GeometryPass.GetDepth(rayGeometrySample) * this.FarPlane;
+ 
+            if(rayDepth < -1000)
+                continue;
+ 
+            pDepth = hitPosition.Z - rayDepth;
+ 
+            if((direction.Z + pDepth) > -10.0)
+            {
+                if(pDepth <= 0.0)
+                {
+                    // Binary Search
+                    var searchProjectCoords = Real4.Zero;
+                    var searchDepth = 0.0;
+ 
+                    for(var j = 0.0; j < 5; ++j)
+                    {
+                        projectedCoords = Math.Multiply(this.ViewToPerspective,Real4(hitPosition, 1.0));
+                        projectedCoords.XY /= projectedCoords.W;
+                        projectedCoords.XY = this.ToUv(projectedCoords.XY);
+                        projectedCoords.Y = 1.0 - projectedCoords.Y;
+ 
+                        var searchGeometrySample = this.GeometryBuffer0.Sample(projectedCoords.XY);
+                        searchDepth = GeometryPass.GetDepth(searchGeometrySample);
+ 
+                        pDepth = hitPosition.Z - searchDepth;
+ 
+                        direction *= Real3(0.5);
+                        if(pDepth > 0.0)
+                            hitPosition += direction;
+                        else
+                            hitPosition -= direction;
+                    }
+ 
+                    projectedCoords = Math.Multiply(this.ViewToPerspective,Real4(hitPosition, 1.0));
+                    projectedCoords.XY /= projectedCoords.W;
+                    projectedCoords.XY = this.ToUv(projectedCoords.XY);
+                    projectedCoords.Y = 1.0 - projectedCoords.Y;
+ 
+                    foundResult = 1.0;
+                    break;
+                }
+            }
+            ++steps;
+        }
+ 
+        var coords = Real4(projectedCoords.XY, 0, foundResult);
+        var dCoords = Math.Abs(Real2(0.5) - coords.XY);
+ 
+        var screenEdgeFactor = Math.Clamp(1.0 - (dCoords.X + dCoords.Y), 0.0, 1.0);
+ 
+        var reflectionMultipler = screenEdgeFactor * -reflected.Z;
+        
+        coords.XY = Math.Saturate(coords.XY);
+ 
+        var ssr = (this.ScreenBuffer.SampleLod(coords.XY, roughness).XYZ * Math.Clamp(reflectionMultipler, 0.0, 0.9) * fresnel) * (Real3(0.10) * brdfSpec.X + brdfSpec.YYY);
+        
+        if(!(foundResult as Boolean))
+            ShaderIntrinsics.Kill();
+        
+        this.Target0 = Real4(screenSampled.XYZ + ssr , foundResult);
+    }
+}

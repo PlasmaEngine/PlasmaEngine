@@ -229,6 +229,10 @@ class DeferredRenderer : LightningComponent
     // Bloom
     if (this.Owner.Bloom != null)
       this.Owner.Bloom.AddRenderTasks(event, lightBuffer);
+      
+        
+    if(this.Owner.PostProcessSSR != null)
+        this.Owner.PostProcessSSR.AddSSRRenderTasks(event, resources.GBufferNormalDepthRoughnessRT, resources.GBufferAlbedoMetallicSpec, lightBuffer, resources.SSRBuffer);
     
     // Bring final lighting to gamma space for monitor display
     this.LinearToGamma(event, lightBuffer, resources.FinalOutput);

@@ -9,6 +9,7 @@ class RenderResources
     
     var Depth : RenderTarget;
     var VelPosBuffer : RenderTarget;
+    var SSRBuffer : RenderTarget;
     
     var LastFrame : RenderTarget;
     
@@ -31,6 +32,9 @@ class RenderResources
             
         if(this.LastFrame == null)
             this.LastFrame = event.GetRenderTarget(viewportSize, TextureFormat.RGBA8);
+            
+        if(this.SSRBuffer == null)
+            this.SSRBuffer = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
             
         
     }

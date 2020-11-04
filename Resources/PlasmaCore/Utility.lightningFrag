@@ -26,6 +26,12 @@ struct Utility
     return Math.Pow(linearColor, Real3(1.0 / 2.2));
   }
   
+  [Static]
+  function HammersleyRandom(index : Integer, random : Real) : Real2
+  {
+      return Real2(Real(index) / random, Real(ShaderIntrinsics.BitReverse(index)) * 2.3283064365386963e-10);
+  }
+  
   // Applying a dither, or type of noise, can signicantly reduse artifacts like color banding
   [Static]
   function ApplyDither(linearColor : Real3, dither : ref SampledImage2d, targetUv : Real2, targetSize : Real2) : Real3

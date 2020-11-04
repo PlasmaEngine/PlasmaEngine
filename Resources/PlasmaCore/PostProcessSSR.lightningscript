@@ -1,0 +1,38 @@
+// MIT Licensed (see LICENSE.md).
+
+class PostProcessSSR : LightningComponent
+{
+    [Property] var Active : Boolean = true;
+    
+    [Group("Settings")]
+    [Property]
+    var RoughnessCutoff : Real = 0.85;
+    
+    [Group("Settings")]
+    [Property]
+    var Jitter : Boolean = true;
+    
+    
+    [Group("Debug")]
+    [Property]
+    var Debug : Boolean = false;
+    
+    function AddSSRRenderTasks(event : RenderTasksEvent, geometryBuffer0 : RenderTarget, geometryBuffer1 : RenderTarget, screenBuffer : RenderTarget, ssrBuffer : RenderTarget)
+    {
+        if(this.Active == false)
+            return;
+            
+            
+        var postSSR  = SSR();
+        postSSR.GeometryBuffer0 = geometryBuffer0.Texture;
+        postSSR.GeometryBuffer1 = geometryBuffer1.Texture;
+        postSSR.ScreenBuffer = screenBuffer.Texture;
+        postSSR.RoughnessCutoff = this.RoughnessCutoff;
+        postSSR.Debug = this.Debug;
+        postSSR.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
+        postSSR.Jiiter = this.Jitter;
+        
+        event.AddRenderTaskPostProcess(screenBuffer, postSSR);
+        
+    }
+}
