@@ -94,6 +94,7 @@ struct SSR
         var roughness = GeometryPass.GetRoughness(geometrySample0);
         var metallic = GeometryPass.GetMetallic(geometrySample1);
         var specular = GeometryPass.GetSpecular(geometrySample1);
+        var albedo = GeometryPass.GetAlbedo(geometrySample1);
         var viewPosition = GeometryPass.ReconstructViewPosition(geometrySample0, this.PerspectiveToView, this.PerspectivePosition, this.FarPlane);
         var depth = -GeometryPass.GetDepth(geometrySample0) * this.FarPlane;
  
@@ -141,12 +142,12 @@ struct SSR
             var rayGeometrySample = this.GeometryBuffer0.Sample(projectedCoords.XY);
             rayDepth = -GeometryPass.GetDepth(rayGeometrySample) * this.FarPlane;
  
-            if(rayDepth < -1000)
+            if(rayDepth < -100)
                 continue;
  
             pDepth = hitPosition.Z - rayDepth;
  
-            if((direction.Z + pDepth) > -10.0)
+            if((direction.Z + pDepth) > -100.0)
             {
                 if(pDepth <= 0.0)
                 {
@@ -197,8 +198,15 @@ struct SSR
         var ssr = (this.ScreenBuffer.SampleLod(coords.XY, roughness).XYZ * Math.Clamp(reflectionMultipler, 0.0, 0.9) * fresnel) * (Real3(0.10) * brdfSpec.X + brdfSpec.YYY);
         
         if(!(foundResult as Boolean))
-            ShaderIntrinsics.Kill();
+        {
+          ShaderIntrinsics.Kill();
+        }
         
-        this.Target0 = Real4(screenSampled.XYZ + ssr , foundResult);
+        if(Math.Max(Math.Max(ssr.X, ssr.Y), ssr.Z) < 0.001)
+        {
+          ShaderIntrinsics.Kill();
+        }
+        
+        this.Target0 = Real4(ssr * 4, foundResult);
     }
 }

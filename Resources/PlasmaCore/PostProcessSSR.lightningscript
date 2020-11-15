@@ -12,6 +12,9 @@ class PostProcessSSR : LightningComponent
     [Property]
     var Jitter : Boolean = true;
     
+    [Group("Settings")]
+    [Property]
+    var MaxDistance : Real = 10000;
     
     [Group("Debug")]
     [Property]
@@ -31,6 +34,7 @@ class PostProcessSSR : LightningComponent
         postSSR.Debug = this.Debug;
         postSSR.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
         postSSR.Jiiter = this.Jitter;
+        postSSR.MaxDistance = -this.MaxDistance;
         
         event.AddRenderTaskPostProcess(screenBuffer, postSSR);
         
