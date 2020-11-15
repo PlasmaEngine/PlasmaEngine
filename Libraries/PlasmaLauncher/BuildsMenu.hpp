@@ -123,6 +123,7 @@ public:
   void OnVersionListLoaded(Event* e);
   void OnBuildListUpdated(Event* e);
   void OnShowDevelopChanged(Event* e);
+  void OnCheckForUpdates(Event* e);
   void OnBuildSelected(ObjectEvent* e);
   void SelectBuild(BuildItem* build);
 

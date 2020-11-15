@@ -551,6 +551,7 @@ BuildsMenu::BuildsMenu(Composite* parent, LauncherWindow* launcher) : Composite(
   // settings menu)
   ConnectThisTo(PL::gEngine->GetConfigCog(), Events::ShowDevelopChanged, OnShowDevelopChanged);
   ConnectThisTo(PL::gEngine->GetConfigCog(), Events::ShowExperimentalBranchesChanged, OnShowDevelopChanged);
+  ConnectThisTo(PL::gEngine->GetConfigCog(), Events::CheckForUpdates, OnCheckForUpdates);
 
   // Create the initial build list (at this point it should be the locally
   // downloaded ones)
@@ -641,6 +642,11 @@ void BuildsMenu::OnBuildListUpdated(Event* e)
 }
 
 void BuildsMenu::OnShowDevelopChanged(Event* e)
+{
+  CreateBuildItems();
+}
+
+void BuildsMenu::OnCheckForUpdates(Event* e)
 {
   CreateBuildItems();
 }
