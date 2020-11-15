@@ -355,7 +355,8 @@ void SpacePreview::AnimatePreview(PreviewAnimate::Enum value)
 
 void SpacePreview::UpdateTransform()
 {
-  mCameraViewportDrawer->SetSize(mSize);
+  if(mCameraViewportDrawer != nullptr)
+    mCameraViewportDrawer->SetSize(mSize);
   PreviewWidget::UpdateTransform();
 }
 
