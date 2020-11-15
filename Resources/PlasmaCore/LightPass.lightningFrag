@@ -24,6 +24,7 @@ struct LightPass
   [Input] var LightIntensity : Real = 1.0;
   
   [Input] var LightRadius : Real = 0.0;
+  [Input] var LightLength : Real = 0.0;
   [Input] var LightDistance : Real = 1.0;
   
   [Input] var RenderDiffuse : Boolean = true;
@@ -41,6 +42,7 @@ struct LightPass
     directInputs.LightDirection = this.LightDirection;
     directInputs.LightColor = this.LightColor;
     directInputs.LightRadius = this.LightRadius;
+    directInputs.LightLength = this.LightLength;
     directInputs.LightDistance = this.LightDistance;
     directInputs.Albedo = this.GeoAlbedo;
     directInputs.Metallic = this.GeoMetallic;

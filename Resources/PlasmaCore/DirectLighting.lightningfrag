@@ -9,6 +9,7 @@ struct DirectLightingInputs
   var LightDirection : Real3;
   var LightColor : Real3;
   var LightRadius : Real;
+  var LightLength : Real;
   var LightDistance : Real;
   
   var Albedo : Real3;
@@ -26,6 +27,13 @@ struct DirectLightingInputs
 struct DirectLighting
 {
   [Static]
+  function GetSpecularDominantDirection(normal : Real3, reflection : Real3, roughness : Real) : Real3
+  {
+    var smoothness = 1.0 - roughness; 
+    return Math.Lerp(normal, reflection, smoothness);
+  }
+  
+  [Static]
   function Compute(inputs : DirectLightingInputs) : Real3
   {
     // Get view and light directions
@@ -37,14 +45,15 @@ struct DirectLighting
     
     // Sample brdf's
     var diffuse = Brdf.DiffuseDisney(n, l, v, h, inputs.Roughness);
+
     // Specular factors
     var f = Brdf.SpecularFSchlick(v, h);
     var d = Brdf.SpecularDTrowbridgeReitzGgx(n, h, alpha);
     var g = Brdf.SpecularGSmithGgx(n, l, v, h, alpha);
     
-    // NDF normalization for area lights
-    var alphaPrime = Math.Saturate(alpha + inputs.LightRadius / (2.0 * inputs.LightDistance));
-    d *= Math.Pow(alpha / alphaPrime, 2.0);
+     //NDF normalization for area lights
+    //var alphaPrime = Math.Saturate(alpha + inputs.LightRadius / (2.0 * inputs.LightDistance));
+    //d *= Math.Pow(alpha / alphaPrime, 2.0);
     
     // Brdf denominator
     var normalization = 1.0 / (4.0 * Math.Max(Math.Dot(n, v), 0.001));

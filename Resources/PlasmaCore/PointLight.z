@@ -42,24 +42,44 @@ class PointLight : LightningComponent
   // Affects the shape of specular reflection.
   [Property] var LightRadius : Real
   {
-    get { return this.LightRadiusValue; }
+    get { return this.LightRadiusValue * 10; }
     set
     {
-      this.LightRadiusValue = Math.Max(value, 0.0);
+      this.LightRadiusValue = Math.Max(value / 10, 0.0);
       this.SetLightRadiusInput();
     }
   }
   
+  [Property] var LightLength : Real
+  {
+    get { return this.LightLengthValue; }
+    set
+    {
+      this.LightLengthValue = Math.Max(value, 0.0);
+      this.SetLightLengthInput();
+    }
+  }
+  
   [ShaderInput("PointLightFragment", "LightRadius")] var LightRadiusInput : Real;
+  [ShaderInput("PointLightFragment", "LightLength")] var LightLengthInput : Real;
   [ShaderInput("LightPass", "LightColor")] var LightColorValue : Real3 = Real3(1.0);
+  [ShaderInput("SpotLightFragment")] var LightDirection : Real3;
   var LightIntensityValue : Real = 20.0;
   var FalloffRadiusValue : Real = 10.0;
   var LightRadiusValue : Real = 0.0;
+  var LightLengthValue : Real = 0.0;
   
   function Initialize(init : CogInitializer)
   {
+    this.LightDirection = Math.Normalize(this.Transform.TransformNormal(-Real3.ZAxis));
     this.Transform.WorldScale = Real3(this.FalloffRadiusValue * 2.0);
     this.SetLightRadiusInput();
+    Plasma.Connect(this.Owner, Events.TransformUpdated, this.OnTransformUpdated);
+  }
+  
+  function OnTransformUpdated(event : ObjectEvent)
+  {
+    this.LightDirection = Math.Normalize(this.Transform.TransformNormal(-Real3.ZAxis));
   }
   
   function SetLightRadiusInput()
@@ -67,12 +87,31 @@ class PointLight : LightningComponent
     this.LightRadiusInput = Math.Min(this.LightRadiusValue, this.FalloffRadius);
   }
   
+  function SetLightLengthInput()
+  {
+    this.LightLengthInput = Math.Min(this.LightLengthValue, this.FalloffRadius);
+  }
+  
   function DebugDraw()
   {
     var position = this.Transform.WorldTranslation;
-    var lightSphere = DebugSphere(position, this.LightRadiusInput) {Color = Real4(0.5, 0.5, 0.0, 1.0)};
+    //if(this.LightLengthInput > 0)
+    //{
+    //  var start = position;
+    //  start.X -= this.LightLengthInput / 0.5;
+    //  var end = position;
+    //  end.X += this.LightLengthInput / 0.5;
+      
+    //  var tubeLight = DebugCapsule(start, end, this.LightRadiusInput) {Color = Real4(0.5, 0.5, 0.0, 1.0)};
+    //  DebugDraw.Add(tubeLight);
+    //}
+    //else
+    //{
+      var lightSphere = DebugSphere(position, this.LightRadiusInput) {Color = Real4(0.5, 0.5, 0.0, 1.0)};
+      DebugDraw.Add(lightSphere);
+   // }
+    
     var falloffSphere = DebugSphere(position, this.FalloffRadius) {Color = Real4(1.0, 1.0, 0.0, 1.0)};
-    DebugDraw.Add(lightSphere);
     DebugDraw.Add(falloffSphere);
   }
 }

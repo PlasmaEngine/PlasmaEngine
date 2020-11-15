@@ -5,6 +5,7 @@
 struct PointLightFragment
 {
   [AppBuiltInInput] var WorldToView : Real4x4;
+  [AppBuiltInInput] var ViewToWorld : Real4x4;
   [AppBuiltInInput] var ObjectWorldPosition : Real3;
   
   [StageInput] var PerspectivePosition : Real4;
@@ -21,8 +22,30 @@ struct PointLightFragment
   // Physical radius of the sphere of light.
   // Affects the shape of specular reflection.
   [Input][Output] var LightRadius : Real = 0.0;
-  [Output] var LightDirection : Real3;
+  [Input][Output] var LightLength : Real = 0.0;
+  [Input][Output] var LightDirection : Real3;
   [Output] var LightDistance : Real;
+  
+  function  IlluminanceSphere(cosTheta : Real, sinSigmaSqr : Real) : Real
+  {
+    var sinTheta = Math.Sqrt(1.0 - cosTheta * cosTheta);
+    
+    var illuminance = 0.0;
+    
+    if(cosTheta * cosTheta > sinSigmaSqr)
+    {
+      illuminance = Math.Pi * sinSigmaSqr * Math.Saturate(cosTheta);
+    }
+    else
+    {
+      var x = Math.Sqrt(1.0 / sinSigmaSqr - 1.0);
+      var y = -x * (cosTheta / sinTheta);
+      var sinThetaSqrtY = sinTheta * Math.Sqrt(1.0 - y * y);
+      illuminance = (cosTheta * Math.ACos(y) - x * sinThetaSqrtY) * sinSigmaSqr + Math.ATan(sinThetaSqrtY / x);
+    }
+
+    return illuminance;
+  }
   
   function Main()
   {
@@ -32,9 +55,41 @@ struct PointLightFragment
     
     var reflection = Math.ReflectAcrossVector(viewDirection, this.GeoNormal);
     var toLight = lightPosition - viewPosition;
-    var centerToRay = Math.ProjectOnVector(toLight, reflection) - toLight;
-    var closestPoint = toLight + centerToRay * Math.Saturate(this.LightRadius / Math.Length(centerToRay));
     
+    var closestPoint = Real3.Zero;
+    
+    if(this.LightLength > 0.0)
+    {
+      var length = this.ObjectWorldPosition * this.LightLength;
+      var l0 = toLight - 0.5 * length;
+      var l1 = toLight + 0.5 * length;
+      
+      var ld = l1 - l0;
+      var dotRL0 = Math.Dot(reflection, l0);
+      var dotRLD = Math.Dot(reflection, ld);
+      var dotL0LD = Math.Dot(l0, ld);
+      var distLD = Math.Length(ld);
+      
+      var t = (dotRL0 * dotRLD - dotL0LD) / (distLD * distLD - dotRLD * dotRLD);
+      closestPoint = l0 + ld * Math.Saturate(t);
+      var centerToRay = Math.ProjectOnVector(closestPoint, reflection) - closestPoint;
+      closestPoint = closestPoint + centerToRay * Math.Saturate(this.LightRadius / Math.Length(centerToRay));
+      
+    }
+    else
+    {
+      var sqrDist = Math.Dot(toLight, toLight);
+      var cosTheta = Math.Clamp(Math.Dot(this.GeoNormal, this.LightDirection), -0.99, 0.99);
+      
+      var sqrLightRadius = this.LightRadius * this.LightRadius;
+      var sinSigmaSqr = Math.Min(sqrLightRadius / sqrDist, 0.9999);
+      //this.LightIntensity *=
+      
+      
+      var centerToRay = Math.ProjectOnVector(toLight, reflection) - toLight;
+      closestPoint = toLight + centerToRay * Math.Saturate(this.LightRadius / Math.Length(centerToRay));
+    }
+
     var falloffDistance = Math.Length(toLight);
     var falloff = Math.Saturate(1.0 - Math.Pow(falloffDistance / this.FalloffRadius, 4.0));
     falloff = (falloff * falloff) / (falloffDistance * falloffDistance + 1.0);
