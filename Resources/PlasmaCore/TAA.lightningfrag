@@ -1,0 +1,86 @@
+// MIT Licensed (see LICENSE.md).
+
+// Shader input attribute definitions
+// [AppBuiltInInput] Input comes from predefined data given by the graphics engine
+// [StageInput]      Input comes from the previous hardware stage (mesh -> vertex -> geometry -> pixel)
+// [FragmentInput]   Input comes from a previous fragment in the same stage
+// [PropertyInput]   Input comes from this fragment
+// [Input]           Input auto resolves from any of the previous in the order
+//                   [FragmentInput][StageInput][AppBuiltInInput][PropertyInput]
+//
+// Pixel fragment Example:
+// [FragmentInput][StageInput] var ViewNormal : Real3;
+// Input will come from a previous pixel fragment that outputs ViewNormal
+// otherwise, input will come from the vertex shader
+
+[Pixel][PostProcess]
+struct TAA
+{
+    // Pixel size of the viewport created by CameraViewport
+    [AppBuiltInInput] var ViewportSize : Real2;
+
+    // Common vertex inputs
+    [FragmentInput][StageInput] var Uv : Real2;
+
+    [Input] var FirstFrame : Integer;
+    [Input] var BlendFactor :  Real;
+    [Input] var HDRTex : SampledImage2d;
+    [Input] var PrevHDRTex : SampledImage2d;
+    [Input] var VelPosTex : SampledImage2d;
+    [Input] var Depth : SampledImage2d;
+    [Input] var PrevDepth : SampledImage2d;
+    
+    [Output] var Target0 : Real4;
+
+    function Main()
+    {
+        if(this.FirstFrame as Boolean)
+        {
+            this.Target0 = this.HDRTex.Sample(this.Uv);
+        }
+        else
+        {
+                      
+            var pixel = Real2(1.0) / this.ViewportSize;
+            var neightbourhood = FixedArray[Real3, 9]();
+            neightbourhood[0] = this.HDRTex.Sample(this.Uv + Real2(-1, -1) * pixel).XYZ;
+            neightbourhood[1] = this.HDRTex.Sample(this.Uv + Real2(0, -1) * pixel).XYZ;
+            neightbourhood[2] = this.HDRTex.Sample(this.Uv + Real2(1, -1) * pixel).XYZ;
+            neightbourhood[3] = this.HDRTex.Sample(this.Uv + Real2(-1, 0) * pixel).XYZ;
+            neightbourhood[4] = this.HDRTex.Sample(this.Uv + Real2(0, 0) * pixel).XYZ;
+            neightbourhood[5] = this.HDRTex.Sample(this.Uv + Real2(1, 0) * pixel).XYZ;
+            neightbourhood[6] = this.HDRTex.Sample(this.Uv + Real2(-1, 1) * pixel).XYZ;
+            neightbourhood[7] = this.HDRTex.Sample(this.Uv + Real2(0, 1) * pixel ).XYZ;
+            neightbourhood[8] = this.HDRTex.Sample(this.Uv + Real2(1, 1) * pixel ).XYZ;
+            
+            var nmin = neightbourhood[0];
+            var nmax = neightbourhood[0];
+            
+            for(var i = 0; i < 9; ++i)
+            {
+                nmin = Math.Min(nmin, neightbourhood[i]);
+                nmax = Math.Max(nmax, neightbourhood[i]);
+            }
+            
+            var vel = this.VelPosTex.Sample(this.Uv).XY;
+            var prevUV = Math.Clamp(this.Uv + vel, Real2(0.0) ,Real2(1.0));
+            
+            var hitSample = Math.Clamp(this.PrevHDRTex.Sample(prevUV).XYZ, nmin, nmax);
+            
+            var blend = this.BlendFactor;
+            
+            var a = ShaderIntrinsics.GreaterThan((prevUV ) as Integer2, Integer2(1,1));
+            var b = ShaderIntrinsics.LessThan((prevUV ) as Integer2, Integer2(0,0));
+            
+            if(ShaderIntrinsics.Any(Boolean2(ShaderIntrinsics.Any(a), ShaderIntrinsics.Any(b))))
+            {
+                blend = 1.0;
+            }
+            
+            var curSample = neightbourhood[4];
+            
+            this.Target0 = Real4(Math.Lerp(hitSample, curSample, Real3(blend)), 1.0);
+        }
+            
+    }
+}

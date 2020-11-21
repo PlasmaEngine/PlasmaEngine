@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningScriptBuilder 
+	{
+		var Name = "PostProcessTAA"
+		var ResourceId = 0x5f6125e8ed365aac
+	}
+}

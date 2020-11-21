@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "Depth"
+		var ResourceId = 0x5f6bff01ffdd258e
+	}
+}

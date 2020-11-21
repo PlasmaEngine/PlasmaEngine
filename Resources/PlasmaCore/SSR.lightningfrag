@@ -27,9 +27,10 @@ struct SSRApply
         var screenSample = this.ScreenBuffer.Sample(this.Uv).XYZ;
         
         if(ssrSample.W < 0.5)
-            ShaderIntrinsics.Kill();
-        
-        this.Target0 = Real4(ssrSample.XYZ + screenSample, 1.0);
+            ssrSample.XYZ  = screenSample.XYZ;
+        else
+            ssrSample.XYZ += screenSample.XYZ / 4;
+        this.Target0 = Real4(ssrSample.XYZ, 1.0);
     }
 }
 
@@ -53,6 +54,7 @@ struct SSR
     [Input] var Brighness :Real;
     [Input] var EnvironmentBrdfLut : SampledImage2d;
     [Input] var Jiiter : Boolean;
+    [Input] var BlueNoise : SampledImage2d;
  
     [Output] var Target0 : Real4;
  
@@ -120,7 +122,7 @@ struct SSR
  
         if(this.Jiiter)
         {
-            var jitter = Math.Lerp(Real3.Zero, this.Hash(worldPosition.XYZ, roughness), specular);
+            var jitter = Math.Lerp(Real3.Zero, this.Hash(worldPosition.XYZ, roughness), roughness);
             direction += jitter;
         }
         direction *= Real3(0.1);

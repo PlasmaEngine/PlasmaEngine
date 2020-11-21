@@ -14,7 +14,8 @@ class PostProcessSSR : LightningComponent
     
     [Group("Settings")]
     [Property]
-    var MaxDistance : Real = 10000;
+    var ApplyDuringIBL : Boolean = true;
+    
     
     [Group("Debug")]
     [Property]
@@ -24,8 +25,7 @@ class PostProcessSSR : LightningComponent
     {
         if(this.Active == false)
             return;
-            
-            
+                   
         var postSSR  = SSR();
         postSSR.GeometryBuffer0 = geometryBuffer0.Texture;
         postSSR.GeometryBuffer1 = geometryBuffer1.Texture;
@@ -34,9 +34,27 @@ class PostProcessSSR : LightningComponent
         postSSR.Debug = this.Debug;
         postSSR.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
         postSSR.Jiiter = this.Jitter;
-        postSSR.MaxDistance = -this.MaxDistance;
         
-        event.AddRenderTaskPostProcess(screenBuffer, postSSR);
+        event.AddRenderTaskPostProcess(ssrBuffer, postSSR);
+      
+        if(!this.ApplyDuringIBL)
+        {
+          var ssrApply = SSRApply();
+          ssrApply.SSRBuffer = ssrBuffer.Texture;
+          ssrApply.ScreenBuffer = screenBuffer.Texture;
+          event.AddRenderTaskPostProcess(screenBuffer, ssrApply);
+          
+          event.AddRenderTaskClearTarget(ssrBuffer, Real4.Zero);
+        }
+      
         
+        if(this.Debug)
+        {
+          var copyPass = CopyTarget();
+          copyPass.Texture = ssrBuffer.Texture;
+          event.AddRenderTaskPostProcess(screenBuffer, copyPass);
+          
+          event.AddRenderTaskClearTarget(ssrBuffer, Real4.Zero);
+        }
     }
-}
+  }

@@ -58,8 +58,12 @@ class DeferredRenderer : LightningComponent
   
   var SSRTexture : Texture;
   
+  var FirstFrame : Boolean;
+  
   function Initialize(init : CogInitializer)
   {
+    this.FirstFrame = true;
+    
     Plasma.Connect(this.Owner, Events.RenderTasksUpdate, this.OnRenderTasksUpdate);
   
     
@@ -153,6 +157,10 @@ class DeferredRenderer : LightningComponent
       event.AddRenderTaskPostProcess(lightSettings, copyValue);
     }
     
+        var velocityBuffer = VelocityBuffer();
+    velocityBuffer.FirstFrame = this.FirstFrame;
+    event.AddRenderTaskPostProcess(this.VelPosBuffer, velocityBuffer);
+    
     // Only process opaque pixels
     lightSettings.DepthSettings.StencilTestValue = 1 as Byte;
     
@@ -202,6 +210,7 @@ class DeferredRenderer : LightningComponent
       imageBasedLighting.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
       imageBasedLighting.Skybox = this.Skybox;
       imageBasedLighting.SSRTexture = this.SSRBuffer.Texture;
+      imageBasedLighting.VelocityBuffer = this.VelPosBuffer.Texture;
       imageBasedLighting.Intensity = this.IndirectIntensity;
       imageBasedLighting.MaxIntensity = this.MaxIntensity;
       imageBasedLighting.GeometryBuffer0 = this.GBufferNormalDepthRoughnessRT.Texture;
@@ -263,6 +272,8 @@ class DeferredRenderer : LightningComponent
     alphaSettings.DepthSettings.DepthMode = DepthMode.Read;
     alphaSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
     event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AdditiveBlend, ColorOutput());
+  
+    event.AddRenderTaskClearTarget(this.SSRBuffer, Real4.Zero);
     
     if(this.Owner.PostProcessSSR != null)
         this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBufferNormalDepthRoughnessRT, this.GBufferAlbedoMetallicSpec, lightBuffer, this.SSRBuffer);
@@ -274,6 +285,9 @@ class DeferredRenderer : LightningComponent
     // Bring final lighting to gamma space for monitor display
     this.LinearToGamma(event, lightBuffer, this.FinalOutput);
     
+    if(this.Owner.PostProcessTAA != null)
+      this.Owner.PostProcessTAA.AddRenderTasks(event, lightBuffer, this.LastFrame, this.VelPosBuffer, this.Depth, this.FirstFrame as Integer);
+    
     // FXAA
     if(this.Owner.PostProcessFXAA != null)
         this.Owner.PostProcessFXAA.AddRenderTasks(event, this.FinalOutput);
@@ -282,6 +296,8 @@ class DeferredRenderer : LightningComponent
     alphaSettings.ColorTarget = this.FinalOutput;
     alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
     event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AlphaBlend, ColorOutput());
+    
+    this.FirstFrame = false;
     
     this.DrawDebugObjects(event, this.FinalOutput, this.Depth);
   }
