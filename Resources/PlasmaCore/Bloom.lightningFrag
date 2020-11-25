@@ -20,20 +20,19 @@ struct BloomBrightPass
   function Main()
   {
     var color = this.Texture.Sample(this.Uv).XYZ;
-    var lensDirt = this.LensDirt.Sample(this.Uv).XYZ;
+    var lensDirt = this.LensDirtIntensity * this.LensDirt.Sample(this.Uv).XYZ;
+    
+    color += lensDirt;
     
     // Get the luminance of the color (see the Utility fragment file for details on this function)
     var luminance = Utility.Luminance(color);
-    var bloomLuminance = Math.Dot(Math.Saturate(color * lensDirt), Real3(0.33));
     
     // Calculate the intensity of the bloom that is triggered. If the
     // luminance falls bellow the threshold, no bloom is triggered.
     var intensity = this.Intensity * Math.Max(luminance - this.Threshold, 0.0);
     
-    var bloomIntensity = this.LensDirtIntensity * Math.Max(bloomLuminance - this.Threshold +1 , 0.0);
-    
     // Output the color scaled by intensity
-    this.Target0 = Real4(Math.Saturate(color * intensity + lensDirt * color *  bloomIntensity) , 1.0);
+    this.Target0 = Real4(Math.Saturate(color * intensity) , 1.0);
   }
 }
 
