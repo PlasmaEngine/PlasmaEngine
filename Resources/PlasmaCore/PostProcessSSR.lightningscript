@@ -11,11 +11,10 @@ class PostProcessSSR : LightningComponent
     [Group("Settings")]
     [Property]
     var Jitter : Boolean = true;
-    
+
     [Group("Settings")]
     [Property]
-    var ApplyDuringIBL : Boolean = true;
-    
+    var Resolution : SSRResolution = SSRResolution.Half;   
     
     [Group("Debug")]
     [Property]
@@ -25,6 +24,7 @@ class PostProcessSSR : LightningComponent
     {
         if(this.Active == false)
             return;
+            
                    
         var postSSR  = SSR();
         postSSR.GeometryBuffer0 = geometryBuffer0.Texture;
@@ -36,8 +36,32 @@ class PostProcessSSR : LightningComponent
         postSSR.Jiiter = this.Jitter;
         
         event.AddRenderTaskPostProcess(ssrBuffer, postSSR);
+        
+        if(this.Resolution == SSRResolution.Half)
+        {
+          var bufferSize = ssrBuffer.Texture.Size;
+          var ssrSamplerSettings = SamplerSettings() {Filtering = TextureFiltering.Bilinear};
+              
+          var ssrDownscale = event.GetRenderTarget((bufferSize * 0.5) as Integer2, TextureFormat.RGB16f, ssrSamplerSettings);
+          
+          DownsampleAndBlur[Filter13TapPartialKarisAverage, SeparableBlurRadius5].Call(event, ssrBuffer, ssrDownscale);
+          this.Upsample(event, ssrDownscale, ssrBuffer);
+          ssrDownscale.Release();
+        }
+        
+        if(this.Resolution == SSRResolution.Quater)
+        {
+          var bufferSize = ssrBuffer.Texture.Size;
+          var ssrSamplerSettings = SamplerSettings() {Filtering = TextureFiltering.Bilinear};
+              
+          var ssrDownscale = event.GetRenderTarget((bufferSize * 0.25) as Integer2, TextureFormat.RGB16f, ssrSamplerSettings);
+          
+          DownsampleAndBlur[Filter13Tap, SeparableBlurRadius10].Call(event, ssrBuffer, ssrDownscale);
+          this.Upsample(event, ssrDownscale, ssrBuffer);
+          ssrDownscale.Release();
+        }
       
-        if(!this.ApplyDuringIBL)
+        if(!this.Debug)
         {
           var ssrApply = SSRApply();
           ssrApply.SSRBuffer = ssrBuffer.Texture;
@@ -57,4 +81,28 @@ class PostProcessSSR : LightningComponent
           event.AddRenderTaskClearTarget(ssrBuffer, Real4.Zero);
         }
     }
+    
+    function Upsample(event : RenderTasksEvent, target0 : RenderTarget, target1 : RenderTarget)
+    {
+      var upsampleSettings = RenderSettings();
+      upsampleSettings.ColorTarget = target1;
+      
+      upsampleSettings.BlendSettings.BlendMode = BlendMode.Separate;
+      upsampleSettings.BlendSettings.BlendEquation = BlendEquation.Add;
+      upsampleSettings.BlendSettings.SourceFactor = BlendFactor.One;
+      upsampleSettings.BlendSettings.DestFactor = BlendFactor.One;
+      upsampleSettings.BlendSettings.SourceFactorAlpha = BlendFactor.Plasma;
+      upsampleSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
+      
+      var copyTarget = CopyTarget();    
+      copyTarget.Texture = target0.Texture;
+      event.AddRenderTaskPostProcess(upsampleSettings, copyTarget);
+    }
+  }
+  
+  enum SSRResolution
+  {
+    Full,
+    Half,
+    Quater
   }

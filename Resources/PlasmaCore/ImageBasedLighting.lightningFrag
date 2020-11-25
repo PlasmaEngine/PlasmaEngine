@@ -11,8 +11,6 @@ struct ImageBasedLightingInputs
   var Roughness : Real;
   var Specular : Real;
   
-  var SSR : Real4;
-  
   var RenderDiffuse : Boolean;
   var RenderSpecular : Boolean;
 }
@@ -33,8 +31,6 @@ struct ImageBasedLighting
   [Input] var DitherTexture : SampledImage2d;
   [Input] var EnvironmentBrdfLut : SampledImage2d;
   [Input] var Skybox : SampledImageCube;
-  [Input] var SSRTexture : SampledImage2d;
-  [Input] var VelocityBuffer : SampledImage2d;
   [Input] var Intensity : Real = 1.0;
   [Input] var MaxIntensity : Real = 50;
   
@@ -51,8 +47,6 @@ struct ImageBasedLighting
     // Get values from geometry buffers
     var geometrySample0 = this.GeometryBuffer0.Sample(this.Uv);
     var geometrySample1 = this.GeometryBuffer1.Sample(this.Uv);
-    var velocity = this.VelocityBuffer.Sample(this.Uv).XY;
-    var ssrSample = this.SSRTexture.Sample(this.Uv + velocity);
     
     var viewNormal = GeometryPass.GetNormal(geometrySample0);
     var viewPosition = Math.Multiply(this.PerspectiveToView, this.PerspectivePosition);
@@ -65,11 +59,10 @@ struct ImageBasedLighting
     iblInputs.Metallic = GeometryPass.GetMetallic(geometrySample1);
     iblInputs.Roughness = GeometryPass.GetRoughness(geometrySample0);
     iblInputs.Specular = GeometryPass.GetSpecular(geometrySample1);
-    iblInputs.SSR = ssrSample;
     iblInputs.RenderDiffuse = this.RenderDiffuse;
     iblInputs.RenderSpecular = this.RenderSpecular;
     
-    var color = ImageBasedLighting.Compute(iblInputs, &this.Skybox, &this.SSRTexture, &this.EnvironmentBrdfLut);
+    var color = ImageBasedLighting.Compute(iblInputs, &this.Skybox, &this.EnvironmentBrdfLut);
     
     // Remove color banding
     color = Utility.ApplyDither(color, &this.DitherTexture, this.Uv, this.ViewportSize);
@@ -78,7 +71,7 @@ struct ImageBasedLighting
   }
   
   [Static]
-  function Compute(inputs : ImageBasedLightingInputs, skybox : ref SampledImageCube, ssr : ref SampledImage2d, brdfLut : ref SampledImage2d) : Real3
+  function Compute(inputs : ImageBasedLightingInputs, skybox : ref SampledImageCube, brdfLut : ref SampledImage2d) : Real3
   {
     // Directions for sampling cubemap
     var diffuseDirection = inputs.WorldNormal;
@@ -88,20 +81,9 @@ struct ImageBasedLighting
     var textureSize = skybox.SampleSize(0).X;
     var maxLod = Math.Log2(textureSize);
     
-    var envDiffuse = Real3.Zero;
-    var diffuseColor = Real3.Zero;
-    
-    // Diffuse calculation
-    if(inputs.SSR.W > 0.5)
-    {
-       envDiffuse = inputs.SSR.XYZ;
-       diffuseColor = envDiffuse;
-     }
-    else
-    {
-      envDiffuse = skybox.SampleLod(diffuseDirection, maxLod).XYZ;
-      diffuseColor = envDiffuse * inputs.Albedo;
-    }
+    var envDiffuse = skybox.SampleLod(diffuseDirection, maxLod).XYZ;
+    var diffuseColor = envDiffuse * inputs.Albedo;
+
     // Sample lod for specular is based on roughness unless screen space derivitives
     // are large enough then we sample with that mip level to prevent aliasing
     var dx = ShaderIntrinsics.Ddx(specularDirection * textureSize);
@@ -109,12 +91,7 @@ struct ImageBasedLighting
     var mipLevel = Math.Sqrt(Math.Max(Math.LengthSq(dx), Math.LengthSq(dy)));
     mipLevel = 0.5 * Math.Log2(mipLevel) - 1.0;
     var sampleLod = Math.Max(inputs.Roughness * maxLod, mipLevel);
-    var envSpecular = Real3.Zero;
-    
-    if(inputs.SSR.W > 0.5)
-      envSpecular = inputs.SSR.XYZ;
-    else
-      envSpecular = skybox.SampleLod(specularDirection, sampleLod).XYZ;
+    var envSpecular = skybox.SampleLod(specularDirection, sampleLod).XYZ;
     
     // Specular calculation using split sum approximation
     var dotnv = Math.Saturate(Math.Dot(inputs.WorldNormal, inputs.WorldViewDirection));

@@ -88,7 +88,7 @@ class DeferredRenderer : LightningComponent
     this.LastFrame = event.GetRenderTarget(viewportSize, TextureFormat.RGBA8);
     
     
-    this.SSRBuffer = event.GetRenderTarget(viewportSize, TextureFormat.RGBA8);
+    this.SSRBuffer = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
           
       
   }
@@ -209,8 +209,6 @@ class DeferredRenderer : LightningComponent
       imageBasedLighting.DitherTexture = Texture.BlueNoise;
       imageBasedLighting.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
       imageBasedLighting.Skybox = this.Skybox;
-      imageBasedLighting.SSRTexture = this.SSRBuffer.Texture;
-      imageBasedLighting.VelocityBuffer = this.VelPosBuffer.Texture;
       imageBasedLighting.Intensity = this.IndirectIntensity;
       imageBasedLighting.MaxIntensity = this.MaxIntensity;
       imageBasedLighting.GeometryBuffer0 = this.GBufferNormalDepthRoughnessRT.Texture;
