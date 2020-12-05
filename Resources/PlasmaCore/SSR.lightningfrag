@@ -29,7 +29,7 @@ struct SSRApply
         if(ssrSample.W < 0.5)
             ssrSample.XYZ  = screenSample.XYZ;
         else
-            ssrSample.XYZ += screenSample.XYZ / 4;
+            ssrSample.XYZ += screenSample.XYZ * Utility.Luminance(ssrSample.XYZ);
         this.Target0 = Real4(ssrSample.XYZ, 1.0);
     }
 }
@@ -125,14 +125,14 @@ struct SSR
             var jitter = Math.Lerp(Real3.Zero, this.Hash(worldPosition.XYZ, roughness), roughness);
             direction += jitter;
         }
-        direction *= Real3(0.1);
+        direction *= Real3(0.01);
  
         var steps = 0.0;
         var projectedCoords = Real4.Zero;
         var foundResult = 0.0;
         var rayDepth = 0.0;
  
-        for(var i = 0; i < 30; ++i)
+        for(var i = 0; i < 128; ++i)
         {
             hitPosition += direction;
  
@@ -157,7 +157,7 @@ struct SSR
                     var searchProjectCoords = Real4.Zero;
                     var searchDepth = 0.0;
  
-                    for(var j = 0.0; j < 5; ++j)
+                    for(var j = 0.0; j < 32; ++j)
                     {
                         projectedCoords = Math.Multiply(this.ViewToPerspective,Real4(hitPosition, 1.0));
                         projectedCoords.XY /= projectedCoords.W;
@@ -204,11 +204,11 @@ struct SSR
           ShaderIntrinsics.Kill();
         }
         
-        if(Math.Max(Math.Max(ssr.X, ssr.Y), ssr.Z) < 0.001)
+        if(Math.Max(Math.Max(ssr.X, ssr.Y), ssr.Z) < 0.005)
         {
           ShaderIntrinsics.Kill();
         }
         
-        this.Target0 = Real4(ssr * 4, foundResult);
+        this.Target0 = Real4( ssr * 4, foundResult);
     }
 }

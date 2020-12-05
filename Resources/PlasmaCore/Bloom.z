@@ -17,6 +17,8 @@ class Bloom : LightningComponent
   [Property] var LensDirt : Texture;
   [Group("Settings")]
   [Property] var LensDirtIntensity : Real;
+  [Group("Settings")]
+  [Property] var LensDirtThreshold : Real = 1.0;
   
   // If output should be replace with just the result that's added to the scene for visualizing the effect.
   [Group("Debug")]
@@ -57,10 +59,10 @@ class Bloom : LightningComponent
     // The bright pass separates sufficiently bright parts of the image from the rest
     var bloomBrightPass = BloomBrightPass(); 
     bloomBrightPass.Texture = lightBuffer.Texture;
-    bloomBrightPass.LensDirt = this.LensDirt;
+    //bloomBrightPass.LensDirt = this.LensDirt;
     bloomBrightPass.Intensity = this.Intensity;
     bloomBrightPass.Threshold = this.Threshold;
-    bloomBrightPass.LensDirtIntensity = this.LensDirtIntensity;
+    //bloomBrightPass.LensDirtIntensity = this.LensDirtIntensity;
     event.AddRenderTaskPostProcess(bloom0, bloomBrightPass);
     
     // Progressive downsample and blur
@@ -100,6 +102,14 @@ class Bloom : LightningComponent
     this.Upsample(event, bloom4, bloom3);
     this.Upsample(event, bloom3, bloom2);
     this.Upsample(event, bloom2, bloom1);
+    
+    var dirtPass = LensDirtPass();
+    dirtPass.Texture = bloom1.Texture;
+    dirtPass.LensDirt = this.LensDirt;
+    dirtPass.Intensity = this.LensDirtIntensity;
+    dirtPass.Threshold = this.LensDirtThreshold;
+    event.AddRenderTaskPostProcess(bloom1, dirtPass);
+    
     this.Upsample(event, bloom1, lightBuffer);
     
     bloom0.Release();
