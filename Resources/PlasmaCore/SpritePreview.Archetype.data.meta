@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "SpritePreview"
+		var ResourceId = 0x5f85a9f4e2a9db03
+		var LoaderType = "Cog"
+		var Version = 0
+	}
+}

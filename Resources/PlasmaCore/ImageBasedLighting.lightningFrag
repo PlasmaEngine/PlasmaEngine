@@ -81,10 +81,9 @@ struct ImageBasedLighting
     var textureSize = skybox.SampleSize(0).X;
     var maxLod = Math.Log2(textureSize);
     
-    // Diffuse calculation
     var envDiffuse = skybox.SampleLod(diffuseDirection, maxLod).XYZ;
     var diffuseColor = envDiffuse * inputs.Albedo;
-    
+
     // Sample lod for specular is based on roughness unless screen space derivitives
     // are large enough then we sample with that mip level to prevent aliasing
     var dx = ShaderIntrinsics.Ddx(specularDirection * textureSize);

@@ -23,6 +23,7 @@ public:
   String mName;
   String mArgs;
   size_t mThreadId;
+  String mThreadName;
   ProfileTime mTimestamp;
   ProfileTime mDuration;
 };
@@ -159,6 +160,7 @@ void PrintProfileGraph();
 
 #if ZPROFILE_ENABLED
 
+
 #  define ProfileScopeFunction()                                                                                       \
     static Plasma::Profile::Record __LocalRecord(__FUNCTION__);                                                          \
     Plasma::Profile::ScopeTimer __ScopedBlock(&__LocalRecord);
@@ -175,9 +177,9 @@ void PrintProfileGraph();
     static Plasma::Profile::Record __LocalRecord(name);                                                                  \
     Plasma::Profile::ScopeTimer __ScopedBlock(&__LocalRecord, args);
 
-#  define ProfileScopeTree(name, parentName, color)                                                                    \
-    static Plasma::Profile::Record __LocalRecord(name, parentName, color);                                               \
-    Plasma::Profile::ScopeTimer __ScopedBlock(&__LocalRecord);
+#  define ProfileScopeTree(name, parentName, color)														   \
+    static Plasma::Profile::Record	__LocalRecord(name, parentName, color);                                \
+	Plasma::Profile::ScopeTimer __ScopedBlock(&__LocalRecord);
 
 #  define ProfileScopeTreeArgs(name, args, parentName, color)                                                          \
     static Plasma::Profile::Record __LocalRecord(name, parentName, color);                                               \

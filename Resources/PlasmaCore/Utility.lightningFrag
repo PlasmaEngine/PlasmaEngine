@@ -46,7 +46,7 @@ struct Utility
     
     return linearColor;
   }
-  
+    
   // Computes relative luminance from linear color using luminosity function:
   //   L = 0.2126R + 0.7152G + 0.0722B
   // https://en.wikipedia.org/wiki/Relative_luminance

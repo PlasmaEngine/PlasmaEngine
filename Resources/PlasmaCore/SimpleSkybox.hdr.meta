@@ -19,10 +19,11 @@ ImageContent
 		var Filtering = TextureFiltering.Trilinear
 		var Anisotropy = TextureAnisotropy.x16
 		var MipMapping = TextureMipMapping.PreGenerated
+		var HalfScaleCount = 0
 		var PremultipliedAlpha = true
 		var GammaCorrection = true
 	}
-	ContentEditorOptions
+	ContentEditorOptions 
 	{
 		var ShowInEditor = true
 	}

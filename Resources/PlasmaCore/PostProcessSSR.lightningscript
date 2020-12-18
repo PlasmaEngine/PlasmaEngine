@@ -6,7 +6,19 @@ class PostProcessSSR : LightningComponent
     
     [Group("Settings")]
     [Property]
+    var Itterations : Real = 128.0;
+    
+    [Group("Settings")]
+    [Property]
+    var StepDistance : Real = 0.01;
+    
+    [Group("Settings")]
+    [Property]
     var RoughnessCutoff : Real = 0.85;
+    
+    [Group("Settings")]
+    [Property]
+    var RoughnessBlur : Real = 2;
     
     [Group("Settings")]
     [Property]
@@ -14,7 +26,7 @@ class PostProcessSSR : LightningComponent
     
     [Group("Settings")]
     [Property]
-    var MaxDistance : Real = 10000;
+    var HalfRes : Boolean = true;
     
     [Group("Debug")]
     [Property]
@@ -25,7 +37,14 @@ class PostProcessSSR : LightningComponent
         if(this.Active == false)
             return;
             
+        var ssrRenderSize = event.ViewportSize;
+        if(this.HalfRes)
+            ssrRenderSize = ssrRenderSize/ 2;
             
+        var ssrTemp : RenderTarget = event.GetRenderTarget(ssrRenderSize, TextureFormat.RGBA8);
+   
+        event.AddRenderTaskClearTarget(ssrTemp, Real4.Zero);
+                   
         var postSSR  = SSR();
         postSSR.GeometryBuffer0 = geometryBuffer0.Texture;
         postSSR.GeometryBuffer1 = geometryBuffer1.Texture;
@@ -34,9 +53,48 @@ class PostProcessSSR : LightningComponent
         postSSR.Debug = this.Debug;
         postSSR.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
         postSSR.Jiiter = this.Jitter;
-        postSSR.MaxDistance = -this.MaxDistance;
+        postSSR.Itteractions = this.Itterations;
+        postSSR.StepDistance = this.StepDistance;
         
-        event.AddRenderTaskPostProcess(screenBuffer, postSSR);
+        event.AddRenderTaskPostProcess(ssrTemp, postSSR, "SSR");
         
+        var blurSSR = event.GetRenderTarget(ssrRenderSize, TextureFormat.RGBA16f);
+        
+        var copySSR = CopyTarget();
+        copySSR.Texture = ssrTemp.Texture;
+        event.AddRenderTaskPostProcess(blurSSR, copySSR, "SSRCopy");        
+        BlurTextureEdgeSafe[BilateralBlurRadius25].Call(event, blurSSR, geometryBuffer0, 8, this.RoughnessBlur);
+
+        if(!this.Debug)
+        {
+            
+          var ssrApply = SSRApply();
+          ssrApply.GeometryBuffer0 = geometryBuffer0.Texture;
+          ssrApply.GeometryBuffer1 = geometryBuffer1.Texture;
+          ssrApply.SSRBuffer = ssrTemp.Texture;
+          ssrApply.SSRBlurBuffer = blurSSR.Texture;
+          ssrApply.ScreenBuffer = screenBuffer.Texture;
+          event.AddRenderTaskPostProcess(screenBuffer, ssrApply, "SSRApply");
+          
+          
+          event.AddRenderTaskClearTarget(ssrBuffer, Real4.Zero);
+        }
+      
+        
+        if(this.Debug)
+        {
+          var copyPass = CopyTarget();
+          copyPass.Texture = ssrTemp.Texture;
+          event.AddRenderTaskPostProcess(screenBuffer, copyPass, "SSRDebug");
+          
+          event.AddRenderTaskClearTarget(ssrBuffer, Real4.Zero);
+        }
+        
+        var ssrFinalCopy = SSRCopy();
+        ssrFinalCopy.Texture = screenBuffer.Texture;
+        event.AddRenderTaskPostProcess(screenBuffer, ssrFinalCopy, "ssrFinalCopy");
+        
+        ssrTemp.Release();
+        blurSSR.Release();
     }
-}
+  }

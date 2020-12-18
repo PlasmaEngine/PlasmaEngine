@@ -184,7 +184,7 @@ void TimeSpace::Update(float dt)
     UpdateEvent updateEvent(mScaledClampedDt, mRealDt, mScaledClampedTimePassed, mRealTimePassed);
 
     {
-      ProfileScopeTree("FrameUpdate", "TimeSystem", Color::PaleGoldenrod);
+      ProfileScopeTree("FrameUpdate", "TimeSystem", Color::PaleGoldenrod)
       dispatcher->Dispatch(Events::FrameUpdate, &updateEvent);
     }
 
@@ -203,8 +203,8 @@ void TimeSpace::Update(float dt)
       Step();
 
     {
-      // ProfileScopeTree("GraphicsFrameUpdate", "TimeSystem", Color::SkyBlue);
-      // dispatcher->Dispatch(Events::GraphicsFrameUpdate, &updateEvent);
+      ProfileScopeTree("GraphicsFrameUpdate", "TimeSystem", Color::SkyBlue);
+      dispatcher->Dispatch(Events::GraphicsFrameUpdate, &updateEvent);
     }
   }
 }
@@ -279,6 +279,8 @@ TimeSystem::~TimeSystem()
 
 void TimeSystem::Update(bool debugger)
 {
+
+ ProfileScopeTree("TimeSystem", "Engine", Color::Orange);
   mTimer.Update();
   float dt = (float)mTimer.TimeDelta();
 
@@ -288,7 +290,7 @@ void TimeSystem::Update(bool debugger)
   // the the rest of the frame. This reduces heat and power use on laptops.
   if (mLimitFrameRate)
   {
-    ProfileScopeTree("Limiter", "Engine", Color::Green);
+    ProfileScopeTree("Limiter", "TimeSystem", Color::Green);
     const int limitError = 1;
     const int limitframeTimeMs = int(1.0f / float(mFrameRate) * 1000.0f);
     int frameTime = int(dt * 1000.0f) + limitError;
@@ -308,7 +310,7 @@ void TimeSystem::Update(bool debugger)
     }
   }
 
-  ProfileScopeTree("TimeSystem", "Engine", Color::Orange);
+ 
 
   // We can pretend that the rest of the engine runs at a fixed frame rate
   if (gDeterministicMode)

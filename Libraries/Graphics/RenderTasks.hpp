@@ -143,12 +143,14 @@ public:
   /// fragment defines what data is written to RenderTargets.
   void AddRenderTaskRenderPass(GraphicsRenderSettings& renderSettings,
                                RenderGroup& renderGroup,
-                               MaterialBlock& renderPass);
+                               MaterialBlock& renderPass,
+							   String& name);
   /// Renders a group of objects with the given settings. The RenderPass
   /// fragment defines what data is written to RenderTargets.
   void AddRenderTaskRenderPass(GraphicsRenderSettings& renderSettings,
                                GraphicalRangeInterface& graphicalRange,
-                               MaterialBlock& renderPass);
+                               MaterialBlock& renderPass,
+	                           String& name);
 
   /// Renders all objects within a RenderGroup hierarchy, sorted in the order
   /// defined by the base RenderGroup, and can use unique render settings for
@@ -156,13 +158,13 @@ public:
   void AddRenderTaskSubRenderGroupPass(SubRenderGroupPass& subRenderGroupPass);
 
   /// Invokes the pixel shader for every pixel of the RenderTargets.
-  void AddRenderTaskPostProcess(RenderTarget* renderTarget, Material& material);
+  void AddRenderTaskPostProcess(RenderTarget* renderTarget, Material& material, String& name);
   /// Invokes the pixel shader for every pixel of the RenderTargets.
-  void AddRenderTaskPostProcess(RenderTarget* renderTarget, MaterialBlock& postProcess);
+  void AddRenderTaskPostProcess(RenderTarget* renderTarget, MaterialBlock& postProcess, String& name);
   /// Invokes the pixel shader for every pixel of the RenderTargets.
-  void AddRenderTaskPostProcess(GraphicsRenderSettings& renderSettings, Material& material);
+  void AddRenderTaskPostProcess(GraphicsRenderSettings& renderSettings, Material& material, String& name);
   /// Invokes the pixel shader for every pixel of the RenderTargets.
-  void AddRenderTaskPostProcess(GraphicsRenderSettings& renderSettings, MaterialBlock& postProcess);
+  void AddRenderTaskPostProcess(GraphicsRenderSettings& renderSettings, MaterialBlock& postProcess, String& name);
 
   // Internal for the graphics engine.
   void AddRenderTaskBackBufferBlit(RenderTarget* colorTarget, ScreenViewport viewport);
@@ -207,13 +209,15 @@ public:
   void AddRenderTaskRenderPass(RenderSettings& renderSettings,
                                uint renderGroupIndex,
                                StringParam renderPassName,
+							   StringParam displayName,
                                uint shaderInputRangesId,
                                uint subRenderGroupCount = 0,
                                bool render = true);
-  void AddRenderTaskPostProcess(RenderSettings& renderSettings, StringParam postProcessName, uint shaderInputsId);
+  void AddRenderTaskPostProcess(RenderSettings& renderSettings, StringParam postProcessName, uint shaderInputsId, StringParam name);
   void AddRenderTaskPostProcess(RenderSettings& renderSettings,
                                 MaterialRenderData* materialRenderData,
-                                uint shaderInputsId);
+                                uint shaderInputsId,
+								String& name);
   void AddRenderTaskBackBufferBlit(RenderTarget* colorTarget, ScreenViewport viewport);
   void AddRenderTaskTextureUpdate(Texture* texture);
 

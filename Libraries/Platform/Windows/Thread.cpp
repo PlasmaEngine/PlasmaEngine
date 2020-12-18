@@ -70,6 +70,12 @@ size_t Thread::GetThreadId()
   return ::GetThreadId(self->mHandle);
 }
 
+String Thread::GetThreadName()
+{
+  return mThreadName;
+}
+
+	
 size_t Thread::GetCurrentThreadId()
 {
   return ::GetCurrentThreadId();

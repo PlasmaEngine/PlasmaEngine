@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "TAA"
+		var ResourceId = 0x5f6124806cf2fae0
+	}
+}

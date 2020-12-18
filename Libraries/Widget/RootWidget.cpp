@@ -149,6 +149,7 @@ void DrawChain(
 
 void RootWidget::OnUiRenderUpdate(Event* event)
 {
+  ProfileScopeTree("RootWidgetRenderUpdate", "UiRenderUpdate", Color::DeepGreen)
   ColorTransform colorTx = {Vec4(1, 1, 1, 1)};
   WidgetRect clipRect = {0, 0, mSize.x, mSize.y};
 
@@ -227,7 +228,7 @@ void RootWidget::OnUiRenderUpdate(Event* event)
 
   RenderTaskHelper helper(renderTasks.mRenderTaskBuffer);
   helper.AddRenderTaskClearTarget(renderSettings, mClearColor, 0, 0, 0xFF);
-  helper.AddRenderTaskRenderPass(renderSettings, 0, defaultRenderPass->Name, shaderInputsId);
+  helper.AddRenderTaskRenderPass(renderSettings, 0, defaultRenderPass->Name, "RootWidget", shaderInputsId);
 
   ScreenViewport viewport = {0, 0, (int)mSize.x, (int)mSize.y};
   helper.AddRenderTaskBackBufferBlit(renderTarget, viewport);

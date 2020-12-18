@@ -21,7 +21,7 @@ class FpsSampler : public DataSampler
     Record* record = records.Front();
     for (int i = 0; i < records.Length(); i++)
     {
-      if (records[i]->GetName() == "Plasma::ExecuteRendererJob")
+      if (records[i]->GetName() == "GraphicSystem")
       {
         record = records[i];
         break;
@@ -129,6 +129,16 @@ public:
   }
 };
 
+void EnableDebugging(Editor* editor)
+{
+  PL::gEngine->mIsDebugging = true;
+}
+
+void DisableDebugging(Editor* editor)
+{
+  PL::gEngine->mIsDebugging = false;
+}
+
 void AddMemory(Editor* editor)
 {
   MemoryGraphWidget* graphWidget = new MemoryGraphWidget(editor);
@@ -137,12 +147,34 @@ void AddMemory(Editor* editor)
   editor->AddManagedWidget(graphWidget, DockArea::Bottom, true);
 }
 
-void AddPerformance(Editor* editor)
+void AddGraphicsPerformance(Editor* editor)
 {
-  if (!editor->mManager->FindWidget("Performance"))
+  if (!editor->mManager->FindWidget("Graphics Performance"))
   {
-    PerformanceGraphWidget* graphWidget = new PerformanceGraphWidget(editor);
-    graphWidget->SetName("Performance");
+    PerformanceGraphWidget* graphWidget = new PerformanceGraphWidget(editor, "GraphicsSystem");
+    graphWidget->SetName("Graphics Performance");
+    graphWidget->SetSize(Pixels(400, 200));
+    editor->AddManagedWidget(graphWidget, DockArea::Bottom, true);
+  }
+}
+
+void AddPhysicsPerformance(Editor* editor)
+{
+  if (!editor->mManager->FindWidget("Physics Performance"))
+  {
+    PerformanceGraphWidget* graphWidget = new PerformanceGraphWidget(editor, "Physics");
+    graphWidget->SetName("Physics Performance");
+    graphWidget->SetSize(Pixels(400, 200));
+    editor->AddManagedWidget(graphWidget, DockArea::Bottom, true);
+  }
+}
+
+void AddNetworkPerformance(Editor* editor)
+{
+  if (!editor->mManager->FindWidget("Networking Performance"))
+  {
+    PerformanceGraphWidget* graphWidget = new PerformanceGraphWidget(editor, "Networking");
+    graphWidget->SetName("Networking Performance");
     graphWidget->SetSize(Pixels(400, 200));
     editor->AddManagedWidget(graphWidget, DockArea::Bottom, true);
   }
@@ -231,7 +263,12 @@ void EndTracing(Editor* editor)
 
 void SetupGraphCommands(Cog* configCog, CommandManager* commands)
 {
-  commands->AddCommand("Performance", BindCommandFunction(AddPerformance), true);
+  commands->AddCommand("EnableDebugging", BindCommandFunction(EnableDebugging), true);
+  commands->AddCommand("Disable Debugging", BindCommandFunction(DisableDebugging), true);
+  commands->AddCommand("Profile Networking", BindCommandFunction(AddNetworkPerformance), true);
+  commands->AddCommand("Memory", BindCommandFunction(AddMemory), true);
+  commands->AddCommand("Profile Graphics", BindCommandFunction(AddGraphicsPerformance), true);
+  commands->AddCommand("Profile Physics", BindCommandFunction(AddPhysicsPerformance), true);
   commands->AddCommand("Graph", BindCommandFunction(AddGraph), true);
   commands->AddCommand("BeginTracing", BindCommandFunction(BeginTracing), true);
   commands->AddCommand("EndTracing", BindCommandFunction(EndTracing), true);

@@ -12,7 +12,7 @@ struct HeightMapAlbedoValue
   [Input] var GammaCorrect : Boolean = true;
   
   [FragmentInput][StageInput] var Uv : Real2;
-  [FragmentInput] var HeightMapTextureWeights : Real4;
+  [FragmentInput][StageInput] var HeightMapWeights : SampledImage2d;
   
   [Output] var Albedo : Real3;
   
@@ -24,9 +24,13 @@ struct HeightMapAlbedoValue
   
   function Main()
   {
-    this.Albedo += this.GammaCorrectColor(this.AlbedoValue0.XYZ) * this.HeightMapTextureWeights.X;
-    this.Albedo += this.GammaCorrectColor(this.AlbedoValue1.XYZ) * this.HeightMapTextureWeights.Y;
-    this.Albedo += this.GammaCorrectColor(this.AlbedoValue2.XYZ) * this.HeightMapTextureWeights.Z;
-    this.Albedo += this.GammaCorrectColor(this.AlbedoValue3.XYZ) * this.HeightMapTextureWeights.W;
+    
+    var weights = this.HeightMapWeights.Sample(this.Uv);
+
+      
+    this.Albedo += this.GammaCorrectColor(this.AlbedoValue0.XYZ) * weights.X;
+    this.Albedo += this.GammaCorrectColor(this.AlbedoValue1.XYZ) * weights.Y;
+    this.Albedo += this.GammaCorrectColor(this.AlbedoValue2.XYZ) * weights.Z;
+    this.Albedo += this.GammaCorrectColor(this.AlbedoValue3.XYZ) * weights.W;
   }
 }

@@ -334,7 +334,7 @@ ImplementResourceManager(TextureManager, Texture);
 
 TextureManager::TextureManager(BoundType* resourceType) : ResourceManager(resourceType)
 {
-  AddLoader(ZTexLoader, new TextureLoader());
+  AddLoader(PTexLoader, new TextureLoader());
 
   DefaultResourceName = "Grey";
   mCanAddFile = true;

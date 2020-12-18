@@ -1,0 +1,22 @@
+// MIT Licensed (see LICENSE.md).
+[RunInEditor]
+class PostProcessTAA : LightningComponent
+{
+    [Property] var Active : Boolean = true;
+    [Property] var BlendFactor : Real = 0.1;
+    
+    function AddRenderTasks(event : RenderTasksEvent, lightBuffer : RenderTarget, lastLightBuffer : RenderTarget, velTex : RenderTarget, depth : RenderTarget, firstFrame : Integer)
+    {
+        if(this.Active == false)
+            return;
+            
+        var postTaa = TAA();
+        postTaa.HDRTex = lightBuffer.Texture;
+        postTaa.PrevHDRTex = lastLightBuffer.Texture;
+        postTaa.FirstFrame = 0;
+        postTaa.BlendFactor = this.BlendFactor;
+        postTaa.VelPosTex = velTex.Texture;
+        postTaa.Depth = depth.Texture;
+        event.AddRenderTaskPostProcess(lightBuffer, postTaa, "TAA");
+    }
+}

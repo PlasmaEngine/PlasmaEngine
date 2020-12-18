@@ -1,0 +1,39 @@
+// MIT Licensed (see LICENSE.md).
+
+// Shader input attribute definitions
+// [AppBuiltInInput] Input comes from predefined data given by the graphics engine
+// [StageInput]      Input comes from the previous hardware stage (mesh -> vertex -> geometry -> pixel)
+// [FragmentInput]   Input comes from a previous fragment in the same stage
+// [PropertyInput]   Input comes from this fragment
+// [Input]           Input auto resolves from any of the previous in the order
+//                   [FragmentInput][StageInput][AppBuiltInInput][PropertyInput]
+//
+// Pixel fragment Example:
+// [FragmentInput][StageInput] var ViewNormal : Real3;
+// Input will come from a previous pixel fragment that outputs ViewNormal
+// otherwise, input will come from the vertex shader
+
+[Pixel][PostProcess]
+struct VelocityBuffer
+{
+    [AppBuiltInInput] var ViewToPerspective : Real4x4;
+    
+    // Common vertex inputs
+    [FragmentInput][StageInput] var ViewPosition : Real3;
+    [FragmentInput][StageInput] var LastViewPosition : Real3;
+    [FragmentInput][StageInput] var Uv : Real2;
+
+    [Input] var VelPosTex : SampledImage2d;
+    [Input] var FirstFrame : Boolean;
+    [Output] var Target0 : Real4;
+    
+    function Main()
+    {
+        var curScreenSpace = Math.Multiply(this.ViewToPerspective, Real4(this.ViewPosition, 1.0));
+        curScreenSpace.XY /= curScreenSpace.W;
+        var lastScreenPos = Math.Multiply(this.ViewToPerspective, Real4(this.LastViewPosition, 1.0));
+        lastScreenPos.XY /= lastScreenPos.W;
+        
+        this.Target0 = Real4((curScreenSpace.XY * 0.5 + Real2(0.5)) - (lastScreenPos.XY * 0.5 + Real2(0.5)), curScreenSpace.XY);
+    }
+}

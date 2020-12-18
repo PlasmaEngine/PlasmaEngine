@@ -131,6 +131,7 @@ extern const String PreviewCamera;
 extern const String ObjectLink;
 extern const String Default;
 extern const String Sprite;
+extern const String SpritePreview;
 extern const String SpriteText;
 extern const String SpriteParticles;
 extern const String Spline;

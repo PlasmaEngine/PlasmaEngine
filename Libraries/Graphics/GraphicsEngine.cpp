@@ -293,20 +293,20 @@ void GraphicsEngine::Update(bool debugger)
   UpdateRenderGroups();
 
   {
-    ProfileScopeTree("FrameUpdate", "Graphics", Color::SpringGreen);
+    ProfileScopeTree("FrameUpdate", "GraphicsSystem", Color::SpringGreen);
     float frameDt = PL::gEngine->has(TimeSystem)->mEngineDt;
     forRange (GraphicsSpace& space, mSpaces.All())
       space.OnFrameUpdate(frameDt);
   }
 
   {
-    ProfileScopeTree("RenderTasksUpdate", "Graphics", Color::LimeGreen);
+    ProfileScopeTree("RenderTasksUpdate", "GraphicsSystem", Color::LimeGreen);
     forRange (GraphicsSpace& space, mSpaces.All())
       space.RenderTasksUpdate(*mRenderTasksBack);
   }
 
   {
-    ProfileScopeTree("RenderQueuesUpdate", "Graphics", Color::LawnGreen);
+    ProfileScopeTree("RenderQueuesUpdate", "GraphicsSystem", Color::LawnGreen);
     forRange (GraphicsSpace& space, mSpaces.All())
       space.RenderQueuesUpdate(*mRenderTasksBack, *mRenderQueuesBack);
 
@@ -314,7 +314,7 @@ void GraphicsEngine::Update(bool debugger)
   }
 
   {
-    ProfileScopeTree("UiRenderUpdate", "Graphics", Color::DarkOliveGreen);
+    ProfileScopeTree("UiRenderUpdate", "GraphicsSystem", Color::DarkSeaGreen);
     // add ui render task range after sorting so that everything else renders
     // before it
     Event event;
@@ -322,7 +322,7 @@ void GraphicsEngine::Update(bool debugger)
   }
 
   {
-    ProfileScopeTree("WaitOnRenderer", "Graphics", Color::Bisque);
+    ProfileScopeTree("WaitOnRenderer", "GraphicsSystem", Color::Bisque);
     // cannot run another RenderTasks job unless the last one is done
     mDoRenderTasksJob->WaitOnThisJob();
   }

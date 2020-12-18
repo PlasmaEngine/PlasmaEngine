@@ -20,10 +20,12 @@ Material
 	MetallicMap 
 	{
 		var MetallicMap = "5827acd640fecdcb:PlasmaMetallic"
+		var Invert = false
 	}
 	RoughnessMap 
 	{
 		var RoughnessMap = "5827b28df611775d:PlasmaRoughness"
+		var Invert = false
 	}
 	SpecularValue 
 	{

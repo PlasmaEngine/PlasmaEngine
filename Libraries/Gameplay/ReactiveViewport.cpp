@@ -580,6 +580,7 @@ void GameWidget::SaveScreenshot(StringParam filename)
 
 void GameWidget::OnUiRenderUpdate(Event* event)
 {
+  ProfileScopeTree("RenderGameWidget", "UiRenderUpdate", Color::YellowGreen)
   // Update runs one time to add tasks for a screenshot and then disconnects
   GraphicsEngine* graphics = PL::gEngine->has(GraphicsEngine);
   RenderTasks& renderTasks = *graphics->mRenderTasksBack;
@@ -630,7 +631,7 @@ void GameWidget::OnUiRenderUpdate(Event* event)
 
   RenderTaskHelper helper(renderTasks.mRenderTaskBuffer);
   helper.AddRenderTaskClearTarget(renderSettings, GetRootWidget()->mClearColor, 0, 0, 0);
-  helper.AddRenderTaskRenderPass(renderSettings, 0, "ColorOutput", 0);
+  helper.AddRenderTaskRenderPass(renderSettings, 0, "ColorOutput", "GameUI" ,0);
   renderTaskRange.mTaskCount = 2;
 
   graphics->WriteTextureToFile(textureHandle, mScreenshotFilename);

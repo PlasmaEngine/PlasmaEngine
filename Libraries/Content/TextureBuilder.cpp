@@ -194,7 +194,7 @@ bool TextureBuilder::NeedsBuilding(BuildOptions& options)
 
 void TextureBuilder::BuildListing(ResourceListing& listing)
 {
-  String loader = ZTexLoader;
+  String loader = PTexLoader;
   String destFile = GetOutputFile();
   listing.PushBack(ResourceEntry(0, loader, Name, destFile, mResourceId, this->mOwner, this));
 }
@@ -240,7 +240,7 @@ void TextureBuilder::SetHalfScaleCount(int halfScaleCount)
 
 String TextureBuilder::GetOutputFile()
 {
-  return BuildString(Name, ".ztex");
+  return BuildString(Name, ".ptex");
 }
 
 // PlasmaDefineType(HeightToNormalBuilder);

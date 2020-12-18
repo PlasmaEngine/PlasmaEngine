@@ -390,6 +390,7 @@ Vec2 CameraViewport::GetViewportOffsetWithMargin()
 
 void CameraViewport::OnRenderTasksUpdateInternal(RenderTasksEvent* event)
 {
+  ProfileScopeTree("CameraViewportRender", "RenderTasksUpdate", Color::LemonChiffon)
   ConfigureViewport();
 
   if (mGraphicsSpace->mActive == false || mActiveCamera == nullptr)

@@ -1,0 +1,18 @@
+// MIT Licensed (see LICENSE.md).
+
+class IState
+{
+    function GetAnimation() : Animation
+    {
+        return null;
+    }
+    
+    function UpdateState()
+    {
+    }
+    
+    function CheckTransitions() : IState
+    {
+        return null;
+    }
+}

@@ -16,7 +16,7 @@ DataContent
 		var Category = ""
 		var CategorySortWeight = 100
 	}
-	ContentEditorOptions
+	ContentEditorOptions 
 	{
 		var ShowInEditor = true
 	}

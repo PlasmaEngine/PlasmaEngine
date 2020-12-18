@@ -710,19 +710,22 @@ void UiRootWidget::FlushGraphicals(RenderTasksEvent* e,
   if (mStencilDrawMode == StencilDrawMode::Add)
   {
     mStencilAddSettings.SetDepthTarget(depth);
-    e->AddRenderTaskRenderPass(mStencilAddSettings, mGraphicals, *renderPass);
+    String name = "UIRootStencilAdd";
+    e->AddRenderTaskRenderPass(mStencilAddSettings, mGraphicals, *renderPass, name);
   }
   else if (mStencilDrawMode == StencilDrawMode::Remove)
   {
     mStencilRemoveSettings.SetDepthTarget(depth);
-    e->AddRenderTaskRenderPass(mStencilRemoveSettings, mGraphicals, *renderPass);
+    String name = "UIRootStencilRemove";
+    e->AddRenderTaskRenderPass(mStencilRemoveSettings, mGraphicals, *renderPass, name);
   }
   else if (mStencilDrawMode == StencilDrawMode::Test)
   {
     mStencilTestSettings.SetColorTarget(color);
     mStencilTestSettings.SetDepthTarget(depth);
     mStencilTestSettings.mDepthSettings.mStencilTestValue = mStencilCount;
-    e->AddRenderTaskRenderPass(mStencilTestSettings, mGraphicals, *renderPass);
+    String name = "UIRootStencilTest";
+    e->AddRenderTaskRenderPass(mStencilTestSettings, mGraphicals, *renderPass, name);
   }
 
   mGraphicals.Clear();

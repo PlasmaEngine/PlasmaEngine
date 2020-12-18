@@ -46,7 +46,7 @@ void PhysicsEngine::Update(bool debugger)
   if (debugger)
     return;
 
-  ProfileScopeTree("PhysicsEngineUpdate", "Engine", Color::Yellow);
+  ProfileScopeTree("Physics", "Engine", Color::Yellow);
 
   // Update each physics space
   SpaceList::range r = mSpaces.All();

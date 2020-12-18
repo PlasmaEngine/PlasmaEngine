@@ -246,11 +246,11 @@ void Composite::UpdateChildTransforms()
   size_t counter = 0;
   forRange (auto& child, GetChildren())
   {
-    if (counter++ > MaxIterations)
-    {
-      Error("Max child iterations reached in Composite::UpdateChildTransforms");
-      return;
-    }
+   // if (counter++ > MaxIterations)
+   // {
+   //   Error("Max child iterations reached in Composite::UpdateChildTransforms");
+    //  return;
+    //}
 
     child.DebugValidate();
 

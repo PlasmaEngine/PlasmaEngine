@@ -49,6 +49,9 @@ public:
   // Get the thread id of this thread
   size_t GetThreadId();
 
+  // Get the name for this thread
+  String GetThreadName();
+
   // Get the current thread id of the running thread
   static size_t GetCurrentThreadId();
 

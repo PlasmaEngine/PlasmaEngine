@@ -18,7 +18,7 @@ class Composite;
 class PerformanceGraphWidget : public Widget
 {
 public:
-  PerformanceGraphWidget(Composite* parent);
+  PerformanceGraphWidget(Composite* parent, String scopeName);
 
   void RenderUpdate(ViewBlock& viewBlock,
                     FrameBlock& frameBlock,
@@ -47,6 +47,7 @@ public:
 
   Vec3 mGraphPos;
   Vec3 mGraphSize;
+  String m_scopeName;
 };
 
 /// Displays bar-graphs of current memory usage. Should eventually be

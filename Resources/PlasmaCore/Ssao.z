@@ -35,7 +35,7 @@ class Ssao : LightningComponent
     // Downsample geo buffer to improve cache performance from ssao sampling pattern
     var copyGeo = CopyTarget();
     copyGeo.Texture = geometryBuffer0.Texture;
-    event.AddRenderTaskPostProcess(halfResGeo, copyGeo);
+    event.AddRenderTaskPostProcess(halfResGeo, copyGeo, "SSAOCopy");
     
     // Clear to no occlusion
     event.AddRenderTaskClearTarget(halfResOcclusion, Real4(1.0));
@@ -51,7 +51,7 @@ class Ssao : LightningComponent
     ssao.Intensity = this.Intensity;
     
     // Accumulate occlusion
-    event.AddRenderTaskPostProcess(ssaoSettings, ssao);
+    event.AddRenderTaskPostProcess(ssaoSettings, ssao, "SSAOAccumulate");
     
     var upsample = JointBilateralOcclusionUpsample();
     upsample.GeometryBuffer0 = geometryBuffer0.Texture;
@@ -62,7 +62,7 @@ class Ssao : LightningComponent
     upsample.OcclusionBuffer = halfResOcclusion.Texture;
     
     // Bring ssao results to full resolution
-    event.AddRenderTaskPostProcess(occlusionBuffer, upsample);
+    event.AddRenderTaskPostProcess(occlusionBuffer, upsample, "Upscale");
     
     // Edge safe blur on occlusion buffer
     BlurTextureEdgeSafe[BilateralBlurRadius5].Call(event, occlusionBuffer, geometryBuffer0, this.BlurDepthThreshold, 2.0);
@@ -83,7 +83,7 @@ class Ssao : LightningComponent
     // Multiply the lightBuffer with the occlusionBuffer
     var copyTarget = CopyTargetSingleChannel();
     copyTarget.Texture = occlusionBuffer.Texture;
-    event.AddRenderTaskPostProcess(copySettings, copyTarget);
+    event.AddRenderTaskPostProcess(copySettings, copyTarget, "SSAOCopy");
     
     occlusionBuffer.Release();
     halfResOcclusion.Release();
