@@ -1,43 +1,58 @@
 // MIT Licensed (see LICENSE.md).
 
-// Shader input attribute definitions
-// [AppBuiltInInput] Input comes from predefined data given by the graphics engine
-// [StageInput]      Input comes from the previous hardware stage (mesh -> vertex -> geometry -> pixel)
-// [FragmentInput]   Input comes from a previous fragment in the same stage
-// [PropertyInput]   Input comes from this fragment
-// [Input]           Input auto resolves from any of the previous in the order
-//                   [FragmentInput][StageInput][AppBuiltInInput][PropertyInput]
-//
-// Pixel fragment Example:
-// [FragmentInput][StageInput] var ViewNormal : Real3;
-// Input will come from a previous pixel fragment that outputs ViewNormal
-// otherwise, input will come from the vertex shader
-
 [Pixel][PostProcess]
 struct SSRApply
-{
+{      
     [StageInput] var Uv : Real2;
     
     [Input] var SSRBuffer : SampledImage2d;
+    [Input] var SSRBlurBuffer : SampledImage2d;
+    [Input] var GeometryBuffer0 : SampledImage2d;
+    [Input] var GeometryBuffer1 : SampledImage2d;
     [Input] var ScreenBuffer : SampledImage2d;
     [Output] var Target0 : Real4;
     function Main()
     {
+        var geometrySample0 = this.GeometryBuffer0.Sample(this.Uv);
+        var geometrySample1 = this.GeometryBuffer1.Sample(this.Uv);
         var ssrSample = this.SSRBuffer.Sample(this.Uv);
+        var ssrBlurSample = this.SSRBlurBuffer.Sample(this.Uv);
         var screenSample = this.ScreenBuffer.Sample(this.Uv).XYZ;
         
-        if(ssrSample.W < 0.5)
+        var roughness = GeometryPass.GetRoughness(geometrySample0);
+        var albedo = GeometryPass.GetAlbedo(geometrySample1);
+        var metallic = GeometryPass.GetMetallic(geometrySample1);
+        
+        ssrSample = Math.Lerp(ssrSample, ssrBlurSample, Math.Saturate(roughness *3));
+        ssrSample.XYZ += (screenSample.XYZ );
+            
+        if(Math.Max(Math.Max(ssrSample.X, ssrSample.Y), ssrSample.Z) < 0.001)
             ssrSample.XYZ  = screenSample.XYZ;
-        else
-            ssrSample.XYZ += screenSample.XYZ * Utility.Luminance(ssrSample.XYZ);
-        this.Target0 = Real4(ssrSample.XYZ, 1.0);
+            
+        this.Target0 = Real4(Math.Saturate(ssrSample.XYZ), ssrSample.W);
     }
 }
 
 [Pixel][PostProcess]
+struct SSRCopy
+{
+    [StageInput] var Uv : Real2;
+    [Input] var Texture : SampledImage2d;
+    [Output] var Target0 : Real4;
+
+    function Main()
+    {
+        var sample0 = this.Texture.Sample(this.Uv);
+        this.Target0.XYZ = sample0.XYZ;
+        this.Target0.W = 1.0;
+    }
+}
+
+
+[Pixel][PostProcess]
 struct SSR
 {
-[AppBuiltInInput] var ViewToWorld : Real4x4;
+    [AppBuiltInInput] var ViewToWorld : Real4x4;
     [AppBuiltInInput] var FarPlane : Real;
     [AppBuiltInInput] var PerspectiveToView : Real4x4;
     [AppBuiltInInput] var ViewToPerspective : Real4x4;
@@ -54,7 +69,8 @@ struct SSR
     [Input] var Brighness :Real;
     [Input] var EnvironmentBrdfLut : SampledImage2d;
     [Input] var Jiiter : Boolean;
-    [Input] var BlueNoise : SampledImage2d;
+    [Input] var Itteractions : Real;
+    [Input] var StepDistance : Real;
  
     [Output] var Target0 : Real4;
  
@@ -74,17 +90,7 @@ struct SSR
     {
         return ndcPos * 0.5 + Real2(0.5);
     }
-    
-    function ImportanceSampleGGX( xi : Real2, roughness : Real) : Real3
-    {
-        var roughness2 = roughness * roughness;
-        var phi = 2 * Math.Pi * xi.X;
-        var cos = Math.Sqrt((1 - xi.Y) / (1 + (roughness2 * roughness2 - 1) * xi.Y));
-        var sin = Math.Sqrt(1 - cos * cos);
-        
-        return Real3(sin * Math.Cos(phi), sin * Math.Sin(phi), cos);
-    }
- 
+
     function Main()
     {
         // Sample Buffers
@@ -121,11 +127,11 @@ struct SSR
         var direction = reflected * Math.Max(0.1, -viewPosition.Z);
  
         if(this.Jiiter)
-        {
+        {          
             var jitter = Math.Lerp(Real3.Zero, this.Hash(worldPosition.XYZ, roughness), roughness);
             direction += jitter;
         }
-        direction *= Real3(0.01);
+        direction *= Real3(this.StepDistance);
  
         var steps = 0.0;
         var projectedCoords = Real4.Zero;
@@ -144,7 +150,7 @@ struct SSR
             var rayGeometrySample = this.GeometryBuffer0.Sample(projectedCoords.XY);
             rayDepth = -GeometryPass.GetDepth(rayGeometrySample) * this.FarPlane;
  
-            if(rayDepth < -100)
+            if(rayDepth < -1000)
                 continue;
  
             pDepth = hitPosition.Z - rayDepth;
@@ -187,6 +193,7 @@ struct SSR
             }
             ++steps;
         }
+        
  
         var coords = Real4(projectedCoords.XY, 0, foundResult);
         var dCoords = Math.Abs(Real2(0.5) - coords.XY);
@@ -197,18 +204,13 @@ struct SSR
         
         coords.XY = Math.Saturate(coords.XY);
  
-        var ssr = (this.ScreenBuffer.SampleLod(coords.XY, roughness).XYZ * Math.Clamp(reflectionMultipler, 0.0, 0.9) * fresnel) * (Real3(0.10) * brdfSpec.X + brdfSpec.YYY);
+        var ssr = (this.ScreenBuffer.SampleLod(coords.XY, roughness).XYZ * Math.Clamp(reflectionMultipler, 0.0, 0.9) * fresnel)  * (albedo * brdfSpec.X + brdfSpec.YYY);
         
-        if(!(foundResult as Boolean))
+        if(Math.Max(Math.Max(ssr.X, ssr.Y), ssr.Z) < 0.001)
         {
           ShaderIntrinsics.Kill();
         }
         
-        if(Math.Max(Math.Max(ssr.X, ssr.Y), ssr.Z) < 0.005)
-        {
-          ShaderIntrinsics.Kill();
-        }
-        
-        this.Target0 = Real4( ssr * 4, foundResult);
+        this.Target0 = Real4(ssr , foundResult);
     }
 }

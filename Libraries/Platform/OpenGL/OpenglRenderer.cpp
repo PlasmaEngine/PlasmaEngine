@@ -3,6 +3,8 @@
 #include "Precompiled.hpp"
 #include "OpenglRenderer.hpp"
 
+#include "Support/Profiler.hpp"
+
 #ifdef PlasmaTargetOsEmscripten
 #  define PlasmaWebgl
 #else
@@ -251,6 +253,8 @@ namespace Plasma
             return GL_TEXTURE_2D;
         case TextureType::TextureCube:
             return GL_TEXTURE_CUBE_MAP;
+        case TextureType::Texture3D:
+            return GL_TEXTURE_3D;
         default:
             return 0;
         }
@@ -1738,7 +1742,7 @@ namespace Plasma
         {
             ErrorIf(taskIndex >= mRenderTasks->mRenderTaskBuffer.mCurrentIndex, "Render task data is not valid.");
             RenderTask* task = (RenderTask*)&mRenderTasks->mRenderTaskBuffer.mRenderTaskData[taskIndex];
-
+        	
             switch (task->mId)
             {
             case RenderTaskType::ClearTarget:
@@ -1799,7 +1803,7 @@ namespace Plasma
 
     void OpenglRenderer::DoRenderTaskRenderPass(RenderTaskRenderPass* task)
     {
-        // Create a map of RenderGroup id to task memory index for every sub group
+       	// Create a map of RenderGroup id to task memory index for every sub group
         // entry.
         HashMap<int, size_t> taskIndexMap;
         while (taskIndexMap.Size() < task->mSubRenderGroupCount)
@@ -1815,63 +1819,67 @@ namespace Plasma
         // All ViewNodes under the base RenderGroup.
         IndexRange viewNodeRange = mViewBlock->mRenderGroupRanges[task->mRenderGroupIndex];
 
-        for (uint i = viewNodeRange.start; i < viewNodeRange.end; ++i)
         {
-            ViewNode& viewNode = mViewBlock->mViewNodes[i];
-            FrameNode& frameNode = mFrameBlock->mFrameNodes[viewNode.mFrameNodeIndex];
+	        ProfileScopeTree(task->mRenderPassDisplayName, "Plasma::ExecuteRendererJob", Color::HotPink)
 
-            // Get the index for this object's RenderGroup settings. Always default to
-            // the base task entry.
-            size_t index = taskIndexMap.FindValue(viewNode.mRenderGroupId, 0);
+        	for (uint i = viewNodeRange.start; i < viewNodeRange.end; ++i)
+	        {
+	            ViewNode& viewNode = mViewBlock->mViewNodes[i];
+	            FrameNode& frameNode = mFrameBlock->mFrameNodes[viewNode.mFrameNodeIndex];
 
-            // Sub RenderGroups have unique render settings when a different task index
-            // is encountered. Or this is just the first set.
-            if (index != currentTaskIndex)
-            {
-                // Offsets to sub RenderGroup settings or just the base task.
-                RenderTaskRenderPass* subTask = task + index;
+	            // Get the index for this object's RenderGroup settings. Always default to
+	            // the base task entry.
+	            size_t index = taskIndexMap.FindValue(viewNode.mRenderGroupId, 0);
 
-                // Different RenderPass tasks are also made to denote RenderGroups to not
-                // render. Don't change state or render the object.
-                if (subTask->mRender == false)
-                    continue;
+	            // Sub RenderGroups have unique render settings when a different task index
+	            // is encountered. Or this is just the first set.
+	            if (index != currentTaskIndex)
+	            {
+	              // Offsets to sub RenderGroup settings or just the base task.
+	              RenderTaskRenderPass* subTask = task + index;
 
-                currentTaskIndex = index;
+	              // Different RenderPass tasks are also made to denote RenderGroups to not
+	              // render. Don't change state or render the object.
+	              if (subTask->mRender == false)
+	                continue;
 
-                // Flush potential pending draw call before changing state.
-                mStreamedVertexBuffer.FlushBuffer(true);
+	              ProfileScopeTree(subTask->mRenderPassDisplayName, "RenderTasksUpdate", Color::LightCyan)
 
-                mViewportSize = IntVec2(subTask->mRenderSettings.mTargetsWidth,
-                                        subTask->mRenderSettings.mTargetsHeight);
+	                  currentTaskIndex = index;
 
-                mShaderInputsId = subTask->mShaderInputsId;
-                mRenderPassName = subTask->mRenderPassName;
+	              // Flush potential pending draw call before changing state.
+	              mStreamedVertexBuffer.FlushBuffer(true);
 
-                SetRenderSettings(subTask->mRenderSettings, mDriverSupport.mMultiTargetBlend);
-                mClipMode = subTask->mRenderSettings.mScissorMode == ScissorMode::Enabled;
+	              mViewportSize = IntVec2(subTask->mRenderSettings.mTargetsWidth, subTask->mRenderSettings.mTargetsHeight);
 
-                // For easily resetting blend settings after overriding.
-                mCurrentBlendSettings = subTask->mRenderSettings.mBlendSettings[0];
+	              mShaderInputsId = subTask->mShaderInputsId;
+	              mRenderPassName = subTask->mRenderPassName;
 
-                SetRenderTargets(subTask->mRenderSettings);
+	              SetRenderSettings(subTask->mRenderSettings, mDriverSupport.mMultiTargetBlend);
+	              mClipMode = subTask->mRenderSettings.mScissorMode == ScissorMode::Enabled;
 
-                glViewport(0, 0, mViewportSize.x, mViewportSize.y);
-            }
+	              // For easily resetting blend settings after overriding.
+	              mCurrentBlendSettings = subTask->mRenderSettings.mBlendSettings[0];
 
-            // Render the object.
-            switch (frameNode.mRenderingType)
-            {
-            case RenderingType::Static:
-                mStreamedVertexBuffer.FlushBuffer(true);
-                DrawStatic(viewNode, frameNode);
-                break;
+	              SetRenderTargets(subTask->mRenderSettings);
 
-            case RenderingType::Streamed:
-                DrawStreamed(viewNode, frameNode);
-                break;
-            }
+	              glViewport(0, 0, mViewportSize.x, mViewportSize.y);
+	            }
+
+	            // Render the object.
+	            switch (frameNode.mRenderingType)
+	            {
+	            case RenderingType::Static:
+	              mStreamedVertexBuffer.FlushBuffer(true);
+	              DrawStatic(viewNode, frameNode);
+	              break;
+
+	            case RenderingType::Streamed:
+	              DrawStreamed(viewNode, frameNode);
+	              break;
+	            }
+	          }
         }
-
         mStreamedVertexBuffer.FlushBuffer(true);
         mActiveTexture = 0;
         mActiveMaterial = 0;
@@ -1885,6 +1893,8 @@ namespace Plasma
 
     void OpenglRenderer::DoRenderTaskPostProcess(RenderTaskPostProcess* task)
     {
+		
+    	
         mViewportSize = IntVec2(task->mRenderSettings.mTargetsWidth, task->mRenderSettings.mTargetsHeight);
         if (mViewportSize.x == 0 || mViewportSize.y == 0)
             return;
@@ -1900,24 +1910,28 @@ namespace Plasma
         GlShader* shader = GetShader(shaderKey);
         if (shader == nullptr)
             return;
+    	
+        {
+            ProfileScopeTree(task->mDisplayName, "Plasma::ExecuteRendererJob", Color::Cyan)
 
-        SetRenderTargets(task->mRenderSettings);
-        SetRenderSettings(task->mRenderSettings, mDriverSupport.mMultiTargetBlend);
+	        SetRenderTargets(task->mRenderSettings);
+	        SetRenderSettings(task->mRenderSettings, mDriverSupport.mMultiTargetBlend);
 
-        glViewport(0, 0, mViewportSize.x, mViewportSize.y);
+	        glViewport(0, 0, mViewportSize.x, mViewportSize.y);
 
-        SetShader(shader->mId);
+	        SetShader(shader->mId);
 
-        SetShaderParameters(mFrameBlock, mViewBlock);
+	        SetShaderParameters(mFrameBlock, mViewBlock);
 
-        // Set Material or PostProcess fragment parameters
-        mNextTextureSlot = 0;
-        SetShaderParameters(resourceId, task->mShaderInputsId, mNextTextureSlot);
-        SetShaderParameters(cGlobalShaderInputsId, task->mShaderInputsId, mNextTextureSlot);
+	        // Set Material or PostProcess fragment parameters
+	        mNextTextureSlot = 0;
+	        SetShaderParameters(resourceId, task->mShaderInputsId, mNextTextureSlot);
+	        SetShaderParameters(cGlobalShaderInputsId, task->mShaderInputsId, mNextTextureSlot);
 
-        // draw fullscreen triangle
-        glBindVertexArray(mTriangleArray);
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, static_cast<void*>(nullptr));
+	        // draw fullscreen triangle
+	        glBindVertexArray(mTriangleArray);
+            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, static_cast<void*>(nullptr));
+        }
         glBindVertexArray(0);
 
         SetShader(0);

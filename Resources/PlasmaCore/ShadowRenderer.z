@@ -47,7 +47,7 @@ class ShadowRenderer : LightningComponent
     shadowSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
     
     event.AddRenderTaskClearTarget(depth, 1.0);
-    event.AddRenderTaskRenderPass(shadowSettings, RenderGroup.ShadowCasters, NoPixelOutput());
+    event.AddRenderTaskRenderPass(shadowSettings, RenderGroup.ShadowCasters, NoPixelOutput(), "Shadows");
   }
   
   function SetShadowResolution()

@@ -779,8 +779,8 @@ void CreateGeometryContent(ContentSystem* system)
   // UNTESTED FORMAT IMPORTS BELOW, no readily available models to test
   // UNTESTED GAME FORMATS
   // glTF <-DOESN'T WORK, NEEDS TO OPEN ADDITIONAL FILES
-  // system->CreatorsByExtension["gltf"] =
-  // ContentTypeEntry(MetaTypeOf(GeometryContent), MakeGeometryContent);
+   system->CreatorsByExtension["gltf"] =
+   ContentTypeEntry(LightningTypeId(GeometryContent), MakeGeometryContent, UpdateGeometryContent);
   // Return to Castle Wolfenstein
   // system->CreatorsByExtension["mdc"] =
   // ContentTypeEntry(MetaTypeOf(GeometryContent), MakeGeometryContent);
@@ -843,6 +843,7 @@ void AddGeometryFileFilters(ResourceManager* manager)
   filters.PushBack(FileDialogFilter("*.amf"));
   filters.PushBack(FileDialogFilter("*.x3d"));
   filters.PushBack(FileDialogFilter("*.mmd"));
+  filters.PushBack(FileDialogFilter("*.gltf"));
 
   // The first filter should contain the extensions of all other filters
   FileDialogFilter& allFilter = filters[allMeshesIndex];

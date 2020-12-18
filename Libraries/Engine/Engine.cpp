@@ -99,6 +99,7 @@ Engine::Engine()
   mHaveLoadingResources = false;
   mTimePassed = 0.0f;
   mIsDebugging = false;
+
 }
 
 Engine::~Engine()

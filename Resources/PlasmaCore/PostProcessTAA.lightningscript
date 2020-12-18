@@ -17,6 +17,6 @@ class PostProcessTAA : LightningComponent
         postTaa.BlendFactor = this.BlendFactor;
         postTaa.VelPosTex = velTex.Texture;
         postTaa.Depth = depth.Texture;
-        event.AddRenderTaskPostProcess(lightBuffer, postTaa);
+        event.AddRenderTaskPostProcess(lightBuffer, postTaa, "TAA");
     }
 }

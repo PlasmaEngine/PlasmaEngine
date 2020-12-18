@@ -138,7 +138,7 @@ namespace Plasma
     /// Texture2D - Standard 2 dimensional texture
     /// TextureCube - Uses texture as a cubemap
     ///   Faces are extracted from the image using aspect ratio to determine layout
-    DeclareEnum2(TextureType, Texture2D, TextureCube);
+    DeclareEnum3(TextureType, Texture2D, TextureCube, Texture3D);
 
     DeclareEnum25(TextureFormat,
                   None,
@@ -873,6 +873,8 @@ namespace Plasma
         // Name of the RenderPass fragment for shader lookups. Inputs are mapped when
         // creating this task.
         String mRenderPassName;
+    	// Name use for visual
+        String mRenderPassDisplayName;
         // Id used to lookup all shader input data for the RenderPass fragment and all
         // Materials that will be used in this render task.
         uint mShaderInputsId;
@@ -889,6 +891,7 @@ namespace Plasma
     public:
         RenderSettings mRenderSettings;
         String mPostProcessName;
+    	String mDisplayName;
         MaterialRenderData* mMaterialRenderData;
         uint mShaderInputsId;
     };

@@ -20,12 +20,12 @@ class BlurTexture[BlurFragmentType]
     // Horizontal blur
     blur.Texture = target.Texture;
     blur.Vertical = false;
-    event.AddRenderTaskPostProcess(target2, blur);
+    event.AddRenderTaskPostProcess(target2, blur, "HorizontalBlur");
     
     // Vertical blur
     blur.Texture = target2.Texture;
     blur.Vertical = true;
-    event.AddRenderTaskPostProcess(target, blur);
+    event.AddRenderTaskPostProcess(target, blur, "VerticalBlur");
     
     target2.Release();
   }
@@ -51,12 +51,12 @@ class BlurTextureEdgeSafe[BlurFragmentType]
     // Horizontal blur
     blur.Texture = target.Texture;
     blur.Vertical = false;
-    event.AddRenderTaskPostProcess(target2, blur);
+    event.AddRenderTaskPostProcess(target2, blur, "HorizontalBlur");
     
     // Vertical blur
     blur.Texture = target2.Texture;
     blur.Vertical = true;
-    event.AddRenderTaskPostProcess(target, blur);
+    event.AddRenderTaskPostProcess(target, blur, "VerticalBlur");
     
     target2.Release();
   }

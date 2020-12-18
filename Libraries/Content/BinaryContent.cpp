@@ -24,6 +24,9 @@ ContentItem* MakeBinaryContent(ContentInitializer& initializer)
   // if(initializer.Extension == "hdr")
   // initializer.BuilderType = "TextureHdr";
 
+  if (initializer.Extension == "bin")
+    initializer.BuilderType = "Mesh";
+
   if (initializer.BuilderType.Empty())
   {
     ErrorIf(initializer.BuilderType.Empty(), errorMessage);

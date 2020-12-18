@@ -51,7 +51,7 @@ class ForwardRenderer : LightningComponent
       var skybox = Skybox();
       skybox.Skybox = this.Skybox;
     
-      event.AddRenderTaskPostProcess(colorTarget, skybox);
+      event.AddRenderTaskPostProcess(colorTarget, skybox, "Skybox");
     }
     
     var forwardSettings = RenderSettings();
@@ -92,10 +92,10 @@ class ForwardRenderer : LightningComponent
       forwardPassShadows.DirectLightIntensity *= this.DirectLighting as Real;
       forwardPassShadows.IndirectIntensity *= this.IndirectLighting as Real;
       
-      event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.Opaque, forwardPassShadows);
+      event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.Opaque, forwardPassShadows, "OpaqueForwardPassShadows");
       
       forwardSettings.CullMode = CullMode.Disabled;
-      event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.OpaqueDoubleSided, forwardPassShadows);
+      event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.OpaqueDoubleSided, forwardPassShadows, "DoubleSidedForwardPassShadows");
     }
     else
     {
@@ -119,10 +119,10 @@ class ForwardRenderer : LightningComponent
       forwardPass.DirectLightIntensity *= this.DirectLighting as Real;
       forwardPass.IndirectIntensity *= this.IndirectLighting as Real;
       
-      event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.Opaque, forwardPass);
+      event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.Opaque, forwardPass, "OpaqueForwardPass");
       
       forwardSettings.CullMode = CullMode.Disabled;
-      event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.OpaqueDoubleSided, forwardPass);
+      event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.OpaqueDoubleSided, forwardPass, "DoubleSidedForwardPass");
     }
     
     // Additive materials
@@ -138,7 +138,7 @@ class ForwardRenderer : LightningComponent
     alphaSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
     alphaSettings.DepthSettings.DepthMode = DepthMode.Read;
     alphaSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
-    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AdditiveBlend, ColorOutput());
+    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AdditiveBlend, ColorOutput(), "AdditiveMaterials");
     
     // Bloom
     if (this.Owner.Bloom != null)
@@ -150,7 +150,7 @@ class ForwardRenderer : LightningComponent
     // Alpha materials
     alphaSettings.ColorTarget = final;
     alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
-    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AlphaBlend, ColorOutput());
+    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AlphaBlend, ColorOutput(), "AlphaMaterials");
     
     this.DrawDebugObjects(event, final, depthTarget);
   }
@@ -161,13 +161,13 @@ class ForwardRenderer : LightningComponent
     {
       var filmicToneMap = FilmicTonemap();
       filmicToneMap.Texture = inputBuffer.Texture;
-      event.AddRenderTaskPostProcess(outputBuffer, filmicToneMap);
+      event.AddRenderTaskPostProcess(outputBuffer, filmicToneMap, "FilmicTonemap");
     }
     else
     {
       var toGamma = ToGamma();
       toGamma.Texture = inputBuffer.Texture;
-      event.AddRenderTaskPostProcess(outputBuffer, toGamma);
+      event.AddRenderTaskPostProcess(outputBuffer, toGamma, "ToGamma");
     }
   }
   
@@ -192,9 +192,9 @@ class ForwardRenderer : LightningComponent
     debugSettings.DepthSettings.DepthMode = DepthMode.Read;
     debugSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
     
-    event.AddRenderTaskRenderPass(debugSettings, RenderGroup.DebugDraw, ColorOutput());
+    event.AddRenderTaskRenderPass(debugSettings, RenderGroup.DebugDraw, ColorOutput(), "DebugDraw");
     
     debugSettings.DepthSettings.DepthMode = DepthMode.Disabled;
-    event.AddRenderTaskRenderPass(debugSettings, RenderGroup.DebugDrawOnTop, ColorOutput());
+    event.AddRenderTaskRenderPass(debugSettings, RenderGroup.DebugDrawOnTop, ColorOutput(), "DebugDrawOnTop");
   }
 }

@@ -4,7 +4,7 @@
 namespace Plasma
 {
 
-PerformanceGraphWidget::PerformanceGraphWidget(Composite* parent) : Widget(parent)
+PerformanceGraphWidget::PerformanceGraphWidget(Composite* parent, String scopeName) : Widget(parent) , m_scopeName(scopeName)
 {
 }
 
@@ -32,7 +32,7 @@ void PerformanceGraphWidget::RenderUpdate(
   Profile::Record* mainRecord;
   for (int i = 0; i < records.Length(); i++)
   {
-    if (records[i]->GetName() == "Plasma::ExecuteRendererJob")
+    if (records[i]->GetName() == m_scopeName)
     {
       mainRecord = records[i];
       break;

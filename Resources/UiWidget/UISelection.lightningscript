@@ -1,0 +1,120 @@
+// MIT Licensed (see LICENSE.md).
+
+class UISelection : LightningComponent
+{
+    [Group("Material")][Property]
+    var MaterialSample : CogPath;
+    [Property]
+    var MaterialSampleLevel : Level;
+    
+    [Property]
+    var LightingSample : CogPath;
+    [Property]
+    var LightingSampleLevel : Level;
+    
+    [Property]
+    var PhysicsSample : CogPath;
+    [Property]
+    var PhysicsSampleLevel : Level;
+    
+    [Property]
+    var ParticlesSample : CogPath;
+    [Property]
+    var ParticlesSampleLevel : Level;
+    
+    [Property]
+    var ForwardButton : CogPath;
+    [Property]
+    var BackButton : CogPath;
+    
+    
+    var CurrentSample : Samples = Samples.Material;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Plasma.Connect(this.ForwardButton.Cog, Events.LeftClick, this.OnForwardClick);
+        Plasma.Connect(this.BackButton.Cog, Events.LeftClick, this.OnBackClick);
+        
+        Plasma.Connect(this.MaterialSample.Cog, Events.LeftClick, this.OnSampleClicked);
+        Plasma.Connect(this.LightingSample.Cog, Events.LeftClick, this.OnSampleClicked);
+        Plasma.Connect(this.PhysicsSample.Cog, Events.LeftClick, this.OnSampleClicked);
+        Plasma.Connect(this.ParticlesSample.Cog, Events.LeftClick, this.OnSampleClicked);
+    }
+    
+    function OnSampleClicked(event : ViewportMouseEvent)
+    {
+        if(this.CurrentSample == Samples.Material)
+        {
+            this.Space.LoadLevel(this.MaterialSampleLevel);
+        }
+        else if(this.CurrentSample == Samples.Lighting)
+        {
+            this.Space.LoadLevel(this.LightingSampleLevel);
+        }
+        else if(this.CurrentSample == Samples.Physics)
+        {
+            this.Space.LoadLevel(this.PhysicsSampleLevel);
+        }
+        else if(this.CurrentSample == Samples.Particles)
+        {
+            this.Space.LoadLevel(this.ParticlesSampleLevel);
+        }
+    }
+    
+    function OnForwardClick(event : ViewportMouseEvent)
+    {
+        this.CurrentSample = this.CurrentSample + 1;
+        
+        if(this.CurrentSample == Samples.Last)
+            this.CurrentSample = Samples.Begin + 1;
+            
+        this.UpdateImage();
+    }
+    
+    function OnBackClick(event : ViewportMouseEvent)
+    {
+        this.CurrentSample = this.CurrentSample - 1;
+        
+        if(this.CurrentSample == Samples.Begin)
+            this.CurrentSample = Samples.Last -1;
+            
+        this.UpdateImage();
+    }
+    
+    function UpdateImage()
+    {        
+        this.MaterialSample.UiWidget.Active = false;
+        this.LightingSample.UiWidget.Active = false;
+        this.PhysicsSample.UiWidget.Active = false;
+        this.ParticlesSample.UiWidget.Active = false;
+     
+        if(this.CurrentSample == Samples.Material)
+        {
+            this.MaterialSample.UiWidget.Active = true;
+        }
+        else if(this.CurrentSample == Samples.Lighting)
+        {
+            this.LightingSample.UiWidget.Active = true;
+        }
+        else if(this.CurrentSample == Samples.Physics)
+        {
+            this.PhysicsSample.UiWidget.Active = true;
+        }
+        else if(this.CurrentSample == Samples.Particles)
+        {
+            this.ParticlesSample.UiWidget.Active = true;
+        }
+        
+        Console.WriteLine(this.CurrentSample);
+    }
+}
+
+enum Samples
+{
+    Begin,
+    Material,
+    Lighting,
+    Physics,
+    Particles,
+    Last
+}

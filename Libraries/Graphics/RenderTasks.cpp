@@ -174,18 +174,18 @@ LightningDefineType(RenderTasksEvent, builder, type)
                             LightningInstanceOverload(void, GraphicsRenderSettings&, Vec4, float, uint, uint));
 
   LightningBindOverloadedMethod(AddRenderTaskRenderPass,
-                            LightningInstanceOverload(void, GraphicsRenderSettings&, RenderGroup&, MaterialBlock&));
+                            LightningInstanceOverload(void, GraphicsRenderSettings&, RenderGroup&, MaterialBlock&, String&));
   LightningBindOverloadedMethod(
       AddRenderTaskRenderPass,
-      LightningInstanceOverload(void, GraphicsRenderSettings&, GraphicalRangeInterface&, MaterialBlock&));
+      LightningInstanceOverload(void, GraphicsRenderSettings&, GraphicalRangeInterface&, MaterialBlock&, String&));
 
   LightningBindMethod(AddRenderTaskSubRenderGroupPass);
 
-  LightningBindOverloadedMethod(AddRenderTaskPostProcess, LightningInstanceOverload(void, RenderTarget*, Material&));
-  LightningBindOverloadedMethod(AddRenderTaskPostProcess, LightningInstanceOverload(void, RenderTarget*, MaterialBlock&));
-  LightningBindOverloadedMethod(AddRenderTaskPostProcess, LightningInstanceOverload(void, GraphicsRenderSettings&, Material&));
+  LightningBindOverloadedMethod(AddRenderTaskPostProcess, LightningInstanceOverload(void, RenderTarget*, Material&, String&));
+  LightningBindOverloadedMethod(AddRenderTaskPostProcess, LightningInstanceOverload(void, RenderTarget*, MaterialBlock&, String&));
+  LightningBindOverloadedMethod(AddRenderTaskPostProcess, LightningInstanceOverload(void, GraphicsRenderSettings&, Material&, String&));
   LightningBindOverloadedMethod(AddRenderTaskPostProcess,
-                            LightningInstanceOverload(void, GraphicsRenderSettings&, MaterialBlock&));
+                            LightningInstanceOverload(void, GraphicsRenderSettings&, MaterialBlock&, String&));
 
   LightningBindOverloadedMethod(GetFinalTarget,
                             LightningInstanceOverload(HandleOf<RenderTarget>, IntVec2, TextureFormat::Enum));
@@ -332,8 +332,10 @@ void RenderTasksEvent::AddRenderTaskClearTarget(
 
 void RenderTasksEvent::AddRenderTaskRenderPass(GraphicsRenderSettings& renderSettings,
                                                RenderGroup& renderGroup,
-                                               MaterialBlock& renderPass)
+                                               MaterialBlock& renderPass,
+											   String& name)
 {
+	
   LightningFragmentType::Enum fragmentType = PL::gEngine->has(GraphicsEngine)->GetFragmentType(&renderPass);
   if (fragmentType != LightningFragmentType::RenderPass)
     return DoNotifyException("Error", "Fragment is not a [RenderPass]");
@@ -351,7 +353,7 @@ void RenderTasksEvent::AddRenderTaskRenderPass(GraphicsRenderSettings& renderSet
 
   String renderPassName = LightningVirtualTypeId(&renderPass)->Name;
   RenderTaskHelper(mRenderTasks->mRenderTaskBuffer)
-      .AddRenderTaskRenderPass(renderSettings, renderGroup.mSortId, renderPassName, shaderInputsId);
+      .AddRenderTaskRenderPass(renderSettings, renderGroup.mSortId, renderPassName, name, shaderInputsId);
 
   mCamera->mUsedRenderGroupIds.Insert(renderGroup.mSortId);
 }
@@ -387,9 +389,11 @@ void RenderTasksEvent::AddRenderTaskSubRenderGroupPass(SubRenderGroupPass& subRe
     }
 
     String renderPassName = LightningVirtualTypeId(&subData.mRenderPass)->Name;
+    String name = "subPass";
     renderTaskHelper.AddRenderTaskRenderPass(subData.mRenderSettings,
                                              subData.mRenderGroup->mSortId,
                                              renderPassName,
+                                             name,
                                              shaderInputsId,
                                              subGroupCount,
                                              subData.mRender);
@@ -405,8 +409,14 @@ void RenderTasksEvent::AddRenderTaskSubRenderGroupPass(SubRenderGroupPass& subRe
 
 void RenderTasksEvent::AddRenderTaskRenderPass(GraphicsRenderSettings& renderSettings,
                                                GraphicalRangeInterface& graphicalRange,
-                                               MaterialBlock& renderPass)
+                                               MaterialBlock& renderPass,
+											   String& name)
 {
+  //if (renderPass.mOwner)
+  //{
+  //  ProfileScopeTree(renderPass.mOwner-, "RenderTasksUpdate", Color::Cyan)
+  //}
+	
   LightningFragmentType::Enum fragmentType = PL::gEngine->has(GraphicsEngine)->GetFragmentType(&renderPass);
   if (fragmentType != LightningFragmentType::RenderPass)
     return DoNotifyException("Error", "Fragment is not a [RenderPass]");
@@ -452,26 +462,26 @@ void RenderTasksEvent::AddRenderTaskRenderPass(GraphicsRenderSettings& renderSet
 
   String renderPassName = LightningVirtualTypeId(&renderPass)->Name;
   RenderTaskHelper(mRenderTasks->mRenderTaskBuffer)
-      .AddRenderTaskRenderPass(renderSettings, groupId, renderPassName, shaderInputsId);
+      .AddRenderTaskRenderPass(renderSettings, groupId, renderPassName, name, shaderInputsId);
 
   mCamera->mUsedRenderGroupIds.Insert(groupId);
 }
 
-void RenderTasksEvent::AddRenderTaskPostProcess(RenderTarget* colorTarget, Material& material)
+void RenderTasksEvent::AddRenderTaskPostProcess(RenderTarget* colorTarget, Material& material, String& name)
 {
   GraphicsRenderSettings renderSettings;
   renderSettings.SetColorTarget(colorTarget);
-  AddRenderTaskPostProcess(renderSettings, material);
+  AddRenderTaskPostProcess(renderSettings, material, name);
 }
 
-void RenderTasksEvent::AddRenderTaskPostProcess(RenderTarget* colorTarget, MaterialBlock& postProcess)
+void RenderTasksEvent::AddRenderTaskPostProcess(RenderTarget* colorTarget, MaterialBlock& postProcess, String& name)
 {
   GraphicsRenderSettings renderSettings;
   renderSettings.SetColorTarget(colorTarget);
-  AddRenderTaskPostProcess(renderSettings, postProcess);
+  AddRenderTaskPostProcess(renderSettings, postProcess, name);
 }
 
-void RenderTasksEvent::AddRenderTaskPostProcess(GraphicsRenderSettings& renderSettings, Material& material)
+void RenderTasksEvent::AddRenderTaskPostProcess(GraphicsRenderSettings& renderSettings, Material& material, String& name)
 {
   uint shaderInputsId = GetUniqueShaderInputsId();
   AddShaderInputs(&material, shaderInputsId);
@@ -479,11 +489,16 @@ void RenderTasksEvent::AddRenderTaskPostProcess(GraphicsRenderSettings& renderSe
   AddShaderInputs(renderSettings.mGlobalShaderInputs.Dereference(), shaderInputsId);
 
   RenderTaskHelper(mRenderTasks->mRenderTaskBuffer)
-      .AddRenderTaskPostProcess(renderSettings, material.mRenderData, shaderInputsId);
+      .AddRenderTaskPostProcess(renderSettings, material.mRenderData, shaderInputsId, name);
 }
 
-void RenderTasksEvent::AddRenderTaskPostProcess(GraphicsRenderSettings& renderSettings, MaterialBlock& postProcess)
+void RenderTasksEvent::AddRenderTaskPostProcess(GraphicsRenderSettings& renderSettings, MaterialBlock& postProcess, String& name)
 {
+  //if (postProcess.mOwner)
+  //{
+  //  ProfileScopeTree(postProcess.mOwner->Name, "RenderTasksUpdate", Color::DarkSeaGreen)
+  //}
+	
   LightningFragmentType::Enum fragmentType = PL::gEngine->has(GraphicsEngine)->GetFragmentType(&postProcess);
   if (fragmentType != LightningFragmentType::PostProcess)
     return DoNotifyException("Error", "Fragment is not a [PostProcess]");
@@ -495,7 +510,7 @@ void RenderTasksEvent::AddRenderTaskPostProcess(GraphicsRenderSettings& renderSe
 
   String postProcessName = LightningVirtualTypeId(&postProcess)->Name;
   RenderTaskHelper(mRenderTasks->mRenderTaskBuffer)
-      .AddRenderTaskPostProcess(renderSettings, postProcessName, shaderInputsId);
+      .AddRenderTaskPostProcess(renderSettings, postProcessName, shaderInputsId, name);
 }
 
 void RenderTasksEvent::AddRenderTaskBackBufferBlit(RenderTarget* colorTarget, ScreenViewport viewport)
@@ -597,6 +612,7 @@ void RenderTaskHelper::AddRenderTaskClearTarget(
 void RenderTaskHelper::AddRenderTaskRenderPass(RenderSettings& renderSettings,
                                                uint renderGroupIndex,
                                                StringParam renderPassName,
+											   StringParam displayName,
                                                uint shaderInputsId,
                                                uint subRenderGroupCount,
                                                bool render)
@@ -611,6 +627,7 @@ void RenderTaskHelper::AddRenderTaskRenderPass(RenderSettings& renderSettings,
   renderTask->mRenderSettings = renderSettings;
   renderTask->mRenderGroupIndex = renderGroupIndex;
   renderTask->mRenderPassName = renderPassName;
+  renderTask->mRenderPassDisplayName = displayName;
   renderTask->mShaderInputsId = shaderInputsId;
   renderTask->mSubRenderGroupCount = subRenderGroupCount;
   renderTask->mRender = render;
@@ -618,7 +635,8 @@ void RenderTaskHelper::AddRenderTaskRenderPass(RenderSettings& renderSettings,
 
 void RenderTaskHelper::AddRenderTaskPostProcess(RenderSettings& renderSettings,
                                                 StringParam postProcessName,
-                                                uint shaderInputsId)
+                                                uint shaderInputsId,
+												StringParam name)
 {
   if (!ValidateRenderTargets(renderSettings))
     return;
@@ -626,6 +644,7 @@ void RenderTaskHelper::AddRenderTaskPostProcess(RenderSettings& renderSettings,
   RenderTaskPostProcess* renderTask = NewRenderTask<RenderTaskPostProcess>();
   renderTask->mId = RenderTaskType::PostProcess;
   renderTask->mRenderSettings = renderSettings;
+  renderTask->mDisplayName = name;
   renderTask->mPostProcessName = postProcessName;
   renderTask->mMaterialRenderData = nullptr;
   renderTask->mShaderInputsId = shaderInputsId;
@@ -633,7 +652,8 @@ void RenderTaskHelper::AddRenderTaskPostProcess(RenderSettings& renderSettings,
 
 void RenderTaskHelper::AddRenderTaskPostProcess(RenderSettings& renderSettings,
                                                 MaterialRenderData* materialRenderData,
-                                                uint shaderInputsId)
+                                                uint shaderInputsId,
+												String& name)
 {
   if (!ValidateRenderTargets(renderSettings))
     return;
@@ -642,6 +662,7 @@ void RenderTaskHelper::AddRenderTaskPostProcess(RenderSettings& renderSettings,
   renderTask->mId = RenderTaskType::PostProcess;
   renderTask->mRenderSettings = renderSettings;
   renderTask->mPostProcessName = String();
+  renderTask->mDisplayName = name;
   renderTask->mMaterialRenderData = materialRenderData;
   renderTask->mShaderInputsId = shaderInputsId;
 }

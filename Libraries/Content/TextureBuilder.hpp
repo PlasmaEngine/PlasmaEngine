@@ -4,9 +4,9 @@
 namespace Plasma
 {
 
-const String ZTexLoader = "TextureZTex";
+const String PTexLoader = "TexturePTex";
 
-const uint TextureFileId = 'ztex';
+const uint TextureFileId = 'ptex';
 const uint TextureFileVersion = 1;
 
 class TextureHeader

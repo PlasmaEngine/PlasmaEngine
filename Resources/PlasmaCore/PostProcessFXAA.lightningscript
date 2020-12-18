@@ -21,6 +21,6 @@ class PostProcessFXAA : LightningComponent
         postFXAA.SpanMax = -this.Span;
         postFXAA.ReduceMin = this.ReduceMin;
         postFXAA.ReduceMul = this.ReduceMul;
-        event.AddRenderTaskPostProcess(lightBuffer, postFXAA);
+        event.AddRenderTaskPostProcess(lightBuffer, postFXAA, "FXAA");
     }
 }

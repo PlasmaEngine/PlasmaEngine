@@ -35,6 +35,7 @@ const String PreviewCamera = "PreviewCamera";
 const String ObjectLink = "ObjectLink";
 const String Default = "DefaultArchetype";
 const String Sprite = "Sprite";
+const String SpritePreview = "SpritePreview";
 const String SpriteText = "SpriteText";
 const String SpriteParticles = "SpriteParticles";
 const String Spline = "Spline";

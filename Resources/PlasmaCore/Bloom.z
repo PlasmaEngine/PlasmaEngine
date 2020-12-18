@@ -63,7 +63,7 @@ class Bloom : LightningComponent
     bloomBrightPass.Intensity = this.Intensity;
     bloomBrightPass.Threshold = this.Threshold;
     //bloomBrightPass.LensDirtIntensity = this.LensDirtIntensity;
-    event.AddRenderTaskPostProcess(bloom0, bloomBrightPass);
+    event.AddRenderTaskPostProcess(bloom0, bloomBrightPass, "BloomBrightPass");
     
     // Progressive downsample and blur
     // This pass takes the "brightness buffer" from the bright pass, and
@@ -108,7 +108,7 @@ class Bloom : LightningComponent
     dirtPass.LensDirt = this.LensDirt;
     dirtPass.Intensity = this.LensDirtIntensity;
     dirtPass.Threshold = this.LensDirtThreshold;
-    event.AddRenderTaskPostProcess(bloom1, dirtPass);
+    event.AddRenderTaskPostProcess(bloom1, dirtPass, "BloomDirtPass");
     
     this.Upsample(event, bloom1, lightBuffer);
     
@@ -134,7 +134,7 @@ class Bloom : LightningComponent
     
     var copyTarget = CopyTarget();    
     copyTarget.Texture = target0.Texture;
-    event.AddRenderTaskPostProcess(upsampleSettings, copyTarget);
+    event.AddRenderTaskPostProcess(upsampleSettings, copyTarget, "Upscale");
   }
 }
 
@@ -148,7 +148,7 @@ struct DownsampleAndBlur[FilterType, BlurType]
     var filter = FilterType();
     filter.Texture = input.Texture;
     filter.InverseTextureSize = Real2(1.0) / input.Texture.Size;
-    event.AddRenderTaskPostProcess(output, filter);
+    event.AddRenderTaskPostProcess(output, filter, "Downsample");
     BlurTexture[BlurType].Call(event, output);
   }
 }
