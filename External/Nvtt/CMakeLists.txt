@@ -188,3 +188,5 @@ target_include_directories(Nvtt
     ${CMAKE_CURRENT_LIST_DIR}/Repo/src/
     ${CMAKE_CURRENT_LIST_DIR}/Repo/extern/poshlib/
 )
+
+set_target_properties( Nvtt PROPERTIES FOLDER "External/Nvtt" )

@@ -333,3 +333,5 @@ target_include_directories(SpirvTools
     ${CMAKE_CURRENT_LIST_DIR}/Repo/source/
     ${CMAKE_CURRENT_LIST_DIR}/Repo/include/
 )
+
+set_target_properties( SpirvTools PROPERTIES FOLDER "External/SpirvTools" )

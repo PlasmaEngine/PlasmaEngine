@@ -40,3 +40,5 @@ target_include_directories(SpirvCross
     ${CMAKE_CURRENT_LIST_DIR}/Repo/
     ${CMAKE_CURRENT_LIST_DIR}/Repo/include/
 )
+
+set_target_properties( SpirvCross PROPERTIES FOLDER "External/SpirvCross" )

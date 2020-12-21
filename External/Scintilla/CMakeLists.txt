@@ -99,3 +99,5 @@ target_include_directories(Scintilla
     ${CMAKE_CURRENT_LIST_DIR}/Repo/lexlib/
     ${CMAKE_CURRENT_LIST_DIR}/Repo/include/
 )
+
+set_target_properties( Scintilla PROPERTIES FOLDER "External/Scintilla" )
