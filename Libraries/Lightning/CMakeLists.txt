@@ -144,3 +144,5 @@ plasma_target_includes(Lightning
   PUBLIC
     Common
 )
+
+set_target_properties( Lightning PROPERTIES FOLDER "PlasmaEngine/Lightning" )

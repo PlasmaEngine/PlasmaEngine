@@ -49,3 +49,5 @@ plasma_target_includes(Serialization
   PUBLIC
     Common
 )
+
+set_target_properties( Serialization PROPERTIES FOLDER "PlasmaEngine" )

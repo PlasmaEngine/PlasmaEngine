@@ -81,3 +81,5 @@ plasma_target_includes(Geometry
     Common
     Lightning
 )
+
+set_target_properties( Geometry PROPERTIES FOLDER "PlasmaEngine" )

@@ -80,3 +80,5 @@ plasma_target_includes(Sound
     Geometry
     Opus
 )
+
+set_target_properties( Sound PROPERTIES FOLDER "PlasmaEngine" )

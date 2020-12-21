@@ -260,3 +260,5 @@ plasma_target_includes(Physics
   PUBLIC
     Lightning
 )
+
+set_target_properties( Physics PROPERTIES FOLDER "PlasmaEngine" )

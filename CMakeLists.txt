@@ -40,6 +40,8 @@ add_definitions(-DPlasmaPlatform${PLASMA_PLATFORM}=1)
 add_definitions(-DPlasmaPlatformName="${PLASMA_PLATFORM}")
 add_definitions(-DPlasmaToolchain${PLASMA_TOOLCHAIN}=1)
 add_definitions(-DPlasmaToolchainName="${PLASMA_TOOLCHAIN}")
+add_definitions(-DPlasmaRendererName="${PLASMA_RENDERER}")
+add_definitions(-DPlasmaRenderer${PLASMA_RENDERER})
 
 set(PLASMA_CORE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(PLASMA_CMAKE_DIR ${PLASMA_CORE_DIR}/CMakeFiles/)

@@ -101,3 +101,5 @@ plasma_target_includes(LightningShaders
     SpirvTools
     SpirvCross
 )
+
+set_target_properties( LightningShaders PROPERTIES FOLDER "PlasmaEngine/Lightning" )

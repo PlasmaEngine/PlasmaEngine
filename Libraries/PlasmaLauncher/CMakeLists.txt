@@ -91,3 +91,5 @@ target_link_libraries(PlasmaLauncher
 )
 
 plasma_copy_from_linked_libraries(PlasmaLauncher)
+
+set_target_properties( PlasmaLauncher PROPERTIES FOLDER "PlasmaLauncher" )

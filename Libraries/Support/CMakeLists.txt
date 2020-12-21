@@ -39,3 +39,5 @@ plasma_target_includes(Support
     Libpng
     ZLib
 )
+
+set_target_properties( Support PROPERTIES FOLDER "PlasmaEngine" )

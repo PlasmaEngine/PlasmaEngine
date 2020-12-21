@@ -56,13 +56,14 @@
 #include <avrt.h>
 #include <hidsdi.h>
 
+#if defined(PlasmaRendererOpenGL)
 // Include glew before OpenGl
 #include <GL/glew.h>
 #include <GL/wglew.h>
 
 // Include OpenGl
 #include <GL/gl.h>
-
+#endif
 #ifdef min
 #  undef min
 #endif
