@@ -18,3 +18,5 @@ plasma_target_includes(Startup
     Geometry
     Graphics
 )
+
+set_target_properties( Startup PROPERTIES FOLDER "PlasmaEngine" )

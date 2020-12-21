@@ -92,12 +92,11 @@ void PhysicsCar::OnDestroy(uint flags)
 void PhysicsCar::DebugDraw()
 {
   // debug draw each wheel as long as it is valid
-  // WheelCollection::WheelArray& wheels = mWheelCollection.mWheels;
-  // for(uint i = 0; i < wheels.Size(); ++i)
-  // {
-  //   if(wheels[i].mCarWheel != nullptr)
-  //     wheels[i].mCarWheel->DebugDraw();
-  // }
+  for (uint i = 0; i < mWheelCogs.GetCount(); ++i)
+   {
+    if (mWheelCogs.Get(i)->Has<PhysicsCarWheel>() != nullptr)
+      mWheelCogs.Get(i)->Has<PhysicsCarWheel>()->DebugDraw();
+   }
 }
 
 void PhysicsCar::TransformUpdate(TransformUpdateInfo& info)

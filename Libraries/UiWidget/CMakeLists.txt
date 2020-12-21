@@ -30,3 +30,5 @@ plasma_target_includes(UiWidget
     Engine
     LightningShaders
 )
+
+set_target_properties( UiWidget PROPERTIES FOLDER "PlasmaEngine" )

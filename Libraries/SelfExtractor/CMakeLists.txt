@@ -4,3 +4,5 @@ target_sources(SelfExtractor
     ${CMAKE_CURRENT_LIST_DIR}/Precompiled.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Precompiled.hpp
 )
+
+set_target_properties( SelfExtractor PROPERTIES FOLDER "PlasmaEngine" )

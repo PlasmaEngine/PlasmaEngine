@@ -95,3 +95,5 @@ plasma_target_includes(Widget
     Engine
     LightningShaders
 )
+
+set_target_properties( Widget PROPERTIES FOLDER "PlasmaEngine" )

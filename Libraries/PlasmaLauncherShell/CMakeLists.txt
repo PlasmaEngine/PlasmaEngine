@@ -24,3 +24,5 @@ add_dependencies(PlasmaLauncherShell
 )
 
 plasma_copy_from_linked_libraries(PlasmaLauncherShell)
+
+set_target_properties( PlasmaLauncherShell PROPERTIES FOLDER "PlasmaLauncher" )

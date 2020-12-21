@@ -21,3 +21,5 @@ plasma_target_includes(CodeTranslator
     Engine
     LightningShaders
 )
+
+set_target_properties( CodeTranslator PROPERTIES FOLDER "PlasmaEngine" )

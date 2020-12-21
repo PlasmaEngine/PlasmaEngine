@@ -97,3 +97,5 @@ plasma_target_includes(Content
     Opus
     Nvtt
 )
+
+set_target_properties( Content PROPERTIES FOLDER "PlasmaEngine" )

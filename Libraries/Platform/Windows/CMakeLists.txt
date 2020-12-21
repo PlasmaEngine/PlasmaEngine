@@ -3,28 +3,24 @@ add_library(Platform)
 plasma_setup_library(Platform ${CMAKE_CURRENT_LIST_DIR} TRUE)
 plasma_use_precompiled_header(Platform ${CMAKE_CURRENT_LIST_DIR})
 
-if(${PLASMA_RENDERER} MATCHES "DirectX12")
-    message(FATAL_ERROR "DirectX12 not yet supported")
-
-    # Placeholder until DX12 is added
-   set(rendererSource
-        ${CMAKE_CURRENT_LIST_DIR}/../OpenGL/OpenglRenderer.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/../OpenGL/OpenglRenderer.hpp 
-    )
-
-elseif(${PLASMA_RENDERER} MATCHES "Vulkan")
-    message(FATAL_ERROR "Vulkan not yet supported")
-
-    # Placeholder until Vulkan is added
-   set(rendererSource
-        ${CMAKE_CURRENT_LIST_DIR}/../OpenGL/OpenglRenderer.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/../OpenGL/OpenglRenderer.hpp 
-    )
+if(${PLASMA_RENDERER} MATCHES "BGFX")
+  set(rendererSource
+        ${CMAKE_CURRENT_LIST_DIR}/../BGFX/BGFXRenderer.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/../BGFX/BGFXRenderer.hpp 
+  )
+  set(rendererLib
+    bgfx
+  )
 else(${PLASMA_RENDERER} MATCHES "OpenGL")
-    set(rendererSource
-        ${CMAKE_CURRENT_LIST_DIR}/../OpenGL/OpenglRenderer.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/../OpenGL/OpenglRenderer.hpp 
-        )
+  set(rendererSource
+      ${CMAKE_CURRENT_LIST_DIR}/../OpenGL/OpenglRenderer.cpp
+      ${CMAKE_CURRENT_LIST_DIR}/../OpenGL/OpenglRenderer.hpp 
+      ${CMAKE_CURRENT_LIST_DIR}/../OpenGL/OpenglRendererWindows.cpp
+  )
+  set(rendererLib
+    GL
+    Glew
+  )
 endif()
 
 target_sources(Platform
@@ -50,7 +46,6 @@ target_sources(Platform
     ${CMAKE_CURRENT_LIST_DIR}/Keys.inl
     ${CMAKE_CURRENT_LIST_DIR}/Main.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MouseButtons.inl
-    ${CMAKE_CURRENT_LIST_DIR}/OpenglRendererWindows.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Peripherals.cpp
     ${CMAKE_CURRENT_LIST_DIR}/PlatformStandard.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Precompiled.cpp
@@ -82,7 +77,8 @@ plasma_target_includes(Platform
 target_link_libraries(Platform
   PUBLIC
     Curl
-    GL
-    Glew
+    ${rendererLib}
     Libgit2
 )
+
+set_target_properties( Platform PROPERTIES FOLDER "PlasmaEngine" )

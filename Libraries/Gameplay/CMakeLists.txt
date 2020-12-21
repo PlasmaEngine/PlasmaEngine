@@ -69,3 +69,5 @@ plasma_target_includes(Gameplay
     Engine
     LightningShaders
 )
+
+set_target_properties( Gameplay PROPERTIES FOLDER "PlasmaEngine" )

@@ -60,3 +60,5 @@ plasma_target_includes(Meta
   PUBLIC
     Lightning
 )
+
+set_target_properties( Meta PROPERTIES FOLDER "PlasmaEngine" )

@@ -120,3 +120,5 @@ plasma_target_includes(Graphics
     LightningShaders
     FreeType
 )
+
+set_target_properties( Graphics PROPERTIES FOLDER "PlasmaEngine" )

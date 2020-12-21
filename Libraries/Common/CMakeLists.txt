@@ -265,3 +265,5 @@ target_sources(Common
     ${CMAKE_CURRENT_LIST_DIR}/WeightedProbabilityTable.hpp
     ${PLASMA_COMMON_VISUALIZER}
 )
+
+set_target_properties( Common PROPERTIES FOLDER "PlasmaEngine" )

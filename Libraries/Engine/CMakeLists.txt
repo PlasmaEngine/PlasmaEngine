@@ -214,3 +214,5 @@ plasma_target_includes(Engine
     Geometry
     Lightning
 )
+
+set_target_properties( Engine PROPERTIES FOLDER "PlasmaEngine" )

@@ -66,3 +66,5 @@ plasma_target_includes(SpatialPartition
   PUBLIC
     Lightning
 )
+
+set_target_properties( SpatialPartition PROPERTIES FOLDER "PlasmaEngine" )

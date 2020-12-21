@@ -54,3 +54,5 @@ target_link_libraries(PlasmaEditor
 )
 
 plasma_copy_from_linked_libraries(PlasmaEditor)
+
+set_target_properties( PlasmaEditor PROPERTIES FOLDER "PlasmaEditor" )

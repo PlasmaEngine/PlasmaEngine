@@ -51,3 +51,5 @@ plasma_target_includes(Replication
     Lightning
     Geometry
 )
+
+set_target_properties( Replication PROPERTIES FOLDER "PlasmaEngine" )

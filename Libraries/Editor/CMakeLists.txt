@@ -288,3 +288,5 @@ plasma_target_includes(Editor
     Common
     LightningShaders
 )
+
+set_target_properties( Editor PROPERTIES FOLDER "PlasmaEditor" )
