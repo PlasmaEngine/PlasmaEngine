@@ -11,3 +11,5 @@ target_link_libraries(GL
   INTERFACE
     ${OPENGL_LIBRARIES}
 )
+
+set_target_properties( GL PROPERTIES FOLDER "External/GL" )

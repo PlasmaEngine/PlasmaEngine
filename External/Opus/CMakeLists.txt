@@ -166,3 +166,5 @@ target_include_directories(Opus
     ${CMAKE_CURRENT_LIST_DIR}/Repo/silk/float/
     ${CMAKE_CURRENT_LIST_DIR}/Repo/celt/
 )
+
+set_target_properties( Opus PROPERTIES FOLDER "External/Opus" )

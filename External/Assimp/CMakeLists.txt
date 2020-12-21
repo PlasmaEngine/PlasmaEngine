@@ -603,3 +603,5 @@ target_include_directories(Assimp
     ${CMAKE_CURRENT_LIST_DIR}/Repo/contrib/rapidjson/include/
     ${CMAKE_CURRENT_LIST_DIR}/Repo/contrib/openddlparser/include/
 )
+
+set_target_properties( Assimp PROPERTIES FOLDER "External/Assimp" )

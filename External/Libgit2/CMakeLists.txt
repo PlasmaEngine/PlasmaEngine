@@ -10,4 +10,11 @@ if(NOT EMSCRIPTEN)
     INTERFACE
       git2
   )
+
+set_target_properties( git2 PROPERTIES FOLDER "External/Libgit2" )
+set_target_properties( git2internal PROPERTIES FOLDER "External/Libgit2" )
+set_target_properties( http-parser PROPERTIES FOLDER "External/Libgit2" )
+set_target_properties( pcre PROPERTIES FOLDER "External/Libgit2" )
+set_target_properties( zlibL2G PROPERTIES FOLDER "External/Libgit2" )
+set_target_properties( Libgit2 PROPERTIES FOLDER "External/Libgit2" )
 endif()

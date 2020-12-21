@@ -12,3 +12,5 @@ target_include_directories(SpirvHeaders
   PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/Repo/include/
 )
+
+set_target_properties( SpirvHeaders PROPERTIES FOLDER "External/SpirvHeaders" )
