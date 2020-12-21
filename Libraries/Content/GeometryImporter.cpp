@@ -35,7 +35,7 @@ uint GeometryImporter::SetupAssimpPostProcess()
 
   int removeFlags = 0;
 
-  if (meshBuilder->mInvertUvYAxis)
+  if (!meshBuilder->mInvertUvYAxis)
   {
     flags |= aiProcess_FlipUVs;
   }
