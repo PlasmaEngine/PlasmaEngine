@@ -138,7 +138,7 @@ void LoadPng(Status& status,
   if (setjmp(png_jmpbuf(pngPtr)))
   {
     // Clean up memory
-    zDeallocate(imageData);
+    plDeallocate(imageData);
     // Free all of the memory associated with the pngPtr and infoPtr
     png_destroy_read_struct(&pngPtr, &infoPtr, nullptr);
     // If we get here, we had a problem reading the file
@@ -200,7 +200,7 @@ void LoadPng(Status& status,
   uint rowSize = readWidth * pixelSize;
 
   // Allocate space for image
-  imageData = (byte*)zAllocate(imageSize);
+  imageData = (byte*)plAllocate(imageSize);
 
   if (!imageData)
   {

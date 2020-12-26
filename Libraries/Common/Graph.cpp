@@ -12,19 +12,24 @@
 namespace Plasma
 {
 
-void* zAllocate(size_t numberOfBytes)
+void* plAllocate(size_t numberOfBytes)
 {
 #ifdef UseMemoryDebugger
-  return DebugAllocate(numberOfBytes, AllocationType_Direct, 4);
+  void* ptr = DebugAllocate(numberOfBytes, AllocationType_Direct, 4);
 #elif UseMemoryTracker
-  return DebugAllocate(numberOfBytes, 4);
+  void* ptr = DebugAllocate(numberOfBytes, 4);
 #else
-  return malloc(numberOfBytes);
+  void* ptr = malloc(numberOfBytes);
 #endif
+
+  TracyAlloc(ptr, numberOfBytes);
+	
+  return ptr;
 }
 
-void zDeallocate(void* ptr)
+void plDeallocate(void* ptr)
 {
+  TracyFree(ptr);
 #ifdef UseMemoryDebugger
   DebugDeallocate(ptr, AllocationType_Direct);
 #elif UseMemoryTracker
@@ -38,7 +43,7 @@ const uint cStaticMemoryBufferSize = 5000;
 byte StaticMemoryGraphBuffer[cStaticMemoryBufferSize];
 byte* BufferLocation = StaticMemoryGraphBuffer;
 
-MemPtr zStaticAllocate(size_t size)
+MemPtr plStaticAllocate(size_t size)
 {
   // Static Memory graph nodes and other static objects
   // are allocated from a fixed size buffer this allows them to have controlled

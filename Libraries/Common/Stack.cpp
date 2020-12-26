@@ -16,7 +16,7 @@ Stack::Stack(cstr name, Graph* parent, size_t stackSize, size_t maxEntries) : Gr
     mEntries.Reserve(maxEntries);
   }
 
-  mStackHeader = (byte*)zAllocate(mStackSize);
+  mStackHeader = (byte*)plAllocate(mStackSize);
   mStackIndex = 0;
   mMaxSizeReached = 0;
 }
@@ -80,7 +80,7 @@ void Stack::Deallocate(MemPtr ptr, size_t numberOfBytes)
 
 void Stack::CleanUp()
 {
-  zDeallocate(mStackHeader);
+  plDeallocate(mStackHeader);
 }
 
 } // namespace Memory

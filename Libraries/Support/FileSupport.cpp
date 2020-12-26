@@ -202,20 +202,20 @@ void BackUpFile(StringParam backupPath, StringParam fileName)
 DataBlock AllocateBlock(size_t size)
 {
   DataBlock block;
-  block.Data = (byte*)zAllocate(size);
+  block.Data = (byte*)plAllocate(size);
   block.Size = size;
   return block;
 }
 
 void FreeBlock(DataBlock& block)
 {
-  zDeallocate(block.Data);
+  plDeallocate(block.Data);
   block.Data = nullptr;
 }
 
 void CloneBlock(DataBlock& destBlock, const DataBlock& source)
 {
-  destBlock.Data = (byte*)zAllocate(source.Size);
+  destBlock.Data = (byte*)plAllocate(source.Size);
   destBlock.Size = source.Size;
   memcpy(destBlock.Data, source.Data, source.Size);
 }

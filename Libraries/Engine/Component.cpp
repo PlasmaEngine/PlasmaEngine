@@ -159,7 +159,7 @@ void ComponentHandleManager::Allocate(BoundType* type, Handle& handleToInitializ
 
   ComponentHandleData& data = *(ComponentHandleData*)(handleToInitialize.Data);
   data.mCogId = CogId();
-  data.mRawObject = zAllocate(type->Size);
+  data.mRawObject = plAllocate(type->Size);
   memset(data.mRawObject, 0, type->Size);
   data.mComponentType = type;
 }
@@ -226,7 +226,7 @@ void ComponentHandleManager::Delete(const Handle& handle)
 
   // METAREFACTOR This is what was previously happening with delete, except this
   // doesn't seem correct since mRawObject is not set in all cases...
-  zDeallocate(data.mRawObject);
+  plDeallocate(data.mRawObject);
 }
 
 } // namespace Plasma

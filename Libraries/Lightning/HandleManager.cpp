@@ -231,7 +231,7 @@ void HeapManager::Allocate(BoundType* type, Handle& handleToInitialize, size_t c
   // 'ObjectToHandle' can recreate a handle via the slot data pointer
   size_t objectSize = type->GetAllocatedSize();
   size_t fullSize = sizeof(ObjectHeader) + objectSize + HeapManagerExtraPatchSize;
-  byte* memory = (byte*)Plasma::zAllocate(fullSize);
+  byte* memory = (byte*)Plasma::plAllocate(fullSize);
 
   // If the memory failed to allocate, early out
   if (memory == nullptr)
@@ -367,7 +367,7 @@ void HeapManager::Delete(const Handle& handle)
   this->LiveObjects.Erase(object);
 
   // Delete the data in the slot and null it out
-  Plasma::zDeallocate(data.Header);
+  Plasma::plDeallocate(data.Header);
 }
 
 bool HeapManager::CanDelete(const Handle& handle)
@@ -470,12 +470,12 @@ byte* PointerManager::HandleToObject(const Handle& handle)
 void PointerManager::Allocate(BoundType* type, Handle& handleToInitialize, size_t customFlags)
 {
   handleToInitialize.Flags |= HandleFlags::NoReferenceCounting;
-  handleToInitialize.HandlePointer = Plasma::zAllocate(type->Size);
+  handleToInitialize.HandlePointer = Plasma::plAllocate(type->Size);
 }
 
 void PointerManager::Delete(const Handle& handle)
 {
-  Plasma::zDeallocate(handle.HandlePointer);
+  Plasma::plDeallocate(handle.HandlePointer);
 }
 
 bool PointerManager::CanDelete(const Handle& handle)

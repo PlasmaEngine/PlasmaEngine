@@ -25,7 +25,7 @@ void ResourceHandleManager::Allocate(BoundType* type, Handle& handleToInitialize
   handleToInitialize.Flags |= HandleFlags::NoReferenceCounting;
 
   ResourceHandleData& data = *(ResourceHandleData*)(handleToInitialize.Data);
-  data.mRawObject = (Resource*)zAllocate(type->Size);
+  data.mRawObject = (Resource*)plAllocate(type->Size);
   memset((void*)data.mRawObject, 0, type->Size);
   data.mDebugResource = data.mRawObject;
   data.mId = 0;

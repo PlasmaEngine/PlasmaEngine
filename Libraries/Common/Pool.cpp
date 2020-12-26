@@ -25,7 +25,7 @@ void Pool::AllocatePage()
   // divide it into blocks that are
   // each placed on the free list.
   DeltaDedicated(mPageSize);
-  byte* memoryPage = (byte*)zAllocate(mPageSize);
+  byte* memoryPage = (byte*)plAllocate(mPageSize);
   mPages.PushBack(memoryPage);
   for (unsigned block = 0; block < mBlocksPerPage; ++block)
     PushOnFreeList(memoryPage + mBlockSize * block);
@@ -37,7 +37,7 @@ void Pool::CleanUp()
       mPodStackPool == false && mData.BytesAllocated != 0, "Failed to release all memory from pool %s", Name.c_str());
   // Deallocate each page
   for (unsigned i = 0; i < mPages.Size(); ++i)
-    zDeallocate(mPages[i]); // mPageSize
+    plDeallocate(mPages[i]); // mPageSize
   mPages.Deallocate();
 }
 

@@ -374,7 +374,7 @@ void LoadImage(Status& status,
         // Copy a single frame to the output (we don't care about multiple
         // frames)
         size_t singleFrameSize = *width * *height * componentsOut;
-        *output = (byte*)zAllocate(singleFrameSize);
+        *output = (byte*)plAllocate(singleFrameSize);
         memcpy(*output, allFrames, singleFrameSize);
       }
 

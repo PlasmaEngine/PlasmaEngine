@@ -532,7 +532,7 @@ void TileMap::OnAllObjectsInitialized(CogInitializerEvent* event)
         // Copy all component data
         DataBlock block = SerializeObjectToDataBlock(thisSprite);
         SerializeObjectFromDataBlock(block, multiSprite);
-        zDeallocate(block.Data);
+        plDeallocate(block.Data);
       }
 
       for (uint i = 0; i < mergeObj.sprites.Size(); ++i)

@@ -21,7 +21,7 @@ void Image::Deallocate()
 {
   if (Data)
   {
-    zDeallocate(Data);
+    plDeallocate(Data);
     Data = nullptr;
     Width = 0;
     Height = 0;
@@ -44,7 +44,7 @@ void Image::Allocate(int width, int height)
 {
   Deallocate();
   SizeInBytes = sizeof(ImagePixel) * width * height;
-  Data = (ImagePixel*)zAllocate(SizeInBytes);
+  Data = (ImagePixel*)plAllocate(SizeInBytes);
   Height = height;
   Width = width;
   memset(Data, 0, SizeInBytes);

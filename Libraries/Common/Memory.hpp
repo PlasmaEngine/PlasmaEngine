@@ -8,14 +8,14 @@ namespace Plasma
 typedef size_t MemCounterType;
 typedef void* MemPtr;
 
-MemPtr zAllocate(size_t numberOfBytes);
-void zDeallocate(MemPtr);
-MemPtr zStaticAllocate(size_t size);
+MemPtr plAllocate(size_t numberOfBytes);
+void plDeallocate(MemPtr);
+MemPtr plStaticAllocate(size_t size);
 
 #define UseStaticMemory()                                                                                              \
   static void* operator new(size_t size)                                                                               \
   {                                                                                                                    \
-    return zStaticAllocate(size);                                                                                      \
+    return plStaticAllocate(size);                                                                                      \
   }                                                                                                                    \
   static void operator delete(void* /*pMem*/, size_t /*size*/)                                                         \
   {                                                                                                                    \

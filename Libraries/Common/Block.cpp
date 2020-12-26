@@ -62,11 +62,7 @@ MemPtr Block::Allocate(size_t numberOfBytes)
 
   size_t bucketIndex = BucketLookUp[numberOfBytes];
 
-  auto pointer = PopOnFreeList(bucketIndex);
-
-  //TracyAlloc(pointer, numberOfBytes);
-	
-  return pointer;
+  return PopOnFreeList(bucketIndex);
 }
 
 Block::FreeBlock* Block::PopOnFreeList(size_t blockIndex)
@@ -92,7 +88,6 @@ void Block::Deallocate(MemPtr ptr, size_t numberOfBytes)
 
   size_t bucketIndex = BucketLookUp[numberOfBytes];
   PushFreeBlock(bucketIndex, (FreeBlock*)ptr);
-  //TracyFree(ptr);
 }
 
 void Block::PushFreeBlock(size_t blockIndex, FreeBlock* block)
@@ -106,7 +101,7 @@ void Block::AllocateBlockPage(size_t blockIndex)
   size_t blockSize = BlockSizes[blockIndex];
   size_t blocksOnPage = cPageSize / blockSize;
 
-  byte* memoryPage = (byte*)zAllocate(cPageSize);
+  byte* memoryPage = (byte*)plAllocate(cPageSize);
   DeltaDedicated(cPageSize);
 
   for (size_t i = 0; i < blocksOnPage; ++i)
@@ -125,7 +120,7 @@ void Block::CleanUp()
   Array<MemPtr>::range blocksToFree = mPageBlocks.All();
   while (!blocksToFree.Empty())
   {
-    zDeallocate(blocksToFree.Front());
+    plDeallocate(blocksToFree.Front());
     blocksToFree.PopFront();
   }
   mPageBlocks.Clear();

@@ -218,7 +218,7 @@ void CreateBitmapBuffer(Image* image, byte*& outputBuffer, uint& outSize)
   uint imageBytes = pitch * height;
 
   uint bufferSize = imageBytes + headerSize + infoSize;
-  byte* bitmapBuffer = (byte*)zAllocate(bufferSize);
+  byte* bitmapBuffer = (byte*)plAllocate(bufferSize);
 
   // Offset to the image data
   byte* imageData = bitmapBuffer + headerSize + infoSize;

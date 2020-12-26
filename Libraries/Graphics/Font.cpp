@@ -266,7 +266,7 @@ FontRasterizer::~FontRasterizer()
   FT_Done_Face(mData->FontFace);
   FT_Done_FreeType(mData->Library);
   SafeDelete(mData);
-  zDeallocate(mFontSource.Data);
+  plDeallocate(mFontSource.Data);
 }
 
 RenderFont* FontRasterizer::RasterNewFont(int fontHeight)

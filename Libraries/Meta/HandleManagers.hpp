@@ -174,7 +174,7 @@ public:
       // that annoying to LightningAllocate everything?
       HandleData& data = *(HandleData*)(handleToInitialize.Data);
       data.mId = (IdType)-1;
-      data.mRawObject = zAllocate(type->Size);
+      data.mRawObject = plAllocate(type->Size);
     }
   }
 

@@ -81,7 +81,7 @@ void AsyncWebRequest::AddField(StringParam formFieldName, StringParam content)
   WebPostData& data = mPostData.PushBack();
   data.mName = formFieldName;
 
-  byte* copy = (byte*)zAllocate(content.SizeInBytes());
+  byte* copy = (byte*)plAllocate(content.SizeInBytes());
   memcpy(copy, content.Data(), content.SizeInBytes());
   data.mValue.SetData(copy, content.SizeInBytes(), true);
 }

@@ -5,7 +5,7 @@ namespace Plasma
 {
 void Stream::ReadMemoryBlock(Status& status, ByteBufferBlock& block, size_t sizeInBytes)
 {
-  byte* data = (byte*)zAllocate(sizeInBytes);
+  byte* data = (byte*)plAllocate(sizeInBytes);
   if (data == nullptr)
   {
     status.SetFailed("Failed to allocate memory to read the stream");

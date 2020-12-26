@@ -582,7 +582,7 @@ void Exporter::UpdateIcon(ProjectSettings* project, ExecutableResourceUpdater& u
     if (buffer && bufferSize)
       updater.UpdateIcon(buffer, bufferSize);
 
-    zDeallocate(buffer);
+    plDeallocate(buffer);
   }
 }
 

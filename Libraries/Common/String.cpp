@@ -461,7 +461,7 @@ void String::poolOrDeleteNode(StringNode* node)
       // This happens in the case where we're creating the SAME string on one
       // thread but it's literally being released on another thread at the same
       // time (already ref count 0)
-      zDeallocate(node);
+      plDeallocate(node);
       Assign(existingNode);
     }
   }
@@ -478,7 +478,7 @@ void StringNode::release()
   if (HashCode == StringPoolFreeHashCode)
   {
     if (AtomicPreDecrement(&RefCount) == 0)
-      zDeallocate(this);
+      plDeallocate(this);
     return;
   }
 
@@ -489,12 +489,12 @@ void StringNode::release()
   {
     ErrorIf(pool.mPool.FindValue(this, nullptr) == nullptr, "Did not find node in pool");
     pool.mPool.Erase(this);
-    zDeallocate(this);
+    plDeallocate(this);
   }
   pool.mLock.Unlock();
 #else
   if (AtomicPreDecrement(&RefCount) == 0)
-    zDeallocate(this);
+    plDeallocate(this);
 #endif
 }
 
@@ -537,7 +537,7 @@ StringNode* String::AllocateNode(size_type memorySize, size_t subStringSize)
   const size_type bufferSize = memorySize + sizeof(value_type);
 
   // Make new string node
-  StringNode* newNode = (StringNode*)zAllocate(nodeSize + bufferSize);
+  StringNode* newNode = (StringNode*)plAllocate(nodeSize + bufferSize);
   newNode->RefCount = 1;
   newNode->Size = subStringSize;
   newNode->HashCode = 0;

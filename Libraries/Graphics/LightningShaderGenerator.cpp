@@ -319,7 +319,7 @@ namespace Plasma
                 // for initializing fragments to the default values.
                 ByteBufferBlock& defaultMemory = boundType->ComplexUserData.CreateObject<ByteBufferBlock>();
                 size_t derivedTypeSize = fragmentSize - baseSize;
-                defaultMemory.SetData(static_cast<byte*>(zAllocate(derivedTypeSize)), derivedTypeSize, true);
+                defaultMemory.SetData(static_cast<byte*>(plAllocate(derivedTypeSize)), derivedTypeSize, true);
                 byte* defaultMemoryPtr = defaultMemory.GetBegin();
                 memset(defaultMemoryPtr, 0, defaultMemory.Size());
 

@@ -12,7 +12,7 @@ byte* ReadFileIntoMemory(cstr filePath, size_t& fileSize, size_t extra)
 
   fileSize = (size_t)file.CurrentFileSize();
 
-  byte* fileBuffer = (byte*)zAllocate(fileSize + extra);
+  byte* fileBuffer = (byte*)plAllocate(fileSize + extra);
   if (fileBuffer == nullptr)
   {
     ErrorIf(fileBuffer == nullptr, "Could not allocate enough memory for file '%s' into memory.", filePath);
@@ -31,7 +31,7 @@ byte* ReadFileIntoMemory(cstr filePath, size_t& fileSize, size_t extra)
 
       if (status.Failed())
       {
-        zDeallocate(fileBuffer);
+        plDeallocate(fileBuffer);
         return nullptr;
       }
 
@@ -88,7 +88,7 @@ String ReadFileIntoString(StringParam path)
     return String();
 
   Plasma::String dataFormat((char*)block.Data, block.Size);
-  zDeallocate(block.Data);
+  plDeallocate(block.Data);
   return dataFormat;
 }
 
