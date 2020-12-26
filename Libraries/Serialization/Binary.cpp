@@ -40,7 +40,7 @@ DataBlock BinaryBufferSaver::ExtractAsDataBlock()
 {
   uint size = mBuffer.GetSize();
   DataBlock dataBlock;
-  dataBlock.Data = (byte*)zAllocate(size);
+  dataBlock.Data = (byte*)plAllocate(size);
   dataBlock.Size = size;
   ExtractInto(dataBlock);
   return dataBlock;

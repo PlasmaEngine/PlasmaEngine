@@ -390,6 +390,7 @@ Vec2 CameraViewport::GetViewportOffsetWithMargin()
 
 void CameraViewport::OnRenderTasksUpdateInternal(RenderTasksEvent* event)
 {
+  ZoneScoped;
   ProfileScopeTree("CameraViewportRender", "RenderTasksUpdate", Color::LemonChiffon)
   ConfigureViewport();
 

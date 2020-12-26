@@ -70,7 +70,7 @@ void ByteBuffer::Append(const byteType* data, size_t sizeInBytes)
   if (mCurBlockBuffer == nullptr)
   {
     // Allocator more memory
-    mCurBlockBuffer = (byteType*)zAllocate(mBlockSize);
+    mCurBlockBuffer = (byteType*)plAllocate(mBlockSize);
     mCurBlockSize = 0;
 
     // Store the block
@@ -86,7 +86,7 @@ void ByteBuffer::Append(const byteType* data, size_t sizeInBytes)
     memcpy(mCurBlockBuffer + mCurBlockSize, data, sizeToCopy);
 
     // Allocator more memory
-    mCurBlockBuffer = (byteType*)zAllocate(mBlockSize);
+    mCurBlockBuffer = (byteType*)plAllocate(mBlockSize);
     mCurBlockSize = 0;
 
     // Store the block
@@ -166,7 +166,7 @@ void ByteBuffer::ExtractInto(ByteBufferBlock& buffer) const
 {
   buffer.Deallocate();
   buffer.mSize = mTotalSize;
-  buffer.mData = (byte*)zAllocate(mTotalSize);
+  buffer.mData = (byte*)plAllocate(mTotalSize);
   buffer.mCurrent = buffer.mData;
   buffer.mOwnsData = true;
   ExtractInto(buffer.mData, buffer.mSize);
@@ -178,7 +178,7 @@ void ByteBuffer::Deallocate()
   Array<byteType*>::range blocks = mBlocks.All();
   for (; !blocks.Empty(); blocks.PopFront())
   {
-    zDeallocate(blocks.Front());
+    plDeallocate(blocks.Front());
   }
 
   mCurBlockSize = 0;
@@ -223,7 +223,7 @@ ByteBufferBlock::ByteBufferBlock(const ByteBufferBlock& rhs) : mSize(rhs.mSize),
 {
   if (mOwnsData)
   {
-    mData = (byte*)zAllocate(rhs.mSize);
+    mData = (byte*)plAllocate(rhs.mSize);
     memcpy(mData, rhs.mData, mSize);
     mCurrent = mData + (rhs.mCurrent - rhs.mData);
   }
@@ -236,7 +236,7 @@ ByteBufferBlock::ByteBufferBlock(const ByteBufferBlock& rhs) : mSize(rhs.mSize),
 
 ByteBufferBlock::ByteBufferBlock(size_t size)
 {
-  mData = (byte*)zAllocate(size);
+  mData = (byte*)plAllocate(size);
   mCurrent = mData;
   mSize = size;
   mOwnsData = true;
@@ -286,7 +286,7 @@ ByteBufferBlock::~ByteBufferBlock()
 void ByteBufferBlock::Deallocate()
 {
   if (mData && mOwnsData)
-    zDeallocate(mData);
+    plDeallocate(mData);
 
   mData = nullptr;
   mCurrent = nullptr;

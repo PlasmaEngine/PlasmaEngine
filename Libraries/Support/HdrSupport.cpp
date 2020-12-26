@@ -403,7 +403,7 @@ void LoadHdr(Status& status,
   const byte* endData = imageData + size;
 
   // Allocate full size of final image
-  float* outputImage = (float*)zAllocate(sizeof(float) * imageWidth * imageHeight * 3);
+  float* outputImage = (float*)plAllocate(sizeof(float) * imageWidth * imageHeight * 3);
 
   if (!outputImage)
   {
@@ -412,11 +412,11 @@ void LoadHdr(Status& status,
   }
 
   // Scratch buffer for decoding a single scanline
-  byte* scanline = (byte*)zAllocate(sizeof(byte) * imageWidth * 4);
+  byte* scanline = (byte*)plAllocate(sizeof(byte) * imageWidth * 4);
 
   if (!scanline)
   {
-    zDeallocate(outputImage);
+    plDeallocate(outputImage);
     status.SetFailed("Failed to allocate memory for the Hdr scanline");
     return;
   }
@@ -427,8 +427,8 @@ void LoadHdr(Status& status,
     if (!DecodeHdrScanline(imageData, endData, imageWidth, scanline))
     {
       status.SetFailed("Corrupted or invalid image data");
-      zDeallocate(scanline);
-      zDeallocate(outputImage);
+      plDeallocate(scanline);
+      plDeallocate(outputImage);
       return;
     }
 
@@ -438,7 +438,7 @@ void LoadHdr(Status& status,
       RgbeToRgb32f(scanline + pixel * 4, outputScanline + pixel * 3);
   }
 
-  zDeallocate(scanline);
+  plDeallocate(scanline);
   *width = imageWidth;
   *height = imageHeight;
   *output = (byte*)outputImage;

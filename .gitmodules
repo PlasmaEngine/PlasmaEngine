@@ -40,3 +40,6 @@
 [submodule "Libgit2"]
 	path = External/Libgit2/Repo
 	url = https://github.com/WelderFoundation/WelderLibgit2.git
+[submodule "External/Tracy/Repo"]
+	path = External/Tracy/Repo
+	url = https://github.com/PlasmaEngine/tracy.git

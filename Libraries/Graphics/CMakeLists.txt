@@ -116,6 +116,7 @@ target_sources(Graphics
 plasma_target_includes(Graphics
   PUBLIC
     Common
+    tracy
     Geometry
     LightningShaders
     FreeType

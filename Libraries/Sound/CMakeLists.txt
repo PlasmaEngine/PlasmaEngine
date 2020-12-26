@@ -79,6 +79,7 @@ plasma_target_includes(Sound
     Common
     Geometry
     Opus
+    tracy
 )
 
 set_target_properties( Sound PROPERTIES FOLDER "PlasmaEngine" )

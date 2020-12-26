@@ -1,6 +1,8 @@
 // MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
+#include "TracyC.h"
+
 namespace Plasma
 {
 
@@ -119,6 +121,8 @@ void Engine::Initialize(SystemInitializer& initializer)
   {
     System* system = mSystems[i];
     cstr systemName = system->GetName();
+    ZoneScoped;
+    ZoneText(systemName, sizeof(systemName));
     ProfileScopeFunctionArgs(systemName);
     PlasmaPrintFilter(Filter::DefaultFilter, "Initializing %s...\n", systemName);
     system->Initialize(initializer);
@@ -152,6 +156,8 @@ void Engine::Update()
   }
   else
   {
+    TracyCFrameMark;
+    ZoneScoped;
     ProfileScopeFunction();
 
     PL::gTracker->ClearDeletedObjects();

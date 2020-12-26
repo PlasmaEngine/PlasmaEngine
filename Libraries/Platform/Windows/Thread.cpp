@@ -84,7 +84,7 @@ size_t Thread::GetCurrentThreadId()
 bool Thread::Initialize(EntryFunction entry, void* instance, StringParam threadName)
 {
   PlasmaGetPrivateData(ThreadPrivateData);
-
+	
   mThreadName = threadName;
 
   const int cStackSize = 65536;

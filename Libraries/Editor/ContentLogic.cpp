@@ -41,6 +41,7 @@ void LoadContentConfig()
 
 bool LoadContentLibrary(StringParam name)
 {
+  ZoneScoped;
   ProfileScopeFunctionArgs(name);
   ContentLibrary* library = PL::gContentSystem->Libraries.FindValue(name, nullptr);
   if (!library)
@@ -79,6 +80,7 @@ bool LoadContentLibrary(StringParam name)
 
 void LoadCoreContent(Array<String>& coreLibs)
 {
+  ZoneScoped;
   ProfileScopeFunction();
   PL::gContentSystem->EnumerateLibraries();
 

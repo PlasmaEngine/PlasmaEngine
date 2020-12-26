@@ -29,6 +29,7 @@ plasma_target_includes(UiWidget
   PUBLIC
     Engine
     LightningShaders
+    tracy
 )
 
 set_target_properties( UiWidget PROPERTIES FOLDER "PlasmaEngine" )

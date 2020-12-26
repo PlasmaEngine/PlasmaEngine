@@ -96,6 +96,7 @@ plasma_target_includes(Content
     ZLib
     Opus
     Nvtt
+    tracy
 )
 
 set_target_properties( Content PROPERTIES FOLDER "PlasmaEngine" )

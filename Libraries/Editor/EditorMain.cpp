@@ -910,6 +910,7 @@ void SetupTools(Editor* editor);
 
 void CreateEditor(OsWindow* mainWindow, StringParam projectFile, StringParam newProjectName)
 {
+  ZoneScoped;
   ProfileScopeFunction();
 
   // Set the tweakables modified callback so that we can update the Ui

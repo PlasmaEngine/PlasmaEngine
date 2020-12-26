@@ -24,7 +24,7 @@ public:
   {
     ThreadSafeReferenceCountedHandleData& data = *(ThreadSafeReferenceCountedHandleData*)(handleToInitialize.Data);
     data.mId = (u64)-1;
-    data.mRawObject = zAllocate(type->Size);
+    data.mRawObject = plAllocate(type->Size);
   }
 
   void ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize) override

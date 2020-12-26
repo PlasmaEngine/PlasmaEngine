@@ -50,6 +50,7 @@ plasma_target_includes(Replication
     Common
     Lightning
     Geometry
+    tracy
 )
 
 set_target_properties( Replication PROPERTIES FOLDER "PlasmaEngine" )

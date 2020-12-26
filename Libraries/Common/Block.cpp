@@ -80,6 +80,7 @@ void Block::Deallocate(MemPtr ptr, size_t numberOfBytes)
 {
   RemoveAllocation(numberOfBytes);
 
+
   // Determine what bucket to use
   ErrorIf(numberOfBytes > cMaxBlockSize,
           "Size is larger than max block size. "
@@ -100,7 +101,7 @@ void Block::AllocateBlockPage(size_t blockIndex)
   size_t blockSize = BlockSizes[blockIndex];
   size_t blocksOnPage = cPageSize / blockSize;
 
-  byte* memoryPage = (byte*)zAllocate(cPageSize);
+  byte* memoryPage = (byte*)plAllocate(cPageSize);
   DeltaDedicated(cPageSize);
 
   for (size_t i = 0; i < blocksOnPage; ++i)
@@ -119,7 +120,7 @@ void Block::CleanUp()
   Array<MemPtr>::range blocksToFree = mPageBlocks.All();
   while (!blocksToFree.Empty())
   {
-    zDeallocate(blocksToFree.Front());
+    plDeallocate(blocksToFree.Front());
     blocksToFree.PopFront();
   }
   mPageBlocks.Clear();

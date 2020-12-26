@@ -19,6 +19,7 @@ target_sources(CodeTranslator
 plasma_target_includes(CodeTranslator
   PUBLIC
     Engine
+    tracy
     LightningShaders
 )
 

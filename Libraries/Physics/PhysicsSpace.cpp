@@ -583,6 +583,7 @@ void PhysicsSpace::FrameUpdate()
 
 void PhysicsSpace::SystemLogicUpdate(UpdateEvent* updateEvent)
 {
+  ZoneScoped;
   ProfileScopeTree("Physics", "Engine", ByteColorRGBA(232, 0, 34, 255));
 
   {
@@ -644,9 +645,11 @@ void PhysicsSpace::IterateTimestep(real dt)
 {
   mIterationDt = dt;
 
+  ZoneScopedN("Iteration");
   ProfileScopeTree("Iteration", "Physics", Color::SaddleBrown);
 
   {
+    ZoneScopedN("Velocity Integration");
     ProfileScopeTree("Velocity Integration", "Iteration", Color::Goldenrod);
     PreCalculateEffects(dt);
     ApplyHierarchyEffects(dt);
@@ -676,6 +679,7 @@ void PhysicsSpace::IterateTimestep(real dt)
   UpdateKinematicState();
 
   {
+    ZoneScopedN("Position Integration");
     ProfileScopeTree("Position Integration", "Iteration", Color::Goldenrod);
     IntegrateBodiesPosition(dt);
   }
@@ -744,6 +748,7 @@ void PhysicsSpace::IntegrateBodiesPosition(real dt)
 
 void PhysicsSpace::BroadPhase()
 {
+  ZoneScopedN("BroadPhase");
   ProfileScopeTree("BroadPhase", "Iteration", Color::SaddleBrown);
   mPossiblePairs.Clear();
 
@@ -783,6 +788,7 @@ void PhysicsSpace::BroadPhase()
 
 void PhysicsSpace::NarrowPhase()
 {
+  ZoneScopedN("NarrowPhase");
   ProfileScopeTree("NarrowPhase", "Iteration", Color::Salmon);
 
   HeapAllocator allocator(mHeap);
@@ -835,6 +841,7 @@ void PhysicsSpace::NarrowPhase()
 void PhysicsSpace::PreSolve(real dt)
 {
   // Send out pre-solve events
+  ZoneScopedN("PreSolveEvents");
   ProfileScopeTree("PreSolveEvents", "Iteration", Color::Peru);
   mEventManager->DispatchPreSolveEvents(this);
   PushBroadPhaseQueue();
@@ -843,6 +850,7 @@ void PhysicsSpace::PreSolve(real dt)
 void PhysicsSpace::ResolutionPhase(real dt)
 {
   // Solve all velocity constraints
+  ZoneScopedN("ResolutionPhase");
   ProfileScopeTree("ResolutionPhase", "Iteration", Color::OrangeRed);
   mIslandManager->Solve(dt, GetAllowSleep(), mDebugDrawFlags.Field);
 }
@@ -850,6 +858,7 @@ void PhysicsSpace::ResolutionPhase(real dt)
 void PhysicsSpace::SolvePositions(real dt)
 {
   // Solve all position constraints
+  ZoneScopedN("SolvePositions");
   ProfileScopeTree("SolvePositions", "Iteration", Color::PaleTurquoise);
   mIslandManager->SolvePositions(dt);
 }
@@ -1297,6 +1306,7 @@ void PhysicsSpace::SerializeBroadPhases(Serializer& stream)
 
 void PhysicsSpace::Publish()
 {
+  ZoneScoped;
   ProfileScopeTree("Publish", "Physics", Color::RosyBrown);
   // Publish rigid body transforms
   RigidBodyList::range range = mRigidBodies.All();
@@ -1821,6 +1831,8 @@ void PhysicsSpace::DebugDraw()
   // Debug::DefaultConfig config;
   // config.SpaceId(this->GetOwner()->GetId().Id);
 
+  ZoneScoped;
+	
   ProfileScopeTree("DebugDraw", "Physics", Color::Yellow);
   if (mDebugDrawFlags.IsSet(PhysicsSpaceDebugDrawFlags::DrawDebug))
   {

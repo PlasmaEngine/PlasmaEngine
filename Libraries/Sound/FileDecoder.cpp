@@ -229,6 +229,8 @@ int PacketDecoder::GetPacketFromFile(byte* packetDataToWrite,
 
 OsInt StartThreadForDecoding(void* data)
 {
+  tracy::SetThreadName("Decoding");
+  ZoneScoped;
   ((AudioFileDecoder*)data)->DecodingLoopThreaded();
   return 0;
 }
@@ -394,10 +396,13 @@ DecompressedDecoder::~DecompressedDecoder()
 
 void DecompressedDecoder::DecodingLoopThreaded()
 {
+	
   // Keep looping as long as we are still decoding
   bool decoding = true;
   while (decoding)
   {
+    ZoneScoped;
+  	
     // Wait until signaled that another packet is needed
     DecodingSemaphore.WaitAndDecrement();
 

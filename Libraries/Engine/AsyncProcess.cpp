@@ -261,6 +261,7 @@ void AsyncProcess::ThreadInfo::Reset()
 
 OsInt AsyncProcess::StandardOutputThreadFn(void* threadStartData)
 {
+  tracy::SetThreadName("StandardOutput");	
   // Start reading from standard output
   AsyncProcess* asyncProcess = (AsyncProcess*)threadStartData;
   return RunThread(
@@ -269,6 +270,7 @@ OsInt AsyncProcess::StandardOutputThreadFn(void* threadStartData)
 
 OsInt AsyncProcess::StandardErrorThreadFn(void* threadStartData)
 {
+  tracy::SetThreadName("StandardError");	
   // Start reading from standard error
   AsyncProcess* asyncProcess = (AsyncProcess*)threadStartData;
   return RunThread(

@@ -213,6 +213,7 @@ plasma_target_includes(Engine
     Common
     Geometry
     Lightning
+    tracy
 )
 
 set_target_properties( Engine PROPERTIES FOLDER "PlasmaEngine" )

@@ -2287,7 +2287,7 @@ void CogHandleManager::Allocate(BoundType* type, Handle& handleToInitialize, siz
 
   CogHandleData& data = *(CogHandleData*)(handleToInitialize.Data);
   data.mCogId = CogId();
-  data.mRawObject = zAllocate(type->Size);
+  data.mRawObject = plAllocate(type->Size);
 }
 
 void CogHandleManager::ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize)

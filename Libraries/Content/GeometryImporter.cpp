@@ -93,7 +93,7 @@ GeometryProcessorCodes::Enum GeometryImporter::ProcessModelFiles()
   // read the file.
   DataBlock block = ReadFileIntoDataBlock(mInputFile.c_str());
   mScene = mAssetImporter.ReadFileFromMemory(block.Data, block.Size, flags);
-  zDeallocate(block.Data);
+  plDeallocate(block.Data);
   PlasmaPrint("Processing model: %s\n", FilePath::GetFileNameWithoutExtension(mInputFile).Data());
 
   // An error has occurred, no scene imported

@@ -220,6 +220,9 @@ void BroadPhaseTracker::CreateProxy(uint type, BroadPhaseProxy& proxy, BroadPhas
     Statistics& stats = handle.mStats;
 
     { // Scoped for profiler
+      ZoneScoped;
+      ZoneText(stats.GetRecord(BPStats::Insertion)->GetName().c_str(),
+               sizeof(stats.GetRecord(BPStats::Insertion)->GetName()));
       StatsProfileScope(stats, BPStats::Insertion);
       broadPhase->CreateProxy(handle.GetProxy(proxyIndex), data);
     }
@@ -261,6 +264,9 @@ void BroadPhaseTracker::RemoveProxy(uint type, BroadPhaseProxy& proxy)
     BroadPhaseProxy& internalProxy = handle.GetProxy(index);
 
     { // Scoped for profiler
+      ZoneScoped;
+      ZoneText(stats.GetRecord(BPStats::Removal)->GetName().c_str(),
+               sizeof(stats.GetRecord(BPStats::Removal)->GetName()));
       StatsProfileScope(stats, BPStats::Removal);
       broadPhase->RemoveProxy(internalProxy);
     }
@@ -301,6 +307,9 @@ void BroadPhaseTracker::UpdateProxy(uint type, BroadPhaseProxy& proxy, BroadPhas
     BroadPhaseProxy& internalProxy = handle.GetProxy(index);
 
     { // Scoped for profiler
+      ZoneScoped;
+      ZoneText(stats.GetRecord(BPStats::Update)->GetName().c_str(),
+               sizeof(stats.GetRecord(BPStats::Update)->GetName()));
       StatsProfileScope(stats, BPStats::Update);
       broadPhase->UpdateProxy(internalProxy, data);
     }
@@ -338,6 +347,9 @@ void BroadPhaseTracker::SelfQuery(ClientPairArray& results)
     ClientPairArray currentResults;
 
     { // Scoped for profiler
+      ZoneScoped;
+      ZoneText(stats.GetRecord(BPStats::Collision)->GetName().c_str(),
+               sizeof(stats.GetRecord(BPStats::Collision)->GetName()));
       StatsProfileScope(stats, BPStats::Collision);
       broadPhase->SelfQuery(currentResults);
     }
@@ -363,6 +375,9 @@ void BroadPhaseTracker::Query(BroadPhaseData& data, ClientPairArray& results, ui
     ClientPairArray currentResults;
 
     { // Scoped for profiler
+      ZoneScoped;
+      ZoneText(stats.GetRecord(BPStats::Collision)->GetName().c_str(),
+               sizeof(stats.GetRecord(BPStats::Collision)->GetName()));
       StatsProfileScope(stats, BPStats::Collision);
       broadPhase->Query(data, currentResults);
     }
@@ -409,6 +424,9 @@ void BroadPhaseTracker::Construct()
       Statistics& stats = handle.mStats;
 
       { // Scoped for profiler
+        ZoneScoped;
+        ZoneText(stats.GetRecord(BPStats::Construction)->GetName().c_str(),
+                 sizeof(stats.GetRecord(BPStats::Construction)->GetName()));
         StatsProfileScope(stats, BPStats::Construction);
         broadPhase->Construct();
       }
@@ -430,6 +448,9 @@ void BroadPhaseTracker::RegisterCollisions()
     Statistics& stats = handle.mStats;
 
     { // Scoped for profiler
+      ZoneScoped;
+      ZoneText(stats.GetRecord(BPStats::Collision)->GetName().c_str(),
+               sizeof(stats.GetRecord(BPStats::Collision)->GetName()));
       StatsProfileScope(stats, BPStats::Collision);
       broadPhase->RegisterCollisions();
     }
@@ -452,6 +473,9 @@ void BroadPhaseTracker::Cleanup()
       Statistics& stats = handle.mStats;
 
       { // Scoped for profiler
+        ZoneScoped;
+        ZoneText(stats.GetRecord(BPStats::Cleanup)->GetName().c_str(),
+                 sizeof(stats.GetRecord(BPStats::Cleanup)->GetName()));
         StatsProfileScope(stats, BPStats::Cleanup);
         broadPhase->Construct();
       }
@@ -478,6 +502,9 @@ void BroadPhaseTracker::CastIntoBroadphase(uint broadPhaseType,
     ProxyCastResults currentResults(currentResultsArray, results.Filter);
 
     { // Scoped for profiler
+      ZoneScoped;
+      ZoneText(stats.GetRecord(BPStats::RayCast)->GetName().c_str(),
+               sizeof(stats.GetRecord(BPStats::RayCast)->GetName()));
       StatsProfileScope(stats, BPStats::RayCast);
       (broadPhase->*func)(data, currentResults);
     }

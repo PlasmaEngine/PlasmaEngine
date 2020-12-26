@@ -280,6 +280,7 @@ void NetPeer::OnDestroy(uint flags)
 
 void NetPeer::OnEngineUpdate(UpdateEvent* event)
 {
+  ZoneScoped;
   ProfileScopeTree("Networking", "Engine", Color::DeepSkyBlue);
 
   // Get owner as game session
@@ -340,6 +341,7 @@ void NetPeer::OnEngineUpdate(UpdateEvent* event)
   // Update Peer
   //
   {
+    ZoneScopedN("NetPeer");
     ProfileScopeTree("NetPeer", "Networking", Color::OrangeRed);
 
     // Update Peer

@@ -161,7 +161,7 @@ void Archive::AddFileBlock(StringParam relativeName, DataBlock sourceBlock)
   {
     // No compression, just copy data into buffer
     compressedSize = sourceBlock.Size;
-    destBuffer = (byte*)zAllocate(sourceBlock.Size);
+    destBuffer = (byte*)plAllocate(sourceBlock.Size);
     memcpy(destBuffer, sourceBlock.Data, sourceBlock.Size);
   }
   else
@@ -170,7 +170,7 @@ void Archive::AddFileBlock(StringParam relativeName, DataBlock sourceBlock)
     uint maxCompressedSize = compressBound(sourceBlock.Size);
 
     // Allocate the output buffer
-    destBuffer = (byte*)zAllocate(maxCompressedSize);
+    destBuffer = (byte*)plAllocate(maxCompressedSize);
 
     // Deflate the buffer to the compressed size
     compressedSize = RawDeflate(destBuffer, maxCompressedSize, sourceBlock.Data, sourceBlock.Size, mCompressionLevel);
@@ -181,9 +181,9 @@ void Archive::AddFileBlock(StringParam relativeName, DataBlock sourceBlock)
     const bool shrinkToActualCompressedSize = true;
     if (shrinkToActualCompressedSize)
     {
-      byte* compressed = (byte*)zAllocate(compressedSize);
+      byte* compressed = (byte*)plAllocate(compressedSize);
       memcpy(compressed, destBuffer, compressedSize);
-      zDeallocate(destBuffer);
+      plDeallocate(destBuffer);
       destBuffer = compressed;
     }
   }
@@ -258,11 +258,11 @@ void Archive::DecompressEntry(ArchiveEntry& entry)
     else
     {
       // Inflate Data
-      entry.Full.Data = (byte*)zAllocate(entry.Full.Size);
+      entry.Full.Data = (byte*)plAllocate(entry.Full.Size);
       RawInflate(entry.Full.Data, entry.Full.Size, entry.Compressed.Data, entry.Compressed.Size);
 
       // Free compressed data
-      zDeallocate(entry.Compressed.Data);
+      plDeallocate(entry.Compressed.Data);
       entry.Compressed.Data = nullptr;
     }
   }
@@ -539,7 +539,7 @@ void Archive::ReadZipFileInternal(ArchiveReadFlags::Enum readFlags, Stream& file
       if (readFlags & ArchiveReadFlags::Data)
       {
         // Read the compressed data into a heap allocated block
-        byte* buffer = (byte*)zAllocate(localFile.Info.CompressedSize);
+        byte* buffer = (byte*)plAllocate(localFile.Info.CompressedSize);
         file.Read(status, buffer, localFile.Info.CompressedSize);
         entry.Compressed.Data = buffer;
 
@@ -595,7 +595,7 @@ void Archive::Extract(File& file, StringParam name, StringParam destfile)
     if (entry.Name == name)
     {
       Status status;
-      byte* buffer = (byte*)zAllocate(entry.Compressed.Size);
+      byte* buffer = (byte*)plAllocate(entry.Compressed.Size);
       file.Seek(entry.Offset, SeekOrigin::Begin);
       file.Read(status, buffer, entry.Compressed.Size);
       entry.Compressed.Data = buffer;
@@ -676,7 +676,7 @@ void Archive::DecompressEntryInternal(ArchiveEntry& entry, Stream& file)
   file.Seek(mFileOriginBegin + entry.Offset, SeekOrigin::Begin);
 
   // Read the compressed data into a heap allocated block
-  byte* buffer = (byte*)zAllocate(entry.Compressed.Size);
+  byte* buffer = (byte*)plAllocate(entry.Compressed.Size);
   Status status;
   file.Read(status, buffer, entry.Compressed.Size);
   entry.Compressed.Data = buffer;

@@ -871,6 +871,7 @@ void Compare(DataNode* lhs, DataNode* rhs)
 bool ReadDataSet(
     Status& status, StringRange data, StringParam source, DataTreeLoader* loader, uint* fileVersion, DataNode* fileRoot)
 {
+  ZoneScoped;
   ProfileScopeFunctionArgs(source);
   DataTreeContext parseContext;
   parseContext.Filename = source;

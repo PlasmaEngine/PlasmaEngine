@@ -172,6 +172,8 @@ bool JobSystem::RunOneJob()
 
 void JobSystem::RunJob(Job* job)
 {
+  ZoneScoped;
+  ZoneText(LightningVirtualTypeId(job)->Name.c_str(), sizeof(LightningVirtualTypeId(job)->Name));
   ProfileScopeFunctionArgs(LightningVirtualTypeId(job)->Name);
   job->ExecuteAsyncBegin();
 }

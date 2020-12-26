@@ -5,6 +5,8 @@
 
 #include "Support/Profiler.hpp"
 
+#include "TracyOpenGL.hpp"
+
 #ifdef PlasmaTargetOsEmscripten
 #  define PlasmaWebgl
 #else
@@ -932,6 +934,7 @@ namespace Plasma
 
     void StreamedVertexBuffer::FlushBuffer(bool deactivate)
     {
+        TracyGpuZone("DrawStreamed");
         if (mCurrentBufferOffset > 0)
         {
             if (mPrimitiveType == PrimitiveType::Triangles)
@@ -987,6 +990,9 @@ namespace Plasma
             error = String::Format("GLEW failed to initialize with error: %d", glewInitStatus);
             return;
         }
+
+    	
+        TracyGpuContext;
 
 #ifdef PlasmaWebgl
   // glewIsSupported on emscripten doesn't emulate desktop gl extension queries.
@@ -1719,17 +1725,24 @@ namespace Plasma
 
     void OpenglRenderer::DoRenderTasks(RenderTasks* renderTasks, RenderQueues* renderQueues)
     {
+		ZoneScoped;
         mRenderTasks = renderTasks;
         mRenderQueues = renderQueues;
 
         forRange(RenderTaskRange& taskRange, mRenderTasks->mRenderTaskRanges.All())
             DoRenderTaskRange(taskRange);
 
-        zglSwapBuffers(this);
+		{
+          ZoneScopedN("SwapBuffers");
+     	  TracyGpuZone("SwapBuffer")
+	      zglSwapBuffers(this);
+		}
 
-        DelayedRenderDataDestruction();
-
-        DestroyUnusedSamplers();
+    	{
+          ZoneScopedN("DestroyRenderData");
+	      DelayedRenderDataDestruction();
+          DestroyUnusedSamplers();
+	    }
     }
 
     void OpenglRenderer::DoRenderTaskRange(RenderTaskRange& taskRange)
@@ -1785,6 +1798,7 @@ namespace Plasma
 
     void OpenglRenderer::DoRenderTaskClearTarget(RenderTaskClearTarget* task)
     {
+	    ZoneScoped;
         SetRenderTargets(task->mRenderSettings);
 
         glStencilMask(task->mStencilWriteMask);
@@ -1803,7 +1817,10 @@ namespace Plasma
 
     void OpenglRenderer::DoRenderTaskRenderPass(RenderTaskRenderPass* task)
     {
-       	// Create a map of RenderGroup id to task memory index for every sub group
+        ZoneScopedN("RenderTask");
+        ZoneText(task->mRenderPassDisplayName.c_str(), sizeof(task->mRenderPassDisplayName));
+
+    	// Create a map of RenderGroup id to task memory index for every sub group
         // entry.
         HashMap<int, size_t> taskIndexMap;
         while (taskIndexMap.Size() < task->mSubRenderGroupCount)
@@ -1843,6 +1860,8 @@ namespace Plasma
 	              if (subTask->mRender == false)
 	                continue;
 
+	              ZoneScopedN("RenderSubTask");
+                ZoneText(subTask->mRenderPassDisplayName.c_str(), sizeof(subTask->mRenderPassDisplayName));
 	              ProfileScopeTree(subTask->mRenderPassDisplayName, "RenderTasksUpdate", Color::LightCyan)
 
 	                  currentTaskIndex = index;
@@ -1912,6 +1931,8 @@ namespace Plasma
             return;
     	
         {
+			ZoneScopedN("ExecuteRenderJob");
+			ZoneText(task->mDisplayName.c_str(), sizeof(task->mDisplayName));
             ProfileScopeTree(task->mDisplayName, "Plasma::ExecuteRendererJob", Color::Cyan)
 
 	        SetRenderTargets(task->mRenderSettings);
@@ -1941,6 +1962,7 @@ namespace Plasma
 
     void OpenglRenderer::DoRenderTaskBackBufferBlit(RenderTaskBackBufferBlit* task)
     {
+		ZoneScoped;
         GlTextureRenderData* renderData = static_cast<GlTextureRenderData*>(task->mColorTarget);
         ScreenViewport viewport = task->mViewport;
 
@@ -1969,6 +1991,7 @@ namespace Plasma
 
     void OpenglRenderer::DoRenderTaskTextureUpdate(RenderTaskTextureUpdate* task)
     {
+	    ZoneScoped;
         AddTextureInfo info;
         info.mRenderData = task->mRenderData;
         info.mWidth = task->mWidth;
@@ -2001,6 +2024,7 @@ namespace Plasma
 
     void OpenglRenderer::DrawStatic(ViewNode& viewNode, FrameNode& frameNode)
     {
+	    ZoneScoped;
         GlMeshRenderData* meshData = static_cast<GlMeshRenderData*>(frameNode.mMeshRenderData);
         GlMaterialRenderData* materialData = static_cast<GlMaterialRenderData*>(frameNode.mMaterialRenderData);
         if (meshData == nullptr || materialData == nullptr)
@@ -2063,6 +2087,8 @@ namespace Plasma
             SetShaderParameter(ShaderInputType::Texture, "HeightMapWeights_HeightMapPBRMap", &textureSlot);
         }
 
+    	TracyGpuZone("DrawStatic");
+    	
         glBindVertexArray(meshData->mVertexArray);
         if (meshData->mIndexBuffer == 0)
             // If nothing is bound, glDrawArrays will invoke the shader pipeline the
@@ -2076,6 +2102,7 @@ namespace Plasma
 
     void OpenglRenderer::DrawStreamed(ViewNode& viewNode, FrameNode& frameNode)
     {
+        ZoneScoped;
         GlMaterialRenderData* materialData = static_cast<GlMaterialRenderData*>(frameNode.mMaterialRenderData);
         if (materialData == nullptr)
             return;

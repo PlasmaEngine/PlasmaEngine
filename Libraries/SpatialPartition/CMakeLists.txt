@@ -65,6 +65,7 @@ target_sources(SpatialPartition
 plasma_target_includes(SpatialPartition
   PUBLIC
     Lightning
+    tracy
 )
 
 set_target_properties( SpatialPartition PROPERTIES FOLDER "PlasmaEngine" )

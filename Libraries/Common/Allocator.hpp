@@ -16,8 +16,8 @@
 namespace Plasma
 {
 
-void* zAllocate(size_t numberOfBytes);
-void zDeallocate(void*);
+void* plAllocate(size_t numberOfBytes);
+void plDeallocate(void*);
 
 class PlasmaShared StandardMemory
 {
@@ -44,11 +44,11 @@ public:
   };
   void* Allocate(size_t numberOfBytes)
   {
-    return zAllocate(numberOfBytes);
+    return plAllocate(numberOfBytes);
   };
   void Deallocate(void* ptr, size_t numberOfBytes)
   {
-    zDeallocate(ptr);
+    plDeallocate(ptr);
   }
 };
 
@@ -120,7 +120,7 @@ public:
     {
       throw std::length_error("Zallocator Too Many Elements");
     }
-    void* ptr = Plasma::zAllocate(num * sizeof(T));
+    void* ptr = Plasma::plAllocate(num * sizeof(T));
     if (!ptr)
     {
       throw std::bad_alloc();
@@ -135,7 +135,7 @@ public:
 
   void deallocate(pointer p, size_type)
   {
-    Plasma::zDeallocate(p);
+    Plasma::plDeallocate(p);
   }
 
   void Construct(pointer p, const T& value)

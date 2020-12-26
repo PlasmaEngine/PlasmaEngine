@@ -34,6 +34,8 @@
 #include <cfloat>
 #include <malloc.h>
 
+#include <Tracy.hpp>
+
 using namespace std;
 
 namespace Plasma

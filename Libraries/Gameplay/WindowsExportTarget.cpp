@@ -24,6 +24,7 @@ void WindowsExportTarget::ExportApplication()
   String applicationOutputPath =
       FilePath::CombineWithExtension(mExporter->mOutputDirectory, mExporter->mApplicationName, ".exe");
   {
+    ZoneScoped;
     ProfileScopeFunction();
     ProjectSettings* project = mExporter->mProjectCog->has(ProjectSettings);
     String outputPath = mExporter->mOutputDirectory;//FilePath::Combine(GetTemporaryDirectory(), "Windows", "PlasmaExport");

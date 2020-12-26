@@ -88,7 +88,10 @@ target_link_libraries(PlasmaLauncher
     Lightning
     LightningScript
     LightningShaders
+    tracy
 )
+
+target_compile_definitions(PlasmaLauncher PUBLIC TRACY_IMPORTS)
 
 plasma_copy_from_linked_libraries(PlasmaLauncher)
 

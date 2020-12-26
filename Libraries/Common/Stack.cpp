@@ -16,7 +16,7 @@ Stack::Stack(cstr name, Graph* parent, size_t stackSize, size_t maxEntries) : Gr
     mEntries.Reserve(maxEntries);
   }
 
-  mStackHeader = (byte*)zAllocate(mStackSize);
+  mStackHeader = (byte*)plAllocate(mStackSize);
   mStackIndex = 0;
   mMaxSizeReached = 0;
 }
@@ -57,6 +57,8 @@ MemPtr Stack::Allocate(size_t numberOfBytes)
     mEntries.PushBack(Entry(curHead, numberOfBytes));
   }
 
+  //TracyAlloc(curHead, numberOfBytes);
+	
   return curHead;
 }
 
@@ -72,12 +74,13 @@ void Stack::Deallocate(MemPtr ptr, size_t numberOfBytes)
     mEntries.PopBack();
   }
 
+  //TracyFree(ptr);
   mStackIndex -= numberOfBytes;
 }
 
 void Stack::CleanUp()
 {
-  zDeallocate(mStackHeader);
+  plDeallocate(mStackHeader);
 }
 
 } // namespace Memory

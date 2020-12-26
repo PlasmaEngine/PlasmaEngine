@@ -136,6 +136,7 @@ void PlasmaStartup::Initialize()
   Environment* environment = Environment::GetInstance();
   environment->ParseCommandArgs(gCommandLineArguments);
 
+  ZoneScoped;
   ProfileScopeFunction();
 
   if (Environment::GetValue<bool>("BeginTracing", false))
@@ -244,6 +245,7 @@ System* CreateTimeSystem();
 
 void PlasmaStartup::Startup()
 {
+  ZoneScoped;
   ProfileScopeFunction();
   Engine* engine = PL::gEngine;
   Cog* configCog = engine->GetConfigCog();
@@ -368,6 +370,7 @@ void PlasmaStartup::EngineUpdate()
 void PlasmaStartup::Shutdown()
 {
   {
+    ZoneScoped;
     ProfileScopeFunction();
     PL::gEngine->Shutdown();
 

@@ -38,6 +38,7 @@ plasma_target_includes(Support
     Common
     Libpng
     ZLib
+    tracy
 )
 
 set_target_properties( Support PROPERTIES FOLDER "PlasmaEngine" )

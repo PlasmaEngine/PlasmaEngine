@@ -57,6 +57,7 @@ void CollectContactsToSolve(IConstraintSolver::ContactList& inputList,
 
 void ContactUpdate(Contact* contact, Collider* c0, Collider* c1)
 {
+  ZoneScoped;
   ProfileScopeTree("Contacts", "SolvePositions", Color::BlueViolet);
 
   Manifold* manifold = contact->mManifold;

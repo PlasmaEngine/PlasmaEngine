@@ -20,7 +20,7 @@ PatchLayer::PatchLayer()
 PatchLayer::~PatchLayer()
 {
   if (Data)
-    zDeallocate(Data);
+    plDeallocate(Data);
 }
 
 uint PatchLayer::Size()
@@ -31,7 +31,7 @@ uint PatchLayer::Size()
 void PatchLayer::Allocate()
 {
   if (Data == nullptr)
-    Data = (byte*)zAllocate(Size());
+    Data = (byte*)plAllocate(Size());
 }
 
 PatchData::PatchData()
@@ -123,7 +123,7 @@ struct HeightMapSourceLoadPattern
         file.Read(layer->ElementSize);
 
         uint size = layer->Size();
-        layer->Data = (byte*)zAllocate(size);
+        layer->Data = (byte*)plAllocate(size);
         file.ReadArray(layer->Data, size);
 
         data->Layers.Insert(layer->LayerType, layer);

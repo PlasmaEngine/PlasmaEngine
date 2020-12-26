@@ -165,7 +165,7 @@ void ConvertImage(HDC hdc, HBITMAP bitmapHandle, Image* image)
 
   // Row size is padded to 32 bits
   DWORD dwBmpSize = ((bmpScreen.bmWidth * bi.biBitCount + 31) / 32) * 4 * bmpScreen.bmHeight;
-  byte* rawBitmapData = (byte*)zAllocate(dwBmpSize);
+  byte* rawBitmapData = (byte*)plAllocate(dwBmpSize);
 
   // Gets the "bits" from the bitmap and copies them into a buffer
   // which is pointed to by lpbitmap.
@@ -801,7 +801,7 @@ bool WindowsOpenClipboard(UINT format)
 {
   if (!OpenClipboard((HWND)0))
     return false;
-  if (!IsClipboardFormatAvailable(CF_UNICODETEXT))
+  if (!IsClipboardFormatAvailable(format))
   {
     CloseClipboard();
     return false;

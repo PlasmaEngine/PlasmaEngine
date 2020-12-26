@@ -13,7 +13,7 @@ WString::WString(const wchar_t* str) : mSize(0)
     return;
   // wcslen does not include the null terminating character in its count
   mSize = wcslen(str) + 1;
-  wchar_t* wstr = (wchar_t*)zAllocate(mSize * sizeof(wchar_t));
+  wchar_t* wstr = (wchar_t*)plAllocate(mSize * sizeof(wchar_t));
   wcscpy(wstr, str);
   mData.SetData((byte*)wstr, mSize * sizeof(wchar_t), true);
 }
@@ -29,7 +29,7 @@ WString::WString(const wchar_t* str, size_t lengthInWChars) :
     return;
   }
 
-  wchar_t* wstr = (wchar_t*)zAllocate(mSize * sizeof(wchar_t));
+  wchar_t* wstr = (wchar_t*)plAllocate(mSize * sizeof(wchar_t));
   memcpy(wstr, str, lengthInWChars * sizeof(wchar_t));
   wstr[lengthInWChars] = 0;
   mData.SetData((byte*)wstr, mSize * sizeof(wchar_t), true);
@@ -43,7 +43,7 @@ WString::WString(StringParam str) : mSize(0)
   // wide character buffer going from UTF8 encoded chars -> UTF16 (windows
   // wchar) this step is necessary when using MultiByteToWideChar
   mSize = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
-  wchar_t* wstr = (wchar_t*)zAllocate(mSize * sizeof(wchar_t));
+  wchar_t* wstr = (wchar_t*)plAllocate(mSize * sizeof(wchar_t));
   // using the acquired information needed allocate a destination buffer and
   // covert the utf8 encoded character string to a wide string
   MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, wstr, mSize);
@@ -112,7 +112,7 @@ void WString::InternalDeepCopy(const WString& rhs)
 
   Status status;
   size_t sizeInBytes = rhs.SizeInBytes();
-  byte* data = (byte*)zAllocate(sizeInBytes);
+  byte* data = (byte*)plAllocate(sizeInBytes);
   rhs.mData.Read(status, data, sizeInBytes);
 
   mData.SetData(data, sizeInBytes, true);

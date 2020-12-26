@@ -61,6 +61,7 @@ cstr OsShell::GetName()
 
 void OsShell::Update(bool debugger)
 {
+  ZoneScoped;
   ProfileScopeTree("ShellSystem", "Engine", Color::Red);
 
   Keyboard* keyboard = Keyboard::GetInstance();

@@ -580,6 +580,7 @@ void GameWidget::SaveScreenshot(StringParam filename)
 
 void GameWidget::OnUiRenderUpdate(Event* event)
 {
+  ZoneScoped;
   ProfileScopeTree("RenderGameWidget", "UiRenderUpdate", Color::YellowGreen)
   // Update runs one time to add tasks for a screenshot and then disconnects
   GraphicsEngine* graphics = PL::gEngine->has(GraphicsEngine);
