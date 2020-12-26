@@ -9,12 +9,15 @@ static const float cAcceptableLoadtime = 0.15f;
 
 void ExecuteRendererJob(RendererJob* job)
 {
+  ZoneScoped;
   ProfileScopeFunction();
   job->Execute();
 }
 
 OsInt RendererThreadMain(void* rendererThreadJobQueue)
 {
+  tracy::SetThreadName("RenderThread");
+	
   RendererThreadJobQueue* jobQueue = (RendererThreadJobQueue*)rendererThreadJobQueue;
 
   Array<RendererJob*> rendererJobs;
@@ -90,12 +93,14 @@ void WaitRendererJob::WaitOnThisJob()
 
 void CreateRendererJob::Execute()
 {
+  ZoneScoped;
   PL::gRenderer = CreateRenderer(mMainWindowHandle, mError);
   mWaitEvent.Signal();
 }
 
 void DestroyRendererJob::Execute()
 {
+  ZoneScoped;
   delete PL::gRenderer;
   mRendererJobQueue->mExitThread = true;
   mWaitEvent.Signal();
@@ -103,42 +108,49 @@ void DestroyRendererJob::Execute()
 
 void AddMaterialJob::Execute()
 {
+  ZoneScoped;
   PL::gRenderer->AddMaterial(this);
   delete this;
 }
 
 void AddMeshJob::Execute()
 {
+  ZoneScoped;
   PL::gRenderer->AddMesh(this);
   delete this;
 }
 
 void AddTextureJob::Execute()
 {
+  ZoneScoped;
   PL::gRenderer->AddTexture(this);
   delete this;
 }
 
 void RemoveMaterialJob::Execute()
 {
+  ZoneScoped;
   PL::gRenderer->RemoveMaterial(this->mRenderData);
   delete this;
 }
 
 void RemoveMeshJob::Execute()
 {
+  ZoneScoped;
   PL::gRenderer->RemoveMesh(this->mRenderData);
   delete this;
 }
 
 void RemoveTextureJob::Execute()
 {
+  ZoneScoped;
   PL::gRenderer->RemoveTexture(this->mRenderData);
   delete this;
 }
 
 void SetLazyShaderCompilationJob::Execute()
 {
+  ZoneScoped;
   PL::gRenderer->SetLazyShaderCompilation(this->mLazyShaderCompilation);
   delete this;
 }
@@ -151,6 +163,7 @@ AddShadersJob::AddShadersJob(RendererThreadJobQueue* jobQueue) : RepeatingJob(jo
 
 void AddShadersJob::OnExecute()
 {
+  ZoneScoped;
   PL::gRenderer->AddShaders(mShaders, mForceCompileBatchCount);
 }
 
@@ -179,30 +192,35 @@ void AddShadersJob::ReturnExecute()
 
 void RemoveShadersJob::Execute()
 {
+  ZoneScoped;
   PL::gRenderer->RemoveShaders(mShaders);
   delete this;
 }
 
 void SetVSyncJob::Execute()
 {
+  ZoneScoped;
   PL::gRenderer->SetVSync(mVSync);
   delete this;
 }
 
 void DoRenderTasksJob::Execute()
 {
+  ZoneScoped;
   PL::gRenderer->DoRenderTasks(mRenderTasks, mRenderQueues);
   mWaitEvent.Signal();
 }
 
 void ReturnRendererJob::Execute()
 {
+  ZoneScoped;
   OnExecute();
   PL::gEngine->has(GraphicsEngine)->mReturnJobQueue->AddJob(this);
 }
 
 void GetTextureDataJob::OnExecute()
 {
+  ZoneScoped;
   PL::gRenderer->GetTextureData(this);
 }
 
@@ -320,6 +338,7 @@ ShowProgressJob::ShowProgressJob(RendererThreadJobQueue* jobQueue) : RepeatingJo
 
 void ShowProgressJob::OnExecute()
 {
+  ZoneScoped;
   mTimer.Update();
   mPerJobTimer.Update();
 

@@ -569,6 +569,8 @@ void Space::LoadLevelAdditive(Level* level)
 
 void Space::LoadLevelFile(StringParam filePath)
 {
+  ZoneScoped;
+  ZoneText(filePath.c_str(), sizeof(filePath));
   ProfileScopeFunctionArgs(filePath);
   // Enable in debug for level loading (object initialization, etc)
   FpuExceptionsEnablerDebug();
@@ -622,6 +624,8 @@ Level* Space::AddObjectsFromLevel(Level* level)
 
   if (level)
   {
+    ZoneScoped;
+    ZoneText(level->Name.c_str(), sizeof(level->Name));
     ProfileScopeFunctionArgs(level->Name);
     String levelPath = level->GetLoadPath();
     String levelMessage = String::Format("Loading Level From File %s", levelPath.c_str());

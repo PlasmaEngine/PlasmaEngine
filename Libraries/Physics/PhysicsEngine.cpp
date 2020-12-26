@@ -46,6 +46,7 @@ void PhysicsEngine::Update(bool debugger)
   if (debugger)
     return;
 
+  ZoneScoped;
   ProfileScopeTree("Physics", "Engine", Color::Yellow);
 
   // Update each physics space

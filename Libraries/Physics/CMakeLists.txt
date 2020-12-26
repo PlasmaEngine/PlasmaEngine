@@ -259,6 +259,7 @@ target_sources(Physics
 plasma_target_includes(Physics
   PUBLIC
     Lightning
+    tracy
 )
 
 set_target_properties( Physics PROPERTIES FOLDER "PlasmaEngine" )

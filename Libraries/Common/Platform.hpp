@@ -15,6 +15,8 @@
 // function this is useful to catch renaming virtual functions
 #  pragma warning(3 : 4263)
 
+#  pragma warning(disable : 4127) // condition expression is constant
+
 // Enable warning level 3 Conversion of an Enum to a integral type
 #  pragma warning(3 : 4239)
 

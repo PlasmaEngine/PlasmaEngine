@@ -15,6 +15,9 @@ MemPtr Heap::Allocate(size_t numberOfBytes)
 {
   AddAllocation(numberOfBytes);
   MemPtr mem = zAllocate(numberOfBytes);
+
+  //TracyAlloc(mem, numberOfBytes);
+	
   return mem;
 }
 
@@ -22,6 +25,7 @@ void Heap::Deallocate(MemPtr ptr, size_t numberOfBytes)
 {
   RemoveAllocation(numberOfBytes);
   zDeallocate(ptr);
+  //TracyFree(ptr);
 }
 
 void Heap::Print(size_t tabs, size_t flags)

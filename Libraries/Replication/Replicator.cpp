@@ -1936,6 +1936,7 @@ void Replicator::OnUninitialize()
 
 void Replicator::OnUpdate()
 {
+  ZoneScoped;
   ProfileScopeTree("Replication", "NetPeer", Color::Orange);
 
   // Get current time

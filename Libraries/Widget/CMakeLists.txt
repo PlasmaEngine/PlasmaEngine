@@ -94,6 +94,7 @@ plasma_target_includes(Widget
   PUBLIC
     Engine
     LightningShaders
+    tracy
 )
 
 set_target_properties( Widget PROPERTIES FOLDER "PlasmaEngine" )

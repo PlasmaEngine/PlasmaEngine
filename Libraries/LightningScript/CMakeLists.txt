@@ -20,6 +20,7 @@ target_sources(LightningScript
 plasma_target_includes(LightningScript
   PUBLIC
     Common
+    tracy
     Geometry
     Editor
 )

@@ -208,6 +208,7 @@ namespace Plasma
 
     LibraryRef BuildWrapperLibrary(LightningShaderIRLibraryRef fragmentsLibrary)
     {
+        ZoneScoped;
         ProfileScopeFunction();
         // @Nate: Maybe put this somewhere else?
         // Build a lookup map to deal with opaque shader types
@@ -404,6 +405,7 @@ namespace Plasma
                                                                Array<LightningDocumentResource*>& fragments,
                                                                StringParam libraryName)
     {
+        ZoneScoped;
         ProfileScopeFunctionArgs(libraryName);
         mFragmentsProject.Clear();
         mFragmentsProject.mProjectName = libraryName;
@@ -580,6 +582,7 @@ namespace Plasma
                                                 Array<ShaderEntry>& shaderEntries,
                                                 Array<ShaderDefinition>* compositeShaderDefs)
     {
+	    ZoneScoped;
         ProfileScopeFunction();
         // @Nate: Build a description of the pipeline tools to run.
         // This could be cached and down the line should probably be
@@ -620,6 +623,8 @@ namespace Plasma
             for (size_t i = startIndex; i < endIndex; ++i)
             {
                 Shader* shader = shaderArray[i];
+	            ZoneScopedN("Compositing");
+                ZoneText(shader->mName.c_str(), sizeof(shader->mName));
                 ProfileScopeArgs("Compositing", shader->mName);
                 PlasmaPrint("Compositing %s\n", shader->mName.c_str());
 

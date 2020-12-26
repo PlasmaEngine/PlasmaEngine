@@ -62,7 +62,11 @@ MemPtr Block::Allocate(size_t numberOfBytes)
 
   size_t bucketIndex = BucketLookUp[numberOfBytes];
 
-  return PopOnFreeList(bucketIndex);
+  auto pointer = PopOnFreeList(bucketIndex);
+
+  //TracyAlloc(pointer, numberOfBytes);
+	
+  return pointer;
 }
 
 Block::FreeBlock* Block::PopOnFreeList(size_t blockIndex)
@@ -80,6 +84,7 @@ void Block::Deallocate(MemPtr ptr, size_t numberOfBytes)
 {
   RemoveAllocation(numberOfBytes);
 
+
   // Determine what bucket to use
   ErrorIf(numberOfBytes > cMaxBlockSize,
           "Size is larger than max block size. "
@@ -87,6 +92,7 @@ void Block::Deallocate(MemPtr ptr, size_t numberOfBytes)
 
   size_t bucketIndex = BucketLookUp[numberOfBytes];
   PushFreeBlock(bucketIndex, (FreeBlock*)ptr);
+  //TracyFree(ptr);
 }
 
 void Block::PushFreeBlock(size_t blockIndex, FreeBlock* block)

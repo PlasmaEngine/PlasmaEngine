@@ -32,6 +32,7 @@ EmscriptenExportTarget::EmscriptenExportTarget(Exporter* exporter, String target
 void EmscriptenExportTarget::ExportApplication()
 {
   {
+    ZoneScoped;
     ProfileScopeFunction();
     String outputDirectory = FilePath::Combine(GetTemporaryDirectory(), "Web", "PlasmaExport");
 

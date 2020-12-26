@@ -59,6 +59,7 @@ target_sources(Meta
 plasma_target_includes(Meta
   PUBLIC
     Lightning
+    tracy
 )
 
 set_target_properties( Meta PROPERTIES FOLDER "PlasmaEngine" )

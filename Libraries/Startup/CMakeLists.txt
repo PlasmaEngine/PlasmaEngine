@@ -17,6 +17,7 @@ plasma_target_includes(Startup
     Common
     Geometry
     Graphics
+    tracy
 )
 
 set_target_properties( Startup PROPERTIES FOLDER "PlasmaEngine" )

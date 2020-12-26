@@ -48,6 +48,7 @@ target_sources(Serialization
 plasma_target_includes(Serialization
   PUBLIC
     Common
+    tracy
 )
 
 set_target_properties( Serialization PROPERTIES FOLDER "PlasmaEngine" )

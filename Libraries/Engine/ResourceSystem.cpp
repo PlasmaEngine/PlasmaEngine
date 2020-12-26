@@ -131,6 +131,7 @@ ResourceLibrary* ResourceSystem::LoadPackageFile(StringParam fileName)
 
 ResourceLibrary* ResourceSystem::LoadPackage(Status& status, ResourcePackage* package)
 {
+  ZoneScoped;
   ProfileScopeFunctionArgs(package->Name);
   PushErrorContextObject("Loading", package);
 
@@ -336,6 +337,7 @@ public:
 
 HandleOf<Resource> ResourceSystem::LoadEntry(Status& status, ResourceEntry& element)
 {
+  ZoneScoped;
   ProfileScopeFunctionArgs(element.Name);
 
   ErrorContextResourceEntry loadingResourceContext(&element);

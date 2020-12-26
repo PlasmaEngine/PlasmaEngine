@@ -55,6 +55,7 @@ AudioMixer::AudioMixer() :
 
 OsInt StartMix(void* mixer)
 {
+  tracy::SetThreadName("Audio Mix");
   ((AudioMixer*)mixer)->MixLoopThreaded();
   return 0;
 }
@@ -104,6 +105,7 @@ void AudioMixer::StartMixing(Status& status)
 
 void AudioMixer::ShutDown()
 {
+  ZoneScoped;
   ProfileScopeFunction();
 
   PlasmaPrint("Shutting down audio\n");

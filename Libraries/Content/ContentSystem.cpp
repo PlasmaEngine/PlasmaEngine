@@ -105,6 +105,7 @@ ContentSystem::~ContentSystem()
 
 void ContentSystem::EnumerateLibraries()
 {
+  ZoneScoped;
   ProfileScopeFunction();
 
   // For every search path
@@ -199,6 +200,7 @@ ContentLibrary* ContentSystem::LibraryFromDirectory(Status& status, StringParam 
 
 HandleOf<ResourcePackage> ContentSystem::BuildLibrary(Status& status, ContentLibrary* library, bool sendEvent)
 {
+  ZoneScoped;
   ProfileScopeFunctionArgs(library->Name);
   PlasmaPrintFilter(Filter::EngineFilter, "Building Content Library '%s'\n", library->Name.c_str());
 
@@ -218,6 +220,7 @@ HandleOf<ResourcePackage> ContentSystem::BuildLibrary(Status& status, ContentLib
     if (DirectoryExists(prebuiltContent))
     {
       PlasmaPrint("Copying prebuilt content from '%s' to '%s'\n", prebuiltContent.c_str(), outputPath.c_str());
+      ZoneScopedN("PrebuiltContent");
       ProfileScope("PrebuiltContent");
       CopyFolderContents(outputPath, prebuiltContent);
     }
@@ -712,6 +715,7 @@ ContentItem* ContentSystem::CreateFromName(StringRange name)
 HandleOf<ResourcePackage>
 ContentSystem::BuildContentItems(Status& status, ContentItemArray& toBuild, ContentLibrary* library, bool useJobs)
 {
+  ZoneScoped;
   ProfileScopeFunctionArgs(library->Name);
   PL::gEngine->LoadingStart();
 

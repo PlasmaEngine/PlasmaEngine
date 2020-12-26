@@ -262,6 +262,7 @@ void CollectShaders(RenderTasks* renderTasks, RenderQueues* renderQueues, Array<
 
 void GraphicsEngine::Update(bool debugger)
 {
+  ZoneScoped;
   // Do not try to run rendering while this job is going.
   if (ThreadingEnabled && mShowProgressJob->IsRunning())
     return;
@@ -293,6 +294,7 @@ void GraphicsEngine::Update(bool debugger)
   UpdateRenderGroups();
 
   {
+    ZoneScopedN("FrameUpdate");
     ProfileScopeTree("FrameUpdate", "GraphicsSystem", Color::SpringGreen);
     float frameDt = PL::gEngine->has(TimeSystem)->mEngineDt;
     forRange (GraphicsSpace& space, mSpaces.All())
@@ -300,12 +302,14 @@ void GraphicsEngine::Update(bool debugger)
   }
 
   {
+    ZoneScopedN("RenderTasksUpdate");
     ProfileScopeTree("RenderTasksUpdate", "GraphicsSystem", Color::LimeGreen);
     forRange (GraphicsSpace& space, mSpaces.All())
       space.RenderTasksUpdate(*mRenderTasksBack);
   }
 
   {
+    ZoneScopedN("RenderQueuesUpdate");
     ProfileScopeTree("RenderQueuesUpdate", "GraphicsSystem", Color::LawnGreen);
     forRange (GraphicsSpace& space, mSpaces.All())
       space.RenderQueuesUpdate(*mRenderTasksBack, *mRenderQueuesBack);
@@ -314,6 +318,7 @@ void GraphicsEngine::Update(bool debugger)
   }
 
   {
+  	ZoneScopedN("UiRenderUpdate")
     ProfileScopeTree("UiRenderUpdate", "GraphicsSystem", Color::DarkSeaGreen);
     // add ui render task range after sorting so that everything else renders
     // before it
@@ -322,6 +327,7 @@ void GraphicsEngine::Update(bool debugger)
   }
 
   {
+    ZoneScopedN("WaitOnRenderer")
     ProfileScopeTree("WaitOnRenderer", "GraphicsSystem", Color::Bisque);
     // cannot run another RenderTasks job unless the last one is done
     mDoRenderTasksJob->WaitOnThisJob();
@@ -625,6 +631,7 @@ void GraphicsEngine::UpdateRenderGroups()
 
 void GraphicsEngine::CheckTextureYInvert(Texture* texture)
 {
+  ZoneScoped;
   ProfileScopeFunctionArgs(texture->Name);
   // Check for Y-invert
   // Some Api's expect byte 0 to be the bottom left pixel, in Plasma byte 0 is the

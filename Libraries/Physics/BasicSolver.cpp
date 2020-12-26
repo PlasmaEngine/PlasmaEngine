@@ -108,6 +108,7 @@ void BasicSolver::WarmStart()
 
 void BasicSolver::SolveVelocities()
 {
+  ZoneScoped;
   ProfileScopeTree("SolveVelocities", "ResolutionPhase", Color::DarkMagenta);
 
   // solve all of the velocity constraints the given number of times

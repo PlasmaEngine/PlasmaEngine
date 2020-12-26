@@ -184,17 +184,20 @@ void TimeSpace::Update(float dt)
     UpdateEvent updateEvent(mScaledClampedDt, mRealDt, mScaledClampedTimePassed, mRealTimePassed);
 
     {
+      ZoneScopedN("Frame Update");
       ProfileScopeTree("FrameUpdate", "TimeSystem", Color::PaleGoldenrod)
       dispatcher->Dispatch(Events::FrameUpdate, &updateEvent);
     }
 
     {
+      ZoneScopedN("Action Frame Update Event");
       ProfileScopeTree("ActionFrameUpdateEvent", "TimeSystem", Color::BlueViolet);
       dispatcher->Dispatch(Events::ActionFrameUpdate, &updateEvent);
     }
 
     if (space->IsPreviewMode())
     {
+      ZoneScopedN("Preview Update Event");
       ProfileScopeTree("PreviewUpdateEvent", "TimeSystem", Color::Gainsboro);
       dispatcher->Dispatch(Events::PreviewUpdate, &updateEvent);
     }
@@ -203,6 +206,7 @@ void TimeSpace::Update(float dt)
       Step();
 
     {
+      ZoneScopedN("Graphics Frame Update");
       ProfileScopeTree("GraphicsFrameUpdate", "TimeSystem", Color::SkyBlue);
       dispatcher->Dispatch(Events::GraphicsFrameUpdate, &updateEvent);
     }
@@ -225,16 +229,19 @@ void TimeSpace::Step()
   UpdateEvent updateEvent(mScaledClampedDt, mRealDt, mScaledClampedTimePassed, mRealTimePassed);
 
   {
+    ZoneScopedN("System Logic Update");
     ProfileScopeTree("SystemLogicUpdate", "TimeSystem", Color::RoyalBlue);
     dispatcher->Dispatch(Events::SystemLogicUpdate, &updateEvent);
   }
 
   {
+    ZoneScopedN("Logic Update");
     ProfileScopeTree("LogicUpdate", "TimeSystem", Color::Gainsboro);
     dispatcher->Dispatch(Events::LogicUpdate, &updateEvent);
   }
 
   {
+    ZoneScopedN("Action Logic Update Event");
     ProfileScopeTree("ActionLogicUpdateEvent", "TimeSystem", Color::BlanchedAlmond);
     dispatcher->Dispatch(Events::ActionLogicUpdate, &updateEvent);
   }
@@ -279,8 +286,8 @@ TimeSystem::~TimeSystem()
 
 void TimeSystem::Update(bool debugger)
 {
-
- ProfileScopeTree("TimeSystem", "Engine", Color::Orange);
+  ZoneScoped;
+  ProfileScopeTree("TimeSystem", "Engine", Color::Orange);
   mTimer.Update();
   float dt = (float)mTimer.TimeDelta();
 
@@ -290,6 +297,7 @@ void TimeSystem::Update(bool debugger)
   // the the rest of the frame. This reduces heat and power use on laptops.
   if (mLimitFrameRate)
   {
+    ZoneScopedN("Limiter");
     ProfileScopeTree("Limiter", "TimeSystem", Color::Green);
     const int limitError = 1;
     const int limitframeTimeMs = int(1.0f / float(mFrameRate) * 1000.0f);

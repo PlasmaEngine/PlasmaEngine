@@ -79,6 +79,7 @@ target_link_libraries(Platform
     Curl
     ${rendererLib}
     Libgit2
+    tracy
 )
 
 set_target_properties( Platform PROPERTIES FOLDER "PlasmaEngine" )

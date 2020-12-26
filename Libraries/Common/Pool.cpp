@@ -51,7 +51,9 @@ MemPtr Pool::Allocate(size_t numberOfBytes)
   // Allocate memory by pop a block off the free list.
   ErrorIf(numberOfBytes > mBlockSize, "Allocation is large than block size.");
   AddAllocation(mBlockSize);
-  return PopOnFreeList();
+  auto ptr = PopOnFreeList();
+  //TracyAlloc(ptr, numberOfBytes);
+  return ptr;
 }
 
 void Pool::Deallocate(MemPtr ptr, size_t /*numberOfBytes*/)
@@ -69,6 +71,8 @@ void Pool::Deallocate(MemPtr ptr, size_t /*numberOfBytes*/)
   // Deallocate memory by push a block on the free list.
   RemoveAllocation(mBlockSize);
   PushOnFreeList(ptr);
+
+  //TracyFree(ptr);
 }
 
 MemPtr Pool::PopOnFreeList()

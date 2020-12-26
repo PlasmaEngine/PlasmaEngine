@@ -258,6 +258,7 @@ String HumanReadableFileSize(u64 bytes)
 
 void PopulateVirtualFileSystemWithZip(void* userData)
 {
+  ZoneScoped;
   ProfileScopeFunction();
   ByteBufferBlock block(VirtualFileSystemData, VirtualFileSystemSize, false);
 

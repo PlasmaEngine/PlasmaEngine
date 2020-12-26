@@ -149,6 +149,7 @@ void DrawChain(
 
 void RootWidget::OnUiRenderUpdate(Event* event)
 {
+  ZoneScoped;
   ProfileScopeTree("RootWidgetRenderUpdate", "UiRenderUpdate", Color::DeepGreen)
   ColorTransform colorTx = {Vec4(1, 1, 1, 1)};
   WidgetRect clipRect = {0, 0, mSize.x, mSize.y};
