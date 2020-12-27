@@ -31,9 +31,6 @@
 [submodule "SDL"]
 	path = External/SDL/Repo
 	url = https://github.com/PlasmaEngine/SDL2.git
-[submodule "Curl"]
-	path = External/Curl/Repo
-	url = https://github.com/PlasmaEngine/Curl.git
 [submodule "Libgit2"]
 	path = External/Libgit2/Repo
 	url = https://github.com/PlasmaEngine/Libgit2.git
