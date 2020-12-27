@@ -4,9 +4,6 @@
 [submodule "Libpng"]
 	path = External/Libpng/Repo
 	url = https://github.com/PlasmaEngine/Libpng.git
-[submodule "Assimp"]
-	path = External/Assimp/Repo
-	url = https://github.com/dragonCASTjosh/PlasmaEngineAssimp.git
 [submodule "ZLib"]
 	path = External/ZLib/Repo
 	url = https://github.com/PlasmaEngine/ZLib.git
