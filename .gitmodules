@@ -1,9 +1,6 @@
 [submodule "Scintilla"]
 	path = External/Scintilla/Repo
 	url = https://github.com/PlasmaEngine/Scintilla.git
-[submodule "Libpng"]
-	path = External/Libpng/Repo
-	url = https://github.com/PlasmaEngine/Libpng.git
 [submodule "ZLib"]
 	path = External/ZLib/Repo
 	url = https://github.com/PlasmaEngine/ZLib.git
