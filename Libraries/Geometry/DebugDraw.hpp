@@ -48,7 +48,8 @@ namespace Plasma
 namespace Debug
 {
 
-DeclareBitField8(DebugDrawFlags, BackShade, Border, Filled, OnTop, ViewAligned, ViewScaled, Special1, Special2);
+DeclareBitField9(
+    DebugDrawFlags, BackShade, Border, Filled, OnTop, ViewAligned, ViewScaled, Special1, Special2, Special3);
 
 DeclareEnum14(
     DebugType, None, Arc, Box, Capsule, Circle, Cone, Cylinder, Frustum, Line, LineCross, Obb, Sphere, Text, Triangle);
@@ -502,6 +503,7 @@ public:
 
   PropertySetterBit(DualHeads, Special1);
   PropertySetterBit(BoxHeads, Special2);
+  PropertySetterBit(ArrorHeads, Special3);
 };
 
 class LineCross : public DebugDrawObject<LineCross>

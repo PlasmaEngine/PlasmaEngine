@@ -199,7 +199,7 @@ public:
   bool mViewAligned;
 };
 
-DeclareEnum2(ArrowHeadType, Arrow, Cube);
+DeclareEnum3(ArrowHeadType, Arrow, Cube, Sphere);
 
 class ArrowGizmo : public SimpleGizmoBase
 {

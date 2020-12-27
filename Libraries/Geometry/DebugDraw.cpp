@@ -1106,6 +1106,14 @@ void Line::GetVertices(const DebugViewData& viewData, DebugVertexArray& vertices
   float length = direction.AttemptNormalize() * viewScale;
   end = start + direction * length;
 
+  float lineEndOffset = 0.2 * viewScale;
+  float lineWidth = (mWidth / 100) * viewScale;
+	
+  if (mWidth > 1)
+  {
+    AddCylinder(vertices, mColor, start, end - (direction * lineEndOffset), lineWidth, 10, false);
+  }
+	
   if (!GetFilled())
     AddLine(vertices, mColor, start, end);
 
@@ -1124,6 +1132,13 @@ void Line::GetVertices(const DebugViewData& viewData, DebugVertexArray& vertices
     if (GetDualHeads())
       AddArrowHead(vertices, mColor, start, -direction, headSize, GetFilled(), viewData.mEyePosition);
   }
+  //else
+  //{
+  //  Vec3 center = end - direction * headSize;
+  //  AddCircle(vertices, mColor, center, headSize * 2, Vec3(0, 1, 0), GetFilled());
+  //  AddCircle(vertices, mColor, center, headSize * 2, Vec3(1, 0, 0), GetFilled());
+  //  AddCircle(vertices, mColor, center, headSize * 2, Vec3(0, 0, 1), GetFilled());
+  //}
 }
 
 void LineCross::GetVertices(const DebugViewData& viewData, DebugVertexArray& vertices)

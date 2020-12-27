@@ -541,6 +541,7 @@ void ArrowGizmo::OnFrameUpdate(Event*)
   Vec3 worldEnd = worldStart + worldDirection * mLength;
 
   bool boxHeads = mHeadType == ArrowHeadType::Cube;
+  bool arrorHead = mHeadType == ArrowHeadType::Arrow;
 
   // lines/border
   gDebugDraw->Add(Debug::Line(worldStart, worldEnd)
@@ -549,7 +550,9 @@ void ArrowGizmo::OnFrameUpdate(Event*)
                       .OnTop(mDrawOnTop)
                       .ViewScaled(mViewScaled)
                       .DualHeads(mDualHeads)
-                      .BoxHeads(boxHeads) /*.BackShade(true)*/.Width(mLineDrawWidth)
+                      .BoxHeads(boxHeads)
+					  .ArrorHeads(arrorHead)
+					  .Width(mLineDrawWidth)
                       .Border(true));
 
   // fill
@@ -560,6 +563,7 @@ void ArrowGizmo::OnFrameUpdate(Event*)
                       .ViewScaled(mViewScaled)
                       .DualHeads(mDualHeads)
                       .BoxHeads(boxHeads)
+					  .ArrorHeads(arrorHead)
                       .Filled(mFilledHeads) /*.BackShade(true)*/);
 }
 
