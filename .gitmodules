@@ -16,9 +16,6 @@
 [submodule "SpirvHeaders"]
 	path = External/SpirvHeaders/Repo
 	url = https://github.com/PlasmaEngine/SpirvHeaders.git
-[submodule "SDL"]
-	path = External/SDL/Repo
-	url = https://github.com/PlasmaEngine/SDL2.git
 [submodule "Libgit2"]
 	path = External/Libgit2/Repo
 	url = https://github.com/PlasmaEngine/Libgit2.git
