@@ -8,6 +8,14 @@
 Plasma Game engine is a C++ powered 2D and 3D game engine that is designed to be straigt forward yet powerful for all users. Plasma also aims to maintain as much freedom as possible for the engine and tools, this is done by building as many features as possible ourselves without depending on 3rd party libraries.
 
 ## Building the engine
+Building on Windows Easy:
+  - Have Visual Studio 2019
+  - Download [Bootstrap File](https://github.com/PlasmaEngine/PlasmaEngine/releases/download/NA/Bootstrap.ps1)
+  - Place Bootstap in the folder you want Plasma
+  - Open PowerShell as Admin and navigate to folder
+  - Execute Boostrap
+  - Follow Instructions
+  
 Building on Windows:
   - Install CMake and Node.js
   - Do a recusive clone of the git repo
