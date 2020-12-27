@@ -40,6 +40,6 @@
 [submodule "Libgit2"]
 	path = External/Libgit2/Repo
 	url = https://github.com/PlasmaEngine/Libgit2.git
-[submodule "External/Tracy/Repo"]
+[submodule "Tracy"]
 	path = External/Tracy/Repo
 	url = https://github.com/PlasmaEngine/tracy.git
