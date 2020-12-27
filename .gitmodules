@@ -4,9 +4,6 @@
 [submodule "ZLib"]
 	path = External/ZLib/Repo
 	url = https://github.com/PlasmaEngine/ZLib.git
-[submodule "Opus"]
-	path = External/Opus/Repo
-	url = https://github.com/PlasmaEngine/Opus.git
 [submodule "Glew"]
 	path = External/Glew/Repo
 	url = https://github.com/PlasmaEngine/Glew.git
