@@ -1,8 +1,6 @@
 // MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
-#include "TracyC.h"
-
 namespace Plasma
 {
 
@@ -156,7 +154,7 @@ void Engine::Update()
   }
   else
   {
-    TracyCFrameMark;
+    FrameMark;
     ZoneScoped;
     ProfileScopeFunction();
 

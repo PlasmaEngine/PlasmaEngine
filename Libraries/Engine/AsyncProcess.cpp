@@ -290,6 +290,7 @@ OsInt AsyncProcess::RunThread(AsyncProcess* asyncProcess,
   // Keep reading as long as the process is running.
   while (threadInfo.mFileStream.IsOpen())
   {
+  	ZoneScoped;
     // Peek until there's no more data or the pipe failed (was closed)
     for (;;)
     {
