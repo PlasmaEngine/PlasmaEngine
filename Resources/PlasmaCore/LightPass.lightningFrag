@@ -22,6 +22,7 @@ struct LightPass
   [Input] var LightDirection : Real3 = Real3(0.0, 1.0, 0.0);
   [Input] var LightColor : Real3 = Real3(1.0);
   [Input] var LightIntensity : Real = 1.0;
+  [Input] var LightTemperature : Real = 6500.0;
   
   [Input] var LightRadius : Real = 0.0;
   [Input] var LightLength : Real = 0.0;
@@ -40,7 +41,7 @@ struct LightPass
     directInputs.ViewNormal = this.GeoNormal;
     directInputs.ViewDirection = Math.Normalize(-this.GeoPosition);
     directInputs.LightDirection = this.LightDirection;
-    directInputs.LightColor = this.LightColor;
+    directInputs.LightColor = (this.LightColor * Utility.KelvinToRGB(this.LightTemperature));
     directInputs.LightRadius = this.LightRadius;
     directInputs.LightLength = this.LightLength;
     directInputs.LightDistance = this.LightDistance;
@@ -59,7 +60,7 @@ struct LightPass
     
     // Remove color banding
     color = Utility.ApplyDither(color, &this.DitherTexture, screenUv, this.ViewportSize);
-    color *= this.LightIntensity;
+    color *= this.LightIntensity / 10000;
     
     color += this.GeoEmissive;
     
