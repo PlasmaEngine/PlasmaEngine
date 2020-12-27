@@ -7,9 +7,6 @@
 [submodule "ZLib"]
 	path = External/ZLib/Repo
 	url = https://github.com/PlasmaEngine/ZLib.git
-[submodule "FreeType"]
-	path = External/FreeType/Repo
-	url = https://github.com/PlasmaEngine/FreeType.git
 [submodule "Opus"]
 	path = External/Opus/Repo
 	url = https://github.com/PlasmaEngine/Opus.git
