@@ -15,6 +15,7 @@ Building on Windows Easy:
   - Open PowerShell as Admin and navigate to folder
   - Execute Boostrap
   - Follow Instructions
+  
 Building on Windows:
   - Install CMake and Node.js
   - Do a recusive clone of the git repo
