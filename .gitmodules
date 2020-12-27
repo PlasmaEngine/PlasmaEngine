@@ -40,3 +40,6 @@
 [submodule "Tracy"]
 	path = External/Tracy/Repo
 	url = https://github.com/PlasmaEngine/tracy.git
+[submodule "External/Assimp/Repo"]
+	path = External/Assimp/Repo
+	url = https://github.com/dragonCASTjosh/PlasmaEngineAssimp.git
