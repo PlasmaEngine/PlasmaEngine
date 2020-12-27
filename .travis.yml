@@ -51,17 +51,3 @@ jobs:
     - df -h
     script:
     - node index.js all --alias=Windows
-deploy:
-- provider: releases
-  skip_cleanup: true
-  api_key: $GITHUB_TOKEN
-  file_glob: true
-  file: Build/Packages/*
-  on:
-    tags: true
-    branch: master
-- provider: script
-  script: ./weld.sh node index.js deploy
-  on:
-    tags: true
-    branch: master
