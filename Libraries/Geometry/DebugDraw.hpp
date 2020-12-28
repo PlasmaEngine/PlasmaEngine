@@ -339,21 +339,24 @@ public:
   }
   void GetVertices(const DebugViewData& viewData, DebugVertexArray& vertices) override;
 
-  Circle() : mPosition(Vec3::cZero), mAxis(Vec3::cZAxis), mRadius(0.5f)
+  Circle() : mPosition(Vec3::cZero), mAxis(Vec3::cZAxis), mRadius(0.5f), mSegmentModifier(6)
   {
   }
 
-  Circle(Vec3Param position, Vec3Param axis, float radius) : mPosition(position), mAxis(axis), mRadius(radius)
+  Circle(Vec3Param position, Vec3Param axis, float radius, float segmentModifier = 6) : mPosition(position), mAxis(axis),
+      mRadius(radius), mSegmentModifier(segmentModifier)
   {
   }
 
   Vec3 mPosition;
   Vec3 mAxis;
   float mRadius;
+  float mSegmentModifier;
 
   PropertySetter(Vec3, Position);
   PropertySetter(Vec3, Axis);
   PropertySetter(float, Radius);
+  PropertySetter(float, SegmentModifier);
 };
 
 class Cone : public DebugDrawObject<Cone>

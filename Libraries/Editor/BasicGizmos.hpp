@@ -300,6 +300,12 @@ public:
   /// The radius of the ring.
   float mRadius;
 
+  /// The width of the ring.
+  float mWidth;
+
+  /// Number of segments in the ring.
+  float mSegmentModifier;
+  
   /// The radius of the selection around the ring.
   float mSelectRadius;
 

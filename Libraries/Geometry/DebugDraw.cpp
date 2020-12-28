@@ -8,6 +8,7 @@ Debug::DebugDraw* gDebugDraw = nullptr;
 
 namespace Debug
 {
+ 
 
 // Segment limits for circle and arc drawing
 const float cSegmentMin = 16.0f;
@@ -265,8 +266,25 @@ LightningDefineType(Triangle, builder, type)
   // Temporarily bound only on types that implement it
   LightningBindGetterSetterProperty(Filled);
 }
+  
+  void AddLine(DebugVertexArray& vertices, Vec4 color, Vec3 start, Vec3 end);
+  void AddTriangle(DebugVertexArray& vertices, Vec4 color, Vec3 v[3]);
+  void AddTriangle(DebugVertexArray& vertices, Vec4 color, Vec3 v0, Vec3 v1, Vec3 v2);
+  void AddQuad(DebugVertexArray& vertices, Vec4 color, Vec3 corners[], bool fill);
+  void AddBox(DebugVertexArray& vertices, Vec4 color, Vec3 center, Vec2 extents, Mat3 basis, bool fill);
+  void AddBox(DebugVertexArray& vertices, Vec4 color, Vec3 points[8], bool fill, bool cornersOnly);
+  void AddBox(DebugVertexArray& vertices, Vec4 color, Vec3 center, Vec3 extents, Mat3 basis, bool fill, bool cornersOnly);
+  void AddArc(DebugVertexArray& vertices, Vec4 color, Vec3 center, float radius, Vec3 axis, Vec3 startDir, Vec3 endDir);
+  void AddArc(DebugVertexArray& vertices, Vec4 color, Vec3 start, Vec3 mid, Vec3 end);
+  void AddCircle(DebugVertexArray& vertices, Vec4 color, Vec3 center, float radius, Vec3 axis, float width, bool fill);
+  void AddHorizonCircle(DebugVertexArray& vertices, Vec4 color, Vec3 center, float radius, Vec3 eyeToCenter);
+  void AddArrowHeadFill(DebugVertexArray& vertices, Vec4 color, Vec3 tip, Vec3 bottom, Vec3 right, Vec3 up, float radius);
+  void AddArrowHead(DebugVertexArray& vertices, Vec4 color, Vec3 tip, Vec3 direction, float diameter, bool fill, Vec3 eyePos);
+  void AddCylinder(DebugVertexArray& vertices, Vec4 color, Vec3 start, Vec3 end, float radius, uint lineCount, bool capsule);
 
-//// Draw a circle clipped to given plane
+  
+/*
+/// Draw a circle clipped to given plane
 // void DrawClippedCircle(DebugViewState& viewState, Vec3Param position, float
 // radius, Vec3Param axis,
 //                       float lineWidth, ByteColor frontColor, ByteColor
@@ -547,7 +565,7 @@ LightningDefineType(Triangle, builder, type)
 //    DrawCircle(viewState, circle.Center, circle.Radius, eyeToCenter,
 //    sphere.mWidth, color);
 //  }
-//}
+*/
 
 void AddLine(DebugVertexArray& vertices, Vec4 color, Vec3 start, Vec3 end)
 {
@@ -746,7 +764,7 @@ void AddArc(DebugVertexArray& vertices, Vec4 color, Vec3 start, Vec3 mid, Vec3 e
   AddArc(vertices, color, center, radius, axis, midDir, endDir);
 }
 
-void AddCircle(DebugVertexArray& vertices, Vec4 color, Vec3 center, float radius, Vec3 axis, bool fill = false)
+void AddCircle(DebugVertexArray& vertices, Vec4 color, Vec3 center, float radius, Vec3 axis, float width = 0, float segmentModifer = 6, bool fill = false)
 {
   if (radius < cMinCircleRadius)
     return;
@@ -754,7 +772,8 @@ void AddCircle(DebugVertexArray& vertices, Vec4 color, Vec3 center, float radius
   if (axis.Length() < Math::Epsilon())
     return;
 
-  float numOfSegments = Math::Floor(radius * 2.0f / cSegmentSize);
+  float segmentMultipiler = segmentModifer / 100;
+  float numOfSegments = Math::Floor(radius * segmentMultipiler / cSegmentSize);
   numOfSegments = Math::Clamp(numOfSegments, cSegmentMin, cSegmentMax);
 
   Vec3 right, up;
@@ -776,9 +795,18 @@ void AddCircle(DebugVertexArray& vertices, Vec4 color, Vec3 center, float radius
     Vec3 point = center + right * cosTheta + up * sinTheta;
 
     if (fill)
+    {
       AddTriangle(vertices, color, center, point, prevPoint);
+    }
+    else if(width > 0.01f)
+    {
+      AddCylinder(vertices, color, prevPoint, point, width / 100, 5, false);
+    }
     else
-      AddLine(vertices, color, prevPoint, point);
+    {
+      AddLine(vertices, color, prevPoint, point);      
+    }
+      
 
     prevPoint = point;
   }
@@ -833,8 +861,7 @@ void AddArrowHeadFill(DebugVertexArray& vertices, Vec4 color, Vec3 tip, Vec3 bot
   }
 }
 
-void AddArrowHead(
-    DebugVertexArray& vertices, Vec4 color, Vec3 tip, Vec3 direction, float diameter, bool fill, Vec3 eyePos)
+void AddArrowHead(DebugVertexArray& vertices, Vec4 color, Vec3 tip, Vec3 direction, float diameter, bool fill, Vec3 eyePos)
 {
   if (direction.Length() < Math::Epsilon())
     return;
@@ -863,8 +890,7 @@ void AddArrowHead(
   AddCircle(vertices, color, bottom, radius, direction);
 }
 
-void AddCylinder(
-    DebugVertexArray& vertices, Vec4 color, Vec3 start, Vec3 end, float radius, uint lineCount, bool capsule = false)
+void AddCylinder(DebugVertexArray& vertices, Vec4 color, Vec3 start, Vec3 end, float radius, uint lineCount, bool capsule = false)
 {
   Vec3 axis = end - start;
   axis.AttemptNormalize();
@@ -987,6 +1013,7 @@ void Circle::GetVertices(const DebugViewData& viewData, DebugVertexArray& vertic
     viewScale = GetViewScale(origin, viewData);
 
   float radius = mRadius * viewScale;
+  float segments = mSegmentModifier / viewScale;
   Vec3 position = origin + (mPosition - origin) * viewScale;
 
   if (GetViewAligned())
@@ -995,7 +1022,7 @@ void Circle::GetVertices(const DebugViewData& viewData, DebugVertexArray& vertic
     else
       AddHorizonCircle(vertices, mColor, position, radius, position - viewData.mEyePosition);
   else
-    AddCircle(vertices, mColor, position, radius, mAxis, GetFilled());
+    AddCircle(vertices, mColor, position, radius, mAxis, mWidth * viewScale, segments, GetFilled());
 }
 
 void Cone::GetVertices(const DebugViewData& viewData, DebugVertexArray& vertices)

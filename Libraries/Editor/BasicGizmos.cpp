@@ -588,6 +588,8 @@ LightningDefineType(RingGizmo, builder, type)
   PlasmaBindDependency(Orientation);
 
   LightningBindFieldProperty(mRadius);
+  LightningBindFieldProperty(mWidth);
+  LightningBindFieldProperty(mSegmentModifier);
   LightningBindFieldProperty(mSelectRadius);
   LightningBindFieldProperty(mDragRadiansPerPixel);
 
@@ -608,6 +610,8 @@ void RingGizmo::Serialize(Serializer& stream)
   SimpleGizmoBase::Serialize(stream);
 
   SerializeNameDefault(mRadius, 1.0f);
+  SerializeNameDefault(mWidth, 5.0f);
+  SerializeNameDefault(mSegmentModifier, 6.0f);
   SerializeNameDefault(mSelectRadius, 0.25f);
   SerializeNameDefault(mDragRadiansPerPixel, 0.01f);
   SerializeNameDefault(mBackShade, false);
@@ -802,12 +806,13 @@ void RingGizmo::OnFrameUpdate(Event*)
 
   // draw the ring gizmo
   {
-    gDebugDraw->Add(Debug::Circle(center, axis, mRadius)
+    gDebugDraw->Add(Debug::Circle(center, axis, mRadius, mSegmentModifier)
                         .ViewScaled(mViewScaled)
                         .ViewScaleOffset(viewScaleOffset)
                         .BackShade(mBackShade)
                         .OnTop(mDrawOnTop)
                         .Color(color)
+                        .Width(mWidth)
                         .ViewAligned(mViewAligned)
                         .Border(mGizmo->mMouseOver)); // double thickness
   }
