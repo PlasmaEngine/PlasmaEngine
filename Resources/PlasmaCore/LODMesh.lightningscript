@@ -1,0 +1,77 @@
+// MIT Licensed (see LICENSE.md).
+
+[RunInEditor]
+class LODMesh : LightningComponent
+{
+  [Dependency]
+  var Model : Model = null;
+  
+  [Property]
+  var LOD0 : Mesh;
+  [Property]
+  var LOD0TransitionDistance : Real = 30;
+  
+  [Property]
+  var LOD1 : Mesh;
+  [Property]
+  var LOD1TransitionDistance : Real = 70;
+  
+  [Property]
+  var LOD2 : Mesh;
+  [Property]
+  var LOD2TransitionDistance : Real = 110;
+  
+  [Property]
+  var LOD3 : Mesh;
+  [Property]
+  var LOD3TransitionDistance : Real = 150;
+  
+  [Property]
+  var LOD4 : Mesh;
+  
+  var CameraCog : Cog;
+  
+  function Initialize(init : CogInitializer)
+  {
+    if(this.Space.IsEditorMode)
+      this.CameraCog = this.Space.FindObjectByName("EditorCamera");
+    else
+      this.CameraCog = this.Space.FindObjectByName("GameCamera");
+  
+    Plasma.Connect(this.Space, Events.FrameUpdate, this.OnUpdate);
+  }
+  
+  function OnUpdate(event : UpdateEvent)
+  {  
+      
+    var cameraTransform = this.CameraCog.Transform.WorldTranslation;
+    var delta = cameraTransform - this.Owner.Transform.WorldTranslation;
+    var distance = Math.Length(delta);
+    
+    if(distance < this.LOD0TransitionDistance)
+    {
+      if(this.LOD0 != null)
+        this.Owner.Model.Mesh = this.LOD0;
+    }
+    else if( distance < this.LOD1TransitionDistance)
+    {
+      if(this.LOD1 != null)
+        this.Owner.Model.Mesh = this.LOD1;
+    }
+    else if( distance < this.LOD2TransitionDistance)
+    {
+      if(this.LOD2 != null)
+        this.Owner.Model.Mesh = this.LOD2;
+    }
+    else if( distance < this.LOD3TransitionDistance)
+    {
+      if(this.LOD3 != null)
+        this.Owner.Model.Mesh = this.LOD3;
+    }
+    else 
+    {
+      if(this.LOD4 != null)
+        this.Owner.Model.Mesh = this.LOD4;
+    }
+  }
+}
