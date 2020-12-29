@@ -12,13 +12,13 @@ ColorGradient
 			}
 			Object
 			{
-				var Value = Real4{1, 1, 1, 1}
-				var Interpolant = 0.200000003
+				var Value = Real4{0.0950000286, 0.0950000286, 0.0950000286, 1}
+				var Interpolant = 0.0685358196
 			}
 			Object
 			{
-				var Value = Real4{1, 1, 1, 1}
-				var Interpolant = 0.800000012
+				var Value = Real4{0.855000019, 0.855000019, 0.855000019, 1}
+				var Interpolant = 0.775700927
 			}
 			Object
 			{

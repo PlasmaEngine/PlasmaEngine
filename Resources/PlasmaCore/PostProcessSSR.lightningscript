@@ -64,6 +64,9 @@ class PostProcessSSR : LightningComponent
         copySSR.Texture = ssrTemp.Texture;
         event.AddRenderTaskPostProcess(blurSSR, copySSR, "SSRCopy");        
         BlurTextureEdgeSafe[BilateralBlurRadius25].Call(event, blurSSR, geometryBuffer0, 8, this.RoughnessBlur);
+        
+        if(this.HalfRes)
+          this.Upsample(event, ssrTemp, ssrBuffer);
 
         if(!this.Debug)
         {
@@ -71,7 +74,7 @@ class PostProcessSSR : LightningComponent
           var ssrApply = SSRApply();
           ssrApply.GeometryBuffer0 = geometryBuffer0.Texture;
           ssrApply.GeometryBuffer1 = geometryBuffer1.Texture;
-          ssrApply.SSRBuffer = ssrTemp.Texture;
+          ssrApply.SSRBuffer = ssrBuffer.Texture;
           ssrApply.SSRBlurBuffer = blurSSR.Texture;
           ssrApply.ScreenBuffer = screenBuffer.Texture;
           event.AddRenderTaskPostProcess(screenBuffer, ssrApply, "SSRApply");
@@ -84,7 +87,7 @@ class PostProcessSSR : LightningComponent
         if(this.Debug)
         {
           var copyPass = CopyTarget();
-          copyPass.Texture = ssrTemp.Texture;
+          copyPass.Texture = ssrBuffer.Texture;
           event.AddRenderTaskPostProcess(screenBuffer, copyPass, "SSRDebug");
           
           event.AddRenderTaskClearTarget(ssrBuffer, Real4.Zero);
@@ -96,5 +99,22 @@ class PostProcessSSR : LightningComponent
         
         ssrTemp.Release();
         blurSSR.Release();
+    }
+    
+    function Upsample(event : RenderTasksEvent, target0 : RenderTarget, target1 : RenderTarget)
+    {
+      var upsampleSettings = RenderSettings();
+      upsampleSettings.ColorTarget = target1;
+      
+      upsampleSettings.BlendSettings.BlendMode = BlendMode.Separate;
+      upsampleSettings.BlendSettings.BlendEquation = BlendEquation.Add;
+      upsampleSettings.BlendSettings.SourceFactor = BlendFactor.One;
+      upsampleSettings.BlendSettings.DestFactor = BlendFactor.One;
+      upsampleSettings.BlendSettings.SourceFactorAlpha = BlendFactor.Plasma;
+      upsampleSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
+      
+      var copyTarget = CopyTarget();    
+      copyTarget.Texture = target0.Texture;
+      event.AddRenderTaskPostProcess(upsampleSettings, copyTarget, "Upscale");
     }
   }

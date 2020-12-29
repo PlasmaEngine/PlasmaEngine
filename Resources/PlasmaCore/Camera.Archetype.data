@@ -2,7 +2,6 @@
 Cog 
 {
 	var Name = "Camera"
-	var LinkId = 1
 	Transform 
 	{
 		var Translation = Real3{0, 0, 0}
@@ -13,7 +12,7 @@ Cog
 	{
 		var Visible = true
 		var VisibilityEvents = true
-		var Material = "56581e2bb81777be:DebugDrawOnTop"
+		var Material = "582c575af53d18c9:AlphaSprite"
 		var SpriteSource = "58f8e4be7360cf7c:CameraIcon"
 		var ViewScale = 1
 		var OverrideSelections = true
@@ -33,7 +32,7 @@ Cog
 			var UpdatePathOnCogChange = true
 			var UpdateCogOnInitialize = true
 			var ResolvedNullErrorOccurred = false
-			var ResolvedCog = 1
+			var Cog = 4294967293
 			var PathPreference0 = CogPathPreference.CogRelative
 			var PathPreference1 = CogPathPreference.SpaceRelative
 			var PathPreference2 = CogPathPreference.Absolute
@@ -48,7 +47,7 @@ Cog
 			var UpdatePathOnCogChange = true
 			var UpdateCogOnInitialize = true
 			var ResolvedNullErrorOccurred = false
-			var ResolvedCog = 2
+			var Cog = 4294967293
 			var PathPreference0 = CogPathPreference.CogRelative
 			var PathPreference1 = CogPathPreference.SpaceRelative
 			var PathPreference2 = CogPathPreference.Absolute
@@ -72,5 +71,6 @@ Cog
 	SoundListener 
 	{
 		var Active = true
+		var AttenuationScale = 1
 	}
 }

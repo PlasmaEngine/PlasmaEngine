@@ -15,7 +15,7 @@ DataContent
 		var LoaderType = "Cog"
 		var Version = 0
 	}
-	ContentEditorOptions
+	ContentEditorOptions 
 	{
 		var ShowInEditor = true
 	}

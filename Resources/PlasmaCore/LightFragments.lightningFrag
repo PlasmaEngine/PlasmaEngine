@@ -173,7 +173,7 @@ struct DirectionalLightFragment
   
   function Main()
   {
-    this.LightIntensity /= 1000;
+    this.LightIntensity /= 100;
     this.LightIntensity *= this.ShadowFactor;
     this.LightDirection = Math.Normalize(-Math.MultiplyNormal(this.WorldToView, this.LightDirection));
   }

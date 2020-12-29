@@ -4,7 +4,7 @@ Cog
 	var Name = "Camera"
 	Transform 
 	{
-		var Translation = Real3{32.52771, 2.72027826, 3.02526617}
+		var Translation = Real3{0, -0.121843338, 0}
 		var Scale = Real3{1, 1, 1}
 		var Rotation = Quaternion{0, 0, 0, 1}
 	}
@@ -63,7 +63,7 @@ Cog
 	{
 		var Visible = true
 		var VisibilityEvents = true
-		var Material = "56581e2bb81777be:DebugDrawOnTop"
+		var Material = "582c50d330d372c3:AdditiveSprite"
 		var SpriteSource = "58f8e4be7360cf7c:CameraIcon"
 		var ViewScale = 1
 		var OverrideSelections = true
@@ -182,7 +182,8 @@ Cog
 			DirectionalLight 
 			{
 				var LightColor = Real4{1, 1, 1, 1}
-				var LightIntensity = 4
+				var LightIntensity = 100000
+				var LightTemperature = 6500
 			}
 			CameraViewport 
 			{

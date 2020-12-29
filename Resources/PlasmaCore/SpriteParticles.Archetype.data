@@ -73,7 +73,7 @@ Cog
 	{
 		var Visible = true
 		var VisibilityEvents = true
-		var Material = "56581e2bb81777be:DebugDrawOnTop"
+		var Material = "582c50d330d372c3:AdditiveSprite"
 		var SpriteSource = "59937d65f2659971:ParticleIcon"
 		var ViewScale = 1
 		var OverrideSelections = true

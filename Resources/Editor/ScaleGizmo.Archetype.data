@@ -2,12 +2,11 @@
 Cog 
 {
 	var Name = "ScaleGizmo"
-	var LinkId = 1
 	Transform 
 	{
-		var Translation = Vec3{0, 0, 0}
-		var Scale = Vec3{1, 1, 1}
-		var Rotation = Quat{0, 0, 0, 1}
+		var Translation = Real3{55.9619217, 0.5, -2.39452004}
+		var Scale = Real3{1, 1, 1}
+		var Rotation = Quaternion{0, 0, 0, 1}
 	}
 	Gizmo 
 	{
@@ -16,22 +15,20 @@ Cog
 	}
 	ScaleGizmo 
 	{
-    var Snapping = false
+		var Snapping = false
+		var SnapMode = GizmoSnapMode.Relative
 		var SnapDistance = 1
-    var SnapMode = GizmoSnapMode.RelativeUnits
-    var ScaleMultiplier = Vec3{1, 1, 1}
 	}
 	Hierarchy 
 	{
 		Cog [Id:0x58cb29db155e0362]
 		{
 			var Name = "CenterSquare"
-			var LinkId = 2
 			Transform 
 			{
-				var Translation = Vec3{0, 0, 0}
-				var Scale = Vec3{1, 1, 1}
-				var Rotation = Quat{0, 0, 0, 1}
+				var Translation = Real3{0, 0, 0}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{0, 0, 0, 1}
 			}
 			MouseCapture 
 			{
@@ -44,8 +41,8 @@ Cog
 			GizmoDrag 
 			{
 				var DragMode = GizmoDragMode.ViewPlane
-				var LineDirection = Vec3{1, 0, 0}
-				var PlaneNormal = Vec3{0, 1, 0}
+				var LineDirection = Real3{1, 0, 0}
+				var PlaneNormal = Real3{0, 1, 0}
 				var NormalInWorld = false
 				var GrabMode = GizmoGrabMode.Hold
 				var AutoDrag = true
@@ -55,27 +52,26 @@ Cog
 			{
 				var MouseInput = true
 				var PickingPriority = 1
-				var Color = Vec4{0.800000012, 0.800000012, 0.800000012, 0.999899983}
-				var HoverColor = Vec4{1, 1, 0, 1}
+				var Color = Real4{0.800000012, 0.800000012, 0.800000012, 0.999899983}
+				var HoverColor = Real4{1, 1, 0, 1}
 				var ViewScaled = true
 				var UseParentAsViewScaleOrigin = true
 				var DrawOnTop = true
-				var Size = Vec3{0.5, 0.5, 0.5}
+				var Size = Real3{0.5, 0.5, 0.5}
 				var SnapDistance = 0.25
 				var ViewAligned = true
-				var Filled = false
+				var Filled = true
 				var Bordered = true
 			}
 		}
 		Cog [Id:0x58cb29db155e0368]
 		{
 			var Name = "XY"
-			var LinkId = 3
 			Transform 
 			{
-				var Translation = Vec3{1, 1, 0}
-				var Scale = Vec3{1, 1, 1}
-				var Rotation = Quat{0, 0, 0, 1}
+				var Translation = Real3{1, 1, 0}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{0, 0, 0, 1}
 			}
 			MouseCapture 
 			{
@@ -88,8 +84,8 @@ Cog
 			GizmoDrag 
 			{
 				var DragMode = GizmoDragMode.Plane
-				var LineDirection = Vec3{1, 0, 0}
-				var PlaneNormal = Vec3{0, 0, 1}
+				var LineDirection = Real3{1, 0, 0}
+				var PlaneNormal = Real3{0, 0, 1}
 				var NormalInWorld = false
 				var GrabMode = GizmoGrabMode.Hold
 				var AutoDrag = true
@@ -99,12 +95,12 @@ Cog
 			{
 				var MouseInput = true
 				var PickingPriority = 0
-				var Color = Vec4{0, 0, 1, 0.400000006}
-				var HoverColor = Vec4{1, 1, 0, 0.400000006}
+				var Color = Real4{0, 0, 1, 0.400000006}
+				var HoverColor = Real4{1, 1, 0, 0.400000006}
 				var ViewScaled = true
 				var UseParentAsViewScaleOrigin = true
 				var DrawOnTop = true
-				var Size = Vec3{0.400000006, 0.400000006, 0}
+				var Size = Real3{0.400000006, 0.400000006, 0}
 				var SnapDistance = 0.25
 				var ViewAligned = false
 				var Filled = true
@@ -114,12 +110,11 @@ Cog
 		Cog [Id:0x58cb29db155e036a]
 		{
 			var Name = "YZ"
-			var LinkId = 4
 			Transform 
 			{
-				var Translation = Vec3{0, 1, 1}
-				var Scale = Vec3{1, 1, 1}
-				var Rotation = Quat{0, 0, 0, 1}
+				var Translation = Real3{0, 1, 1}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{0, 0, 0, 1}
 			}
 			MouseCapture 
 			{
@@ -132,8 +127,8 @@ Cog
 			GizmoDrag 
 			{
 				var DragMode = GizmoDragMode.Plane
-				var LineDirection = Vec3{1, 0, 0}
-				var PlaneNormal = Vec3{1, 0, 0}
+				var LineDirection = Real3{1, 0, 0}
+				var PlaneNormal = Real3{1, 0, 0}
 				var NormalInWorld = false
 				var GrabMode = GizmoGrabMode.Hold
 				var AutoDrag = true
@@ -143,12 +138,12 @@ Cog
 			{
 				var MouseInput = true
 				var PickingPriority = 0
-				var Color = Vec4{1, 0, 0, 0.400000006}
-				var HoverColor = Vec4{1, 1, 0, 0.400000006}
+				var Color = Real4{1, 0, 0, 0.400000006}
+				var HoverColor = Real4{1, 1, 0, 0.400000006}
 				var ViewScaled = true
 				var UseParentAsViewScaleOrigin = true
 				var DrawOnTop = true
-				var Size = Vec3{0, 0.400000006, 0.400000006}
+				var Size = Real3{0, 0.400000006, 0.400000006}
 				var SnapDistance = 0.25
 				var ViewAligned = false
 				var Filled = true
@@ -158,12 +153,11 @@ Cog
 		Cog [Id:0x58cb29db155e036c]
 		{
 			var Name = "XZ"
-			var LinkId = 5
 			Transform 
 			{
-				var Translation = Vec3{1, 0, 1}
-				var Scale = Vec3{1, 1, 1}
-				var Rotation = Quat{0, 0, 0, 1}
+				var Translation = Real3{1, 0, 1}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{0, 0, 0, 1}
 			}
 			MouseCapture 
 			{
@@ -176,8 +170,8 @@ Cog
 			GizmoDrag 
 			{
 				var DragMode = GizmoDragMode.Plane
-				var LineDirection = Vec3{1, 0, 0}
-				var PlaneNormal = Vec3{0, 1, 0}
+				var LineDirection = Real3{1, 0, 0}
+				var PlaneNormal = Real3{0, 1, 0}
 				var NormalInWorld = false
 				var GrabMode = GizmoGrabMode.Hold
 				var AutoDrag = true
@@ -187,12 +181,12 @@ Cog
 			{
 				var MouseInput = true
 				var PickingPriority = 0
-				var Color = Vec4{0, 1, 0, 0.400000006}
-				var HoverColor = Vec4{1, 1, 0, 0.400000006}
+				var Color = Real4{0, 1, 0, 0.400000006}
+				var HoverColor = Real4{1, 1, 0, 0.400000006}
 				var ViewScaled = true
 				var UseParentAsViewScaleOrigin = true
 				var DrawOnTop = true
-				var Size = Vec3{0.400000006, 0, 0.400000006}
+				var Size = Real3{0.400000006, 0, 0.400000006}
 				var SnapDistance = 0.25
 				var ViewAligned = false
 				var Filled = true
@@ -202,17 +196,16 @@ Cog
 		Cog [Id:0x58cb29db155e036e]
 		{
 			var Name = "XAxis"
-			var LinkId = 6
 			Transform 
 			{
-				var Translation = Vec3{0, 0, 0}
-				var Scale = Vec3{1, 1, 1}
-				var Rotation = Quat{0, 0, 0, 1}
+				var Translation = Real3{0, 0, 0}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{0, 0, 0, 1}
 			}
 			Orientation 
 			{
-				var GlobalUp = Vec3{0, 1, 0}
-				var LocalOrientationBasis = Quat{0, -0.707106769, 0, 0.707106769}
+				var GlobalUp = Real3{0, 1, 0}
+				var LocalOrientationBasis = Quaternion{0, -0.707106769, 0, 0.707106769}
 				var DefaultBases = OrientationBases.ForwardXUpY
 			}
 			MouseCapture 
@@ -226,8 +219,8 @@ Cog
 			GizmoDrag 
 			{
 				var DragMode = GizmoDragMode.Line
-				var LineDirection = Vec3{1, 0, 0}
-				var PlaneNormal = Vec3{0, 1, 0}
+				var LineDirection = Real3{1, 0, 0}
+				var PlaneNormal = Real3{0, 1, 0}
 				var NormalInWorld = false
 				var GrabMode = GizmoGrabMode.Hold
 				var AutoDrag = true
@@ -237,8 +230,8 @@ Cog
 			{
 				var MouseInput = true
 				var PickingPriority = 0
-				var Color = Vec4{1, 0, 0, 0.400000006}
-				var HoverColor = Vec4{1, 1, 0, 0.400000006}
+				var Color = Real4{1, 0, 0, 0.400000006}
+				var HoverColor = Real4{1, 1, 0, 0.400000006}
 				var ViewScaled = true
 				var UseParentAsViewScaleOrigin = false
 				var DrawOnTop = true
@@ -254,17 +247,16 @@ Cog
 		Cog [Id:0x58cb29db155e036f]
 		{
 			var Name = "YAxis"
-			var LinkId = 7
 			Transform 
 			{
-				var Translation = Vec3{0, 0, 0}
-				var Scale = Vec3{1, 1, 1}
-				var Rotation = Quat{0, 0, 0, 1}
+				var Translation = Real3{0, 0, 0}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{0, 0, 0, 1}
 			}
 			Orientation 
 			{
-				var GlobalUp = Vec3{0, 1, 0}
-				var LocalOrientationBasis = Quat{0.707106769, -0, 0, 0.707106769}
+				var GlobalUp = Real3{0, 1, 0}
+				var LocalOrientationBasis = Quaternion{0.707106769, 0, 0, 0.707106769}
 				var DefaultBases = OrientationBases.ForwardYUpZ
 			}
 			MouseCapture 
@@ -278,8 +270,8 @@ Cog
 			GizmoDrag 
 			{
 				var DragMode = GizmoDragMode.Line
-				var LineDirection = Vec3{0, 1, 0}
-				var PlaneNormal = Vec3{0, 1, 0}
+				var LineDirection = Real3{0, 1, 0}
+				var PlaneNormal = Real3{0, 1, 0}
 				var NormalInWorld = false
 				var GrabMode = GizmoGrabMode.Hold
 				var AutoDrag = true
@@ -289,8 +281,8 @@ Cog
 			{
 				var MouseInput = true
 				var PickingPriority = 0
-				var Color = Vec4{0, 1, 0, 0.400000006}
-				var HoverColor = Vec4{1, 1, 0, 0.400000006}
+				var Color = Real4{0, 1, 0, 0.400000006}
+				var HoverColor = Real4{1, 1, 0, 0.400000006}
 				var ViewScaled = true
 				var UseParentAsViewScaleOrigin = false
 				var DrawOnTop = true
@@ -306,17 +298,16 @@ Cog
 		Cog [Id:0x58cb29db155e0371]
 		{
 			var Name = "ZAxis"
-			var LinkId = 8
 			Transform 
 			{
-				var Translation = Vec3{0, 0, 0}
-				var Scale = Vec3{1, 1, 1}
-				var Rotation = Quat{0, 0, 0, 1}
+				var Translation = Real3{0, 0, 0}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{0, 0, 0, 1}
 			}
 			Orientation 
 			{
-				var GlobalUp = Vec3{0, 1, 0}
-				var LocalOrientationBasis = Quat{0, 1, 0, -0}
+				var GlobalUp = Real3{0, 1, 0}
+				var LocalOrientationBasis = Quaternion{0, 1, 0, 0}
 				var DefaultBases = OrientationBases.ForwardZUpY
 			}
 			MouseCapture 
@@ -330,8 +321,8 @@ Cog
 			GizmoDrag 
 			{
 				var DragMode = GizmoDragMode.Line
-				var LineDirection = Vec3{0, 0, 1}
-				var PlaneNormal = Vec3{0, 1, 0}
+				var LineDirection = Real3{0, 0, 1}
+				var PlaneNormal = Real3{0, 1, 0}
 				var NormalInWorld = false
 				var GrabMode = GizmoGrabMode.Hold
 				var AutoDrag = true
@@ -341,8 +332,8 @@ Cog
 			{
 				var MouseInput = true
 				var PickingPriority = 0
-				var Color = Vec4{0, 0, 1, 0.400000006}
-				var HoverColor = Vec4{1, 1, 0, 0.400000006}
+				var Color = Real4{0, 0, 1, 0.400000006}
+				var HoverColor = Real4{1, 1, 0, 0.400000006}
 				var ViewScaled = true
 				var UseParentAsViewScaleOrigin = false
 				var DrawOnTop = true

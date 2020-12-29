@@ -12,7 +12,7 @@ Cog
 	{
 		var Visible = true
 		var VisibilityEvents = true
-		var Material = "56581e2bb81777be:DebugDrawOnTop"
+		var Material = "582c50d330d372c3:AdditiveSprite"
 		var SpriteSource = "58f8e4be736f5ea2:LightIcon"
 		var ViewScale = 1
 		var OverrideSelections = true
@@ -33,6 +33,7 @@ Cog
 	{
 		var LightColor = Real4{1, 1, 1, 1}
 		var LightIntensity = 1
+		var LightTemperature = 6500
 	}
 	CameraViewport 
 	{
