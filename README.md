@@ -7,6 +7,9 @@
 ## Overview
 Plasma Game engine is a C++ powered 2D and 3D game engine that is designed to be straigt forward yet powerful for all users. Plasma also aims to maintain as much freedom as possible for the engine and tools, this is done by building as many features as possible ourselves without depending on 3rd party libraries.
 
+## Installing binary builds
+This is as simple as grabbing the Plasma Launcher from [https://plasmagameengine.com/](https://plasmagameengine.com/)
+
 ## Building the engine
 Building on Windows Easy:
   - Have Visual Studio 2019
@@ -39,7 +42,8 @@ Building on Windows:
 
 ## Credits
   - Josh (Engine Developer)
-  - Stud (Engine Developer)
   - Jesco (Engine Developer)
+  - Dave (Engine Contributer)
+  - [AdvancedInstaller](https://www.advancedinstaller.com/) (Providing open source licecne for launcher installer)
   - Digipen (Built Zero Engine)
   - WelderFoundation (Useful addition to Zero and thirdparty repos)
