@@ -41,7 +41,7 @@ struct LightPass
     directInputs.ViewNormal = this.GeoNormal;
     directInputs.ViewDirection = Math.Normalize(-this.GeoPosition);
     directInputs.LightDirection = this.LightDirection;
-    directInputs.LightColor = (this.LightColor * Utility.KelvinToRGB(this.LightTemperature));
+    directInputs.LightColor = (this.LightColor * (Utility.KelvinToRGB(this.LightTemperature) /100));
     directInputs.LightRadius = this.LightRadius;
     directInputs.LightLength = this.LightLength;
     directInputs.LightDistance = this.LightDistance;
@@ -60,7 +60,7 @@ struct LightPass
     
     // Remove color banding
     color = Utility.ApplyDither(color, &this.DitherTexture, screenUv, this.ViewportSize);
-    color *= this.LightIntensity / 10000;
+    color *= this.LightIntensity;
     
     color += this.GeoEmissive;
     

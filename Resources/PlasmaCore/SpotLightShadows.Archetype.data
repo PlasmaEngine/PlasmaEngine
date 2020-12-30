@@ -32,7 +32,7 @@ Cog
 	SpotLight 
 	{
 		var LightColor = Real4{1, 1, 1, 1}
-		var LightIntensity = 20
+		var LightIntensity = 800
 		var LightTemperature = 6500
 		var FalloffRadius = 10
 		var LightRadius = 0
@@ -94,6 +94,10 @@ Cog
 	{
 		var ResolutionValue = ShadowResolution.Low
 		var NormalOffsetBias = 0.100000001
+		var ScreenSpaceShadows = false
+		var Steps = 16
+		var RayMaxDistance = 0.0500000007
+		var Tolerence = 0.0199999996
 	}
 	Hierarchy 
 	{

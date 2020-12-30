@@ -18,19 +18,19 @@ class DirectionalLight : LightningComponent
   }
   
   // Arbitrary scalar for the resultant lighting calculations.
-  [Property][ShaderInput("DirectionalLightFragment")] var LightIntensity : Real
+  [Property][Slider(0, 10000, 10)][ShaderInput("DirectionalLightFragment")] var LightIntensity : Real
   {
     get { return this.LightIntensityValue; }
     set { this.LightIntensityValue = Math.Max(value, 0.0); }
   }
   
   // Temperature of the light in kelvin.
-  [Property][ShaderInput("LightPass", "LightTemperature")] var LightTemperature : Real = 6500.0;
+  [Property][Slider(1000, 10000, 100)][ShaderInput("LightPass", "LightTemperature")] var LightTemperature : Real = 6500.0;
 
   
   [ShaderInput("DirectionalLightFragment")] var LightDirection : Real3;
   [ShaderInput("LightPass", "LightColor")] var LightColorValue : Real3 = Real3(1.0);
-  var LightIntensityValue : Real = 1000.0;
+  var LightIntensityValue : Real = 1.0;
   
   function Initialize(init : CogInitializer)
   {

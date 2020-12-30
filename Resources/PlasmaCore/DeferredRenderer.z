@@ -8,6 +8,9 @@ class DeferredRenderer : LightningComponent
   // Cubemap Texture to use for indirect lighting and/or scene background. Undefined behavior if null or not a cubemap.
   [Group("Settings")]
   [Property] var Skybox : Texture = Texture.SimpleSkybox;
+  // The Main Light for the level
+  [Group("Settings")]
+  [Property] var MainLight : CogPath = null;
   // Color for the background if not using the skybox.
   [Group("Settings")]
   [Property] var ClearColor : Real4 = Real4(0.0, 0.0, 0.0, 1.0);
@@ -277,8 +280,10 @@ class DeferredRenderer : LightningComponent
     if (this.Owner.Bloom != null)
       this.Owner.Bloom.AddRenderTasks(event, lightBuffer);
       
+    // Screen Space Reflections
     if(this.Owner.PostProcessSSR != null)
-        this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBufferNormalDepthRoughnessRT, this.GBufferAlbedoMetallicSpec, lightBuffer, this.SSRBuffer);
+      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBufferNormalDepthRoughnessRT, this.GBufferAlbedoMetallicSpec, lightBuffer, this.SSRBuffer);
+
     
     // Bring final lighting to gamma space for monitor display
     this.LinearToGamma(event, lightBuffer, this.FinalOutput);

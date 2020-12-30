@@ -97,6 +97,12 @@ struct PointLightFragment
     this.LightDirection = Math.Normalize(closestPoint);
     this.LightIntensity *= falloff;
     
+    var intensityMultiplier = 100.0;
+    if(this.LightRadius > 0)
+      intensityMultiplier = 4.0 / Math.Pow(this.LightRadius, 2.0);
+    
+    this.LightIntensity /= intensityMultiplier;
+    
     this.LightDistance = Math.Length(closestPoint);
   }
 }
@@ -154,6 +160,12 @@ struct SpotLightFragment
     this.LightDirection = Math.Normalize(closestPoint);
     this.LightIntensity *= falloff * this.ShadowFactor;
     
+    var intensityMultiplier = 100.0;
+    if(this.LightRadius > 0)
+      intensityMultiplier = 4.0 / Math.Pow(this.LightRadius, 2.0);
+    
+    this.LightIntensity /= intensityMultiplier;
+    
     this.LightDistance = Math.Length(closestPoint);
   }
 }
@@ -173,7 +185,7 @@ struct DirectionalLightFragment
   
   function Main()
   {
-    this.LightIntensity /= 100;
+    this.LightIntensity /= 1000;
     this.LightIntensity *= this.ShadowFactor;
     this.LightDirection = Math.Normalize(-Math.MultiplyNormal(this.WorldToView, this.LightDirection));
   }
