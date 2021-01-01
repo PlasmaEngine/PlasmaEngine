@@ -50,8 +50,10 @@ Menus menus =
 		  "CreateSpriteText",
 		  "Divider",
 		  "CreateDirectionalLight"
+		  "CreateDirectionalLightShadows"
 		  "CreatePointLight",
 		  "CreateSpotLight",
+		  "CreateSpotLightShadows",
 		  "Divider",
 		  "CreateSpriteParticles"
 		]
