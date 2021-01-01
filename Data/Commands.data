@@ -698,15 +698,6 @@ Commands commands =
 
 	Command =
 	{
-		string Name = "Performance",
-		string Description = "Displays a performance graph",
-		string IconName = "Performance",
-		string Tags = "Editor",
-		bool ReadOnly = true,
-	},
-
-	Command =
-	{
 		string Name = "Graph",
 		string Description = "Displays a graph",
 		string IconName = "Performance",
