@@ -124,7 +124,6 @@ Menus menus =
 		  "Objects",
 		  "OperationHistory",
 		  "Tools",
-          "Performance",
           "VolumeMeter",
           "SoundNodeGraph",
 		  "Divider",
