@@ -84,11 +84,6 @@ struct SSR
         input += Real3(Math.Dot(input, input.YXZ + Real3(19.19)));
         return Math.Frac((input.XXY + input.YXX) * input.ZYX);
     }   
- 
-    function ToUv( ndcPos : Real2) : Real2
-    {
-        return ndcPos * 0.5 + Real2(0.5);
-    }
 
     function Main()
     {
@@ -139,7 +134,7 @@ struct SSR
  
             projectedCoords = Math.Multiply(this.ViewToPerspective,Real4(hitPosition, 1.0));
             projectedCoords.XY /= projectedCoords.W;
-            projectedCoords.XY = this.ToUv(projectedCoords.XY);
+            projectedCoords.XY = Utility.ToUv(projectedCoords.XY);
             projectedCoords.Y = 1.0 - projectedCoords.Y;
  
             var rayGeometrySample = this.GeometryBuffer0.Sample(projectedCoords.XY);
@@ -162,7 +157,7 @@ struct SSR
                     {
                         projectedCoords = Math.Multiply(this.ViewToPerspective,Real4(hitPosition, 1.0));
                         projectedCoords.XY /= projectedCoords.W;
-                        projectedCoords.XY = this.ToUv(projectedCoords.XY);
+                        projectedCoords.XY = Utility.ToUv(projectedCoords.XY);
                         projectedCoords.Y = 1.0 - projectedCoords.Y;
  
                         var searchGeometrySample = this.GeometryBuffer0.Sample(projectedCoords.XY);
@@ -179,7 +174,7 @@ struct SSR
  
                     projectedCoords = Math.Multiply(this.ViewToPerspective,Real4(hitPosition, 1.0));
                     projectedCoords.XY /= projectedCoords.W;
-                    projectedCoords.XY = this.ToUv(projectedCoords.XY);
+                    projectedCoords.XY = Utility.ToUv(projectedCoords.XY);
                     projectedCoords.Y = 1.0 - projectedCoords.Y;
  
                     foundResult = 1.0;

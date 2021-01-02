@@ -21,6 +21,12 @@ struct Utility
   }
   
   [Static]
+  function ToUv( ndcPos : Real2) : Real2
+  {
+    return ndcPos * 0.5 + Real2(0.5);
+  }
+  
+  [Static]
   function KelvinToRGB(kelvin : Real) : Real3
   {
     var temp = kelvin / 100;
