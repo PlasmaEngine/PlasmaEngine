@@ -650,6 +650,11 @@ void Exporter::CopyContent(Status& status, String outputDirectory, ExportTarget*
   ExportUtility::CopyLibraryOut(outputDirectory, "Editor");
   ExportUtility::CopyLibraryOut(outputDirectory, project->ProjectContentLibrary);
 
+  forRange (ContentLibrary* library, project->ExtraContentLibraries.All())
+  {
+    ExportUtility::CopyLibraryOut(outputDirectory, library);
+  }
+  
   // Once the build output is separated by platform this should not be needed
   HashSet<String>& additionalExcludes = target->GetAdditionalExcludedFiles();
 

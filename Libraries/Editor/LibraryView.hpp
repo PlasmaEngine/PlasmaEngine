@@ -82,6 +82,7 @@ private:
 
   void BuildContentLibraryList();
   void OnPackageBuilt(ContentSystemEvent* e);
+  void SetSelected(int selectedIndex);
   void OnContentLibrarySelected(Event* e);
 
   /// Resource event response.

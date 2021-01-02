@@ -617,12 +617,19 @@ void LibraryView::OnPackageBuilt(ContentSystemEvent* e)
 
   // If nothing is selected, attempt to select the library that was initially
   // viewed
-  int selected = mContentLibraries->GetSelectedItem();
-  if (selected == cNoItemSelected && mContentLibrary)
-  {
-    uint index = mContentLibraries->GetIndexOfItem(mContentLibrary->Name);
-    mContentLibraries->SetSelectedItem((int)index, false);
-  }
+  uint index = mContentLibraries->GetIndexOfItem(mContentLibrary->Name);
+  mContentLibraries->SetSelectedItem((int)index, false);
+  SetSelected(index);
+}
+
+void LibraryView::SetSelected(int selectedIndex)
+{
+  String selectedItem = mContentLibraries->GetItem(selectedIndex);
+  ContentLibrary* contentLibrary = PL::gContentSystem->Libraries.FindValue(selectedItem, nullptr);
+  ResourceLibrary* resourceLibrary = PL::gResources->LoadedResourceLibraries.FindValue(selectedItem, nullptr);
+
+  if (contentLibrary && resourceLibrary)
+    View(contentLibrary, resourceLibrary);
 }
 
 void LibraryView::OnContentLibrarySelected(Event* e)
@@ -631,11 +638,7 @@ void LibraryView::OnContentLibrarySelected(Event* e)
   if (selectedIndex == -1)
     return;
 
-  String selectedItem = mContentLibraries->GetItem(selectedIndex);
-  ContentLibrary* contentLibrary = PL::gContentSystem->Libraries.FindValue(selectedItem, nullptr);
-  ResourceLibrary* resourceLibrary = PL::gResources->LoadedResourceLibraries.FindValue(selectedItem, nullptr);
-  if (contentLibrary && resourceLibrary)
-    View(contentLibrary, resourceLibrary);
+  SetSelected(selectedIndex);
 }
 
 void LibraryView::OnResourcesModified(ResourceEvent* event)
