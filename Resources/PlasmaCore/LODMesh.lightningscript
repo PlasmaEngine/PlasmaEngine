@@ -33,6 +33,7 @@ class LODMesh : LightningComponent
   
   function Initialize(init : CogInitializer)
   {
+    
     if(this.Space.IsEditorMode)
       this.CameraCog = this.Space.FindObjectByName("EditorCamera");
     else
@@ -43,6 +44,8 @@ class LODMesh : LightningComponent
   
   function OnUpdate(event : UpdateEvent)
   {  
+    if(this.CameraCog == null)
+      return;
       
     var cameraTransform = this.CameraCog.Transform.WorldTranslation;
     var delta = cameraTransform - this.Owner.Transform.WorldTranslation;
