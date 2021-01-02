@@ -14,11 +14,11 @@ class Bloom : LightningComponent
   [Property] var Threshold : Real = 1.0;
   // Lens dirst texture
   [Group("Settings")]
-  [Property] var LensDirt : Texture;
+  [Property] var LensDirt : Texture = Texture.White;
   [Group("Settings")]
-  [Property] var LensDirtIntensity : Real;
+  [Property] var LensDirtIntensity : Real = 0.2;
   [Group("Settings")]
-  [Property] var LensDirtThreshold : Real = 1.0;
+  [Property] var LensDirtThreshold : Real = 0.1;
   
   // If output should be replace with just the result that's added to the scene for visualizing the effect.
   [Group("Debug")]
