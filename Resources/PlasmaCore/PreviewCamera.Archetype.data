@@ -182,7 +182,7 @@ Cog
 			DirectionalLight 
 			{
 				var LightColor = Real4{1, 1, 1, 1}
-				var LightIntensity = 100000
+				var LightIntensity = 2000
 				var LightTemperature = 6500
 			}
 			CameraViewport 
