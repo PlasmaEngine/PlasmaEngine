@@ -43,10 +43,43 @@ void ProjectSettings::Serialize(Serializer& stream)
   SerializeNameDefault(ProjectOwner, String());
   SerializeNameDefault(DefaultLevel, String());
   SerializeNameDefault(ProjectSpace, String());
-  SerializeNameDefault(ExtraLibraries, Array<String>());
+  //SerializeNameDefault(ExtraLibraries, Array<String>());
+  
   SerializeNameDefault(AutoTakeProjectScreenshot, true);
   SerializeNameDefault(mGuid, (Guid)0);
 
+
+  if (stream.GetMode() == SerializerMode::Saving)
+  {
+    // Build the comma delimited list of tags with their types
+    StringBuilder builder;
+    forRange (StringParam library, ExtraLibraries.All())
+      builder.Append(BuildString(library, ","));
+  
+    String libraries = builder.ToString();
+    SerializeNameDefault(libraries, String());
+  }
+  else
+  {
+    ExtraLibraries.Clear();
+    
+    String libraries;
+    SerializeNameDefault(libraries, String());
+  
+    // First split the tags by the separator (comma)
+    StringSplitRange splitRange = libraries.Split(",");
+    for (; !splitRange.Empty(); splitRange.PopFront())
+    {
+      StringRange lib = splitRange.Front();
+      // Make sure to account for any empty sets (especially since we don't
+      // leave off the last ',')
+      if (lib.Empty())
+        continue;
+      ExtraLibraries.PushBack(lib);
+    }
+ }
+  
+  
   // If we didn't have a guid before for some reason
   // (upgrading a project, etc...), then generate one now
   if (mGuid == 0 && stream.GetMode() == SerializerMode::Loading)
@@ -68,9 +101,9 @@ String ProjectSettings::GetContentFolder()
   return ContentFolder;
 }
 
- Array<String> ProjectSettings::GetExtraContentFolders()
+void ProjectSettings::AddLibrary(String name)
 {
-  return ExtraLibraries;
+  ExtraLibraries.PushBack(name);
 }
 
 String ProjectSettings::GetEditorContentFolder()

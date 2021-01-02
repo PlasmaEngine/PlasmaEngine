@@ -33,8 +33,8 @@ public:
   /// Returns the path to the generated content folder for this project.
   String GetContentFolder();
 
-  /// Returns the path to the generated content folder for this project.
-  Array<String> GetExtraContentFolders();
+  // Adds a library by name to the project.
+  void AddLibrary(String name);
   
   /// Returns the path to the content folder containing editor specific content
   /// (screen shot, editor settings, etc...).

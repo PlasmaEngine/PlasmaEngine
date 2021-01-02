@@ -3,43 +3,64 @@
 
 namespace Plasma
 {
+  // Forward declarations
+  class TagChainTextBox;
+  class TreeView;
+  class TileView;
+  class IconButton;
+  class ResourceTagEditor;
 
-// Forward declarations
-class TagChainTextBox;
-class TreeView;
-class TileView;
-class IconButton;
-class ResourceTagEditor;
+  class ContentLibrary;
+  class ResourceLibrary;
+  class LibraryDataSource;
 
-class ContentLibrary;
-class ResourceLibrary;
-class LibraryDataSource;
+  class TreeEvent;
+  class TreeRow;
+  class DataEvent;
+  class KeyboardEvent;
+  class MessageBoxEvent;
+  class TagEvent;
+  class PreviewWidgetGroup;
+  class LibraryView;
+  struct SelectionChangedEvent;
 
-class TreeEvent;
-class TreeRow;
-class DataEvent;
-class KeyboardEvent;
-class MessageBoxEvent;
-class TagEvent;
-class PreviewWidgetGroup;
-class LibraryView;
-struct SelectionChangedEvent;
+  class LibraryTileView : public TileView
+  {
+  public:
+    LibraryTileView(LibraryView* parent);
 
-class LibraryTileView : public TileView
-{
-public:
-  LibraryTileView(LibraryView* parent);
+    /// TileView interface.
+    TileViewWidget* CreateTileViewWidget(Composite* parent,
+                                         StringParam name,
+                                         HandleParam instance,
+                                         DataIndex index,
+                                         PreviewImportance::Enum minImportance) override;
 
-  /// TileView interface.
-  TileViewWidget* CreateTileViewWidget(Composite* parent,
-                                       StringParam name,
-                                       HandleParam instance,
-                                       DataIndex index,
-                                       PreviewImportance::Enum minImportance) override;
+    LibraryView* mLibraryView;
+  };
 
-  LibraryView* mLibraryView;
-};
+  /// UI for creating libraries.
+  class AddLibraryUI : public Composite
+  {
+  public:
+    typedef AddLibraryUI LightningSelf;
+    
+    AddLibraryUI(Composite* parent);
+    ~AddLibraryUI();
+    
+    void OnCreate(Event* e);
+    
+    void OnSelectPath(Event* e);
+    void OnFolderSelected(OsFileSelection* e);
+    
+    void OnCancel(Event* e);
+    
+    TextBox* mLibraryName;
+    TextBox* mLibraryPath;
 
+    bool mCanCreateLibrary = false;
+  };
+  
 class LibraryView : public Composite
 {
 public:
@@ -155,9 +176,13 @@ private:
   void OpenTagEditor();
   void CloseTagEditor();
 
+  /// Displays AddLibraryUI Window.
+  void OnCreateLibraryPress(Event* e);
+  
   /// Used to hide
   HashSet<String> mHiddenLibraries;
   StringComboBox* mContentLibraries;
+  IconButton* mAddNewLibrary;
   Composite* mLibrariesRow;
 
   SearchData* mSearch;
@@ -189,6 +214,8 @@ private:
   float mTagEditorFinalHeight;
   Element* mTagEditorCloseButton;
   ResourceTagEditor* mTagEditor;
+
+  bool initialized = false;
 };
 
 } // namespace Plasma

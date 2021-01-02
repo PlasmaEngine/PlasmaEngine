@@ -252,6 +252,173 @@ TileViewWidget* LibraryTileView::CreateTileViewWidget(
     return new TileViewWidget(parent, this, previewWidget, index);
 }
 
+AddLibraryUI::AddLibraryUI(Composite* parent): Composite(parent)
+{
+  this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 2), Thickness::cZero));
+  new Label(this, "Text", "Library Name:");
+  mLibraryName = new TextBox(this);
+  mLibraryName->SetEditable(true);
+  mLibraryName->SetText("NewLibrary");
+  
+  new Label(this, "Text", "Library Path:");
+
+  Composite* pathRow = new Composite(this);
+  pathRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
+  
+  mLibraryPath = new TextBox(pathRow);
+  mLibraryPath->SetEditable(true);
+  mLibraryPath->SetSizing(SizeAxis::X,SizePolicy::Flex, Pixels(200));
+  
+  TextButton* pathSelectButton = new TextButton(pathRow);
+  pathSelectButton->SetText("...");
+  pathSelectButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
+  ConnectThisTo(pathSelectButton, Events::ButtonPressed, OnSelectPath);
+  
+  Composite* buttonBar = new Composite(this);
+
+  buttonBar->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
+  {
+    TextButton* createButton = new  TextButton(buttonBar);
+    createButton->SetText("Create");
+    createButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
+    
+    ConnectThisTo(createButton, Events::ButtonPressed, OnCreate);
+    
+    Composite* space = new Composite(buttonBar);
+    space->SetSizing(SizeAxis::X, SizePolicy::Flex, 1);
+
+    TextButton* cancelButton = new  TextButton(buttonBar);
+    cancelButton->SetText("Cancel");
+    cancelButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
+    ConnectThisTo(cancelButton, Events::ButtonPressed, OnCancel);
+  }
+  
+  Cog* projectCog = PL::gEditor->mProject;
+  
+  if(projectCog != nullptr)
+  {
+    ProjectSettings* projectSettings = projectCog->has(ProjectSettings);
+    
+    if(projectSettings != nullptr)
+    {
+      mLibraryPath->SetText(FilePath::Combine(projectSettings->ProjectFolder, mLibraryName->GetText()));
+    }
+  }
+}
+
+AddLibraryUI::~AddLibraryUI()
+{
+}
+
+void AddLibraryUI::OnCreate(Event* e)
+{
+  if(!mCanCreateLibrary)
+  {
+    DoNotify("Error", "Library with that name already exists", "Warning");
+    return;
+  }
+  Status s;
+  ContentLibrary* library = PL::gContentSystem->LibraryFromDirectory(s, mLibraryName->GetText(), mLibraryPath->GetText());
+
+  if(!library)
+  {
+    DoNotifyError("Failed to create library.", s.Message);
+    CloseTabContaining(this);
+    return;
+  }
+
+  Status buildStatus;
+  ResourcePackage* resourcePackage = PL::gContentSystem->BuildLibrary(buildStatus, library, true);
+
+  Status status;
+  ResourceLibrary* lib = PL::gResources->LoadPackage(status, resourcePackage);
+  if (!status)
+  {
+    DoNotifyError("Failed to load resource package.", status.Message);
+  }
+
+  Cog* projectCog = PL::gEditor->mProject;
+
+  if (projectCog != nullptr)
+  {
+    ProjectSettings* projectSettings = projectCog->has(ProjectSettings);
+
+    if (projectSettings != nullptr)
+    {      
+      projectSettings->SharedResourceLibraries.PushBack(lib);
+
+      Status projectResourceStatus;
+      projectSettings->ProjectResourceLibrary = PL::gResources->LoadPackage(projectResourceStatus, resourcePackage);
+
+      if (!projectResourceStatus)
+        DoNotifyError("Failed to load resource package.", projectResourceStatus.Message);
+
+      DoEditorSideImporting(resourcePackage, nullptr);
+
+      PL::gEditor->SetExploded(false, true);
+      PL::gEditor->ProjectLoaded();
+      
+      projectSettings->AddLibrary(mLibraryName->GetText());
+      projectSettings->Save();
+    }
+  }
+  CloseTabContaining(this);
+}
+
+void AddLibraryUI::OnSelectPath(Event* e)
+{
+  // Set up the callback for when library path is selected
+  const String CallBackEvent = "LibraryPathSelected";
+  if (!GetDispatcher()->IsConnected(CallBackEvent, this))
+    ConnectThisTo(this, CallBackEvent, OnFolderSelected);
+
+  // Open the open file dialog
+  FileDialogConfig* config = FileDialogConfig::Create();
+  config->EventName = CallBackEvent;
+  config->CallbackObject = this;
+  config->Title = "Select a folder";
+  config->AddFilter("Library Folder", "*.none");
+  config->DefaultFileName = mLibraryPath->GetText();
+  config->StartingDirectory = mLibraryPath->GetText();
+  config->Flags |= FileDialogFlags::Folder;
+  PL::gEngine->has(OsShell)->SaveFile(config);
+}
+
+void AddLibraryUI::OnFolderSelected(OsFileSelection* e)
+{
+  if (e->Files.Size() > 0)
+  {
+    String path = BuildString(FilePath::GetDirectoryPath(e->Files[0]), cDirectorySeparatorCstr);
+    mLibraryPath->SetText(path);
+  }
+
+  bool valid = true;
+  Cog* projectCog = PL::gEditor->mProject;
+
+  if (projectCog != nullptr)
+  {
+    ProjectSettings* projectSettings = projectCog->has(ProjectSettings);
+
+    if (projectSettings != nullptr)
+    {
+      forRange (String library, projectSettings->ExtraLibraries.All())
+      {
+        if(library == mLibraryName->GetText())
+        {
+          valid = false;
+        }
+      }
+    }
+  }
+
+  mCanCreateLibrary = valid;
+}
+
+void AddLibraryUI::OnCancel(Event* e)
+{
+  CloseTabContaining(this);
+}
+
 LightningDefineType(LibraryView, builder, type)
 {
 }
@@ -278,11 +445,16 @@ LibraryView::LibraryView(Composite* parent) : Composite(parent), mResourceLibrar
   mLibrariesRow->SetSizing(SizeAxis::Y, SizePolicy::Fixed, Pixels(16));
   mLibrariesRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Pixels(5, 0), Thickness(1, 0, 2, 0)));
   {
+    mAddNewLibrary = new IconButton(mLibrariesRow);
+    mAddNewLibrary->SetIcon("NewResource");
+
+    mAddNewLibrary->SetSizing(SizeAxis::X, SizePolicy::Flex, 1);
+    ConnectThisTo(mAddNewLibrary, Events::ButtonPressed, OnCreateLibraryPress);
     mContentLibraries = new StringComboBox(mLibrariesRow);
 
     ConnectThisTo(mContentLibraries, Events::ItemSelected, OnContentLibrarySelected);
 
-    mContentLibraries->SetSizing(SizeAxis::X, SizePolicy::Flex, 1);
+    mContentLibraries->SetSizing(SizeAxis::X, SizePolicy::Flex, 18);
 
     BuildContentLibraryList();
   }
@@ -617,6 +789,8 @@ void LibraryView::OnPackageBuilt(ContentSystemEvent* e)
 
   // If nothing is selected, attempt to select the library that was initially
   // viewed
+
+  
   uint index = mContentLibraries->GetIndexOfItem(mContentLibrary->Name);
   mContentLibraries->SetSelectedItem((int)index, false);
   SetSelected(index);
@@ -1465,4 +1639,17 @@ void LibraryView::CloseTagEditor()
   mTagEditor->SetIsAnimating(true);
 }
 
+void LibraryView::OnCreateLibraryPress(Event* e)
+{
+  Window* window = new Window(PL::gEditor);
+  AddLibraryUI* libraryUI = new AddLibraryUI(window);
+
+  window->SizeToContents();
+  window->SetTitle("Create Library");
+  window->SetDockMode(DockMode::DockNone);
+
+  CenterToWindow(PL::gEditor, window, false);
+  window->MoveToFront();
+}
+  
 } // namespace Plasma
