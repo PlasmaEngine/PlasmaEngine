@@ -62,7 +62,8 @@ struct LightPass
     color = Utility.ApplyDither(color, &this.DitherTexture, screenUv, this.ViewportSize);
     color *= this.LightIntensity;
     
-    color += this.GeoEmissive;
+    if(Math.Length(this.GeoEmissive) > 0)
+      color = this.GeoEmissive;
     
     this.Target0 = Real4(color, 1.0);
   }
