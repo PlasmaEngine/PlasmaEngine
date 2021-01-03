@@ -45,18 +45,26 @@ namespace Plasma
   public:
     typedef AddLibraryUI LightningSelf;
     
-    AddLibraryUI(Composite* parent);
+    AddLibraryUI(Composite* parent, LibraryView* libraryView);
     ~AddLibraryUI();
-    
+
+    /// Called when on create button is pressed.
     void OnCreate(Event* e);
-    
+
+    /// Called when library path is selected.
     void OnSelectPath(Event* e);
+
+    /// Called when folder is selected and validates selection.
     void OnFolderSelected(OsFileSelection* e);
-    
+
+    /// Called when the cancel button is pressed.
     void OnCancel(Event* e);
-    
+
+  
+  private:
     TextBox* mLibraryName;
     TextBox* mLibraryPath;
+    LibraryView* mLibraryView;
 
     bool mCanCreateLibrary = false;
   };
@@ -97,6 +105,8 @@ public:
 
   float GetTagEditorSize(SizeAxis::Enum axis);
   void SetTagEditorSize(SizeAxis::Enum axis, float size);
+
+void SetSelectedByName(String name);
 
 private:
   void UpdateVisibleResources();

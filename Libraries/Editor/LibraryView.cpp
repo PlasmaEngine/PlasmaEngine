@@ -252,7 +252,7 @@ TileViewWidget* LibraryTileView::CreateTileViewWidget(
     return new TileViewWidget(parent, this, previewWidget, index);
 }
 
-AddLibraryUI::AddLibraryUI(Composite* parent): Composite(parent)
+AddLibraryUI::AddLibraryUI(Composite* parent, LibraryView* libraryView): Composite(parent), mLibraryView(libraryView)
 {
   this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 2), Thickness::cZero));
   new Label(this, "Text", "Library Name:");
@@ -362,6 +362,12 @@ void AddLibraryUI::OnCreate(Event* e)
       projectSettings->Save();
     }
   }
+
+  if(mLibraryView)
+  {
+    mLibraryView->SetSelectedByName(mLibraryName->GetText());
+  }
+  
   CloseTabContaining(this);
 }
 
@@ -791,19 +797,19 @@ void LibraryView::OnPackageBuilt(ContentSystemEvent* e)
   // viewed
 
   
-  uint index = mContentLibraries->GetIndexOfItem(mContentLibrary->Name);
-  mContentLibraries->SetSelectedItem((int)index, false);
-  SetSelected(index);
+ if(!initialized)
+ {
+   uint index = mContentLibraries->GetIndexOfItem(mContentLibrary->Name);
+   mContentLibraries->SetSelectedItem((int)index, false);
+   SetSelected(index);
+   initialized = true;
+ }
 }
 
 void LibraryView::SetSelected(int selectedIndex)
 {
   String selectedItem = mContentLibraries->GetItem(selectedIndex);
-  ContentLibrary* contentLibrary = PL::gContentSystem->Libraries.FindValue(selectedItem, nullptr);
-  ResourceLibrary* resourceLibrary = PL::gResources->LoadedResourceLibraries.FindValue(selectedItem, nullptr);
-
-  if (contentLibrary && resourceLibrary)
-    View(contentLibrary, resourceLibrary);
+  SetSelectedByName(selectedItem);
 }
 
 void LibraryView::OnContentLibrarySelected(Event* e)
@@ -1542,6 +1548,15 @@ void LibraryView::SetTagEditorSize(SizeAxis::Enum axis, float size)
   mTagEditor->SetAxisSize(axis, size);
 }
 
+void LibraryView::SetSelectedByName(String name)
+{
+  ContentLibrary* contentLibrary = PL::gContentSystem->Libraries.FindValue(name, nullptr);
+  ResourceLibrary* resourceLibrary = PL::gResources->LoadedResourceLibraries.FindValue(name, nullptr);
+
+  if (contentLibrary && resourceLibrary)
+    View(contentLibrary, resourceLibrary);
+}
+  
 float LibraryView::GetTagEditorCurrentHeight()
 {
   return mTagEditorCurrentHeight;
@@ -1642,7 +1657,7 @@ void LibraryView::CloseTagEditor()
 void LibraryView::OnCreateLibraryPress(Event* e)
 {
   Window* window = new Window(PL::gEditor);
-  AddLibraryUI* libraryUI = new AddLibraryUI(window);
+  AddLibraryUI* libraryUI = new AddLibraryUI(window, this);
 
   window->SizeToContents();
   window->SetTitle("Create Library");
