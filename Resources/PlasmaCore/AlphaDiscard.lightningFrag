@@ -7,12 +7,12 @@ struct AlphaDiscard
   [FragmentInput][StageInput] var Uv : Real2;
   [PropertyInput] var Texture : SampledImage2d;
   [PropertyInput] var Threshold : Real = 0.5;
-  [PropertyInput] var UseColorChanne : Boolean;
+  [PropertyInput] var UseRed : Boolean;
   
   function Main()
   {
     var alpha = 0.0;
-    if(this.UseColorChanne)
+    if(this.UseRed)
         alpha = this.Texture.Sample(this.Uv).X;
     else
         alpha = this.Texture.Sample(this.Uv).W; 
