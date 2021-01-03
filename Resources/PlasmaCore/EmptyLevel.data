@@ -45,6 +45,21 @@ Level
 		DeferredRenderer 
 		{
 			var Skybox = "5822dec85e380cf1:SimpleSkybox"
+			var MainLight = CogPath
+			{
+				var Path = ""
+				var ErrorOnResolveToNull = false
+				var ErrorOnPathCantCompute = false
+				var ErrorOnDirectLinkFail = false
+				var UpdateCogOnPathChange = true
+				var UpdatePathOnCogChange = true
+				var UpdateCogOnInitialize = true
+				var ResolvedNullErrorOccurred = false
+				var Cog = 4294967293
+				var PathPreference0 = CogPathPreference.CogRelative
+				var PathPreference1 = CogPathPreference.SpaceRelative
+				var PathPreference2 = CogPathPreference.Absolute
+			}
 			var ClearColor = Real4{0, 0, 0, 1}
 			var DirectLighting = true
 			var IndirectLighting = true
@@ -150,7 +165,7 @@ Level
 		}
 		ShadowRenderer 
 		{
-			var ResolutionValue = ShadowResolution.High
+			var ResolutionValue = ShadowResolution.Medium
 			var NormalOffsetBias = 0.100000001
 		}
 		Model 
@@ -168,7 +183,8 @@ Level
 		DirectionalLight 
 		{
 			var LightColor = Real4{1, 1, 1, 1}
-			var LightIntensity = 1
+			var LightIntensity = 2000
+			var LightTemperature = 6500
 		}
 		Hierarchy 
 		{
@@ -179,9 +195,9 @@ Level
 		var Name = "EditorCamera"
 		Transform 
 		{
-			var Translation = Real3{-3.97098899, 2.15707326, 9.17641258}
+			var Translation = Real3{-3.7525053, 5.58368015, 8.5484457}
 			var Scale = Real3{1, 1, 1}
-			var Rotation = Quaternion{-0.00769071933, -0.202781066, -0.00159267173, 0.979192615}
+			var Rotation = Quaternion{-0.178351879, -0.201911628, -0.0374221317, 0.96230036}
 		}
 		CameraViewport 
 		{
@@ -239,8 +255,8 @@ Level
 			var ControlMode = ControlMode.Orbit
 			var Previous3DMode = ControlMode.Orbit
 			var LookDistance = 10
-			var VerticalAngle = 0.0157079622
-			var HorizontalAngle = 0.408407062
+			var VerticalAngle = 0.366519243
+			var HorizontalAngle = 0.413643003
 			var LookTarget = Real3{0, 2, 0}
 			var MoveSensitivity = 1
 		}
@@ -309,13 +325,6 @@ Level
 		{
 			var Active = true
 			var AttenuationScale = 1
-		}
-	}
-	Cog [InheritId:"5fbb3496b65f681d:M110"][ContextId:6]
-	{
-		SimpleAnimation 
-		{
-			var Animation = "5fbb3496b616ba36:M110_Idle"
 		}
 	}
 }
