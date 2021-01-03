@@ -28,7 +28,7 @@ struct SSRApply
         //if(Math.Max(Math.Max(ssrSample.X, ssrSample.Y), ssrSample.Z) == 0)
           ssrSample.XYZ += (screenSample.XYZ );
             
-        this.Target0 = Real4(Math.Saturate(ssrSample.XYZ), ssrSample.W);
+        this.Target0 = Real4(ssrSample.XYZ, ssrSample.W);
     }
 }
 
@@ -128,7 +128,7 @@ struct SSR
         var foundResult = 0.0;
         var rayDepth = 0.0;
  
-        for(var i = 0; i < 128; ++i)
+        for(var i = 0; i < this.Itteractions; ++i)
         {
             hitPosition += direction;
  
@@ -197,9 +197,7 @@ struct SSR
         var ssr = (this.ScreenBuffer.SampleLod(coords.XY, roughness).XYZ ) * (Real3(0.1) * brdfSpec.X + brdfSpec.YYY);
         
         if(!(foundResult as Boolean))
-          ssr = screenSampled.XYZ;
-        else
-          ssr += albedo/4;
+          ShaderIntrinsics.Kill();
         
         this.Target0 = Real4(ssr , foundResult);
     }

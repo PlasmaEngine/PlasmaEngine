@@ -6,7 +6,7 @@ class PostProcessSSR : LightningComponent
     
     [Group("Settings")]
     [Property]
-    var Itterations : Real = 128.0;
+    var RayDistance : Real = 128.0;
     
     [Group("Settings")]
     [Property]
@@ -53,7 +53,7 @@ class PostProcessSSR : LightningComponent
         postSSR.Debug = this.Debug;
         postSSR.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
         postSSR.Jiiter = this.Jitter;
-        postSSR.Itteractions = this.Itterations;
+        postSSR.Itteractions = this.RayDistance;
         postSSR.StepDistance = this.StepDistance;
         
         event.AddRenderTaskPostProcess(ssrTemp, postSSR, "SSR");
@@ -87,7 +87,7 @@ class PostProcessSSR : LightningComponent
         if(this.Debug)
         {
           var copyPass = CopyTarget();
-          copyPass.Texture = ssrBuffer.Texture;
+          copyPass.Texture = ssrTemp.Texture;
           event.AddRenderTaskPostProcess(screenBuffer, copyPass, "SSRDebug");
           
           event.AddRenderTaskClearTarget(ssrBuffer, Real4.Zero);

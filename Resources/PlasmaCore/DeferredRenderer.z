@@ -276,13 +276,16 @@ class DeferredRenderer : LightningComponent
   
     event.AddRenderTaskClearTarget(this.SSRBuffer, Real4.Zero);
     
+    // Screen Space Reflections
+    if(this.Owner.PostProcessSSR != null)
+    {
+      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBufferNormalDepthRoughnessRT, this.GBufferAlbedoMetallicSpec, lightBuffer, this.SSRBuffer);
+    }
+    
     // Bloom
     if (this.Owner.Bloom != null)
       this.Owner.Bloom.AddRenderTasks(event, lightBuffer);
       
-    // Screen Space Reflections
-    if(this.Owner.PostProcessSSR != null)
-      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBufferNormalDepthRoughnessRT, this.GBufferAlbedoMetallicSpec, lightBuffer, this.SSRBuffer);
 
     
     // Bring final lighting to gamma space for monitor display
