@@ -6,6 +6,7 @@ struct LensDirtPass
   [StageInput] var Uv : Real2;
   
   [Input] var Texture : SampledImage2d;
+  [Input] var ScreenTexture : SampledImage2d;
   [Input] var LensDirt : SampledImage2d;
   [Input] var Intensity : Real;
   [Input] var Threshold : Real;
@@ -14,7 +15,8 @@ struct LensDirtPass
   
   function Main()
   {
-    var color = this.Texture.Sample(this.Uv).XYZ;
+    var screen = this.Texture.Sample(this.Uv).XYZ;
+    var color = screen * this.Texture.Sample(this.Uv).XYZ;
     
     var lens = Math.Saturate(color + this.LensDirt.Sample(this.Uv).XYZ);
     
@@ -26,7 +28,7 @@ struct LensDirtPass
     var intensity = this.Intensity * Math.Max(luminance + this.Threshold, 0.0);
     
     // Output the color scaled by intensity
-    this.Target0 = Real4(Math.Saturate(color * lens * intensity) , 1.0);
+    this.Target0 = Real4(Math.Saturate( color * lens * intensity) , 1.0);
   }
 }
 

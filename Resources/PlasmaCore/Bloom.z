@@ -105,6 +105,7 @@ class Bloom : LightningComponent
     
     var dirtPass = LensDirtPass();
     dirtPass.Texture = bloom1.Texture;
+    dirtPass.ScreenTexture = lightBuffer.Texture;
     dirtPass.LensDirt = this.LensDirt;
     dirtPass.Intensity = this.LensDirtIntensity;
     dirtPass.Threshold = this.LensDirtThreshold;
