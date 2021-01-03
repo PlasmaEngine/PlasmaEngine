@@ -854,6 +854,11 @@ void BuildContent(ProjectSettings* project)
   Status status;
   PL::gContentSystem->BuildLibrary(status, project->ProjectContentLibrary, false);
   DoNotifyStatus(status);
+  forRange (ContentLibrary* library, project->ExtraContentLibraries.All())
+  {
+    PL::gContentSystem->BuildLibrary(status, library, false);
+    DoNotifyStatus(status);
+  } 
 }
 
 Status Editor::SaveAll(bool showNotify)

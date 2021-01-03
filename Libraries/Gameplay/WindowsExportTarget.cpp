@@ -81,6 +81,11 @@ void WindowsExportTarget::ExportApplication()
     // archive project resources
     ArchiveLibraryOutput(projectArchive, project->ProjectContentLibrary);
 
+    forRange (ContentLibrary* library, project->ExtraContentLibraries.All())
+    {
+      ArchiveLibraryOutput(projectArchive, library);
+    }
+    
     String tempName = BuildString(project->ProjectName, "Temp.exe");
     String tempFile = FilePath::Combine(GetTemporaryDirectory(), tempName);
 

@@ -39,9 +39,9 @@ void LoadProject(Editor* editor, Cog* projectCog, StringParam path, StringParam 
   String projectFolder = project->ProjectFolder;
 
   // Load shared content libraries if present
-  if (SharedContent* sharedConent = projectCog->has(SharedContent))
+  if (SharedContent* sharedContent = projectCog->has(SharedContent))
   {
-    forRange (ContentLibraryReference libraryRef, sharedConent->ExtraContentLibraries.All())
+    forRange (ContentLibraryReference libraryRef, sharedContent->ExtraContentLibraries.All())
     {
       String libraryName = libraryRef.mContentLibraryName;
       String contentFolder = FilePath::Combine(projectFolder, libraryName);
@@ -65,15 +65,33 @@ void LoadProject(Editor* editor, Cog* projectCog, StringParam path, StringParam 
 
   // Load content package of project
   Status loadContentLibrary;
+  
   ContentLibrary* projectLibrary =
       PL::gContentSystem->LibraryFromDirectory(loadContentLibrary, project->ProjectName, project->ContentFolder);
-
+  
   /// Store the library on the project
   project->ProjectContentLibrary = projectLibrary;
 
   Status status;
   PL::gContentSystem->BuildLibrary(status, projectLibrary, true);
 
+  //Load Extra content libraries
+  project->ExtraContentLibraries = Array<ContentLibrary*>();
+  forRange (String library, project->ExtraLibraries.All())
+  {    
+    String libPath = FilePath::Combine(project->ProjectFolder, library);
+      
+    ContentLibrary* lib =
+      PL::gContentSystem->LibraryFromDirectory(loadContentLibrary, library, libPath);
+    project->ExtraContentLibraries.PushBack(lib);
+  }
+
+  forRange (ContentLibrary* library, project->ExtraContentLibraries.All())
+  {
+    Status s;
+    PL::gContentSystem->BuildLibrary(s, library, true);
+  }
+  
   // Always select the first tool
   if (editor->Tools)
     editor->Tools->SelectToolIndex(0);

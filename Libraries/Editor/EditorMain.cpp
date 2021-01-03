@@ -65,6 +65,32 @@ bool EditorMain::LoadPackage(Cog* projectCog, ContentLibrary* library, ResourceP
     PL::gEditor->ProjectLoaded();
     return true;
   }
+  else if(project->ExtraContentLibraries.Contains(library))
+  {
+    // Load all packages
+    forRange (ResourcePackage* dependentPackage, PackagesToLoad.All())
+    {
+      Status status;
+      ResourceLibrary* lib = resourceSystem->LoadPackage(status, dependentPackage);
+      if (!status)
+        DoNotifyError("Failed to load resource package.", status.Message);
+
+      project->SharedResourceLibraries.PushBack(lib);
+      delete dependentPackage;
+    }
+    PackagesToLoad.Clear();
+
+    Status status;
+    project->ProjectResourceLibrary = resourceSystem->LoadPackage(status, package);
+    if (!status)
+      DoNotifyError("Failed to load resource package.", status.Message);
+
+    DoEditorSideImporting(package, nullptr);
+
+    PL::gEditor->SetExploded(false, true);
+    PL::gEditor->ProjectLoaded();
+    return true;
+  }
   else
   {
     PackagesToLoad.PushBack(package);

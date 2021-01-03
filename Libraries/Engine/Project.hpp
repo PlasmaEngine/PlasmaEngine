@@ -33,6 +33,9 @@ public:
   /// Returns the path to the generated content folder for this project.
   String GetContentFolder();
 
+  // Adds a library by name to the project.
+  void AddLibrary(String name);
+  
   /// Returns the path to the content folder containing editor specific content
   /// (screen shot, editor settings, etc...).
   String GetEditorContentFolder();
@@ -80,6 +83,10 @@ public:
   String ProjectFolder;
   /// Project Content Folder
   String ContentFolder;
+
+  //Extra Content libraries
+   Array<String> ExtraLibraries;
+  
   /// Editor specific content (screen shot, editor settings, etc...)
   String EditorContentFolder;
   /// Should a screenshot of the project be taken every time the project is
@@ -91,6 +98,7 @@ public:
 
   // Content Library for this Project.
   ContentLibrary* ProjectContentLibrary;
+  Array<ContentLibrary*> ExtraContentLibraries;
   ResourceLibrary* ProjectResourceLibrary;
   Array<ResourceLibrary*> SharedResourceLibraries;
 
