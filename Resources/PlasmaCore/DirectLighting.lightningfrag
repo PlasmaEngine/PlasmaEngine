@@ -74,6 +74,6 @@ struct DirectLighting
     dialectricSpecular *= inputs.RenderSpecular as Real;
     
     // Linear combination between dialectric and metallic colors
-    return Math.Lerp(diffuseColor * inputs.AO + dialectricSpecular * inputs.Specular, metallicSpecular, inputs.Metallic);
+    return Math.Lerp(diffuseColor + dialectricSpecular * inputs.Specular, metallicSpecular, inputs.Metallic);
   }
 }
