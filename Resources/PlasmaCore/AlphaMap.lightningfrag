@@ -1,0 +1,20 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct AlphaMap
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  [Input] var AlphaMap : SampledImage2d;
+  [Input] var Invert : Boolean = false;
+  [FragmentInput][Output] var Alpha : Real;
+  
+  function Main()
+  {
+    //TODO: can we do this without if
+    if(this.Invert)
+      this.Alpha =  this.AlphaMap.Sample(this.Uv).X - 1.0;
+    else
+      this.Alpha = -this.AlphaMap.Sample(this.Uv).X;
+    
+  }
+}

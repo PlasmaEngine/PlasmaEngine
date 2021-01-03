@@ -5,14 +5,11 @@
 [Pixel]
 struct ColorValue
 {
-    [Input] var ColorValue : Real4 = Real4.One;
-    [StageInput][Output] var Color : Real4;
+    [Input] var ColorValue : Real4 = Real4.Zero;
+    [Output] var Color : Real4;
 
     function Main()
     {
-      if(Math.Length(this.Color) > 0)
-        this.Color *= this.ColorValue; 
-      else
         this.Color = this.ColorValue;
     }
 }

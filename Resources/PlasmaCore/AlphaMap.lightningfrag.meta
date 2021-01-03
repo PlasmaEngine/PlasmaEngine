@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "AlphaMap"
+		var ResourceId = 0x5fac76ddbfbbb8bf
+	}
+}

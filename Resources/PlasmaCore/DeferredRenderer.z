@@ -301,7 +301,7 @@ class DeferredRenderer : LightningComponent
     // Alpha materials
     alphaSettings.ColorTarget = this.FinalOutput;
     alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
-    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AlphaBlend, ColorOutput(), "AlphaMaterials");
+    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AlphaBlend, AlphaPass(), "AlphaMaterials");
     
     this.FirstFrame = false;
     

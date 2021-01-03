@@ -1,0 +1,13 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct AlphaValue
+{
+  [Input] var AlphaValue : Real = 1.0;
+  [FragmentInput][Output] var Alpha : Real;
+
+  function Main()
+  {
+    this.Alpha -=  this.AlphaValue;
+  }
+}

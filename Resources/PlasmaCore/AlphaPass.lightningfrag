@@ -1,0 +1,21 @@
+// MIT Licensed (see LICENSE.md).
+
+// RenderPass fragments are intended to be constructed in script
+// and passed directly to the AddRenderTaskRenderPass method.
+// RenderPass fragment code is implicitely appended to the end
+// of Materials in the compositing of the final shaders programs.
+[Pixel][RenderPass]
+struct AlphaPass
+{
+  [Input] var Color : Real4 = Real4(0.0, 0.0, 0.0, 0.0);
+  [Input] var Albedo : Real3 = Real3.Zero;
+  [Input] var Alpha : Real = 0.0;
+
+  [Output] var Target0 : Real4;
+
+  function Main()
+  {
+    this.Target0 = this.Color + Real4(this.Albedo,  this.Alpha);
+  
+  }
+}

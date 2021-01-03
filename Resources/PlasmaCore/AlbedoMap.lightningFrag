@@ -7,11 +7,16 @@ struct AlbedoMap
 {
   [FragmentInput][StageInput] var Uv : Real2;
   [Input] var AlbedoMap : SampledImage2d;
+  [Input] var InvertAlpha : Boolean = false;
   
-  [Output] var Albedo : Real3;
+  [FragmentInput][Output] var Albedo : Real3;
+  [FragmentInput][Output] var Alpha : Real;
   
   function Main()
   {
-    this.Albedo = this.AlbedoMap.Sample(this.Uv).XYZ;
+    var albedoSample = this.AlbedoMap.Sample(this.Uv);
+    this.Albedo = albedoSample.XYZ;
+    this.Alpha = albedoSample.W;
+    
   }
 }
