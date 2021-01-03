@@ -43,11 +43,9 @@ void ProjectSettings::Serialize(Serializer& stream)
   SerializeNameDefault(ProjectOwner, String());
   SerializeNameDefault(DefaultLevel, String());
   SerializeNameDefault(ProjectSpace, String());
-  //SerializeNameDefault(ExtraLibraries, Array<String>());
   
   SerializeNameDefault(AutoTakeProjectScreenshot, true);
   SerializeNameDefault(mGuid, (Guid)0);
-
 
   if (stream.GetMode() == SerializerMode::Saving)
   {
