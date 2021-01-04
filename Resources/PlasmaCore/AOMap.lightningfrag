@@ -18,11 +18,16 @@ struct AOMap
 {
     [FragmentInput][StageInput] var Uv : Real2;
     [Input] var AOMap : SampledImage2d;
+    [Input] var Multiplier : Real = 1;
+    [Input] var Invert : Boolean = false;
     
     [Output] var AO : Real;
 
     function Main()
     {
-        this.AO = this.AOMap.Sample(this.Uv).X;
+        var ao = this.AOMap.Sample(this.Uv).X;
+        if(this.Invert)
+          ao = 1.0 - ao;
+        this.AO = ao * this.Multiplier;
     }
 }
