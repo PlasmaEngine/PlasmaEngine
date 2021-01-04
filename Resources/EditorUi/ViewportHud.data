@@ -48,6 +48,14 @@ DefinitionSet =
 		float[] Uv1 = [ 16 , 16 ],
 	},
 	
+	ImageDefinition DebugIcon =
+	{
+		string Texture = "ViewportHud",
+		int ImageMode = 0,
+		float[] Uv0 = [ 70 , 0 ],
+		float[] Uv1 = [ 16 , 16 ],
+	},
+
 	ImageDefinition ViewportButtonExpand =
 	{
 		string Texture = "ViewportHud",

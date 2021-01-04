@@ -3,7 +3,6 @@
 
 namespace Plasma
 {
-
 void BindEditorCommands(Cog* configCog, CommandManager* commands);
 
 DeclareEnum2(SelectComponentMode, WithComponent, WithOutComponent);
@@ -49,5 +48,16 @@ void EditInGame(Editor* editor);
 // Space to run shortcuts, Viewport for short cuts (null for default)
 bool ExecuteShortCuts(Space* space, Viewport* viewport, KeyboardEvent* event);
 bool CogHierarchyIndexCompareFn(Cog* lhs, Cog* rhs);
-
+    
+// Debug Command Callbacks
+void ResetDebugView(Editor* editor, Space* space);
+void ViewNormals(Editor* editor, Space* space);
+void ViewDepth(Editor* editor, Space* space);
+void ViewAlbedoColor(Editor* editor, Space* space);
+void ViewEmissive(Editor* editor, Space* space);
+void ViewAmbientOcclusion(Editor* editor, Space* space);
+void ViewRoughness(Editor* editor, Space* space);
+void ViewMetallic(Editor* editor, Space* space);
+void ViewSpecular(Editor* editor, Space* space);
+void SetDebugMode(Editor* editor, Space* space, GeometryValue::Enum mode);
 } // namespace Plasma

@@ -3,12 +3,6 @@
 
 namespace Plasma
 {
-
-namespace Events
-{
-DeclareEvent(ScriptInitialize);
-} // namespace Events
-
 class TextEvent : public Event
 {
 public:

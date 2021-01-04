@@ -919,4 +919,74 @@ Commands commands =
 		bool ReadOnly = true,
 	},
 
+	// Debugging
+
+	Command =
+	{
+		string Name = "ResetDebugView",
+		string Description = "Shows original view in editor viewport.",
+		string Tags = "",
+		bool ReadOnly = true,
+	},
+
+	Command =
+	{
+		string Name = "ViewNormals",
+		string Description = "Shows Normals debug view in editor viewport.",
+		string Tags = "",
+		bool ReadOnly = true,
+	},
+
+
+	Command =
+	{
+		string Name = "ViewDepth",
+		string Description = "Shows Depth debug view in editor viewport.",
+		string Tags = "",
+		bool ReadOnly = true,
+	},
+	
+	Command =
+	{
+		string Name = "ViewAlbedoColor",
+		string Description = "Shows Albedo Color debug view in editor viewport.",
+		string Tags = "",
+		bool ReadOnly = true,
+	},
+	Command =
+	{
+		string Name = "ViewEmissive",
+		string Description = "Shows Emissive debug view in editor viewport.",
+		string Tags = "",
+		bool ReadOnly = true,
+	},
+	Command =
+	{
+		string Name = "ViewAmbientOcclusion",
+		string Description = "Shows Ambient Occlusion debug view in editor viewport.",
+		string Tags = "",
+		bool ReadOnly = true,
+	},
+	Command =
+	{
+		string Name = "ViewRoughness",
+		string Description = "Shows Roughness debug view in editor viewport.",
+		string Tags = "",
+		bool ReadOnly = true,
+	},
+	Command =
+	{
+		string Name = "ViewMetallic",
+		string Description = "Shows Metalic debug view in editor viewport.",
+		string Tags = "",
+		bool ReadOnly = true,
+	},
+	Command =
+	{
+		string Name = "ViewSpecular",
+		string Description = "Shows Specular debug view in editor viewport.",
+		string Tags = "",
+		bool ReadOnly = true,
+	},
+
 },

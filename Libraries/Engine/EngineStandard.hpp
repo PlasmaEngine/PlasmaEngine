@@ -113,6 +113,7 @@ private:
 #include "Configuration.hpp"
 #include "LauncherConfiguration.hpp"
 #include "DebugDraw.hpp"
+#include "DebugCommands.hpp"
 #include "ScriptEvents.hpp"
 #include "TextResource.hpp"
 #include "EditorSettings.hpp"

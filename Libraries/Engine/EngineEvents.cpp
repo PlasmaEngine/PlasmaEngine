@@ -3,7 +3,6 @@
 
 namespace Plasma
 {
-
 namespace Events
 {
 DefineEvent(ScriptInitialize);
