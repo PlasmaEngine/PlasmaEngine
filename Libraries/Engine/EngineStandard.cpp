@@ -203,6 +203,7 @@ LightningDefineStaticLibrary(EngineLibrary)
   LightningInitializeType(LightningCompileFragmentEvent);
   LightningInitializeType(LightningCompileEvent);
   LightningInitializeType(SplineEvent);
+  LightningInitializeType(DebugViewEvent);
   LightningInitializeType(BlockingTaskEvent);
   LightningInitializeType(AsyncProcessEvent);
 
