@@ -414,6 +414,57 @@ bool CogHierarchyIndexCompareFn(Cog* lhs, Cog* rhs)
   return lhs->GetHierarchyIndex() < rhs->GetHierarchyIndex();
 }
 
+void ResetDebugView(Editor* editor, Space* space)
+{
+  SetDebugMode(editor, space, 0);
+}
+
+void ViewNormals(Editor* editor, Space* space)
+{
+  SetDebugMode(editor, space, 1);
+}
+
+void ViewDepth(Editor* editor, Space* space)
+{
+  SetDebugMode(editor, space, 2);
+}
+
+void ViewAlbedoColor(Editor* editor, Space* space)
+{
+  SetDebugMode(editor, space, 3);
+}
+
+void ViewEmissive(Editor* editor, Space* space)
+{
+  SetDebugMode(editor, space, 4);
+}
+
+void ViewAmbientOcclusion(Editor* editor, Space* space)
+{
+  SetDebugMode(editor, space, 5);
+}
+
+void ViewRoughness(Editor* editor, Space* space)
+{
+  SetDebugMode(editor, space, 6);
+}
+
+void ViewMetallic(Editor* editor, Space* space)
+{
+  SetDebugMode(editor, space, 7);
+}
+
+void ViewSpecular(Editor* editor, Space* space)
+{
+  SetDebugMode(editor, space, 8);
+}
+
+void SetDebugMode(Editor* editor, Space* space, int value)
+{
+  DebugViewEvent debugViewEvent = DebugViewEvent(value);
+  space->GetDispatcher()->Dispatch(Events::DebugViewMode, &debugViewEvent);
+}
+
 // Create a transform at the center of the selected objects
 // and parent them to it
 void GroupSelected(Editor* editor, Space* space)
@@ -1308,6 +1359,19 @@ void BindEditorCommands(Cog* configCog, CommandManager* commands)
   commands->AddCommand("GoToDefinition", BindCommandFunction(GoToDefinition), true);
   commands->AddCommand("Add", BindCommandFunction(Add));
 
+
+  // Debug Commands
+  commands->AddCommand("ResetDebugView", BindCommandFunction(ResetDebugView));
+  commands->AddCommand("ViewNormals", BindCommandFunction(ViewNormals));
+  commands->AddCommand("ViewDepth", BindCommandFunction(ViewDepth));
+  commands->AddCommand("ViewAlbedoColor", BindCommandFunction(ViewAlbedoColor));
+  commands->AddCommand("ViewEmissive", BindCommandFunction(ViewEmissive));
+  commands->AddCommand("ViewAmbientOcclusion", BindCommandFunction(ViewAmbientOcclusion));
+  commands->AddCommand("ViewRoughness", BindCommandFunction(ViewRoughness));
+  commands->AddCommand("ViewMetallic", BindCommandFunction(ViewMetallic));
+  commands->AddCommand("ViewSpecular", BindCommandFunction(ViewSpecular));
+
+  
   Command* editInGameCommand = commands->AddCommand("EditInGame", BindCommandFunction(EditInGame));
   editInGameCommand->Shortcut = "F9";
 
