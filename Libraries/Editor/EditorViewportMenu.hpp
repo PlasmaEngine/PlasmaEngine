@@ -49,6 +49,8 @@ public:
 
   /// Camera stuff
   void OnCameraButtonPressed(Event* e);
+  
+  void OnDebugButtonPressed(Event* e);
 
   void OnGridButtonPressed(Event* e);
 
@@ -72,6 +74,8 @@ public:
   /// Grid toggle.
   ToggleIconButton* mGridButton;
 
+  ViewportMenuButton* mDebugButton;
+  
   Element* mBackground;
 };
 

@@ -460,7 +460,7 @@ DefinitionSet =
 			string FontName = "NotoSans-Bold",
 			float FontSize = 20,
 			float[] FontColor = [1,1,1,1],
-		},
+		},		
 	},
 
 	

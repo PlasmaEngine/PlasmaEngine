@@ -86,12 +86,21 @@ EditorViewportMenu::EditorViewportMenu(EditorViewport* viewport) : Composite(vie
   // Camera options
   mCameraButton = new ViewportMenuButton(this);
   mCameraButton->SetIcon("CameraOptions");
-  mCameraButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(49));
+  mCameraButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(38));
   mCameraButton->SetToolTip("Camera Options");
   mCameraButton->mIcon->SetInteractive(false);
   mCameraButton->mExpandIcon->SetInteractive(false);
   ConnectThisTo(mCameraButton, Events::ButtonPressed, OnCameraButtonPressed);
 
+  // Debug options
+  mDebugButton = new ViewportMenuButton(this);
+  mDebugButton->SetIcon("DebugIcon");
+  mDebugButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(38));
+  mDebugButton->SetToolTip("Debug Options (Deferred Rendering Only)");
+  mDebugButton->mIcon->SetInteractive(false);
+  mDebugButton->mExpandIcon->SetInteractive(false);
+  ConnectThisTo(mDebugButton, Events::ButtonPressed, OnDebugButtonPressed);
+  
   mGridButton = new ToggleIconButton(this);
   mGridButton->SetEnabledIcon("ViewportGridIconOn");
   mGridButton->SetDisabledIcon("ViewportGridIconOff");
@@ -215,6 +224,29 @@ void EditorViewportMenu::OnCameraButtonPressed(Event* e)
   contextMenu->AddDivider();
   contextMenu->AddCommandByName("AlignSelectedCameraToCamera");
   contextMenu->AddCommandByName("AlignCameraToSelectedCamera");
+  contextMenu->SizeToContents();
+
+  mActivePopup = contextMenu;
+  ConnectThisTo(contextMenu, Events::PopUpClosed, OnPopUpClosed);
+}
+
+void EditorViewportMenu::OnDebugButtonPressed(Event* e)
+{
+  ContextMenu* contextMenu = new ContextMenu(mDebugButton);
+  contextMenu->SetTranslation(mDebugButton->GetScreenPosition() + Pixels(0, mDebugButton->mSize.y, 0));
+  
+  contextMenu->AddCommandByName("ResetDebugView");
+  contextMenu->AddCommandByName("ViewNormals");
+  contextMenu->AddCommandByName("ViewDepth");
+  contextMenu->AddDivider();
+  contextMenu->AddCommandByName("ViewAlbedoColor");
+  contextMenu->AddCommandByName("ViewEmissive");
+  contextMenu->AddCommandByName("ViewAmbientOcclusion");
+  contextMenu->AddDivider();
+  contextMenu->AddCommandByName("ViewRoughness");
+  contextMenu->AddCommandByName("ViewMetallic");
+  contextMenu->AddCommandByName("ViewSpecular");
+
   contextMenu->SizeToContents();
 
   mActivePopup = contextMenu;
