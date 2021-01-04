@@ -354,17 +354,3 @@ class DeferredRenderer : LightningComponent
     event.AddRenderTaskRenderPass(debugSettings, RenderGroup.DebugDrawOnTop, ColorOutput(), "DebugDrawOnTop");
   }
 }
-
-// Output options for debugging geometry pass values.
-enum GeometryValue
-{
-  None,
-  Normal,
-  Depth,
-  Roughness,
-  Albedo,
-  Metallic,
-  Specular,
-  Emissive,
-  AO
-}

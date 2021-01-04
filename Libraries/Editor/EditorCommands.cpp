@@ -416,52 +416,52 @@ bool CogHierarchyIndexCompareFn(Cog* lhs, Cog* rhs)
 
 void ResetDebugView(Editor* editor, Space* space)
 {
-  SetDebugMode(editor, space, 0);
+  SetDebugMode(editor, space, GeometryValue::Enum::None);
 }
 
 void ViewNormals(Editor* editor, Space* space)
 {
-  SetDebugMode(editor, space, 1);
+  SetDebugMode(editor, space, GeometryValue::Enum::Normal);
 }
 
 void ViewDepth(Editor* editor, Space* space)
 {
-  SetDebugMode(editor, space, 2);
+  SetDebugMode(editor, space, GeometryValue::Enum::Depth);
 }
 
 void ViewAlbedoColor(Editor* editor, Space* space)
 {
-  SetDebugMode(editor, space, 3);
+  SetDebugMode(editor, space, GeometryValue::Enum::Albedo);
 }
 
 void ViewEmissive(Editor* editor, Space* space)
 {
-  SetDebugMode(editor, space, 4);
+  SetDebugMode(editor, space, GeometryValue::Enum::Emissive);
 }
 
 void ViewAmbientOcclusion(Editor* editor, Space* space)
 {
-  SetDebugMode(editor, space, 5);
+  SetDebugMode(editor, space, GeometryValue::Enum::AO);
 }
 
 void ViewRoughness(Editor* editor, Space* space)
 {
-  SetDebugMode(editor, space, 6);
+  SetDebugMode(editor, space, GeometryValue::Enum::Roughness);
 }
 
 void ViewMetallic(Editor* editor, Space* space)
 {
-  SetDebugMode(editor, space, 7);
+  SetDebugMode(editor, space, GeometryValue::Enum::Metallic);
 }
 
 void ViewSpecular(Editor* editor, Space* space)
 {
-  SetDebugMode(editor, space, 8);
+  SetDebugMode(editor, space, GeometryValue::Enum::Specular);
 }
 
-void SetDebugMode(Editor* editor, Space* space, int value)
+void SetDebugMode(Editor* editor, Space* space, GeometryValue::Enum mode)
 {
-  DebugViewEvent debugViewEvent = DebugViewEvent(value);
+  DebugViewEvent debugViewEvent = DebugViewEvent(mode);
   space->GetDispatcher()->Dispatch(Events::DebugViewMode, &debugViewEvent);
 }
 

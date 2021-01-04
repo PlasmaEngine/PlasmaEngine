@@ -69,6 +69,8 @@ target_sources(Engine
     ${CMAKE_CURRENT_LIST_DIR}/DataSource.hpp
     ${CMAKE_CURRENT_LIST_DIR}/DebugDraw.cpp
     ${CMAKE_CURRENT_LIST_DIR}/DebugDraw.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/DebugCommands.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/DebugCommands.hpp
     ${CMAKE_CURRENT_LIST_DIR}/DocumentResource.cpp
     ${CMAKE_CURRENT_LIST_DIR}/DocumentResource.hpp
     ${CMAKE_CURRENT_LIST_DIR}/Documentation.cpp

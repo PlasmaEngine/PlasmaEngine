@@ -3,22 +3,6 @@
 
 namespace Plasma
 {
-
-namespace Events
-{
-DeclareEvent(ScriptInitialize);
-DeclareEvent(DebugViewMode);
-} // namespace Events
-
-class DebugViewEvent : public Event
-{
-public:
-  LightningDeclareType(DebugViewEvent, TypeCopyMode::ReferenceType);
-  DebugViewEvent(int mode): mMode(mode)  { }
-  DebugViewEvent()  { }
-  ~DebugViewEvent() { }
-  int mMode = 0;
-};
 class TextEvent : public Event
 {
 public:

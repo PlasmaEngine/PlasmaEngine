@@ -3,23 +3,11 @@
 
 namespace Plasma
 {
-
 namespace Events
 {
 DefineEvent(ScriptInitialize);
-DefineEvent(DebugViewMode);
 } // namespace Events
 
-LightningDefineType(DebugViewEvent, builder, type)
-{
-  PlasmaBindEvent(Events::DebugViewMode, DebugViewEvent);
-  PlasmaBindDocumented();
-  LightningBindDefaultCopyDestructor();
-  LightningBindFieldProperty(mMode);
-  LightningFullBindConstructor(builder, type, LightningSelf, "mode", int);
-  type->CreatableInScript = true;
-}
-  
 LightningDefineType(TextEvent, builder, type)
 {
   LightningBindFieldProperty(Text);

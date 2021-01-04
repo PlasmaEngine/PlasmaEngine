@@ -45,6 +45,7 @@ LightningDefineEnum(TabWidth);
 LightningDefineEnum(TimeMode);
 LightningDefineEnum(WindowState);
 LightningDefineEnum(WindowStyleFlags);
+LightningDefineEnum(GeometryValue);
 
 void LocationBind(LibraryBuilder& builder, BoundType* type)
 {
@@ -133,6 +134,7 @@ LightningDefineStaticLibrary(EngineLibrary)
   LightningInitializeEnum(TimeMode);
   LightningInitializeEnum(WindowState);
   LightningInitializeEnum(WindowStyleFlags);
+  LightningInitializeEnum(GeometryValue);
 
   // Arrays
   PlasmaInitializeArrayTypeAs(Array<ContentLibraryReference>, "ContentLibraryReferenceArray");
