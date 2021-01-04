@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "MaskedNormals"
+		var ResourceId = 0x5fac27864c166824
+	}
+}

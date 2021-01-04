@@ -1,0 +1,54 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct MaskedNormals
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [Input] var NormalMaskMap : SampledImage2d;
+    [Input] var NormalR : SampledImage2d;
+    [Input] var NormalRValue : Real = 1.0;
+    [Input] var NormalG : SampledImage2d;
+    [Input] var NormalGValue : Real = 1.0;
+    [Input] var NormalB : SampledImage2d;
+    [Input] var NormalBValue : Real = 1.0;
+    [Input] var NormalA : SampledImage2d;
+    [Input] var NormalAValue : Real = 1.0;
+
+    [FragmentInput][StageInput][Output] var ViewNormal : Real3;
+    [StageInput] var ViewTangent : Real3;
+    [StageInput] var ViewBitangent : Real3;
+
+    [Input] var Bumpiness : Real = 1.0;
+
+    // Plasma generates tangents/bitangents in the increasing u/v directions
+    // Normal maps are assumed to use increasing red/green for the right/up directions
+    // If a normal map is authored differently, these properties will invert
+    // the respective axis so that surfaces point in the correct direction
+    [Input] var RedLeft : Boolean = false;
+    [Input] var GreenDown : Boolean = false;
+
+    function Main()
+    {
+        var colorMask = this.NormalMaskMap.Sample(this.Uv);
+
+        var normal = Math.Normalize(this.ViewNormal);
+        var tangent = Math.Normalize(this.ViewTangent);
+        var bitangent = Math.Normalize(this.ViewBitangent);
+        
+        var normalSample = Real2.Zero;
+        normalSample += this.NormalG.Sample(this.Uv).XY * this.NormalGValue * colorMask.Y;
+        normalSample += this.NormalB.Sample(this.Uv).XY * this.NormalBValue * colorMask.Z;
+        normalSample += this.NormalR.Sample(this.Uv).XY * this.NormalRValue * colorMask.X;
+        normalSample += this.NormalA.Sample(this.Uv).XY * this.NormalAValue * colorMask.W;
+        
+        normalSample = (normalSample - Real2(128.0 / 255.0)) * 2.0;
+        
+        // Invert tangent directions if needed
+        var xSign = Math.Lerp(1.0, -1.0, this.RedLeft as Real);
+        var ySign = Math.Lerp(-1.0, 1.0, this.GreenDown as Real);
+
+        // Add tangent directions to perturb the surface normal
+        normal += (tangent * normalSample.X * xSign + bitangent * normalSample.Y * ySign) * this.Bumpiness;
+        this.ViewNormal = Math.Normalize(normal);
+    }
+}
