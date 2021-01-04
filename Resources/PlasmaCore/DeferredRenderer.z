@@ -68,10 +68,16 @@ class DeferredRenderer : LightningComponent
     this.FirstFrame = true;
     
     Plasma.Connect(this.Owner, Events.RenderTasksUpdate, this.OnRenderTasksUpdate);
-  
+    Plasma.Connect(this.Space, Events.DebugViewMode, this.OnDebugViewChange);
+
     
     //this.SSRTexture = Texture.CreateRuntime();
     //this.SSRTexture.Upload(TextureFormat.RGBA8, viewportSize.X, viewportSize.Y);
+  } 
+   
+  function OnDebugViewChange(event: DebugViewEvent)
+  {
+    this.GeometryDebug = event.Mode as GeometryValue;
   }
   
   function ResizeBuffers(event : RenderTasksEvent)
