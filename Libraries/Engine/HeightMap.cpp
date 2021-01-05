@@ -232,6 +232,7 @@ void HeightMap::Initialize(CogInitializer& initializer)
 
   // Get a pointer to the transform
   mTransform = GetOwner()->has(Transform);
+  DoNotify("Experimental Feature", "Heightmap feature is experimental... Do not use in production...", "Error");
 }
 
 HeightMapSource* HeightMap::GetSource()
