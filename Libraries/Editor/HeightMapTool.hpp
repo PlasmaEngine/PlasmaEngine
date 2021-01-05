@@ -343,7 +343,8 @@ DeclareEnum2(CellIndexType, Local, Absoulte)
     ///     </description>
     ///   </command>
     /// </Commands>
-    class HeightMapTool : public Component
+
+class HeightMapTool : public Component
 {
 public:
   /// Meta Initialization.
