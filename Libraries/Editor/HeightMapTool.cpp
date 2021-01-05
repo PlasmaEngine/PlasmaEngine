@@ -4,7 +4,7 @@
 namespace Plasma
 {
 
-static const bool cAllowUndo = true;
+static const bool cAllowUndo = false;
 
 /// The default name we give any created height maps
 const String cHeightMapName("HeightMap");
