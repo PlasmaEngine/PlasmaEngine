@@ -1,0 +1,9 @@
+// MIT Licensed (see LICENSE.md).
+
+class PostProcessFog : LightningComponent
+{
+  
+  function AddFogRenderTask(event : RenderTasksEvent)
+  {
+  }
+}

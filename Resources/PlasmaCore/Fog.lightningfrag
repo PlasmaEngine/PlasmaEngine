@@ -1,0 +1,36 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel][PostProcess]
+struct Fog
+{
+  [StageInput] var Uv : Real2;
+  
+  [Input] var GBuffer0 : SampledImage2d;
+  [Input] var GBuffer1 : SampledImage2d;
+  
+  [Input] var FogStat : Real;
+  [Input] var FogDensity : Real;
+  [Input] var FogColor : Real4 = Real4(1, 0, 0, 1);
+
+  [Input] var FrustumFector : Real3;
+  [Input] var FrustumNearPosition : Real3;
+
+  [Output] var Target0 : Real4;
+
+  function Main()
+  {
+    var sample0 = this.GBuffer0.Sample(this.Uv);
+    var sample1 = this.GBuffer1.Sample(this.Uv);
+    
+    var albedo = GeometryPass.GetAlbedo(sample1);
+    var depth = GeometryPass.GetDepth(sample0);
+    
+    var worldPos = this.FrustumFector * depth;
+    depth = Math.Max(0, depth - this.FogStat);
+    
+    var fog = Math.Exp2(-this.FogDensity * depth);
+    
+    
+    this.Target0 = Math.Lerp(this.FogColor, Real4(albedo, 1), fog);
+  }
+}
