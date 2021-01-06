@@ -623,6 +623,20 @@ bool SimpleLightningShaderIRGenerator::ComposeShader(LightningShaderIRCompositor
   return success;
 }
 
+  bool SimpleLightningShaderIRGenerator::ComposeComputeShader(LightningShaderIRCompositor::ShaderDefinition& shaderDef, ShaderCapabilities& capabilities, LightningShaderIRCompositor::ComputeShaderProperties* computeProperties)
+{
+  LightningShaderIRCompositor compositor;
+  EventConnect(&compositor, Events::TranslationError, &SimpleLightningShaderIRGenerator::OnForwardEvent, this);
+  EventConnect(&compositor, Lightning::Events::CompilationError, &SimpleLightningShaderIRGenerator::OnForwardEvent, this);
+  EventConnect(&compositor, Events::ValidationError, &SimpleLightningShaderIRGenerator::OnForwardEvent, this);
+
+  bool success = compositor.CompositeCompute(shaderDef, computeProperties, capabilities, mSettings);
+
+  mShaderDefinitionMap[shaderDef.mShaderName] = shaderDef;
+
+  return success;
+}
+
 void SimpleLightningShaderIRGenerator::AddShaderCode(StringParam shaderCode, StringParam fileName, void* userData)
 {
   mShaderProject.AddCodeFromString(shaderCode, fileName, userData);

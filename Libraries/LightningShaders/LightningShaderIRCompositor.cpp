@@ -49,8 +49,22 @@ LightningShaderIRCompositor::ShaderDefinition::ShaderDefinition()
     mResults[i].mFragmentType = (FragmentType::Enum)i;
 }
 
+  //-------------------------------------------------------------------ComputeShaderProperties
+  LightningShaderIRCompositor::ComputeShaderProperties::ComputeShaderProperties()
+{
+  mLocalSizeX = mLocalSizeY = mLocalSizeZ = 1;
+}
+
+  LightningShaderIRCompositor::ComputeShaderProperties::ComputeShaderProperties(int localSizeX, int localSizeY, int localSizeZ)
+{
+  mLocalSizeX = localSizeX;
+  mLocalSizeY = localSizeY;
+  mLocalSizeZ = localSizeZ;
+}
+
 LightningShaderIRCompositor::LightningShaderIRCompositor()
 {
+  mComputeShaderProperties = nullptr;
 }
 
 bool LightningShaderIRCompositor::Composite(ShaderDefinition& shaderDef,
@@ -106,13 +120,12 @@ bool LightningShaderIRCompositor::Composite(ShaderDefinition& shaderDef,
   return true;
 }
 
-bool LightningShaderIRCompositor::CompositeCompute(ShaderDefinition& shaderDef,
-                                               const ShaderCapabilities& capabilities,
-                                               LightningShaderSpirVSettingsRef& settings)
+bool LightningShaderIRCompositor::CompositeCompute(ShaderDefinition& shaderDef, ComputeShaderProperties* computeProperties, const ShaderCapabilities& capabilities, LightningShaderSpirVSettingsRef& settings)
 {
   mSettings = settings;
   mCapabilities = capabilities;
   mShaderCompositeName = shaderDef.mShaderName;
+  mComputeShaderProperties = computeProperties;
 
   Array<LightningShaderIRType*> fragments;
   // Find all compute fragments
@@ -125,8 +138,8 @@ bool LightningShaderIRCompositor::CompositeCompute(ShaderDefinition& shaderDef,
       fragments.PushBack(shaderType);
   }
 
-  // Compute shader compositing only works on one fragment
-  if (fragments.Empty() || fragments.Size() > 1)
+  // Make sure there are fragments to composite together
+  if(fragments.Empty())
     return false;
 
   // Create 3 stages (cpu, compute, gpu). This is required for re-using a lot of
@@ -1045,6 +1058,16 @@ void LightningShaderIRCompositor::GenerateComputeLightningComposite(StageLinking
   Lightning::ComputeFragmentUserData* computeUserData =
       computeFragmentType->mLightningType->Has<Lightning::ComputeFragmentUserData>();
 
+  int localSizeX = computeUserData->mLocalSizeX;
+  int localSizeY = computeUserData->mLocalSizeY;
+  int localSizeZ = computeUserData->mLocalSizeZ;
+  if(mComputeShaderProperties != nullptr)
+  {
+    localSizeX = mComputeShaderProperties->mLocalSizeX;
+    localSizeY = mComputeShaderProperties->mLocalSizeY;
+    localSizeZ = mComputeShaderProperties->mLocalSizeZ;
+  }
+
   // Make the name for the fragment. For uniqueness, append the stage's name to
   // the given composite name.
   String stageName = FragmentType::Names[currentStage->mFragmentType];
@@ -1052,10 +1075,9 @@ void LightningShaderIRCompositor::GenerateComputeLightningComposite(StageLinking
   // Emit the struct declaration (attributes followed by name)
   builder << "[" << stageName;
   // Emit the local size attributes (controls local workgroup size)
-  builder << "("
-          << "localSizeX : " << ToString(computeUserData->mLocalSizeX) << ",";
-  builder << "localSizeY : " << ToString(computeUserData->mLocalSizeY) << ",";
-  builder << "localSizeZ : " << ToString(computeUserData->mLocalSizeZ) << ")";
+  builder << "(" << nameSettings.mComputeLocalSizeXParam << " : " << ToString(localSizeX) << ",";
+  builder << nameSettings.mComputeLocalSizeYParam << " : " << ToString(localSizeY) << ",";
+  builder << nameSettings.mComputeLocalSizeZParam << " : " << ToString(localSizeZ) << ")";
   builder << "]";
   for (size_t i = 0; i < extraAttributes.Size(); ++i)
     builder.DeclareAttribute(*extraAttributes.GetAtIndex(i));
