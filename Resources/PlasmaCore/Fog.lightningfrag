@@ -12,9 +12,6 @@ struct Fog
   [Input] var FogDensity : Real = 2;
   [Input] var FogColor : Real4 = Real4(1, 0, 0, 1);
 
-  [Input] var FrustumFactor : Real3;
-  [Input] var FrustumNearPosition : Real3;
-
   [Output] var Target0 : Real4;
 
   function Main()
@@ -23,8 +20,6 @@ struct Fog
     var screenSample = this.ScreenBuffer.Sample(this.Uv);
     
     var depth = GeometryPass.GetDepth(sample0);
-    
-  //  var worldPos = this.FrustumFactor * depth;
     depth = Math.Max(0, depth - this.FogStat);
     
     var fog = Math.Exp2(-this.FogDensity * depth);
