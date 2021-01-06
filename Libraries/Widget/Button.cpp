@@ -44,9 +44,7 @@ LightningDefineType(ButtonBase, builder, type)
 {
 }
 
-ButtonBase::ButtonBase(Composite* parent, StringParam styleClass) :
-    Composite(parent),
-    mToolTipColor(ToolTipColorScheme::Default)
+ButtonBase::ButtonBase(Composite* parent, StringParam styleClass) : Composite(parent)
 {
   mDefSet = mDefSet->GetDefinitionSet(styleClass);
 
@@ -62,7 +60,6 @@ ButtonBase::ButtonBase(Composite* parent, StringParam styleClass) :
   ConnectThisTo(this, Events::MouseExitHierarchy, OnMouseExit);
   ConnectThisTo(this, Events::LeftMouseDown, OnMouseDown);
   ConnectThisTo(this, Events::LeftMouseUp, OnMouseUp);
-  ConnectThisTo(this, Events::MouseHover, OnHover);
   ConnectThisTo(this, Events::LeftClick, OnMouseClick);
   ConnectThisTo(this, Events::KeyDown, OnKeyDown);
 
@@ -73,18 +70,12 @@ ButtonBase::ButtonBase(Composite* parent, StringParam styleClass) :
   mMouseOver = false;
   mTabFocusStop = true;
   mIgnoreInput = false;
-  mShowToolTip = true;
 
   mBorderColor = ToByteColor(ButtonUi::BorderColor);
   mFocusBorderColor = ToByteColor(ButtonUi::FocusBorderColor);
   mBackgroundColor = ToByteColor(ButtonUi::DefaultColor);
   mBackgroundHoverColor = ToByteColor(ButtonUi::HoverColor);
   mBackgroundClickedColor = ToByteColor(ButtonUi::ClickedColor);
-}
-
-void ButtonBase::SetToolTip(StringParam text)
-{
-  mToolTipText = text;
 }
 
 void ButtonBase::AddCommand(Command* command)
@@ -150,46 +141,6 @@ void ButtonBase::OnMouseUp(MouseEvent* event)
   MarkAsNeedsUpdate();
 }
 
-void ButtonBase::OnHover(MouseEvent* event)
-{
-  if (mShowToolTip)
-  {
-    ToolTip* toolTip = new ToolTip(this);
-
-    bool hasText = false;
-    forRange (Command* command, mCommands.All())
-    {
-      hasText |= (!command->ToolTip.Empty());
-      if (hasText)
-        toolTip->AddText(command->ToolTip, Vec4(1));
-    }
-
-    // Check if there's tooltip text not associated with commands.
-    if (!hasText && !mToolTipText.Empty())
-    {
-      hasText = true;
-      toolTip->AddText(mToolTipText, Vec4(1));
-    }
-
-    if (!hasText)
-    {
-      toolTip->Destroy();
-    }
-    else
-    {
-      toolTip->SetColorScheme(mToolTipColor);
-
-      ToolTipPlacement placement;
-      placement.SetScreenRect(GetScreenRect());
-      placement.SetPriority(IndicatorSide::Bottom, IndicatorSide::Right, IndicatorSide::Left, IndicatorSide::Top);
-      toolTip->SetArrowTipTranslation(placement);
-      // Temporary to fix jitter when the tool pops up
-      toolTip->UpdateTransform();
-      mToolTip = toolTip;
-    }
-  }
-}
-
 void ButtonBase::OnCommandStateChange(ObjectEvent* event)
 {
   MarkAsNeedsUpdate();
@@ -241,7 +192,7 @@ void ButtonBase::Activate()
 {
   mToolTip.SafeDestroy();
   mShowToolTip = false;
-
+  
   ObjectEvent e(this);
   GetDispatcher()->Dispatch(Events::ButtonPressed, &e);
 

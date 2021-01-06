@@ -58,8 +58,10 @@ LightningDefineType(Composite, builder, type)
 Composite::Composite(Composite* parent, AttachType::Enum attachType) : Widget(parent, attachType)
 {
   mLayout = nullptr;
+  mShowToolTip = true;
   mMinSize = Vec2(10, 10);
   DebugValidate();
+  ConnectThisTo(this, Events::MouseHover, OnHoverToolTip);
 }
 
 Composite::~Composite()
@@ -419,6 +421,45 @@ Widget* Find(StringParam name, UiTraversal::Enum traversalType, size_t& index, W
   }
 
   return nullptr;
+}
+
+void Composite::SetToolTip(String text)
+{
+  mToolTipText = text;
+}
+
+void Composite::OnHoverToolTip(MouseEvent* e)
+{
+  if (mShowToolTip)
+  {
+    ToolTip* toolTip = new ToolTip(this);
+
+    bool hasText = false;
+
+    // Check if there's tooltip text not associated with commands.
+    if (!hasText && !mToolTipText.Empty())
+    {
+      hasText = true;
+      toolTip->AddText(mToolTipText, Vec4(1));
+    }
+
+    if (!hasText)
+    {
+      toolTip->Destroy();
+    }
+    else
+    {
+      toolTip->SetColorScheme(mToolTipColor);
+
+      ToolTipPlacement placement;
+      placement.SetScreenRect(GetScreenRect());
+      placement.SetPriority(IndicatorSide::Bottom, IndicatorSide::Right, IndicatorSide::Left, IndicatorSide::Top);
+      toolTip->SetArrowTipTranslation(placement);
+      // Temporary to fix jitter when the tool pops up
+      toolTip->UpdateTransform();
+      mToolTip = toolTip;
+    }
+  }
 }
 
 // Find any child widget by name

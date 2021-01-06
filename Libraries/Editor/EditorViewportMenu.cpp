@@ -116,6 +116,7 @@ EditorViewportMenu::EditorViewportMenu(EditorViewport* viewport) : Composite(vie
   mCameraSpeedSlider->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(64));
   mCameraSpeedSlider->SetRange(.1f, 10);
   mCameraSpeedSlider->SetValue(1, false);
+  mCameraSpeedSlider->SetToolTip("Editor camera movement speed");
   ConnectThisTo(mCameraSpeedSlider, Events::SliderChanged, OnCameraSpeedChanged);
   
   ConnectThisTo(this, Events::MouseEnter, OnMouseEnter);

@@ -60,6 +60,8 @@ public:
   static void Shutdown();
 };
 
+DeclareEnum6(ToolTipColorScheme, Default, Gray, Red, Yellow, Green, Orange);
+  
 } // namespace Plasma
 
 #include "WidgetMath.hpp"

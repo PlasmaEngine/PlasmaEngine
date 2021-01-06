@@ -97,6 +97,17 @@ private:
   static void InternalDetach(Composite* parent, Widget* child);
   static void InternalAttach(Composite* parent, Widget* child);
   bool mIsUpdatingTransform = false;
+
+  // Tooltip
+public:
+  void SetToolTip(String text);
+
+  bool mShowToolTip;
+  String mToolTipText;
+  ToolTipColorScheme::Enum mToolTipColor = ToolTipColorScheme::Default;
+  HandleOf<Widget> mToolTip;
+
+  void OnHoverToolTip(MouseEvent* e);
 };
 
 DeclareEnum3(UiTraversal, DirectDescendantsOnly, DepthFirst, BreadthFirst);
