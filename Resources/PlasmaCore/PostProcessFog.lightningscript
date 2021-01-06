@@ -3,7 +3,37 @@
 class PostProcessFog : LightningComponent
 {
   
-  function AddFogRenderTask(event : RenderTasksEvent)
+  [Property] var EditorCamera : CogPath;
+  [Property] var GameCamera : CogPath;
+  
+  [Property] var FogStart : Real = 1.0;
+  [Property] var FogDensity : Real = 10.0;
+  [Property] var FogColor : Real4 = Real4(0.5, 0.5, 0.5, 1.0);
+  
+  function AddFogRenderTask(event : RenderTasksEvent, gBuffer0 : RenderTarget, gBuffer1 : RenderTarget, output : RenderTarget)
   {
+    // Assign camera to local variable.
+    var camera : Camera = null;
+    if(this.GameSession.IsEditorMode())
+      camera = this.EditorCamera.Camera;
+    else
+      camera = this.GameCamera.Camera;
+      
+      
+    // We need a camera to render.
+    if(camera == null)
+      return;
+      
+    // Perform Fog pass
+    var fogPass = Fog();
+    fogPass.GBuffer0 = gBuffer0.Texture;
+    fogPass.ScreenBuffer = output.Texture;
+    fogPass.FrustumFactor = camera.WorldTranslation;
+    fogPass.FrustumNearPosition = camera.WorldTranslation;
+    fogPass.FogStat = this.FogStart / 10;
+    fogPass.FogDensity = this.FogDensity;
+    fogPass.FogColor = this.FogColor;
+    
+    event.AddRenderTaskPostProcess(output, fogPass,"Fog");
   }
 }
