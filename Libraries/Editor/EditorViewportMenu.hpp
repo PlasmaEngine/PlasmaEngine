@@ -50,6 +50,8 @@ public:
   /// Camera stuff
   void OnCameraButtonPressed(Event* e);
   
+  void OnCameraSpeedChanged(Event* e);
+  
   void OnDebugButtonPressed(Event* e);
 
   void OnGridButtonPressed(Event* e);
@@ -74,7 +76,12 @@ public:
   /// Grid toggle.
   ToggleIconButton* mGridButton;
 
+  /// Rendering debug button.
   ViewportMenuButton* mDebugButton;
+
+  /// Editor camera speed slider.
+  Element* mRunningMan;
+  Slider* mCameraSpeedSlider;
   
   Element* mBackground;
 };

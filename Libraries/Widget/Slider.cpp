@@ -353,6 +353,9 @@ void Slider::UpdateText()
 
 void Slider::OnMouseDown(MouseEvent* e)
 {
+  mToolTip.SafeDestroy();
+  mShowToolTip = false;
+  
   ObjectEvent eventToSend(this);
   GetDispatcher()->Dispatch(Events::SliderManipulationStarted, &eventToSend);
 
@@ -362,6 +365,9 @@ void Slider::OnMouseDown(MouseEvent* e)
 
 void Slider::OnRightClick(MouseEvent* e)
 {
+  mToolTip.SafeDestroy();
+  mShowToolTip = false;
+  
   StartEditText();
 }
 
@@ -478,6 +484,7 @@ void Slider::OnTextFocusLost(Event* e)
 
 void Slider::OnFocusLost(Event* e)
 {
+  mShowToolTip = true;
   if (mValueNudged)
     CommitValue(mValue);
 }

@@ -7,7 +7,8 @@ namespace Plasma
     {
         DeclareEvent(ScriptInitialize);
         DeclareEvent(DebugViewMode);
-    } // namespace Eventsd
+        DeclareEvent(ViewportCameraSettings);
+    } // namespace Events
 
     class DebugViewEvent : public Event
     {
@@ -18,5 +19,17 @@ namespace Plasma
         ~DebugViewEvent() { }
         GeometryValue::Enum mMode = GeometryValue::Enum::None;
     };
+    
+    class ViewportCameraEvent : public Event
+    {
+    public:
+        LightningDeclareType(ViewportCameraEvent, TypeCopyMode::ReferenceType);
+        ViewportCameraEvent(float speed): mSpeed(speed)  { }
+        ViewportCameraEvent()  { }
+        ~ViewportCameraEvent() { }
+        
+        float mSpeed = 1.0f;
+    };
+    
 
 } // Namespace Plasma

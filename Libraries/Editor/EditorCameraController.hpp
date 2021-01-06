@@ -124,6 +124,8 @@ public:
   EditorMode::Enum GetEditMode();
   void SetEditMode(EditorMode::Enum mode);
 
+  void CameraSettingsChanged(ViewportCameraEvent* camEvent);
+  
   real mMinCameraSize;
   real mMaxCameraSize;
 

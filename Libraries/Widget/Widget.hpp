@@ -17,8 +17,8 @@ struct ColorTransform
   Vec4 ColorMultiply;
 };
 
+DeclareEnum6(ToolTipColorScheme, Default, Gray, Red, Yellow, Green, Orange);
 DeclareEnum2(FocusDirection, Forward, Backwards);
-
 DeclareEnum2(DisplayOrigin, TopLeft, Center);
 
 DeclareBitField4(DisplayFlags,
