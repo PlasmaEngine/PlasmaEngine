@@ -18,6 +18,6 @@ class PostProcessFog : LightningComponent
     fogPass.FogDensity = this.FogDensity;
     fogPass.FogColor = this.FogColor;
     
-    event.AddRenderTaskPostProcess(output, fogPass,"Fog");
+    event.AddRenderTaskPostProcess(output, fogPass, "Fog");
   }
 }
