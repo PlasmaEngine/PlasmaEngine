@@ -42,4 +42,19 @@ public:
   void OnFilesSelected(OsFileSelection* fileSelection);
 };
 
+ class ImportJob : public BackgroundTaskJob
+ {
+ public:
+     typedef ImportJob LightningSelf;
+
+     ImportJob(ImportOptions& options);
+
+     /// Job Interface.
+     void Execute() override;
+     int Cancel() override;
+
+     void UpdateTaskProgress(float percentComplete, StringParam progressText);
+     ImportOptions& mOptions;
+ };
+
 } // namespace Plasma

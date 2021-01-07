@@ -717,7 +717,7 @@ ContentSystem::BuildContentItems(Status& status, ContentItemArray& toBuild, Cont
 {
   ZoneScoped;
   ProfileScopeFunctionArgs(library->Name);
-  PL::gEngine->LoadingStart();
+  //PL::gEngine->LoadingStart();
 
   ResourcePackage* package = new ResourcePackage();
   package->Name = library->Name;
@@ -734,8 +734,8 @@ ContentSystem::BuildContentItems(Status& status, ContentItemArray& toBuild, Cont
     // Process from this contentItem down.
     ContentItem* contentItem = toBuild[i];
     static const String cProcessing("Processing");
-    PL::gEngine->LoadingUpdate(
-        cProcessing, library->Name, contentItem->Filename, ProgressType::Normal, (float)(i + 1) / toBuild.Size());
+    //PL::gEngine->LoadingUpdate(
+    //        cProcessing, library->Name, contentItem->Filename, ProgressType::Normal, (float)(i + 1) / toBuild.Size());
 
     contentItem->BuildContentItem(useJobs);
 
@@ -759,7 +759,7 @@ ContentSystem::BuildContentItems(Status& status, ContentItemArray& toBuild, Cont
   if (!allBuilt)
     status.SetFailed(String::Format("Failed to build content library '%s'", library->Name.c_str()));
 
-  PL::gEngine->LoadingFinish();
+  //PL::gEngine->LoadingFinish();
   return package;
 }
 

@@ -59,65 +59,10 @@ void RunGroupImport(ImportOptions& options)
     return;
   }
 
-  ContentLibrary* library = options.mLibrary;
-
-  Array<ContentItem*> contentToBuild;
-
-  Array<String> filesToExport(options.mFiles);
-  if (options.mConflictOptions && options.mConflictOptions->GetAction() == ConflictAction::Replace)
-    filesToExport.Append(options.mConflictedFiles.All());
-
-  // For every file imported
-  for (uint fileIndex = 0; fileIndex < filesToExport.Size(); ++fileIndex)
-  {
-    String fullPath = filesToExport[fileIndex];
-    String filename = StripResourceExtension(FilePath::GetFileName(fullPath));
-    filename = SanitizeContentFilename(filename);
-    String storedfilename = FilePath::Combine(library->SourcePath, filename);
-
-    // Add the content item
-    AddContentItemInfo addContent;
-    addContent.FileName = filename;
-    addContent.Library = library;
-    addContent.ExternalFile = fullPath;
-    addContent.OnContentFileConflict = ContentFileConflict::Replace;
-    addContent.Options = &options;
-
-    Status addItem;
-
-    ContentItem* newContentItem = PL::gContentSystem->AddContentItemToLibrary(addItem, addContent);
-
-    // If the content add succeeded
-    if (addItem.Succeeded())
-      contentToBuild.PushBack(newContentItem);
-    else
-      DoNotifyError("Failed Import", addItem.Message);
-  }
-
-  // Now that all the content has been added. Build and load them for use.
-
-  // Build all new content items
-  ResourceLibrary* resourceLibrary = PL::gResources->GetResourceLibrary(library->Name);
-
-  Status status;
-  HandleOf<ResourcePackage> packageHandle =
-      PL::gContentSystem->BuildContentItems(status, contentToBuild, library, false);
-  ResourcePackage* package = packageHandle;
-  DoNotifyStatus(status);
-
-  // Load all resource generated into the active resource library
-  PL::gResources->ReloadPackage(resourceLibrary, package);
-
-  // Do editor side importing
-  DoEditorSideImporting(package, &options);
-
-  // Compile all scripts
-  LightningManager::GetInstance()->TriggerCompileExternally();
-
-  if (!contentToBuild.Empty() && status.Succeeded())
-    DoNotify("Content Imported", "Content has been added to the project", "BigPlus");
-  else if (status.Failed())
-    DoNotify("Content Import", "Content failed to be added to the project", "Error");
+  ImportJob* job = new ImportJob(options);
+  BackgroundTask* task = PL::gBackgroundTasks->CreateTask(job);
+  task->mName = "Import Asset";
+  PL::gJobs->AddJob(job);
 }
 
 void GroupImport()
@@ -355,4 +300,83 @@ void ImportCallback::OnFilesSelected(OsFileSelection* fileSelection)
   delete this;
 }
 
+ImportJob::ImportJob(ImportOptions& options) : mOptions(options)
+{
+  
+}
+
+void ImportJob::Execute()
+{
+    ContentLibrary* library = mOptions.mLibrary;
+
+  Array<ContentItem*> contentToBuild;
+
+  Array<String> filesToExport(mOptions.mFiles);
+  if (mOptions.mConflictOptions && mOptions.mConflictOptions->GetAction() == ConflictAction::Replace)
+    filesToExport.Append(mOptions.mConflictedFiles.All());
+
+  // For every file imported
+  for (uint fileIndex = 0; fileIndex < filesToExport.Size(); ++fileIndex)
+  {
+    String fullPath = filesToExport[fileIndex];
+    String filename = StripResourceExtension(FilePath::GetFileName(fullPath));
+    filename = SanitizeContentFilename(filename);
+    String storedfilename = FilePath::Combine(library->SourcePath, filename);
+
+    // Add the content item
+    AddContentItemInfo addContent;
+    addContent.FileName = filename;
+    addContent.Library = library;
+    addContent.ExternalFile = fullPath;
+    addContent.OnContentFileConflict = ContentFileConflict::Replace;
+    addContent.Options = &mOptions;
+
+    Status addItem;
+
+    ContentItem* newContentItem = PL::gContentSystem->AddContentItemToLibrary(addItem, addContent);
+
+    // If the content add succeeded
+    if (addItem.Succeeded())
+      contentToBuild.PushBack(newContentItem);
+    else
+      DoNotifyError("Failed Import", addItem.Message);
+  }
+
+  // Now that all the content has been added. Build and load them for use.
+
+  // Build all new content items
+  ResourceLibrary* resourceLibrary = PL::gResources->GetResourceLibrary(library->Name);
+
+  Status status;
+  HandleOf<ResourcePackage> packageHandle =
+      PL::gContentSystem->BuildContentItems(status, contentToBuild, library, false);
+  ResourcePackage* package = packageHandle;
+  DoNotifyStatus(status);
+
+  // Load all resource generated into the active resource library
+  PL::gResources->ReloadPackage(resourceLibrary, package);
+
+  // Do editor side importing
+  DoEditorSideImporting(package, &mOptions);
+
+  // Compile all scripts
+  LightningManager::GetInstance()->TriggerCompileExternally();
+
+  if (!contentToBuild.Empty() && status.Succeeded())
+    DoNotify("Content Imported", "Content has been added to the project", "BigPlus");
+  else if (status.Failed())
+    DoNotify("Content Import", "Content failed to be added to the project", "Error");
+
+  UpdateTaskProgress(100, "Finished");
+}
+
+int ImportJob::Cancel()
+{
+  return 0;
+}
+
+void ImportJob::UpdateTaskProgress(float percentComplete, StringParam progressText)
+{
+  UpdateProgress("Import Asset", percentComplete, progressText);
+}
 } // namespace Plasma
