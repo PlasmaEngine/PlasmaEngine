@@ -1,9 +1,9 @@
 // MIT Licensed (see LICENSE.md).
 #pragma once
+#include "Engine/EngineEvents.hpp"
 
 namespace Plasma
-{
-
+{   
 void RunGroupImport(ImportOptions& options);
 void GroupImport();
 void OpenGroupImport(Array<String>& files);
@@ -47,14 +47,15 @@ public:
  public:
      typedef ImportJob LightningSelf;
 
-     ImportJob(ImportOptions& options);
+     ImportJob(ImportOptions* options);
 
      /// Job Interface.
      void Execute() override;
      int Cancel() override;
 
      void UpdateTaskProgress(float percentComplete, StringParam progressText);
-     ImportOptions& mOptions;
+     ImportOptions* mOptions;
+     void OnImportFinished(PostImportEvent* e);
  };
 
 } // namespace Plasma

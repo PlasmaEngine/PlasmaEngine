@@ -3,6 +3,13 @@
 
 namespace Plasma
 {
+namespace Events
+{
+  DeclareEvent(PostImport);
+}
+  
+class ImportOptions;
+
 class TextEvent : public Event
 {
 public:
@@ -45,5 +52,28 @@ public:
   }
   String mTaskName;
 };
+
+  class PostImportEvent : public Event
+  {
+  public:
+    LightningDeclareType(PostImportEvent, TypeCopyMode::ReferenceType);
+    PostImportEvent(ResourceLibrary* library, ResourcePackage* package, Array<ContentItem*>& content_to_build, Status status, ImportOptions* options)
+      : library(library),
+        package(package),
+        contentToBuild(content_to_build),
+        status(status),
+        mOptions(options)
+    {
+    }
+    
+    PostImportEvent();
+    ~PostImportEvent() { }
+
+    ResourceLibrary* library;
+    ResourcePackage* package;
+    Array<ContentItem*> contentToBuild;
+    Status status;
+    ImportOptions* mOptions;
+  };
 
 } // namespace Plasma

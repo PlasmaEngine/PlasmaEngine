@@ -6,7 +6,13 @@ namespace Plasma
 namespace Events
 {
 DefineEvent(ScriptInitialize);
+DefineEvent(PostImport);
 } // namespace Events
+
+LightningDefineType(PostImportEvent, builder, type)
+{
+
+}
 
 LightningDefineType(TextEvent, builder, type)
 {
