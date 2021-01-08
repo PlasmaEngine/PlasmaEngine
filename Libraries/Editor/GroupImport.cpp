@@ -371,8 +371,8 @@ void ImportJob::Execute()
   
   ResourcePackage* package = packageHandle;
   DoNotifyStatus(status);
-  
-  UpdateTaskProgress(1, "Finished");
+
+  UpdateTaskProgress(1.0, "Finished Importing");
   
   Event* e = new PostImportEvent (mJobProperties.mResourceLibrary, package, mJobProperties.mContentToBuild, status, mJobProperties.mOptions);
   PL::gDispatch->Dispatch(PL::gBackgroundTasks, Events::PostImport, e);
@@ -416,9 +416,9 @@ HandleOf<ResourcePackage> ImportJob::BuildContentItems(Status& status, ContentIt
   {
     // Process from this contentItem down.
     ContentItem* contentItem = toBuild[i];
-    static const String cProcessing("Processing");
+    static const String cProcessing(String::Format("Processing : %s", contentItem->Filename));
     
-    UpdateTaskProgress((float)(i + 1) / toBuild.Size(), "Processing");
+    UpdateTaskProgress((float)(i + 1) / toBuild.Size(), "Processing : " + contentItem->Filename);
 
     contentItem->BuildContentItem(false);
 
@@ -432,6 +432,7 @@ HandleOf<ResourcePackage> ImportJob::BuildContentItems(Status& status, ContentIt
 
     contentItem->BuildListing(package->Resources);
 
+    
     // Don't do this in the thread (do it after).
     if (contentItem->mNeedsEditorProcessing)
       package->EditorProcessing.PushBack(contentItem);
