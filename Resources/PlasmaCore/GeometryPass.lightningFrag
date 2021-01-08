@@ -40,9 +40,14 @@ struct GeometryPass
     var metallicSpecular = Utility.PackX(Math.Saturate(this.Metallic));
     metallicSpecular += Utility.PackY(Math.Saturate(this.Specular));
     
+    if(Math.Max(Math.Max(this.Emissive.X, this.Emissive.Y), this.Emissive.Z) > 0)
+      this.Albedo = this.Emissive;
+      
+    var emissivePower = Math.Length(this.Emissive);
+    
     this.Target0 = Real4(this.ViewNormal.XY, -this.ViewPosition.Z / this.FarPlane, this.Roughness);
     this.Target1 = Real4(this.Albedo, metallicSpecular);
-    this.Target2 = Real4(this.Emissive, this.AO);
+    this.Target2 = Real4(0,0,emissivePower, this.AO);
   }
   
   [Static]
@@ -86,9 +91,9 @@ struct GeometryPass
   }
   
   [Static]
-  function GetEmissive(geometrySample2 : Real4) : Real3
+  function GetEmissivePower(geometrySample2 : Real4) : Real
   {
-    return geometrySample2.XYZ;
+    return geometrySample2.Z;
   }
   
   [Static]
@@ -144,7 +149,7 @@ struct GeometryInput
   [Output] var GeoMetallic : Real;
   [Output] var GeoSpecular : Real;
   [Output] var GeoPosition : Real3;
-  [Output] var GeoEmissive : Real3;
+  [Output] var GeoEmissive : Real;
   [Output] var GeoAO : Real;
   
   function Main()
@@ -162,7 +167,7 @@ struct GeometryInput
     this.GeoAlbedo = GeometryPass.GetAlbedo(geometrySample1);
     this.GeoMetallic = GeometryPass.GetMetallic(geometrySample1);
     this.GeoSpecular = GeometryPass.GetSpecular(geometrySample1);
-    this.GeoEmissive = GeometryPass.GetEmissive(geometrySample2);
+    this.GeoEmissive = GeometryPass.GetEmissivePower(geometrySample2);
     this.GeoAO = GeometryPass.GetAO(geometrySample2);
     
     this.GeoRoughness = Math.Max(this.GeoRoughness, 0.05);
@@ -206,7 +211,7 @@ struct GeometryDebug
     var albedo = GeometryPass.GetAlbedo(geometrySample1);
     var metallic = GeometryPass.GetMetallic(geometrySample1);
     var specular = GeometryPass.GetSpecular(geometrySample1);
-    var emissive = GeometryPass.GetEmissive(geometrySample2);
+    var emissive = GeometryPass.GetEmissivePower(geometrySample2);
     var ao = GeometryPass.GetAO(geometrySample2);
     
     normal = Math.MultiplyNormal(this.ViewToWorld, normal);
@@ -218,7 +223,7 @@ struct GeometryDebug
     var albedoColor = albedo * (this.ShowAlbedo as Real);
     var metallicColor = metallic.XXX * (this.ShowMetallic as Real);
     var specularColor = specular.XXX * (this.ShowSpecular as Real);
-    var emissiveColor = emissive * (this.ShowEmissive as Real);
+    var emissiveColor = albedo * emissive * (this.ShowEmissive as Real);
     var aoColor = ao.XXX * (this.ShowAO as Real);
     
     var outputColor = normalColor + depthColor + roughnessColor + albedoColor + metallicColor + specularColor + emissiveColor + aoColor;

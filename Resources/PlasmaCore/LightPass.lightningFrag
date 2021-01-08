@@ -14,7 +14,7 @@ struct LightPass
   [FragmentInput] var GeoMetallic : Real;
   [FragmentInput] var GeoSpecular : Real;
   [FragmentInput] var GeoPosition : Real3;
-  [FragmentInput] var GeoEmissive : Real3;
+  [FragmentInput] var GeoEmissive : Real;
   [FragmentInput] var GeoAO : Real;
   
   [Input] var DitherTexture : SampledImage2d;
@@ -62,8 +62,8 @@ struct LightPass
     color = Utility.ApplyDither(color, &this.DitherTexture, screenUv, this.ViewportSize);
     color *= this.LightIntensity;
     
-    if(Math.Length(this.GeoEmissive) > 0)
-      color = this.GeoEmissive;
+    if(this.GeoEmissive > 0)
+      color = this.GeoAlbedo;
     
     this.Target0 = Real4(color, 1.0);
   }
