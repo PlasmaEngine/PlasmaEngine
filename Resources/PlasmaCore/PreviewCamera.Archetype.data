@@ -74,7 +74,7 @@ Cog
 		var ToneMap = true
 		var DirectionalLight = CogPath
 		{
-			var Path = ""
+			var Path = "DirectionalLight"
 			var ErrorOnResolveToNull = false
 			var ErrorOnPathCantCompute = false
 			var ErrorOnDirectLinkFail = false
@@ -132,7 +132,7 @@ Cog
 			DirectionalLight 
 			{
 				var LightColor = Real4{1, 1, 1, 1}
-				var LightIntensity = 2000
+				var LightIntensity = 4
 				var LightTemperature = 6500
 			}
 			Hierarchy 
