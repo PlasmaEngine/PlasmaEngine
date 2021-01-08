@@ -3,6 +3,7 @@ GeometryContent
 {
 	GeometryImport 
 	{
+		var CollapsePivots = false
 		var OriginOffset = Real3{0, 0, 0}
 		var ScaleFactor = 1
 		var ChangeBasis = false
@@ -15,7 +16,7 @@ GeometryContent
 		var GenerateSmoothNormals = false
 		var SmoothingAngleDegreesThreshold = 0
 		var GenerateTangentSpace = true
-		var InvertUvYAxis = true
+		var InvertUvYAxis = false
 		var FlipWindingOrder = false
 		var FlipNormals = false
 		var Meshes = Array
