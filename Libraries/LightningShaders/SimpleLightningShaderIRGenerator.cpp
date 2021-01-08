@@ -16,8 +16,8 @@ void SimplifiedShaderReflectionData::CreateReflectionData(LightningShaderIRLibra
   CreateSimpleOpaqueTypeReflectionData(shaderLibrary, stageDef, passResults);
 }
 
-ShaderResourceReflectionData* SimplifiedShaderReflectionData::FindUniformReflectionData(LightningShaderIRType* fragmentType,
-                                                                                        StringParam propertyName)
+const ShaderResourceReflectionData* SimplifiedShaderReflectionData::FindUniformReflectionData(const LightningShaderIRType* fragmentType,
+                                                                                        StringParam propertyName) const
 {
   String fragmentName = fragmentType->mMeta->mLightningName;
   // Find the fragment's lookup data
@@ -36,7 +36,7 @@ ShaderResourceReflectionData* SimplifiedShaderReflectionData::FindUniformReflect
     return nullptr;
 
   // Finally, index into the target uniform buffer to get the member data
-  ShaderStageResource& uniformBuffer = mReflection.mUniforms[uniformBufferIndex];
+  const ShaderStageResource& uniformBuffer = mReflection.mUniforms[uniformBufferIndex];
   size_t memberIndex = uniformData->mMemberIndex;
   if (memberIndex >= uniformBuffer.mMembers.Size())
     return nullptr;
@@ -44,9 +44,9 @@ ShaderResourceReflectionData* SimplifiedShaderReflectionData::FindUniformReflect
   return &uniformBuffer.mMembers[memberIndex];
 }
 
-void SimplifiedShaderReflectionData::FindSampledImageReflectionData(LightningShaderIRType* fragmentType,
+void SimplifiedShaderReflectionData::FindSampledImageReflectionData(const LightningShaderIRType* fragmentType,
                                                                     StringParam propertyName,
-                                                                    Array<ShaderResourceReflectionData*>& results)
+                                                                    Array<const ShaderResourceReflectionData*>& results) const
 {
   FragmentLookup* fragmentLookup = mFragmentLookup.FindPointer(fragmentType->mMeta->mLightningName);
   if (fragmentLookup == nullptr)
@@ -55,9 +55,9 @@ void SimplifiedShaderReflectionData::FindSampledImageReflectionData(LightningSha
   PopulateSamplerAndImageData(fragmentLookup->mSampledImages, propertyName, results);
 }
 
-void SimplifiedShaderReflectionData::FindImageReflectionData(LightningShaderIRType* fragmentType,
+void SimplifiedShaderReflectionData::FindImageReflectionData(const LightningShaderIRType* fragmentType,
                                                              StringParam propertyName,
-                                                             Array<ShaderResourceReflectionData*>& results)
+                                                             Array<const ShaderResourceReflectionData*>& results) const
 {
   FragmentLookup* fragmentLookup = mFragmentLookup.FindPointer(fragmentType->mMeta->mLightningName);
   if (fragmentLookup == nullptr)
@@ -66,9 +66,9 @@ void SimplifiedShaderReflectionData::FindImageReflectionData(LightningShaderIRTy
   PopulateSamplerAndImageData(fragmentLookup->mImages, propertyName, results);
 }
 
-void SimplifiedShaderReflectionData::FindSamplerReflectionData(LightningShaderIRType* fragmentType,
+void SimplifiedShaderReflectionData::FindSamplerReflectionData(const LightningShaderIRType* fragmentType,
                                                                StringParam propertyName,
-                                                               Array<ShaderResourceReflectionData*>& results)
+                                                               Array<const ShaderResourceReflectionData*>& results) const
 {
   FragmentLookup* fragmentLookup = mFragmentLookup.FindPointer(fragmentType->mMeta->mLightningName);
   if (fragmentLookup == nullptr)
@@ -77,8 +77,8 @@ void SimplifiedShaderReflectionData::FindSamplerReflectionData(LightningShaderIR
   PopulateSamplerAndImageData(fragmentLookup->mSamplers, propertyName, results);
 }
 
-ShaderResourceReflectionData* SimplifiedShaderReflectionData::FindStorageImage(LightningShaderIRType* fragmentType,
-                                                                               StringParam propertyName)
+const ShaderResourceReflectionData* SimplifiedShaderReflectionData::FindStorageImage(const LightningShaderIRType* fragmentType,
+                                                                               StringParam propertyName) const
 {
   FragmentLookup* fragmentLookup = mFragmentLookup.FindPointer(fragmentType->mMeta->mLightningName);
   if (fragmentLookup == nullptr)
@@ -92,8 +92,8 @@ ShaderResourceReflectionData* SimplifiedShaderReflectionData::FindStorageImage(L
   return &mReflection.mStorageImages[storageImageData->mIndex].mReflectionData;
 }
 
-ShaderResourceReflectionData* SimplifiedShaderReflectionData::FindStructedStorageBuffer(LightningShaderIRType* fragmentType,
-                                                                                        StringParam propertyName)
+const ShaderResourceReflectionData* SimplifiedShaderReflectionData::FindStructedStorageBuffer(const LightningShaderIRType* fragmentType,
+                                                                                        StringParam propertyName) const
 {
   FragmentLookup* fragmentLookup = mFragmentLookup.FindPointer(fragmentType->mMeta->mLightningName);
   if (fragmentLookup == nullptr)
@@ -407,7 +407,7 @@ void SimplifiedShaderReflectionData::BuildFinalSampledImageMappings(SampledImage
 
 void SimplifiedShaderReflectionData::PopulateSamplerAndImageData(HashMap<String, SampledImageRemappingData>& searchMap,
                                                                  StringParam propertyName,
-                                                                 Array<ShaderResourceReflectionData*>& results)
+                                                                 Array<const ShaderResourceReflectionData*>& results) const
 {
   // Find the property in the given search map
   SampledImageRemappingData* remapData = searchMap.FindPointer(propertyName);
@@ -598,7 +598,10 @@ bool SimpleLightningShaderIRGenerator::CompileAndTranslateFragments()
   fragmentDependencies->PushBack(mExtensionsLibraryRef);
 
   // Compile and translate the fragments project into a library
-  mFragmentLibraryRef = mFragmentProject.CompileAndTranslate(fragmentDependencies, mFrontEndTranslator);
+  auto newLibrary= mFragmentProject.CompileAndTranslate(fragmentDependencies, mFrontEndTranslator);
+  if(newLibrary == nullptr)
+    return false;
+  mFragmentLibraryRef = newLibrary;
   return mFragmentLibraryRef != nullptr;
 }
 
@@ -642,7 +645,10 @@ bool SimpleLightningShaderIRGenerator::CompileAndTranslateShaders()
   dependencies->PushBack(mFragmentLibraryRef);
 
   // Compile and translate the fragments project into a library
-  mShaderLibraryRef = mShaderProject.CompileAndTranslate(dependencies, mFrontEndTranslator);
+  auto newLibrary = mShaderProject.CompileAndTranslate(dependencies, mFrontEndTranslator);
+  if(newLibrary == nullptr)
+    return false;
+  mShaderLibraryRef = newLibrary;
   return mShaderLibraryRef != nullptr;
 }
 
@@ -708,7 +714,7 @@ LightningShaderIRType* SimpleLightningShaderIRGenerator::FindShaderType(StringPa
   return shaderLibrary->FindType(typeName, false);
 }
 
-ShaderTranslationPassResult* SimpleLightningShaderIRGenerator::FindTranslationResult(LightningShaderIRType* shaderType)
+ShaderTranslationPassResult* SimpleLightningShaderIRGenerator::FindTranslationResult(const LightningShaderIRType* shaderType)
 {
   ShaderTranslationResult* translationResult = mShaderResults.FindPointer(shaderType->mMeta->mLightningName);
   if (translationResult == nullptr)
@@ -718,7 +724,7 @@ ShaderTranslationPassResult* SimpleLightningShaderIRGenerator::FindTranslationRe
 }
 
 SimplifiedShaderReflectionData*
-SimpleLightningShaderIRGenerator::FindSimplifiedReflectionResult(LightningShaderIRType* shaderType)
+SimpleLightningShaderIRGenerator::FindSimplifiedReflectionResult(const LightningShaderIRType* shaderType)
 {
   ShaderTranslationResult* translationResult = mShaderResults.FindPointer(shaderType->mMeta->mLightningName);
   if (translationResult == nullptr)

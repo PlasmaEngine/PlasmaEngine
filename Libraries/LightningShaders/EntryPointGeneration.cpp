@@ -1798,7 +1798,7 @@ EntryPointGeneration::ProcessUniformBlock(LightningShaderIRFunction* function,
     uniformGroup.mStorageClass = spv::StorageClassUniform;
     uniformGroup.mIsStruct = true;
 
-    int bindingId = uniformBlock->mBindingId;
+    u32 bindingId = uniformBlock->mBindingId;
     // If this is the material buffer and we don't allow id overlap
     // then offset the binding id by the fragment type
     if (isDefaultBuffer && !settings->mAllowUniformMaterialBufferIndexOverap)
@@ -1810,12 +1810,12 @@ EntryPointGeneration::ProcessUniformBlock(LightningShaderIRFunction* function,
     // Set the reflection data for the buffer
     ShaderResourceReflectionData& reflectionData = uniformGroup.mReflectionData;
     reflectionData.mDescriptorSet = uniformBlock->mDescriptorSetId;
-    reflectionData.mBinding = uniformBlock->mBindingId;
+    reflectionData.mBinding = bindingId;
     reflectionData.mInstanceName = uniformGroup.mName;
   }
 
   // Mark that we've used this binding id
-  mUsedBindingIds.Insert(uniformBlock->mBindingId);
+  mUsedBindingIds.Insert(uniformGroup.mReflectionData.mBinding);
 
   // If this is a user defined buffer then the entire buffer must match all at
   // once. This means we just copy all fields from the user defined description.

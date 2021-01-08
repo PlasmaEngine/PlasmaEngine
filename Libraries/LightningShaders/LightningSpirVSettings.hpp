@@ -123,7 +123,7 @@ class UniformBufferDescription
 {
 public:
   UniformBufferDescription();
-  UniformBufferDescription(int bindingId, int descriptorSetId = 0);
+  UniformBufferDescription(u32 bindingId, u32 descriptorSetId = 0);
   UniformBufferDescription(const UniformBufferDescription& rhs);
   ~UniformBufferDescription();
 
@@ -131,7 +131,7 @@ public:
   void CopyFrom(const UniformBufferDescription& source);
 
   /// Set the common description terms for this uniform buffer.
-  void Set(int bindingId, int descriptorSetId, ShaderStage::Enum allowedStages, StringParam debugName = String());
+  void Set(u32 bindingId, u32 descriptorSetId, ShaderStage::Enum allowedStages, StringParam debugName = String());
 
   /// Add a field to this buffer. Fields are laid out in the order they are
   /// added.

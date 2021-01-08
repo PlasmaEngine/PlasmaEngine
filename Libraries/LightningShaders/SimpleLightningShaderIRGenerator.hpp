@@ -107,28 +107,28 @@ public:
 
   /// Find the reflection data for a uniform given the fragment and property.
   /// Returns null if the property can't be found.
-  ShaderResourceReflectionData* FindUniformReflectionData(LightningShaderIRType* fragmentType, StringParam propertyName);
+  const ShaderResourceReflectionData* FindUniformReflectionData(const LightningShaderIRType* fragmentType, StringParam propertyName) const;
   /// Finds all potential images, samplers, and sampled images that the given
   /// SampledImage property results in.
-  void FindSampledImageReflectionData(LightningShaderIRType* fragmentType,
+  void FindSampledImageReflectionData(const LightningShaderIRType* fragmentType,
                                       StringParam propertyName,
-                                      Array<ShaderResourceReflectionData*>& results);
+                                      Array<const ShaderResourceReflectionData*>& results) const;
   /// Finds all potential images and sampled images that the given Image
   /// property results in.
-  void FindImageReflectionData(LightningShaderIRType* fragmentType,
+  void FindImageReflectionData(const LightningShaderIRType* fragmentType,
                                StringParam propertyName,
-                               Array<ShaderResourceReflectionData*>& results);
+                               Array<const ShaderResourceReflectionData*>& results) const;
   /// Finds all potential samplers and sampled images that the given Sampler
   /// property results in.
-  void FindSamplerReflectionData(LightningShaderIRType* fragmentType,
+  void FindSamplerReflectionData(const LightningShaderIRType* fragmentType,
                                  StringParam propertyName,
-                                 Array<ShaderResourceReflectionData*>& results);
+                                 Array<const ShaderResourceReflectionData*>& results) const;
   /// Find the reflection data for a storage image given the fragment and
   /// property. Returns null if the property can't be found.
-  ShaderResourceReflectionData* FindStorageImage(LightningShaderIRType* fragmentType, StringParam propertyName);
+  const ShaderResourceReflectionData* FindStorageImage(const LightningShaderIRType* fragmentType, StringParam propertyName) const;
   /// Find the reflection data for a structed storage buffer given the fragment
   /// and property. Returns null if the property can't be found.
-  ShaderResourceReflectionData* FindStructedStorageBuffer(LightningShaderIRType* fragmentType, StringParam propertyName);
+  const ShaderResourceReflectionData* FindStructedStorageBuffer(const LightningShaderIRType* fragmentType, StringParam propertyName) const;
 
   /// Map lookup of fragment name to property information about the fragment.
   HashMap<String, FragmentLookup> mFragmentLookup;
@@ -177,7 +177,7 @@ private:
   /// given the property name.
   void PopulateSamplerAndImageData(HashMap<String, SampledImageRemappingData>& searchMap,
                                    StringParam propertyName,
-                                   Array<ShaderResourceReflectionData*>& results);
+                                   Array<const ShaderResourceReflectionData*>& results) const;
 
   /// Create reflectiond ata for simple opaque types (e.g. storage image and
   /// ssbos).
@@ -247,9 +247,9 @@ public:
   /// library.
   LightningShaderIRType* FindShaderType(StringParam typeName);
   /// Finds the translation result (byte data + reflection data) for a shader.
-  ShaderTranslationPassResult* FindTranslationResult(LightningShaderIRType* shaderType);
+  ShaderTranslationPassResult* FindTranslationResult(const LightningShaderIRType* shaderType);
   /// Finds the cached simplified reflection data for a shader.
-  SimplifiedShaderReflectionData* FindSimplifiedReflectionResult(LightningShaderIRType* shaderType);
+  SimplifiedShaderReflectionData* FindSimplifiedReflectionResult(const LightningShaderIRType* shaderType);
 
   /// Load default name settings
   static void LoadNameSettings(SpirVNameSettings& nameSettings);
