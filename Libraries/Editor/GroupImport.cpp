@@ -58,7 +58,53 @@ void RunGroupImport(ImportOptions& options)
     return;
   }
 
-  ImportJob* job = new ImportJob(&options);
+  ContentLibrary* library = options.mLibrary;
+
+  Array<ContentItem*> contentToBuild;
+
+  Array<String> filesToExport(options.mFiles);
+  if (options.mConflictOptions && options.mConflictOptions->GetAction() == ConflictAction::Replace)
+    filesToExport.Append(options.mConflictedFiles.All());
+
+  // For every file imported
+  for (uint fileIndex = 0; fileIndex < filesToExport.Size(); ++fileIndex)
+  {
+    String fullPath = filesToExport[fileIndex];
+    String filename = StripResourceExtension(FilePath::GetFileName(fullPath));
+    filename = SanitizeContentFilename(filename);
+    String storedfilename = FilePath::Combine(library->SourcePath, filename);
+
+    // Add the content item
+    AddContentItemInfo addContent;
+    addContent.FileName = filename;
+    addContent.Library = library;
+    addContent.ExternalFile = fullPath;
+    addContent.OnContentFileConflict = ContentFileConflict::Replace;
+    addContent.Options = &options;
+
+    Status addItem;
+
+    ContentItem* newContentItem = PL::gContentSystem->AddContentItemToLibrary(addItem, addContent);
+
+    // If the content add succeeded
+    if (addItem.Succeeded())
+      contentToBuild.PushBack(newContentItem);
+    else
+      DoNotifyError("Failed Import", addItem.Message);
+  }
+
+  // Now that all the content has been added. Build and load them for use.
+
+  // Build all new content items
+  ResourceLibrary* resourceLibrary = PL::gResources->GetResourceLibrary(library->Name); 
+
+  ImportJobProperties jobProperties;
+  jobProperties.mLibrary = library;
+  jobProperties.mOptions = &options;
+  jobProperties.mResourceLibrary = resourceLibrary;
+  jobProperties.mContentToBuild = contentToBuild;
+  
+  ImportJob* job = new ImportJob(jobProperties);
   BackgroundTask* task = PL::gBackgroundTasks->CreateTask(job);
   task->mName = "Import Asset";
   PL::gJobs->AddJob(job);
@@ -298,62 +344,37 @@ void ImportCallback::OnFilesSelected(OsFileSelection* fileSelection)
   delete this;
 }
 
-ImportJob::ImportJob(ImportOptions* options) : mOptions(options)
+ LightningDefineType(ImportJobProperties, builder, type)
+{
+  LightningBindFieldProperty(mLibrary);
+  LightningBindFieldProperty(mResourceLibrary);
+  LightningBindFieldProperty(mContentToBuild);
+  LightningBindFieldProperty(mOptions);
+  PlasmaBindExpanded();
+}
+  
+ImportJobProperties::ImportJobProperties()
+{
+}
+
+ImportJob::ImportJob(ImportJobProperties jobProperties) : mJobProperties(jobProperties)
 {
   ConnectThisTo(PL::gBackgroundTasks, Events::PostImport, OnImportFinished);
 }
 
 void ImportJob::Execute()
 {
-    ContentLibrary* library = mOptions->mLibrary;
-
-  Array<ContentItem*> contentToBuild;
-
-  Array<String> filesToExport(mOptions->mFiles);
-  if (mOptions->mConflictOptions && mOptions->mConflictOptions->GetAction() == ConflictAction::Replace)
-    filesToExport.Append(mOptions->mConflictedFiles.All());
-
-  // For every file imported
-  for (uint fileIndex = 0; fileIndex < filesToExport.Size(); ++fileIndex)
-  {
-    String fullPath = filesToExport[fileIndex];
-    String filename = StripResourceExtension(FilePath::GetFileName(fullPath));
-    filename = SanitizeContentFilename(filename);
-    String storedfilename = FilePath::Combine(library->SourcePath, filename);
-
-    // Add the content item
-    AddContentItemInfo addContent;
-    addContent.FileName = filename;
-    addContent.Library = library;
-    addContent.ExternalFile = fullPath;
-    addContent.OnContentFileConflict = ContentFileConflict::Replace;
-    addContent.Options = mOptions;
-
-    Status addItem;
-
-    ContentItem* newContentItem = PL::gContentSystem->AddContentItemToLibrary(addItem, addContent);
-
-    // If the content add succeeded
-    if (addItem.Succeeded())
-      contentToBuild.PushBack(newContentItem);
-    else
-      DoNotifyError("Failed Import", addItem.Message);
-  }
-
-  // Now that all the content has been added. Build and load them for use.
-
-  // Build all new content items
-  ResourceLibrary* resourceLibrary = PL::gResources->GetResourceLibrary(library->Name);
+    
 
   Status status;
-  HandleOf<ResourcePackage> packageHandle =
-      PL::gContentSystem->BuildContentItems(status, contentToBuild, library, false);
+  HandleOf<ResourcePackage> packageHandle = BuildContentItems(status, mJobProperties.mContentToBuild, mJobProperties.mLibrary);
+  
   ResourcePackage* package = packageHandle;
   DoNotifyStatus(status);
   
-  UpdateTaskProgress(100, "Finished");
+  UpdateTaskProgress(1, "Finished");
   
-  Event* e = new PostImportEvent (resourceLibrary, package, contentToBuild, status, mOptions);
+  Event* e = new PostImportEvent (mJobProperties.mResourceLibrary, package, mJobProperties.mContentToBuild, status, mJobProperties.mOptions);
   PL::gDispatch->Dispatch(PL::gBackgroundTasks, Events::PostImport, e);
 }
 
@@ -367,6 +388,64 @@ void ImportJob::UpdateTaskProgress(float percentComplete, StringParam progressTe
   UpdateProgress("Import Asset", percentComplete, progressText);
 }
 
+ struct SortByLoadOrder
+{
+  bool operator()(ResourceEntry& left, ResourceEntry& right)
+  {
+    // First sort by load order, then name for determinism.
+    return left.LoadOrder < right.LoadOrder || (left.LoadOrder == right.LoadOrder && left.Name < right.Name);
+  }
+};
+  
+HandleOf<ResourcePackage> ImportJob::BuildContentItems(Status& status, ContentItemArray& toBuild, ContentLibrary* library)
+{
+  ZoneScoped;
+  ProfileScopeFunctionArgs(library->Name);
+
+  ResourcePackage* package = new ResourcePackage();
+  package->Name = library->Name;
+
+  package->Location = library->GetOutputPath();
+  CreateDirectoryAndParents(package->Location);
+
+  BuildOptions buildOptions(library);
+
+  bool allBuilt = true;
+
+  for (uint i = 0; i < toBuild.Size(); ++i)
+  {
+    // Process from this contentItem down.
+    ContentItem* contentItem = toBuild[i];
+    static const String cProcessing("Processing");
+    
+    UpdateTaskProgress((float)(i + 1) / toBuild.Size(), "Processing");
+
+    contentItem->BuildContentItem(false);
+
+    if (buildOptions.Failure)
+    {
+      PlasmaPrint("Content Build Failed, %s\n", buildOptions.Message.c_str());
+      buildOptions.Failure = false;
+      buildOptions.Message = String();
+      allBuilt = false;
+    }
+
+    contentItem->BuildListing(package->Resources);
+
+    // Don't do this in the thread (do it after).
+    if (contentItem->mNeedsEditorProcessing)
+      package->EditorProcessing.PushBack(contentItem);
+  }
+
+  Sort(package->Resources.All(), SortByLoadOrder());
+
+  if (!allBuilt)
+    status.SetFailed(String::Format("Failed to build content library '%s'", library->Name.c_str()));
+
+  return package;
+}
+
+  
 void ImportJob::OnImportFinished(PostImportEvent* e)
 {
   // Load all resource generated into the active resource library

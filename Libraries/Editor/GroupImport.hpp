@@ -42,20 +42,36 @@ public:
   void OnFilesSelected(OsFileSelection* fileSelection);
 };
 
+struct ImportJobProperties : Object
+{
+public:
+    LightningDeclareType(ImportJobProperties, TypeCopyMode::ReferenceType);
+    
+    ImportJobProperties();
+    
+    ContentLibrary* mLibrary;
+    ResourceLibrary* mResourceLibrary;
+    Array<ContentItem*> mContentToBuild;
+    ImportOptions* mOptions;
+};
+    
  class ImportJob : public BackgroundTaskJob
  {
  public:
      typedef ImportJob LightningSelf;
 
-     ImportJob(ImportOptions* options);
+     ImportJob(ImportJobProperties jobProperties);
 
      /// Job Interface.
      void Execute() override;
      int Cancel() override;
 
      void UpdateTaskProgress(float percentComplete, StringParam progressText);
-     ImportOptions* mOptions;
      void OnImportFinished(PostImportEvent* e);
- };
 
+     ImportJobProperties mJobProperties;
+
+ private:
+     HandleOf<ResourcePackage> BuildContentItems(Status& status, ContentItemArray& toBuild, ContentLibrary* library);
+ };
 } // namespace Plasma
