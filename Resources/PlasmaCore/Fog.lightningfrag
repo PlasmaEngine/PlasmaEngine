@@ -1,0 +1,30 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel][PostProcess]
+struct Fog
+{
+  [StageInput] var Uv : Real2;
+  
+  [Input] var GBuffer0 : SampledImage2d;
+  [Input] var ScreenBuffer : SampledImage2d;
+  
+  [Input] var FogStat : Real = 1;
+  [Input] var FogDensity : Real = 2;
+  [Input] var FogColor : Real4 = Real4(1, 0, 0, 1);
+
+  [Output] var Target0 : Real4;
+
+  function Main()
+  {
+    var sample0 = this.GBuffer0.Sample(this.Uv);
+    var screenSample = this.ScreenBuffer.Sample(this.Uv);
+    
+    var depth = GeometryPass.GetDepth(sample0);
+    depth = Math.Max(0, depth - this.FogStat);
+    
+    var fog = Math.Exp2(-this.FogDensity * depth);
+    
+    
+    this.Target0 = Math.Lerp(this.FogColor, screenSample, fog);
+  }
+}

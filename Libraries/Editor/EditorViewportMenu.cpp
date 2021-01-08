@@ -83,15 +83,14 @@ EditorViewportMenu::EditorViewportMenu(EditorViewport* viewport) : Composite(vie
   mPerspectiveMode->SetToolTip("Perspective Mode");
   ConnectThisTo(mPerspectiveMode, Events::ButtonPressed, OnPerspectiveModePressed);
 
-  // Camera options
-  mCameraButton = new ViewportMenuButton(this);
-  mCameraButton->SetIcon("CameraOptions");
-  mCameraButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(38));
-  mCameraButton->SetToolTip("Camera Options");
-  mCameraButton->mIcon->SetInteractive(false);
-  mCameraButton->mExpandIcon->SetInteractive(false);
-  ConnectThisTo(mCameraButton, Events::ButtonPressed, OnCameraButtonPressed);
 
+  mGridButton = new ToggleIconButton(this);
+  mGridButton->SetEnabledIcon("ViewportGridIconOn");
+  mGridButton->SetDisabledIcon("ViewportGridIconOff");
+  mGridButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(19));
+  mGridButton->SetToolTip("Toggle Grids");
+  ConnectThisTo(mGridButton, Events::ButtonPressed, OnGridButtonPressed);
+  
   // Debug options
   mDebugButton = new ViewportMenuButton(this);
   mDebugButton->SetIcon("DebugIcon");
@@ -101,13 +100,25 @@ EditorViewportMenu::EditorViewportMenu(EditorViewport* viewport) : Composite(vie
   mDebugButton->mExpandIcon->SetInteractive(false);
   ConnectThisTo(mDebugButton, Events::ButtonPressed, OnDebugButtonPressed);
   
-  mGridButton = new ToggleIconButton(this);
-  mGridButton->SetEnabledIcon("ViewportGridIconOn");
-  mGridButton->SetDisabledIcon("ViewportGridIconOff");
-  mGridButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(19));
-  mGridButton->SetToolTip("Toggle Grids");
-  ConnectThisTo(mGridButton, Events::ButtonPressed, OnGridButtonPressed);
 
+  // Camera options
+  mCameraButton = new ViewportMenuButton(this);
+  mCameraButton->SetIcon("CameraOptions");
+  mCameraButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(38));
+  mCameraButton->SetToolTip("Camera Options");
+  mCameraButton->mIcon->SetInteractive(false);
+  mCameraButton->mExpandIcon->SetInteractive(false);
+  ConnectThisTo(mCameraButton, Events::ButtonPressed, OnCameraButtonPressed);
+
+  
+  // Debug options
+  mCameraSpeedSlider = new Slider(this, SliderType::Number);
+  mCameraSpeedSlider->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(64));
+  mCameraSpeedSlider->SetRange(.1f, 10);
+  mCameraSpeedSlider->SetValue(1, false);
+  mCameraSpeedSlider->SetToolTip("Editor camera movement speed");
+  ConnectThisTo(mCameraSpeedSlider, Events::SliderChanged, OnCameraSpeedChanged);
+  
   ConnectThisTo(this, Events::MouseEnter, OnMouseEnter);
   ConnectThisTo(this, Events::MouseExit, OnMouseExit);
 }
@@ -228,6 +239,13 @@ void EditorViewportMenu::OnCameraButtonPressed(Event* e)
 
   mActivePopup = contextMenu;
   ConnectThisTo(contextMenu, Events::PopUpClosed, OnPopUpClosed);
+}
+
+void EditorViewportMenu::OnCameraSpeedChanged(Event* e)
+{
+  Space* space = PL::gEditor->mActiveSpace;
+  ViewportCameraEvent cameraEvent = ViewportCameraEvent(mCameraSpeedSlider->GetValue());
+  space->GetDispatcher()->Dispatch(Events::ViewportCameraSettings, &cameraEvent);
 }
 
 void EditorViewportMenu::OnDebugButtonPressed(Event* e)

@@ -59,6 +59,7 @@ void EditorCameraController::Initialize(CogInitializer& initializer)
   {
     SetEnabled(true);
   }
+  ConnectThisTo(initializer.mSpace, Events::ViewportCameraSettings, CameraSettingsChanged);
 }
 
 void EditorCameraController::OnDestroy(uint flags)
@@ -154,6 +155,11 @@ void EditorCameraController::SetEditMode(EditorMode::Enum mode)
     mCamera->SetPerspectiveMode(PerspectiveMode::Perspective);
     SetControlMode(mPrevious3DMode);
   }
+}
+
+void EditorCameraController::CameraSettingsChanged(ViewportCameraEvent* camEvent)
+{
+  mMoveSensitivity = camEvent->mSpeed;
 }
 
 void EditorCameraController::OnAllObjectsCreated(CogInitializer& initializer)

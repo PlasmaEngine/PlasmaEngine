@@ -3,7 +3,6 @@
 
 namespace Plasma
 {
-
 // Ranges
 LightningDefineRange(ContextMenuEntryChildren::range);
 

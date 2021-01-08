@@ -83,7 +83,7 @@ public:
     /// library dependency chain.
     String mShaderName;
     /// The input fragments to composite together.
-    Array<LightningShaderIRType*> mFragments;
+    Array<const LightningShaderIRType*> mFragments;
     /// The resultant shader stages. This includes the composited lightning shader
     /// and the description of each fragment that was used to create the shader.
     ShaderStageDescription mResults[FragmentType::Size];
@@ -115,6 +115,9 @@ public:
   /// If null is passed through, the first fragment's properties are used (mostly legacy for unit testing).
   bool CompositeCompute(ShaderDefinition& shaderDef, ComputeShaderProperties* computeProperties, const ShaderCapabilities& capabilities, LightningShaderSpirVSettingsRef& settings);
 
+  using LightningShaderPtr = const LightningShaderIRType*;
+  using LightningShaderPtrArray = Array<const LightningShaderIRType*>;
+  
   struct StageLinkingInfo;
   struct CompositedShaderInfo;
   struct ResolvedFieldInfo;
@@ -123,16 +126,16 @@ public:
   struct FragmentLinkingInfo;
   struct ExpectedOutputData;
 
-  void CollectFragmentsPerStage(Array<LightningShaderIRType*>& inputFragments, CompositedShaderInfo& compositeInfo);
+  void CollectFragmentsPerStage(LightningShaderPtrArray& inputFragments, CompositedShaderInfo& compositeInfo);
   bool ValidateStages(CompositedShaderInfo& compositeInfo);
   void CollectExpectedOutputs(CompositedShaderInfo& compositeInfo);
-  void CollectExpectedOutputs(Array<LightningShaderIRType*>& fragmentTypes, StageAttachmentLinkingInfo& linkingInfo);
+  void CollectExpectedOutputs(LightningShaderPtrArray& fragmentTypes, StageAttachmentLinkingInfo& linkingInfo);
   void CreateCpuStage(CompositedShaderInfo& compositeInfo);
 
   void ResolveInputs(StageLinkingInfo* previousStage, StageLinkingInfo* currentStage);
   void Link(StageAttachmentLinkingInfo& prevStageInfo,
             StageLinkingInfo* currentStage,
-            Array<LightningShaderIRType*>& fragmentTypes,
+            LightningShaderPtrArray& fragmentTypes,
             StageAttachmentLinkingInfo& currStageInfo);
   void AddStageInput(ExpectedOutputData* previousStageOutputData,
                      StageAttachmentLinkingInfo* currentStage,
@@ -167,7 +170,7 @@ public:
   void CreateFragmentAndCopyInputs(StageLinkingInfo* currentStage,
                                    ShaderCodeBuilder& builder,
                                    StringParam currentClassName,
-                                   LightningShaderIRType* fragmentType,
+                                   LightningShaderPtr fragmentType,
                                    StringParam fragmentVarName);
   void DeclareFieldsInOrder(ShaderCodeBuilder& builder,
                             StageAttachmentLinkingInfo& linkingInfo,
@@ -324,20 +327,20 @@ public:
     void Clear();
 
     /// All fragments belonging to the current stage.
-    Array<LightningShaderIRType*> mFragmentTypes;
+    LightningShaderPtrArray mFragmentTypes;
     /// Vertex types are types that transfer vertex data via the standard
     /// rendering pipeline. This is the all vertex fragments, all pixel
     /// fragments, and the input/output types for the geometry streams.
     /// Input/Output are split due to having separate input/output resolution
     /// for geometry stages (and later tessellation).
-    Array<LightningShaderIRType*> mInputVertexTypes;
-    Array<LightningShaderIRType*> mOutputVertexTypes;
+    LightningShaderPtrArray mInputVertexTypes;
+    LightningShaderPtrArray mOutputVertexTypes;
     /// Any fragments that transfer data for a primitive. This is the primary
     /// geometry fragment (and later tessellation).
-    Array<LightningShaderIRType*> mPrimitiveTypes;
+    LightningShaderPtrArray mPrimitiveTypes;
 
     /// Describes what each fragment's inputs were resolved to.
-    HashMap<LightningShaderIRType*, FragmentLinkingInfo> mFragmentLinkInfoMap;
+    HashMap<LightningShaderPtr, FragmentLinkingInfo> mFragmentLinkInfoMap;
 
     /// Linking information for the vertex and primitive data.
     /// This describes what the input/outputs are for this stage.

@@ -18,8 +18,6 @@ public:
 
   ButtonBase(Composite* parent, StringParam styleClass);
 
-  void SetToolTip(StringParam text);
-
   // ButtonBase Interface
   virtual void AddCommand(Command* command);
   virtual void OnCommandStateChange(ObjectEvent* event);
@@ -42,7 +40,6 @@ public:
   virtual void OnMouseExit(MouseEvent* event);
   void OnMouseDown(MouseEvent* event);
   void OnMouseUp(MouseEvent* event);
-  void OnHover(MouseEvent* event);
   void OnKeyDown(KeyboardEvent* event);
   void OnFocusGained(FocusEvent* event);
   void OnMouseClick(MouseEvent* event);
@@ -52,15 +49,6 @@ public:
   bool mMouseOver;
   bool mTabFocusStop;
   Array<Command*> mCommands;
-
-  /// When the button is pressed, we don't want the tooltip to be shown again
-  /// until the mouse has exited and re-entered the button. This helps protect
-  /// against the user pressing the button, Ui popping up below, and then
-  /// the tooltip popping up on top of the new Ui.
-  bool mShowToolTip;
-  String mToolTipText;
-  ToolTipColorScheme::Enum mToolTipColor;
-  HandleOf<Widget> mToolTip;
 };
 
 DeclareEnum2(TextButtonStyle, Classic, Modern);

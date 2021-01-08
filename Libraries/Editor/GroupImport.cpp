@@ -2,8 +2,7 @@
 #include "Precompiled.hpp"
 
 namespace Plasma
-{
-
+{  
 // When importing Plasma Engine resource files we strip the resource extension
 // from the filename to get the original resource name from the project it was
 // imported from if we do not do this then the file
@@ -97,27 +96,18 @@ void RunGroupImport(ImportOptions& options)
   // Now that all the content has been added. Build and load them for use.
 
   // Build all new content items
-  ResourceLibrary* resourceLibrary = PL::gResources->GetResourceLibrary(library->Name);
+  ResourceLibrary* resourceLibrary = PL::gResources->GetResourceLibrary(library->Name); 
 
-  Status status;
-  HandleOf<ResourcePackage> packageHandle =
-      PL::gContentSystem->BuildContentItems(status, contentToBuild, library, false);
-  ResourcePackage* package = packageHandle;
-  DoNotifyStatus(status);
-
-  // Load all resource generated into the active resource library
-  PL::gResources->ReloadPackage(resourceLibrary, package);
-
-  // Do editor side importing
-  DoEditorSideImporting(package, &options);
-
-  // Compile all scripts
-  LightningManager::GetInstance()->TriggerCompileExternally();
-
-  if (!contentToBuild.Empty() && status.Succeeded())
-    DoNotify("Content Imported", "Content has been added to the project", "BigPlus");
-  else if (status.Failed())
-    DoNotify("Content Import", "Content failed to be added to the project", "Error");
+  ImportJobProperties jobProperties;
+  jobProperties.mLibrary = library;
+  jobProperties.mOptions = &options;
+  jobProperties.mResourceLibrary = resourceLibrary;
+  jobProperties.mContentToBuild = contentToBuild;
+  
+  ImportJob* job = new ImportJob(jobProperties);
+  BackgroundTask* task = PL::gBackgroundTasks->CreateTask(job);
+  task->mName = "Import Asset";
+  PL::gJobs->AddJob(job);
 }
 
 void GroupImport()
@@ -246,7 +236,6 @@ GroupImportWindow::GroupImportWindow(Composite* parent, ImportOptions* options) 
   ConnectThisTo(mImportButton, Events::ButtonPressed, OnPressed);
   ConnectThisTo(mCancelButton, Events::ButtonPressed, OnCancel);
   ConnectThisTo(mOptions, Events::ImportOptionsModified, OnOptionsModified);
-
   UpdateListBoxSource();
 }
 
@@ -323,7 +312,7 @@ void GroupImportWindow::OnPressed(Event* event)
   RunGroupImport(*mOptions);
   float time = 0.5f;
   AnimateTo(mParentWindow, Pixels(2000.0f, 200.0f, 0), mParentWindow->GetSize() * 0.5f, time);
-
+  
   ActionSequence* sequence = new ActionSequence(mParentWindow);
   sequence->Add(new ActionDelay(time));
   sequence->Add(DestroyAction(mParentWindow));
@@ -355,4 +344,123 @@ void ImportCallback::OnFilesSelected(OsFileSelection* fileSelection)
   delete this;
 }
 
+ LightningDefineType(ImportJobProperties, builder, type)
+{
+  LightningBindFieldProperty(mLibrary);
+  LightningBindFieldProperty(mResourceLibrary);
+  LightningBindFieldProperty(mOptions);
+  PlasmaBindExpanded();
+}
+  
+ImportJobProperties::ImportJobProperties()
+{
+}
+
+ImportJob::ImportJob(ImportJobProperties jobProperties) : mJobProperties(jobProperties)
+{
+  ConnectThisTo(PL::gBackgroundTasks, Events::PostImport, OnImportFinished);
+}
+
+void ImportJob::Execute()
+{
+    
+
+  Status status;
+  HandleOf<ResourcePackage> packageHandle = BuildContentItems(status, mJobProperties.mContentToBuild, mJobProperties.mLibrary);
+  
+  ResourcePackage* package = packageHandle;
+  DoNotifyStatus(status);
+
+  UpdateTaskProgress(1.0, "Finished Importing");
+  
+  Event* e = new PostImportEvent (mJobProperties.mResourceLibrary, package, mJobProperties.mContentToBuild, status, mJobProperties.mOptions);
+  PL::gDispatch->Dispatch(PL::gBackgroundTasks, Events::PostImport, e);
+}
+
+int ImportJob::Cancel()
+{
+  return 0;
+}
+
+void ImportJob::UpdateTaskProgress(float percentComplete, StringParam progressText)
+{
+  UpdateProgress("Import Asset", percentComplete, progressText);
+}
+
+ struct SortByLoadOrder
+{
+  bool operator()(ResourceEntry& left, ResourceEntry& right)
+  {
+    // First sort by load order, then name for determinism.
+    return left.LoadOrder < right.LoadOrder || (left.LoadOrder == right.LoadOrder && left.Name < right.Name);
+  }
+};
+  
+HandleOf<ResourcePackage> ImportJob::BuildContentItems(Status& status, ContentItemArray& toBuild, ContentLibrary* library)
+{
+  ZoneScoped;
+  ProfileScopeFunctionArgs(library->Name);
+
+  ResourcePackage* package = new ResourcePackage();
+  package->Name = library->Name;
+
+  package->Location = library->GetOutputPath();
+  CreateDirectoryAndParents(package->Location);
+
+  BuildOptions buildOptions(library);
+
+  bool allBuilt = true;
+
+  for (uint i = 0; i < toBuild.Size(); ++i)
+  {
+    // Process from this contentItem down.
+    ContentItem* contentItem = toBuild[i];
+    static const String cProcessing(String::Format("Processing : %s", contentItem->Filename));
+    
+    UpdateTaskProgress((float)(i + 1) / toBuild.Size(), "Processing : " + contentItem->Filename);
+
+    contentItem->BuildContentItem(false);
+
+    if (buildOptions.Failure)
+    {
+      PlasmaPrint("Content Build Failed, %s\n", buildOptions.Message.c_str());
+      buildOptions.Failure = false;
+      buildOptions.Message = String();
+      allBuilt = false;
+    }
+
+    contentItem->BuildListing(package->Resources);
+
+    
+    // Don't do this in the thread (do it after).
+    if (contentItem->mNeedsEditorProcessing)
+      package->EditorProcessing.PushBack(contentItem);
+  }
+
+  Sort(package->Resources.All(), SortByLoadOrder());
+
+  if (!allBuilt)
+    status.SetFailed(String::Format("Failed to build content library '%s'", library->Name.c_str()));
+
+  return package;
+}
+
+  
+void ImportJob::OnImportFinished(PostImportEvent* e)
+{
+  // Load all resource generated into the active resource library
+  PL::gResources->ReloadPackage(e->library, e->package);
+
+  // Do editor side importing
+  
+  DoEditorSideImporting(e->package, e->mOptions);
+
+  // Compile all scripts
+  LightningManager::GetInstance()->TriggerCompileExternally();
+
+  if (!e->contentToBuild.Empty() && e->status.Succeeded())
+    DoNotify("Content Imported", "Content has been added to the project", "BigPlus");
+  else if (e->status.Failed())
+    DoNotify("Content Import", "Content failed to be added to the project", "Error");
+}
 } // namespace Plasma

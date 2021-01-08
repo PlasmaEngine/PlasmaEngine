@@ -1,0 +1,34 @@
+// MIT Licensed (see LICENSE.md).
+
+class PostProcessFog : LightningComponent
+{
+  
+  [Property] var Active : Boolean = true;
+  [Group("Settings")]
+  [Property] var FogStart : Real = 1.0;
+  [Group("Settings")]
+  [Property] var FogDensity : Real = 10.0;
+  [Group("Settings")]
+  [Property] var FogColor : Real4 = Real4(0.5, 0.5, 0.5, 1.0);
+  [Group("Debug")]
+  [Property] var Debug : Boolean = false;
+    
+  function AddFogRenderTask(event : RenderTasksEvent, gBuffer0 : RenderTarget, gBuffer1 : RenderTarget, output : RenderTarget)
+  {
+    if(!this.Active)
+      return;
+      
+    if(this.Debug)
+      event.AddRenderTaskClearTarget(output, Real4(0,0,0,1));
+
+    // Perform Fog pass
+    var fogPass = Fog();
+    fogPass.GBuffer0 = gBuffer0.Texture;
+    fogPass.ScreenBuffer = output.Texture;
+    fogPass.FogStat = this.FogStart / 10;
+    fogPass.FogDensity = this.FogDensity;
+    fogPass.FogColor = this.FogColor;   
+    
+    event.AddRenderTaskPostProcess(output, fogPass, "Fog");
+  }
+}

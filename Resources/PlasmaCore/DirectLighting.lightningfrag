@@ -16,7 +16,7 @@ struct DirectLightingInputs
   var Metallic : Real;
   var Roughness : Real;
   var Specular : Real;
-  var Emissive : Real3;
+  var Emissive : Real;
   var AO : Real;
   
   var RenderDiffuse : Boolean;

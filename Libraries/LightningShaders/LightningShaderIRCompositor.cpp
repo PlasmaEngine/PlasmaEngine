@@ -127,11 +127,11 @@ bool LightningShaderIRCompositor::CompositeCompute(ShaderDefinition& shaderDef, 
   mShaderCompositeName = shaderDef.mShaderName;
   mComputeShaderProperties = computeProperties;
 
-  Array<LightningShaderIRType*> fragments;
+  LightningShaderPtrArray fragments;
   // Find all compute fragments
   for (size_t i = 0; i < shaderDef.mFragments.Size(); ++i)
   {
-    LightningShaderIRType* shaderType = shaderDef.mFragments[i];
+    LightningShaderPtr shaderType = shaderDef.mFragments[i];
     ShaderIRTypeMeta* fragmentMeta = shaderType->mMeta;
     // If this is a valid fragment type
     if (fragmentMeta != nullptr && fragmentMeta->mFragmentType == FragmentType::Compute)
@@ -180,7 +180,7 @@ bool LightningShaderIRCompositor::CompositeCompute(ShaderDefinition& shaderDef, 
   return true;
 }
 
-void LightningShaderIRCompositor::CollectFragmentsPerStage(Array<LightningShaderIRType*>& inputFragments,
+void LightningShaderIRCompositor::CollectFragmentsPerStage(LightningShaderPtrArray& inputFragments,
                                                        CompositedShaderInfo& compositeInfo)
 {
   // Reset all stages
@@ -196,7 +196,7 @@ void LightningShaderIRCompositor::CollectFragmentsPerStage(Array<LightningShader
   // stage
   for (size_t i = 0; i < inputFragments.Size(); ++i)
   {
-    LightningShaderIRType* shaderType = inputFragments[i];
+    LightningShaderPtr shaderType = inputFragments[i];
     ShaderIRTypeMeta* fragmentMeta = shaderType->mMeta;
     // If this is a valid fragment type
     if (fragmentMeta != nullptr && fragmentMeta->mFragmentType != FragmentType::None)
@@ -232,15 +232,15 @@ void LightningShaderIRCompositor::CollectFragmentsPerStage(Array<LightningShader
   geometryStageInfo.mPrimitiveTypes = geometryStageInfo.mFragmentTypes;
   if (!geometryStageInfo.mPrimitiveTypes.Empty())
   {
-    LightningShaderIRType* geometryFragmentType = geometryStageInfo.mPrimitiveTypes[0];
+    LightningShaderPtr geometryFragmentType = geometryStageInfo.mPrimitiveTypes[0];
     Lightning::GeometryFragmentUserData* geometryUserData =
         geometryFragmentType->mLightningType->Has<Lightning::GeometryFragmentUserData>();
     ErrorIf(geometryUserData == nullptr, "Geometry Fragment is missing user data");
 
     // The vertex in/outs come from the in/out stream types in the main of the
     // geometry fragment.
-    LightningShaderIRType* inputVertexType = geometryUserData->GetInputVertexType();
-    LightningShaderIRType* outputVertexType = geometryUserData->GetOutputVertexType();
+    LightningShaderPtr inputVertexType = geometryUserData->GetInputVertexType();
+    LightningShaderPtr outputVertexType = geometryUserData->GetOutputVertexType();
     geometryStageInfo.mInputVertexTypes.PushBack(inputVertexType);
     geometryStageInfo.mOutputVertexTypes.PushBack(outputVertexType);
   }
@@ -292,7 +292,7 @@ bool LightningShaderIRCompositor::ValidateStages(CompositedShaderInfo& composite
 
     for (size_t i = 0; i < stageInfo->mFragmentTypes.Size(); ++i)
     {
-      LightningShaderIRType* fragmentType = stageInfo->mFragmentTypes[i];
+      LightningShaderPtr fragmentType = stageInfo->mFragmentTypes[i];
       if (!fragmentType->mHasMainFunction)
       {
         Lightning::BoundType* lightningType = fragmentType->mMeta->mLightningType;
@@ -313,7 +313,7 @@ bool LightningShaderIRCompositor::ValidateStages(CompositedShaderInfo& composite
     // Check geometry shaders to make sure they only have one fragment
     if (stageInfo->mFragmentType == FragmentType::Geometry)
     {
-      LightningShaderIRType* fragmentType = stageInfo->mFragmentTypes[0];
+      LightningShaderPtr fragmentType = stageInfo->mFragmentTypes[0];
       if (stageInfo->mFragmentTypes.Size() != 1)
       {
         Lightning::BoundType* lightningType = fragmentType->mMeta->mLightningType;
@@ -356,7 +356,7 @@ void LightningShaderIRCompositor::CollectExpectedOutputs(CompositedShaderInfo& c
   }
 }
 
-void LightningShaderIRCompositor::CollectExpectedOutputs(Array<LightningShaderIRType*>& fragmentTypes,
+void LightningShaderIRCompositor::CollectExpectedOutputs(LightningShaderPtrArray& fragmentTypes,
                                                      StageAttachmentLinkingInfo& linkingInfo)
 {
   SpirVNameSettings& nameSettings = mSettings->mNameSettings;
@@ -367,7 +367,7 @@ void LightningShaderIRCompositor::CollectExpectedOutputs(Array<LightningShaderIR
   // Outputs are only actual outputs if a subsequent stage inputs it.
   for (size_t i = 0; i < fragmentTypes.Size(); ++i)
   {
-    LightningShaderIRType* shaderType = fragmentTypes[i];
+    LightningShaderPtr shaderType = fragmentTypes[i];
 
     ShaderIRTypeMeta* typeMeta = shaderType->mMeta;
     for (size_t fieldIndex = 0; fieldIndex < typeMeta->mFields.Size(); ++fieldIndex)
@@ -419,7 +419,7 @@ void LightningShaderIRCompositor::ResolveInputs(StageLinkingInfo* previousStage,
 
 void LightningShaderIRCompositor::Link(StageAttachmentLinkingInfo& prevStageInfo,
                                    StageLinkingInfo* currentStage,
-                                   Array<LightningShaderIRType*>& fragmentTypes,
+                                   LightningShaderPtrArray& fragmentTypes,
                                    StageAttachmentLinkingInfo& currStageInfo)
 {
   SpirVNameSettings& nameSettings = mSettings->mNameSettings;
@@ -433,7 +433,7 @@ void LightningShaderIRCompositor::Link(StageAttachmentLinkingInfo& prevStageInfo
   // Iterate over all of the fragment types (in order) to try and match inputs
   for (size_t fragIndex = 0; fragIndex < fragmentTypes.Size(); ++fragIndex)
   {
-    LightningShaderIRType* fragmentType = fragmentTypes[fragIndex];
+    LightningShaderPtr fragmentType = fragmentTypes[fragIndex];
     ShaderIRTypeMeta* fragmentTypeMeta = fragmentType->mMeta;
 
     // Create the information about how we linked the fragment's properties
@@ -895,7 +895,7 @@ void LightningShaderIRCompositor::GenerateBasicLightningComposite(StageLinkingIn
   // Emit each fragment variable, copy its inputs, then call its main
   for (size_t i = 0; i < currentStage->mFragmentTypes.Size(); ++i)
   {
-    LightningShaderIRType* fragmentType = currentStage->mFragmentTypes[i];
+    LightningShaderPtr fragmentType = currentStage->mFragmentTypes[i];
     FragmentLinkingInfo& linkInfo = currentStage->mFragmentLinkInfoMap[fragmentType];
 
     // Declare the fragment and copy its inputs
@@ -940,14 +940,14 @@ void LightningShaderIRCompositor::GenerateGeometryLightningComposite(StageLinkin
   ShaderCodeBuilder builder;
 
   // Grab all of the various fragment and stream types
-  LightningShaderIRType* geometryFragmentType = currentStage->mPrimitiveTypes[0];
+  LightningShaderPtr geometryFragmentType = currentStage->mPrimitiveTypes[0];
   Lightning::GeometryFragmentUserData* geometryUserData =
       geometryFragmentType->mLightningType->Has<Lightning::GeometryFragmentUserData>();
   Lightning::BoundType* lightningInputStreamType = geometryUserData->mInputStreamType->mLightningType;
   Lightning::BoundType* lightningOutputStreamType = geometryUserData->mOutputStreamType->mLightningType;
   Lightning::GeometryStreamUserData* inputStreamUserData = lightningInputStreamType->Has<Lightning::GeometryStreamUserData>();
   Lightning::GeometryStreamUserData* outputStreamUserData = lightningOutputStreamType->Has<Lightning::GeometryStreamUserData>();
-  LightningShaderIRType* inputVertexType = geometryUserData->GetInputVertexType();
+  LightningShaderPtr inputVertexType = geometryUserData->GetInputVertexType();
   StageAttachmentLinkingInfo& vertexLinkingInfo = currentStage->mVertexLinkingInfo;
 
   // Also get the max vertices count. @JoshD: Cleanup
@@ -1049,7 +1049,7 @@ void LightningShaderIRCompositor::GenerateComputeLightningComposite(StageLinking
                                                             ShaderStageDescription& stageResults,
                                                             ShaderIRAttributeList& extraAttributes)
 {
-  LightningShaderIRType* computeFragmentType = currentStage->mFragmentTypes[0];
+  LightningShaderPtr computeFragmentType = currentStage->mFragmentTypes[0];
   SpirVNameSettings& nameSettings = mSettings->mNameSettings;
 
   ShaderCodeBuilder builder;
@@ -1101,7 +1101,7 @@ void LightningShaderIRCompositor::GenerateComputeLightningComposite(StageLinking
   // Emit each fragment variable, copy its inputs, then call its main
   for (size_t i = 0; i < currentStage->mFragmentTypes.Size(); ++i)
   {
-    LightningShaderIRType* fragmentType = currentStage->mFragmentTypes[i];
+    LightningShaderPtr fragmentType = currentStage->mFragmentTypes[i];
     FragmentLinkingInfo& linkInfo = currentStage->mFragmentLinkInfoMap[fragmentType];
 
     // Declare the fragment and copy its inputs
@@ -1141,7 +1141,7 @@ void LightningShaderIRCompositor::GenerateComputeLightningComposite(StageLinking
 void LightningShaderIRCompositor::CreateFragmentAndCopyInputs(StageLinkingInfo* currentStage,
                                                           ShaderCodeBuilder& builder,
                                                           StringParam currentClassName,
-                                                          LightningShaderIRType* fragmentType,
+                                                          LightningShaderPtr fragmentType,
                                                           StringParam fragmentVarName)
 {
   FragmentLinkingInfo& linkInfo = currentStage->mFragmentLinkInfoMap[fragmentType];
@@ -1282,7 +1282,7 @@ void LightningShaderIRCompositor::GenerateStageDescriptions(CompositedShaderInfo
     for (size_t fragIndex = 0; fragIndex < currentStage->mFragmentTypes.Size(); ++fragIndex)
     {
       // Get the resultant linking info for the fragment
-      LightningShaderIRType* fragType = currentStage->mFragmentTypes[fragIndex];
+      LightningShaderPtr fragType = currentStage->mFragmentTypes[fragIndex];
       FragmentLinkingInfo* fragInfo = currentStage->mFragmentLinkInfoMap.FindPointer(fragType);
       if (fragInfo == nullptr)
         continue;

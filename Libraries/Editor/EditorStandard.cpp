@@ -79,6 +79,9 @@ LightningDefineStaticLibrary(EditorLibrary)
   LightningInitializeEnum(PlayGameOptions);
   LightningInitializeEnum(ImportFrames);
 
+  // Structs
+  LightningInitializeType(ImportJobProperties);
+
   // Events
   LightningInitializeType(LauncherCommunicationEvent);
   LightningInitializeType(BackgroundTaskEvent);

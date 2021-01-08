@@ -29,8 +29,6 @@ struct ToolTipPlacement
   IndicatorSide::Type mPriority[4];
 };
 
-DeclareEnum6(ToolTipColorScheme, Default, Gray, Red, Yellow, Green, Orange);
-
 class ToolTip : public Composite
 {
 public:

@@ -18,7 +18,6 @@ struct ColorTransform
 };
 
 DeclareEnum2(FocusDirection, Forward, Backwards);
-
 DeclareEnum2(DisplayOrigin, TopLeft, Center);
 
 DeclareBitField4(DisplayFlags,

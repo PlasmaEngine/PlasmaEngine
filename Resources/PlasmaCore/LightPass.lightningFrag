@@ -14,7 +14,7 @@ struct LightPass
   [FragmentInput] var GeoMetallic : Real;
   [FragmentInput] var GeoSpecular : Real;
   [FragmentInput] var GeoPosition : Real3;
-  [FragmentInput] var GeoEmissive : Real3;
+  [FragmentInput] var GeoEmissive : Real;
   [FragmentInput] var GeoAO : Real;
   
   [Input] var DitherTexture : SampledImage2d;
@@ -36,6 +36,12 @@ struct LightPass
   function Main()
   {
     var screenUv = Utility.NdcToScreenUv(this.PerspectivePosition.XY / this.PerspectivePosition.W);
+    
+    if(this.GeoEmissive > 0)
+    {
+      this.Target0 = Real4(this.GeoAlbedo, 1.0);
+      return;
+    }
     
     var directInputs = DirectLightingInputs();
     directInputs.ViewNormal = this.GeoNormal;
@@ -61,9 +67,6 @@ struct LightPass
     // Remove color banding
     color = Utility.ApplyDither(color, &this.DitherTexture, screenUv, this.ViewportSize);
     color *= this.LightIntensity;
-    
-    if(Math.Length(this.GeoEmissive) > 0)
-      color = this.GeoEmissive;
     
     this.Target0 = Real4(color, 1.0);
   }

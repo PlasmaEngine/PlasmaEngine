@@ -3,14 +3,19 @@ struct MOSMap
 {
     [FragmentInput][StageInput] var Uv : Real2;
     [Input] var MOSMap : SampledImage2d;
+    [Input] var ApplyAO : Boolean;
+    [Input] var AOMultiplier : Real;
 
     [Output] var Roughness : Real;
     [Output] var Metallic : Real;
+    [Output] var AO : Real;
   
     function Main()
     {
         var mosMap = this.MOSMap.Sample(this.Uv);
-        this.Roughness = 1 - mosMap.X;
-        this.Metallic = mosMap.W;
+        this.Roughness = 1 - mosMap.W;
+        this.Metallic = mosMap.X;
+        if(this.ApplyAO)
+          this.AO = mosMap.Y * this.AOMultiplier;
     }
 }
