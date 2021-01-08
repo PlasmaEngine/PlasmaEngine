@@ -348,7 +348,6 @@ void ImportCallback::OnFilesSelected(OsFileSelection* fileSelection)
 {
   LightningBindFieldProperty(mLibrary);
   LightningBindFieldProperty(mResourceLibrary);
-  LightningBindFieldProperty(mContentToBuild);
   LightningBindFieldProperty(mOptions);
   PlasmaBindExpanded();
 }
