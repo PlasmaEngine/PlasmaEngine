@@ -735,7 +735,7 @@ ContentSystem::BuildContentItems(Status& status, ContentItemArray& toBuild, Cont
     ContentItem* contentItem = toBuild[i];
     static const String cProcessing("Processing");
     PL::gEngine->LoadingUpdate(
-        cProcessing, library->Name, contentItem->Filename, ProgressType::Normal, (float)(i + 1) / toBuild.Size());
+            cProcessing, library->Name, contentItem->Filename, ProgressType::Normal, (float)(i + 1) / toBuild.Size());
 
     contentItem->BuildContentItem(useJobs);
 
