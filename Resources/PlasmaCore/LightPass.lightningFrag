@@ -37,6 +37,12 @@ struct LightPass
   {
     var screenUv = Utility.NdcToScreenUv(this.PerspectivePosition.XY / this.PerspectivePosition.W);
     
+    if(this.GeoEmissive > 0)
+    {
+      this.Target0 = Real4(this.GeoAlbedo, 1.0);
+      return;
+    }
+    
     var directInputs = DirectLightingInputs();
     directInputs.ViewNormal = this.GeoNormal;
     directInputs.ViewDirection = Math.Normalize(-this.GeoPosition);
@@ -61,9 +67,6 @@ struct LightPass
     // Remove color banding
     color = Utility.ApplyDither(color, &this.DitherTexture, screenUv, this.ViewportSize);
     color *= this.LightIntensity;
-    
-    if(this.GeoEmissive > 0)
-      color = this.GeoAlbedo;
     
     this.Target0 = Real4(color, 1.0);
   }
