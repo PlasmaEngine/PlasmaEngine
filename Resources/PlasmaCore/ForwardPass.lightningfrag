@@ -17,6 +17,7 @@ struct ForwardPass
   [Input] var Metallic : Real = 0.0;
   [Input] var Roughness : Real = 1.0;
   [Input] var Specular : Real = 0.5;
+  [Input] var Emissive : Real3 = Real3(0.0, 0.0, 0.0);
   
   [Input] var DitherTexture : SampledImage2d;
   [Input] var EnvironmentBrdfLut : SampledImage2d;
@@ -39,6 +40,9 @@ struct ForwardPass
     
     var screenUv = Utility.NdcToScreenUv(this.PerspectivePosition.XY / this.PerspectivePosition.W);
     var viewDirection = Math.Normalize(-this.ViewPosition);
+    
+    if(Math.Length(this.Emissive) > 0)
+      this.Albedo = this.Emissive;
     
     // Indirect lighting
     var indirectInputs = ImageBasedLightingInputs();
