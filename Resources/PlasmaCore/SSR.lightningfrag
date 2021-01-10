@@ -89,14 +89,9 @@ struct SSR
     {
         // Sample Buffers
         var geometrySample0 = this.GeometryBuffer0.Sample(this.Uv);
-        var geometrySample1 = this.GeometryBuffer1.Sample(this.Uv);
-        var screenSampled = this.ScreenBuffer.Sample(this.Uv);
  
         var normal = GeometryPass.GetNormal(geometrySample0);
         var roughness = GeometryPass.GetRoughness(geometrySample0);
-        var metallic = GeometryPass.GetMetallic(geometrySample1);
-        var specular = GeometryPass.GetSpecular(geometrySample1);
-        var albedo = GeometryPass.GetAlbedo(geometrySample1);
         var viewPosition = GeometryPass.ReconstructViewPosition(geometrySample0, this.PerspectiveToView, this.PerspectivePosition, this.FarPlane);
         var depth = -GeometryPass.GetDepth(geometrySample0) * this.FarPlane;
  
