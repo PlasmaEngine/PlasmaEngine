@@ -17,8 +17,8 @@ struct ParallaxOcclusionMapping
     
     [Input] var ParallaxMap : SampledImage2d;
     [Input] var UVScale : Real2 = Real2(1,1);
-    [Input] var HeightScale : Real = 10;
-    [Input] var Samples : Real = 16.0;
+    [Input] var HeightScale : Real = 0.3;
+    [Input] var Samples : Real = 32.0;
     [Input] var Invert : Boolean = false;
     [Input] var Silloute : Boolean = false;
 
@@ -49,7 +49,7 @@ struct ParallaxOcclusionMapping
         if(this.Invert)
             height = 1-height;
       
-        var parallax = (viewDirection.XY / (-viewDirection.Z / this.FarPlane) ) * ((-this.HeightScale / 100) / this.FarPlane);
+        var parallax = (viewDirection.XY / (-viewDirection.Z / this.FarPlane) ) * ((-this.HeightScale / 10) / this.FarPlane);
         var deltaTexCoods = parallax / samples;
         
         while(currentLayerDepth < height)
