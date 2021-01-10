@@ -93,6 +93,17 @@ public:
     ShaderIRAttributeList mExtraAttributes;
   };
 
+  /// Information needed to composite a compute shader. This is used to set properties that
+  /// need to exist for the whole shader that don't make sense to set (and match) on individual fragments.
+  struct ComputeShaderProperties
+  {
+    ComputeShaderProperties();
+    ComputeShaderProperties(int localSizeX, int localSizeY, int localSizeZ);
+    int mLocalSizeX;
+    int mLocalSizeY;
+    int mLocalSizeZ;
+  };
+
   LightningShaderIRCompositor();
 
   /// Composite a shader for the rendering pipeline. Doesn't handle compute
@@ -100,11 +111,9 @@ public:
   bool Composite(ShaderDefinition& shaderDef,
                  const ShaderCapabilities& capabilities,
                  LightningShaderSpirVSettingsRef& settings);
-  /// Composite a compute shader. Only currently handles one compute fragment.
-  /// This basically takes care of attribute re-mappings and reflection data.
-  bool CompositeCompute(ShaderDefinition& shaderDef,
-                        const ShaderCapabilities& capabilities,
-                        LightningShaderSpirVSettingsRef& settings);
+  /// Composite a compute shader. Compute properties should be passed in to override workgroup sizes.
+  /// If null is passed through, the first fragment's properties are used (mostly legacy for unit testing).
+  bool CompositeCompute(ShaderDefinition& shaderDef, ComputeShaderProperties* computeProperties, const ShaderCapabilities& capabilities, LightningShaderSpirVSettingsRef& settings);
 
   using LightningShaderPtr = const LightningShaderIRType*;
   using LightningShaderPtrArray = Array<const LightningShaderIRType*>;
@@ -177,6 +186,7 @@ public:
   LightningShaderSpirVSettingsRef mSettings;
   ShaderCapabilities mCapabilities;
   String mShaderCompositeName;
+  ComputeShaderProperties* mComputeShaderProperties;
 
   /// Used to store how each field on a fragment is linked together in the final
   /// shader.

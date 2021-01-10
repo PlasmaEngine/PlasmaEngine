@@ -220,9 +220,15 @@ public:
 
   /// Composes the given shader definition of fragments together. Stores the
   /// resultant lightning shader code in the given definition object. The lightning
-  /// shader code is also stored cached internally.
+  /// shader code is also cached internally.
   bool ComposeShader(LightningShaderIRCompositor::ShaderDefinition& shaderDef, ShaderCapabilities& capabilities);
 
+  /// Composes the given shader definition of compute fragments. Stores the resultant
+  /// lightning shader code in the given definition object. The lightning shader code is also cached internally.
+  /// Compute properties (such as the local workgroup size) should be passed through (can optionally be
+  /// null to use the first fragment's properties). 
+  bool ComposeComputeShader(LightningShaderIRCompositor::ShaderDefinition& shaderDef, ShaderCapabilities& capabilities, LightningShaderIRCompositor::ComputeShaderProperties* computeProperties = nullptr);
+  
   void AddShaderCode(StringParam shaderCode, StringParam fileName, void* userData);
   /// Compiles shaders and translates them to an internal representation
   /// (spir-v)
