@@ -49,7 +49,7 @@ struct ParallaxOcclusionMapping
         if(this.Invert)
             height = 1-height;
       
-        var parallax = (viewDirection.XY / (-viewDirection.Z / this.FarPlane) ) * (-this.HeightScale / 10000);
+        var parallax = (viewDirection.XY / (-viewDirection.Z / this.FarPlane) ) * ((-this.HeightScale / 100) / this.FarPlane);
         var deltaTexCoods = parallax / samples;
         
         while(currentLayerDepth < height)
