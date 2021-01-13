@@ -108,6 +108,9 @@ public:
 
 void SetSelectedByName(String name);
 
+/// Returns current selected library in view
+ContentLibrary* GetLibrary() { return mContentLibrary; }
+
 private:
   void UpdateVisibleResources();
 

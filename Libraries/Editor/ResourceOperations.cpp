@@ -69,7 +69,7 @@ void AddResourcesFromFiles(const Array<String>& files, StringParam resourceType)
     return;
   }
 
-  ContentLibrary* contentLibrary = PL::gEditor->mProjectLibrary;
+  ContentLibrary* contentLibrary = PL::gEditor->mLibrary->GetLibrary();
   ResourceLibrary* resourceLibrary = PL::gResources->GetResourceLibrary(contentLibrary->Name);
 
   if (!contentLibrary || !resourceLibrary)
@@ -94,7 +94,7 @@ Resource* AddNewResource(ResourceManager* resourceManager, ResourceAdd& resource
   String resourceExtension = resourceManager->mExtension;
 
   if (resourceAdd.Library == NULL)
-    resourceAdd.Library = PL::gEditor->mProjectLibrary;
+    resourceAdd.Library = PL::gEditor->mLibrary->GetLibrary();
 
   // Writable Check
 
@@ -188,7 +188,7 @@ Resource* DuplicateResource(Resource* resource, StringParam expectedNewName)
     return nullptr;
   }
 
-  ContentLibrary* library = PL::gEditor->mProjectLibrary;
+  ContentLibrary* library = PL::gEditor->mLibrary->GetLibrary();
   ResourceManager* resourceManager = resource->GetManager();
   String resourceTypeName = resourceManager->mResourceTypeName;
   ContentItem* contentItem = resource->mContentItem;
