@@ -95,6 +95,8 @@ void LoadProject(Editor* editor, Cog* projectCog, StringParam path, StringParam 
   // Always select the first tool
   if (editor->Tools)
     editor->Tools->SelectToolIndex(0);
+
+  PL::gEditor->ProjectLoaded();
 }
 
 void UnloadProject(Editor* editor, Cog* projectCog)

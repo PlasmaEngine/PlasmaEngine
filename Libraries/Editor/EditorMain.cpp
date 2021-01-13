@@ -60,9 +60,7 @@ bool EditorMain::LoadPackage(Cog* projectCog, ContentLibrary* library, ResourceP
       DoNotifyError("Failed to load resource package.", status.Message);
 
     DoEditorSideImporting(package, nullptr);
-
     PL::gEditor->SetExploded(false, true);
-    PL::gEditor->ProjectLoaded();
     return true;
   }
   else if(project->ExtraContentLibraries.Contains(library))
@@ -88,7 +86,6 @@ bool EditorMain::LoadPackage(Cog* projectCog, ContentLibrary* library, ResourceP
     DoEditorSideImporting(package, nullptr);
 
     PL::gEditor->SetExploded(false, true);
-    PL::gEditor->ProjectLoaded();
     return true;
   }
   else
