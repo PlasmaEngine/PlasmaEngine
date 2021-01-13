@@ -108,6 +108,8 @@ public:
 
 void SetSelectedByName(String name);
 
+ContentLibrary* GetLibrary() { return mContentLibrary; }
+
 private:
   void UpdateVisibleResources();
 

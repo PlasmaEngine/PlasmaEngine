@@ -118,7 +118,7 @@ void GroupImport()
 
 void OpenGroupImport(Array<String>& files)
 {
-  ContentLibrary* library = PL::gEditor->mProjectLibrary;
+  ContentLibrary* library = PL::gEditor->mLibrary->GetLibrary();
   ImportOptions* options = new ImportOptions();
   options->Initialize(files, library);
 
@@ -169,7 +169,7 @@ void LoadDroppedFiles(Array<HandleOfString>& files)
   }
 
   // Attempt to add files as resources to the project's library
-  ContentLibrary* library = PL::gEditor->mProjectLibrary;
+  ContentLibrary* library = PL::gEditor->mLibrary->GetLibrary();
 
   if (library == NULL)
   {
