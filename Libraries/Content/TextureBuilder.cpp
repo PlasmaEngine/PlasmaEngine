@@ -162,17 +162,17 @@ void TextureBuilder::Generate(ContentInitializer& initializer)
 
 bool TextureBuilder::AlbedoString(String name)
 {
-  return name.Contains("albedo") || name.Contains("_a") || name.Contains("diff") || name.Contains("diffuse");
+  return name.Contains("albedo") || name.Contains("diff") || name.Contains("diffuse");
 }
 
 bool TextureBuilder::NormalString(String name)
 {
-  return name.Contains("normal") || name.Contains("norm") || name.Contains("_n");
+  return name.Contains("normal") || name.Contains("norm");
 }
 
 bool TextureBuilder::MetallicString(String name)
 {
-  return name.Contains("metallic") || name.Contains("metalness") || name.Contains("_m") || name.Contains("mtl") || name.Contains("metal");
+  return name.Contains("metallic") || name.Contains("metalness") || name.Contains("mtl") || name.Contains("metal");
 }
 
 bool TextureBuilder::RoughnessString(String name)
