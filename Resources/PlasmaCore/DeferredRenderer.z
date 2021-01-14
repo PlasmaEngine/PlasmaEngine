@@ -5,12 +5,14 @@
 [RunInEditor]
 class DeferredRenderer : LightningComponent
 {
+  [Group("Resolution")]
+  [Property] var OverrideResolution : Boolean = false;   
+  [Group("Resolution")]
+  [Property] var CustomResolution : Integer2 = Integer2(1920,1080);
+  
   // Cubemap Texture to use for indirect lighting and/or scene background. Undefined behavior if null or not a cubemap.
-  [Group("Settings")]
+  [Group("Skybox")]
   [Property] var Skybox : Texture = Texture.SimpleSkybox;
-  // The Main Light for the level
-  [Group("Settings")]
-  [Property] var MainLight : CogPath = null;
   // Color for the background if not using the skybox.
   [Group("Settings")]
   [Property] var ClearColor : Real4 = Real4(0.0, 0.0, 0.0, 1.0);
@@ -21,9 +23,9 @@ class DeferredRenderer : LightningComponent
   [Group("Settings")]
   [Property] var IndirectLighting : Boolean = true;
   // Arbitrary scalar for the output of IndirectLighting.
-  [Group("Settings")]
+  [Group("Skybox")]
   [Property] var IndirectIntensity : Real = 1.0;
-  [Group("Settings")]
+  [Group("Skybox")]
   [Property] var MaxIntensity : Real = 50.0;
   // If a filmic tonemap should be used when converting lighting results from linear to gamma for monitor display.
   [Group("Settings")]
@@ -59,8 +61,6 @@ class DeferredRenderer : LightningComponent
   
   var FinalOutput : RenderTarget;
   
-  var SSRTexture : Texture;
-  
   var FirstFrame : Boolean;
   
   function Initialize(init : CogInitializer)
@@ -69,10 +69,6 @@ class DeferredRenderer : LightningComponent
     
     Plasma.Connect(this.Owner, Events.RenderTasksUpdate, this.OnRenderTasksUpdate);
     Plasma.Connect(this.Space, Events.DebugViewMode, this.OnDebugViewChange);
-
-    
-    //this.SSRTexture = Texture.CreateRuntime();
-    //this.SSRTexture.Upload(TextureFormat.RGBA8, viewportSize.X, viewportSize.Y);
   } 
    
   function OnDebugViewChange(event: DebugViewEvent)
@@ -83,6 +79,9 @@ class DeferredRenderer : LightningComponent
   function ResizeBuffers(event : RenderTasksEvent)
   {
     var viewportSize = event.ViewportSize;
+    
+    if(this.OverrideResolution)
+      viewportSize = this.CustomResolution;
     
     this.FinalOutput = event.GetFinalTarget(viewportSize, TextureFormat.RGBA8);
     
@@ -106,35 +105,12 @@ class DeferredRenderer : LightningComponent
   {      
     var viewportSize = event.ViewportSize;
     
+    if(this.OverrideResolution)
+      viewportSize = this.CustomResolution;
+    
     this.ResizeBuffers(event);
         
-    var geometryPassSettings = RenderSettings();
-    geometryPassSettings.MultiRenderTarget.ColorTarget0 = this.GBuffer1;
-    geometryPassSettings.MultiRenderTarget.ColorTarget1 = this.GBuffer2;
-    geometryPassSettings.MultiRenderTarget.ColorTarget2 = this.GBuffer3;
-    geometryPassSettings.DepthTarget = this.Depth;
-    
-    geometryPassSettings.DepthSettings.DepthMode = DepthMode.Write;
-    geometryPassSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
-    // Using stencil buffer to optimally identify which pixels had opaque objects rendered to them
-    geometryPassSettings.DepthSettings.StencilMode = StencilMode.Enabled;
-    geometryPassSettings.DepthSettings.StencilCompareFunc = TextureCompareFunc.Always;
-    geometryPassSettings.DepthSettings.StencilFailOp = StencilOp.Keep;
-    geometryPassSettings.DepthSettings.DepthFailOp = StencilOp.Keep;
-    geometryPassSettings.DepthSettings.DepthPassOp = StencilOp.Replace;
-    geometryPassSettings.DepthSettings.StencilTestValue = 1 as Byte;
-    
-    // Clearing depth to 1 (the farplane) the way it is currently stored, and normals to +z
-    event.AddRenderTaskClearTarget(geometryPassSettings, Real4(0.0, 0.0, 1.0, 1.0), 1.0, 0);
-    
-    
-    
-    ////////////////////////////////////////////////
-    geometryPassSettings.CullMode = CullMode.BackFace;
-    event.AddRenderTaskRenderPass(geometryPassSettings, RenderGroup.Opaque, GeometryPass(), "OpaqueGeom");
-    
-    geometryPassSettings.CullMode = CullMode.Disabled;
-    event.AddRenderTaskRenderPass(geometryPassSettings, RenderGroup.OpaqueDoubleSided, GeometryPass(), "DoubleSidedGeom");
+    GBufferPass.AddGBufferRenderPass(event, this.GBuffer1, this.GBuffer2, this.GBuffer3, this.Depth);
     
     // Lighting
     var lightBuffer = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
@@ -305,6 +281,9 @@ class DeferredRenderer : LightningComponent
     // FXAA
     if(this.Owner.PostProcessFXAA != null)
         this.Owner.PostProcessFXAA.AddRenderTasks(event, this.FinalOutput);
+        
+    if(this.Owner.PostProcessSMAA != null)
+      this.Owner.PostProcessSMAA.AddSMAARenderPass(event, this.FinalOutput);
         
     // Alpha materials
     alphaSettings.ColorTarget = this.FinalOutput;

@@ -11,6 +11,6 @@ struct EmissiveValue
 
     function Main()
     {
-        this.Emissive *= this.EmissiveColor.XYZ * this.EmissivePower;
+        this.Emissive *= this.EmissiveColor.XYZ * (this.EmissivePower * 20);
     }
 }

@@ -1,0 +1,71 @@
+// MIT Licensed (see LICENSE.md).
+
+class GBufferPass
+{
+  [Static]
+  function AddGBufferRenderPass(event : RenderTasksEvent, gBuffer0 : RenderTarget, gBuffer1 : RenderTarget, gBuffer2 : RenderTarget, depth : RenderTarget)
+  {
+      var geometryPassSettings = RenderSettings();
+    geometryPassSettings.MultiRenderTarget.ColorTarget0 = gBuffer0;
+    geometryPassSettings.MultiRenderTarget.ColorTarget1 = gBuffer1;
+    geometryPassSettings.MultiRenderTarget.ColorTarget2 = gBuffer2;
+    geometryPassSettings.DepthTarget = depth;
+    
+    geometryPassSettings.DepthSettings.DepthMode = DepthMode.Write;
+    geometryPassSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
+    // Using stencil buffer to optimally identify which pixels had opaque objects rendered to them
+    geometryPassSettings.DepthSettings.StencilMode = StencilMode.Enabled;
+    geometryPassSettings.DepthSettings.StencilCompareFunc = TextureCompareFunc.Always;
+    geometryPassSettings.DepthSettings.StencilFailOp = StencilOp.Keep;
+    geometryPassSettings.DepthSettings.DepthFailOp = StencilOp.Keep;
+    geometryPassSettings.DepthSettings.DepthPassOp = StencilOp.Replace;
+    geometryPassSettings.DepthSettings.StencilTestValue = 1 as Byte;
+    
+    // Clearing depth to 1 (the farplane) the way it is currently stored, and normals to +z
+    event.AddRenderTaskClearTarget(geometryPassSettings, Real4(0.0, 0.0, 1.0, 1.0), 1.0, 0);
+    
+    geometryPassSettings.CullMode = CullMode.BackFace;
+    event.AddRenderTaskRenderPass(geometryPassSettings, RenderGroup.Opaque, GeometryPass(), "OpaqueGeom");
+    
+    geometryPassSettings.CullMode = CullMode.Disabled;
+    event.AddRenderTaskRenderPass(geometryPassSettings, RenderGroup.OpaqueDoubleSided, GeometryPass(), "DoubleSidedGeom");
+  }
+  
+  [Static]
+  function AddGBufferDebug(event : RenderTasksEvent, gBuffer0 : RenderTarget, gBuffer1 : RenderTarget, gBuffer2 : RenderTarget, finalOutput : RenderTarget, depth : RenderTarget, debugSetting : GeometryValue)
+  {
+    var geometryDebug = GeometryDebug();
+    geometryDebug.GeometryBuffer0 = gBuffer0.Texture;
+    geometryDebug.GeometryBuffer1 = gBuffer1.Texture;
+    geometryDebug.GeometryBuffer2 = gBuffer2.Texture;
+    
+    if (debugSetting == GeometryValue.Normal)
+      geometryDebug.ShowNormal = true;
+    else if (debugSetting == GeometryValue.Depth)
+      geometryDebug.ShowDepth = true;
+    else if (debugSetting == GeometryValue.Roughness)
+      geometryDebug.ShowRoughness = true;
+    else if (debugSetting == GeometryValue.Albedo)
+      geometryDebug.ShowAlbedo = true;
+    else if (debugSetting == GeometryValue.Metallic)
+      geometryDebug.ShowMetallic = true;
+    else if (debugSetting == GeometryValue.Specular)
+      geometryDebug.ShowSpecular = true;
+    else if (debugSetting == GeometryValue.Emissive)
+      geometryDebug.ShowEmissive = true;
+    else if (debugSetting == GeometryValue.AO)
+      geometryDebug.ShowAO = true;
+    
+    var geometryDebugSettings = RenderSettings();
+    geometryDebugSettings.ColorTarget = finalOutput;
+    geometryDebugSettings.DepthTarget = depth;
+    geometryDebugSettings.DepthSettings.StencilMode = StencilMode.Enabled;
+    geometryDebugSettings.DepthSettings.StencilCompareFunc = TextureCompareFunc.Equal;
+    geometryDebugSettings.DepthSettings.StencilFailOp = StencilOp.Keep;
+    geometryDebugSettings.DepthSettings.DepthFailOp = StencilOp.Keep;
+    geometryDebugSettings.DepthSettings.DepthPassOp = StencilOp.Keep;
+    geometryDebugSettings.DepthSettings.StencilTestValue = 1 as Byte;
+    
+    event.AddRenderTaskPostProcess(geometryDebugSettings, geometryDebug, "GeometryDebug");
+  }
+}
