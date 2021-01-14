@@ -1,0 +1,9 @@
+// MIT Licensed (see LICENSE.md).
+
+class IndirectLightingPass
+{
+  [Static]
+  function AddIndirectLightingRenderPass( event : RenderTasksEvent)
+  {
+  }
+}
