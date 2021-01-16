@@ -47,6 +47,7 @@ public:
   bool mGenerateSmoothNormals;
   float mSmoothingAngleDegreesThreshold;
   bool mGenerateTangentSpace;
+  float mTangentSmoothAngle;
   bool mInvertUvYAxis;
   bool mFlipWindingOrder;
   bool mFlipNormals;

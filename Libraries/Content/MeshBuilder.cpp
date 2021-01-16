@@ -13,6 +13,7 @@ LightningDefineType(MeshBuilder, builder, type)
   LightningBindFieldProperty(mGenerateSmoothNormals);
   LightningBindFieldProperty(mSmoothingAngleDegreesThreshold);
   LightningBindFieldProperty(mGenerateTangentSpace);
+  LightningBindFieldProperty(mTangentSmoothAngle);
   LightningBindFieldProperty(mInvertUvYAxis);
   LightningBindFieldProperty(mFlipWindingOrder);
   LightningBindFieldProperty(mFlipNormals);
@@ -23,6 +24,7 @@ MeshBuilder::MeshBuilder() :
     mGenerateSmoothNormals(false),
     mSmoothingAngleDegreesThreshold(30.f),
     mGenerateTangentSpace(true),
+    mTangentSmoothAngle(30.f),
     mInvertUvYAxis(false),
     mFlipWindingOrder(false),
     mFlipNormals(false)
@@ -50,6 +52,7 @@ void MeshBuilder::Serialize(Serializer& stream)
   SerializeNameDefault(mGenerateSmoothNormals, false);
   SerializeNameDefault(mSmoothingAngleDegreesThreshold, 30.f);
   SerializeNameDefault(mGenerateTangentSpace, true);
+  SerializeNameDefault(mTangentSmoothAngle, 30.f);
   SerializeNameDefault(mInvertUvYAxis, false);
   SerializeNameDefault(mFlipWindingOrder, false);
   SerializeNameDefault(mFlipNormals, false);
