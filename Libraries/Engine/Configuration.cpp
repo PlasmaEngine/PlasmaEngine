@@ -17,6 +17,7 @@ LightningDefineType(MainConfig, builder, type)
   PlasmaBindDocumented();
   LightningBindGetterProperty(BuildDate);
   LightningBindGetterProperty(BuildVersion);
+  LightningBindGetterProperty(DataDirectory);
   type->AddAttribute(ObjectAttributes::cCore);
 }
 
@@ -33,6 +34,11 @@ String MainConfig::GetBuildDate()
 String MainConfig::GetBuildVersion()
 {
   return GetBuildVersionName();
+}
+
+String MainConfig::GetDataDirectory()
+{
+  return DataDirectory;
 }
 
 void MainConfig::Serialize(Serializer& stream)

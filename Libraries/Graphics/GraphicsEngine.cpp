@@ -35,6 +35,8 @@ Memory::Pool* gShaderPool = nullptr;
 
 LightningDefineType(GraphicsEngine, builder, type)
 {
+  PlasmaBindDocumented();
+  LightningBindMethod(WriteTextureToFile);
 }
 
 GraphicsEngine::GraphicsEngine() : mNewLibrariesCommitted(false), mRenderGroupCount(0), mUpdateRenderGroupCount(false)
@@ -366,6 +368,7 @@ void GraphicsEngine::Update(bool debugger)
 #endif
 
   AddRendererJob(mDoRenderTasksJob);
+
 
   // Add job for texture data after render tasks job so that
   // textures being written to in render tasks will have the expected data

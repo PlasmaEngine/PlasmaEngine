@@ -33,6 +33,8 @@ uint GeometryImporter::SetupAssimpPostProcess()
   // always generate normals if none are present
   flags |= aiProcess_GenSmoothNormals;
 
+  flags |= aiProcess_OptimizeMeshes;
+
   int removeFlags = 0;
 
   if (!meshBuilder->mInvertUvYAxis)
