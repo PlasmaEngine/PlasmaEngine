@@ -55,7 +55,7 @@ target_sources(PlasmaLauncher
 
 target_link_libraries(PlasmaLauncher
   PUBLIC
-    Assimp
+    assimp
     CodeTranslator
     Common
     Content
