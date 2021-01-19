@@ -37,7 +37,7 @@ uint GeometryImporter::SetupAssimpPostProcess()
 
   int removeFlags = 0;
 
-  if (!meshBuilder->mInvertUvYAxis)
+  if (meshBuilder->mInvertUvYAxis)
   {
     flags |= aiProcess_FlipUVs;
   }
@@ -56,6 +56,7 @@ uint GeometryImporter::SetupAssimpPostProcess()
     flags |= aiProcess_CalcTangentSpace;
     flags |= aiProcess_RemoveComponent;
     removeFlags |= aiComponent_TANGENTS_AND_BITANGENTS;
+    mAssetImporter.SetPropertyFloat(AI_CONFIG_PP_CT_MAX_SMOOTHING_ANGLE, meshBuilder->mTangentSmoothAngle);
   }
 
   if (meshBuilder->mFlipWindingOrder)

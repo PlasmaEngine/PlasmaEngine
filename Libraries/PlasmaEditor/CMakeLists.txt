@@ -18,7 +18,7 @@ target_sources(PlasmaEditor
 
 target_link_libraries(PlasmaEditor
   PUBLIC
-    Assimp
+    assimp
     CodeTranslator
     Common
     Content

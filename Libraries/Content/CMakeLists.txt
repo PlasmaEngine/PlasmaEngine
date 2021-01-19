@@ -92,7 +92,7 @@ plasma_target_includes(Content
   PUBLIC
     Common
     Lightning
-    Assimp
+    assimp
     ZLib
     Opus
     Nvtt

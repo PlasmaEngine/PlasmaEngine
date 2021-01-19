@@ -11,7 +11,7 @@ void AddToSelection(Space* space, MetaSelection* selection, BoundType* boundType
   {
     Cog* cog = &r.Front();
 
-    if (!cog->mFlags.IsSet(CogFlags::Protected))
+    if (!cog->mFlags.IsSet(CogFlags::Protected) && !cog->GetObjectViewHidden())
     {
       // Test to see if the component is present
       Component* component = cog->QueryComponentType(boundType);
