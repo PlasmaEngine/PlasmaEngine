@@ -20,7 +20,7 @@ ImageContent
 	{
 		var FileType = "png"
 		var LoadFormat = "RGBA8"
-		var Dimensions = "3840 x 2160"
-		var Size = "31.640 MB"
+		var Dimensions = "1920 x 1080"
+		var Size = "7.910 MB"
 	}
 }

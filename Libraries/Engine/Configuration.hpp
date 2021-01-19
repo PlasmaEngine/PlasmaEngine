@@ -20,6 +20,7 @@ public:
 
   String GetBuildDate();
   String GetBuildVersion();
+  String GetDataDirectory();
 
   /// Directory source was built from.
   String SourceDirectory;

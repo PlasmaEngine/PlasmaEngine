@@ -65,7 +65,7 @@ namespace Plasma
 
     void SpriteParticleSystem::ExtractViewData(ViewNode& viewNode, ViewBlock& viewBlock, FrameBlock& frameBlock)
     {
-        viewNode.mLastLocalToView - viewNode.mLocalToView;
+        viewNode.mLastLocalToView = viewNode.mLocalToView;
         viewNode.mLocalToView = viewBlock.mWorldToView;
 
         if (mSystemSpace != SystemSpace::WorldSpace)

@@ -71,6 +71,8 @@ LightningDefineType(Engine, builder, type)
   PlasmaBindEvent(Events::EngineUpdate, UpdateEvent);
   PlasmaBindEvent(Events::CurrentInputDeviceChanged, UpdateEvent);
 
+  LightningBindGetter(ConfigCog);
+  
   LightningBindMethod(Terminate);
   LightningBindMethod(CreateGameSession);
   LightningBindMethod(CreateGameSessionFromArchetype);
