@@ -282,9 +282,6 @@ class DeferredRenderer : LightningComponent
     if(this.Owner.PostProcessFXAA != null)
         this.Owner.PostProcessFXAA.AddRenderTasks(event, this.FinalOutput);
         
-    if(this.Owner.PostProcessSMAA != null)
-      this.Owner.PostProcessSMAA.AddSMAARenderPass(event, this.FinalOutput);
-        
     // Alpha materials
     alphaSettings.ColorTarget = this.FinalOutput;
     alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
