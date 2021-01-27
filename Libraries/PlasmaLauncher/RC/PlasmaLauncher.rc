@@ -63,8 +63,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,0,0,1
- PRODUCTVERSION 0,0,0,1
+ FILEVERSION PlasmaMajorVersion,PlasmaMinorVersion,PlasmaPatchVersion,0
+ PRODUCTVERSION PlasmaMajorVersion,PlasmaMinorVersion,PlasmaPatchVersion,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -81,12 +81,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "PlasmaEngine"
             VALUE "FileDescription", "PlasmaLauncher"
-            VALUE "FileVersion", "0.0.0.1"
+            VALUE "FileVersion", "FILEVERSION"
             VALUE "InternalName", "PlasmaLauncher.exe"
             VALUE "LegalCopyright", "Copyright (C) 2020"
             VALUE "OriginalFilename", "PlasmaLauncher.exe"
             VALUE "ProductName", "PlasmaLauncher"
-            VALUE "ProductVersion", "0.0.0.1"
+            VALUE "ProductVersion", "PRODUCTVERSION"
         END
     END
     BLOCK "VarFileInfo"
