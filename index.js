@@ -643,11 +643,11 @@ const cmake = async (options) => {
     "describe",
     "--tags"
   ], gitOptions);
-  const versionResult = (/v(?<major>[0-9]+)\.(?<minor>[0-9]+)\.(?<patch>[0-9]+)/u).exec(tag);
+  const versionResult = (/([0-9]+)\.([0-9]+)\.([0-9]+)/u).exec(tag);
   const version = versionResult ? {
-    major: parseInt(versionResult.groups.major, 10),
-    minor: parseInt(versionResult.groups.minor, 10),
-    patch: parseInt(versionResult.groups.patch, 10)
+    major: parseInt(versionResult[1], 10),
+    minor: parseInt(versionResult[2], 10),
+    patch: parseInt(versionResult[3], 10)
   } : {major: 0, minor: 0, patch: 0};
 
   const builderArgs = [];
