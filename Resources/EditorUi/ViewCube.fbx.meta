@@ -16,7 +16,8 @@ GeometryContent
 		var GenerateSmoothNormals = false
 		var SmoothingAngleDegreesThreshold = 0
 		var GenerateTangentSpace = true
-		var InvertUvYAxis = false
+		var TangentSmoothAngle = 30
+		var InvertUvYAxis = true
 		var FlipWindingOrder = false
 		var FlipNormals = false
 		var Meshes = Array
