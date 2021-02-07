@@ -302,7 +302,8 @@ void ToolBar::AddCommand(Command* command, Command* secondaryCommand)
     button->AddCommand(command);
     button->SetName(BuildString(command->Name, "Command"));
     button->SetSizing(SizeAxis::Y, SizePolicy::Fixed, mSize.y);
-
+    button->SetToolTip(command->Name);
+    button->mShowToolTip = true;
     if (secondaryCommand)
       button->AddCommand(secondaryCommand);
   }
