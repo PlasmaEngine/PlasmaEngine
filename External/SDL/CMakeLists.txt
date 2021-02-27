@@ -15,6 +15,5 @@ target_link_libraries(SDL
     SDL2main
 )
 
-set_target_properties( SDL PROPERTIES FOLDER "External/SDL" )
 set_target_properties( SDL2main PROPERTIES FOLDER "External/SDL" )
 set_target_properties( SDL2-static PROPERTIES FOLDER "External/SDL" )

@@ -62,7 +62,7 @@ const executables = [
   {
     copyToIncludedBuilds: true,
     name: "PlasmaEditor",
-    folder : "Editor",
+    folder: "Editor",
     nonResourceDependencies: [
       "Data",
       "LauncherTemplates",
@@ -84,7 +84,7 @@ const executables = [
     // Since the launcher includes the editor build, it must come afterwards.
     copyToIncludedBuilds: false,
     name: "PlasmaLauncher",
-    folder : "Launcher",
+    folder: "Launcher",
     nonResourceDependencies: [
       "Data",
       path.join("Build", "IncludedBuilds"),
