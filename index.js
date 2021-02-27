@@ -36,7 +36,7 @@ const repoRootFile = ".plasma";
 
 const dirs = (() => {
   const repo = path.dirname(findUp.sync(repoRootFile));
-  const libraries = path.join(repo, "Libraries");
+  const libraries = path.join(repo, "Source");
   const resources = path.join(repo, "Resources");
   const build = path.join(repo, "Build");
   const prebuiltContent = path.join(build, "PrebuiltContent");
@@ -62,6 +62,7 @@ const executables = [
   {
     copyToIncludedBuilds: true,
     name: "PlasmaEditor",
+    folder : "Editor",
     nonResourceDependencies: [
       "Data",
       "LauncherTemplates",
@@ -83,6 +84,7 @@ const executables = [
     // Since the launcher includes the editor build, it must come afterwards.
     copyToIncludedBuilds: false,
     name: "PlasmaLauncher",
+    folder : "Launcher",
     nonResourceDependencies: [
       "Data",
       path.join("Build", "IncludedBuilds"),
@@ -574,7 +576,7 @@ const buildvfs = async (cmakeVariablesOptional, buildDir, combo) => {
   for (const executable of executables) {
     console.log(`Building virtual file system for ${executable.name}`);
 
-    const libraryDir = path.join(buildDir, "Libraries", executable.name);
+    const libraryDir = path.join(buildDir, "Source", executable.folder,  executable.name);
     mkdirp.sync(libraryDir);
 
     const makeFsBuffer = async () => {

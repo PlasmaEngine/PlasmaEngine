@@ -4,6 +4,8 @@ set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebInfo Release MinSizeRel)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PlasmaEditor)
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 find_program(PLASMA_IWYU_PATH NAMES include-what-you-use iwyu)
 if(PLASMA_IWYU_PATH)
   message(STATUS "Found iwyu at ${PLASMA_IWYU_PATH}")
@@ -47,7 +49,7 @@ set(PLASMA_CORE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(PLASMA_CMAKE_DIR ${PLASMA_CORE_DIR}/CMakeFiles/)
 set(PLASMA_TOOLCHAIN_DIR ${PLASMA_CMAKE_DIR}/Toolchain/)
 set(PLASMA_TARGETOS_DIR ${PLASMA_CMAKE_DIR}/TargetOs/)
-set(PLASMA_LIBRARIES_DIR ${PLASMA_CORE_DIR}/Libraries/)
+set(PLASMA_LIBRARIES_DIR ${PLASMA_CORE_DIR}/Source/)
 set(PLASMA_PLATFORM_DATA_DIR ${PLASMA_CORE_DIR}/PlatformData/${PLASMA_TOOLCHAIN})
 
 function(plasma_setup_library target directory internal)
@@ -151,7 +153,7 @@ set(CMAKE_EXE_LINKER_FLAGS_MINSIZEREL         "${CMAKE_EXE_LINKER_FLAGS_MINSIZER
 #Emscripten
 #SDLSTDEmpty
 #Stub
-add_subdirectory(Libraries/Platform/${PLASMA_PLATFORM})
+add_subdirectory(Source/Platform/${PLASMA_PLATFORM})
 
 add_subdirectory(External)
-add_subdirectory(Libraries)
+add_subdirectory(Source)

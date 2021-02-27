@@ -38,3 +38,5 @@ target_include_directories(ZLib
 )
 
 set_target_properties( ZLib PROPERTIES FOLDER "External/ZLib" )
+set_property(TARGET "zlib" PROPERTY FOLDER "External/ZLib")
+set_property(TARGET "zlibstatic" PROPERTY FOLDER "External/ZLib")
