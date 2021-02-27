@@ -16,6 +16,5 @@ if(NOT EMSCRIPTEN)
       libcurl
   )
 
-  set_target_properties( Curl PROPERTIES FOLDER "External/Curl" )
   set_target_properties( libcurl PROPERTIES FOLDER "External/Curl" )
 endif()
