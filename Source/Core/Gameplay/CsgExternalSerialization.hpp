@@ -1,9 +1,9 @@
 // MIT Licensed (see LICENSE.md).
 #pragma once
 
-#include "Serialization/SerializationTraits.hpp"
-#include "Geometry/Polygon.hpp"
-#include "Geometry/Shape2D.hpp"
+#include "Core/Serialization/SerializationTraits.hpp"
+#include "Core/Geometry/Polygon.hpp"
+#include "Core/Geometry/Shape2D.hpp"
 
 // Polygon and Shape2D are in Geometry which doesn't know about
 // serialization. To deal with this we define a policy externally.

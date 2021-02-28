@@ -60,6 +60,7 @@ target_link_libraries(PlasmaLauncher
     Common
     Content
     EditorCore
+    ExportTool
     Engine
     FreeType
     Gameplay

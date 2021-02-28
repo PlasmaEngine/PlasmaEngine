@@ -9,6 +9,9 @@
 #include "Lightning/LightningScript/LightningScriptStandard.hpp"
 #include "UI/UiWidget/UiWidgetStandard.hpp"
 
+//TODO: move all code using this module into the module itself
+#include "Editor/Modules/ExportTool/ExportToolStandard.hpp"
+
 namespace Plasma
 {
 

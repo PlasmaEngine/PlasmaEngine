@@ -285,6 +285,7 @@ target_sources(EditorCore
 plasma_target_includes(EditorCore
   PUBLIC
     Scintilla
+    ExportTool
     Common
     LightningShaders
 )
