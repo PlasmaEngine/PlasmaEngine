@@ -5,24 +5,6 @@ git:
   depth: false
 jobs:
   include:
-  - name: Linux
-    os: linux
-    env:
-    - CACHE_NAME=Linux
-    services:
-    - docker
-    script:
-    - ./dockerbuildserver.sh
-    - ./weld.sh node index.js all --alias=Linux
-  - name: Emscripten
-    os: linux
-    env:
-    - CACHE_NAME=Emscripten
-    services:
-    - docker
-    script:
-    - ./dockerbuildserver.sh
-    - ./weld.sh node index.js all --alias=Emscripten
   - name: Windows
     os: windows
     env:
