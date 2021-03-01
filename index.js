@@ -823,6 +823,7 @@ const build = async (options) => {
   ], opts);
   endPnot();
   console.log("Built");
+  return 0;
 };
 
 const executeBuiltProcess = async (buildDir, combo, library, args) => {
@@ -1068,7 +1069,8 @@ const disk = () => {
 const all = async (options) => {
   await format({...options, validate: true});
   await cmake(options);
-  await build(options);
+  // Build the executable so we can prebuild content (no prebuilt content or included builds for the launcher yet)
+  return await build(options);
 };
 
 const main = async () => {
