@@ -36,7 +36,7 @@ const repoRootFile = ".plasma";
 
 const dirs = (() => {
   const repo = path.dirname(findUp.sync(repoRootFile));
-  const libraries = path.join(repo, "Libraries");
+  const libraries = path.join(repo, "Source");
   const resources = path.join(repo, "Resources");
   const build = path.join(repo, "Build");
   const prebuiltContent = path.join(build, "PrebuiltContent");
@@ -61,6 +61,7 @@ const dirs = (() => {
 const executables = [
   {
     copyToIncludedBuilds: true,
+    folder: "Editor",
     name: "PlasmaEditor",
     nonResourceDependencies: [
       "Data",
@@ -82,6 +83,7 @@ const executables = [
   {
     // Since the launcher includes the editor build, it must come afterwards.
     copyToIncludedBuilds: false,
+    folder: "Launcher",
     name: "PlasmaLauncher",
     nonResourceDependencies: [
       "Data",
@@ -574,7 +576,7 @@ const buildvfs = async (cmakeVariablesOptional, buildDir, combo) => {
   for (const executable of executables) {
     console.log(`Building virtual file system for ${executable.name}`);
 
-    const libraryDir = path.join(buildDir, "Libraries", executable.name);
+    const libraryDir = path.join(buildDir, "Source", executable.folder, executable.name);
     mkdirp.sync(libraryDir);
 
     const makeFsBuffer = async () => {
@@ -821,6 +823,7 @@ const build = async (options) => {
   ], opts);
   endPnot();
   console.log("Built");
+  return 0;
 };
 
 const executeBuiltProcess = async (buildDir, combo, library, args) => {
@@ -1064,20 +1067,10 @@ const disk = () => {
 };
 
 const all = async (options) => {
-  await format({...options, validate: true});
   await cmake(options);
   // Build the executable so we can prebuild content (no prebuilt content or included builds for the launcher yet)
   await build(options);
-  await prebuilt(options);
-  // Build again so that platforms with a VFS will have the prebuilt content
-  await build(options);
-  // Pack up the builds so that we can include the build for the launcher
-  await pack(options);
-  // Build again so that if the launcher uses a VFS it will have the packaged build
-  await build(options);
-  await documentation(options);
-  // Finally, pack everything up (with included builds and prebuilt content)
-  await pack(options);
+
 };
 
 const main = async () => {
