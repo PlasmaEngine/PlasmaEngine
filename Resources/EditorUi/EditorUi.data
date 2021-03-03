@@ -235,6 +235,14 @@ DefinitionSet =
 		float[] Uv1 = [ 24 , 24 ],
 		float[] Slices = [ 2, 2, 2, 2 ] ,
 	},
+
+	SlicedDefinition WhiteTabSquare =
+	{
+		string Texture = "EditorUi",
+		float[] Uv0 = [ 226 , 86 ],
+		float[] Uv1 = [ 24 , 24 ],
+		float[] Slices = [ 6, 6, 6, 6 ] ,
+	},
 	
 	ImageDefinition IndicatorArrow =
 	{

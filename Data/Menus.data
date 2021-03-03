@@ -2,7 +2,7 @@ Menus menus =
 {
 	Menu =
 	{
-		string Name = "Project",
+		string Name = "File",
 		string Description = "",
 		Array Entries = 
 		[
@@ -153,7 +153,7 @@ Menus menus =
 		string Description = "",
 		Array Entries = 
 		[
-		  "Project",
+		  "File",
 		  "Edit",
 		  "Create",
 		  "Select",

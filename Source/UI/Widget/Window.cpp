@@ -121,7 +121,7 @@ TabWidget::TabWidget(Composite* parent) : Composite(parent)
 
   static const String className = "Tab";
   mDefSet = mDefSet->GetDefinitionSet(className);
-  mBackground = CreateAttached<Element>(cWhiteSquare);
+  mBackground = CreateAttached<Element>(cWhiteTabSquare);
   mClose = CreateAttached<Element>(CloseIcon);
   mTitle = new Text(this, cText);
   mTitle->SetInteractive(false);
