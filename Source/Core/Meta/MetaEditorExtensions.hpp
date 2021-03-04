@@ -14,6 +14,14 @@ public:
   virtual ~EditorPropertyExtension(){};
 };
 
+class EditorTransformProperty : public EditorPropertyExtension
+{
+public:
+  LightningDeclareType(EditorTransformProperty, TypeCopyMode::ReferenceType);
+
+  virtual ~EditorTransformProperty(){};
+};
+
 // Indexed String Array
 typedef void (*GetStringsFunc)(HandleParam instance, Property* property, Array<String>& strings);
 extern const String StringArrayEdit;

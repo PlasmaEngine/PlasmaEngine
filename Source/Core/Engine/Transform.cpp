@@ -106,9 +106,13 @@ LightningDefineType(Transform, builder, type)
   PlasmaBindComponent();
   PlasmaBindDocumented();
   PlasmaBindSetup(SetupMode::CallSetDefaults);
-  LightningBindGetterSetterProperty(Translation)->PlasmaLocalModificationOverride();
-  LightningBindGetterSetterProperty(Rotation)->PlasmaLocalModificationOverride();
-  LightningBindGetterSetterProperty(Scale)->PlasmaLocalModificationOverride();
+  LightningBindGetterSetterProperty(Translation)->Add(new EditorTransformProperty())->PlasmaLocalModificationOverride();
+  LightningBindGetterSetterProperty(Rotation)
+      ->Add(new EditorTransformProperty())
+      ->PlasmaLocalModificationOverride();
+  LightningBindGetterSetterProperty(Scale)
+      ->Add(new EditorTransformProperty())
+      ->PlasmaLocalModificationOverride();
   LightningBindMethod(SetRotationBases);
 
   LightningBindMethod(TransformNormal);

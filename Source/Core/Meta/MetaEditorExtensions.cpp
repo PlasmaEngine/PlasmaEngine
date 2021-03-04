@@ -9,6 +9,10 @@ LightningDefineType(EditorPropertyExtension, builder, type)
 {
 }
 
+LightningDefineType(EditorTransformProperty, builder, type)
+{
+}
+
 // Indexed String Array
 LightningDefineType(EditorIndexedStringArray, builder, type)
 {

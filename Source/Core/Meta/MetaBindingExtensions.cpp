@@ -34,6 +34,7 @@ namespace PropertyAttributes
 {
 
 const String cProperty("Property");
+const String cTransformProperty("TransformProperty");
 const String cInternal("Internal");
 const String cInvalidatesObject("InvalidatesObject");
 const String cShaderInput("ShaderInput");

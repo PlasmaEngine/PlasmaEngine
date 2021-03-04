@@ -415,7 +415,7 @@ Tweakables
 			{
 				var ColorWidgetHighlight = Vec4{0.180391997, 0.180391997, 0.180391997, 1}
 				var VectorElementMinSize = 80
-				var ElementLables = false
+				var ElementLables = true
 				var ModifiedTextColor = Vec4{0.952941239, 0.631372571, 0.427451015, 1}
 				var ResourceEditColor = Vec4{0.9, 0.9, 0.9, 1}
 				var ResourceEditMouseOver = Vec4{1, 1, 1, 1}

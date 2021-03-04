@@ -13,7 +13,10 @@ class PointLight : LightningComponent
   [Property] var LightColor : Real4
   {
     get { return Real4(this.LightColorValue, 1.0); }
-    set { this.LightColorValue = value.XYZ; }
+    set 
+    { 
+      this.LightColorValue = value.XYZ; 
+    }
   }
   
   // Combined with area light falloff and represents total emittance of the light. Value in Lumens.
