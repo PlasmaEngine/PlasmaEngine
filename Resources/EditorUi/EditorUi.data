@@ -412,6 +412,38 @@ DefinitionSet =
 		float[] Uv0 = [ 48 , 224 ],
 		float[] Uv1 = [ 16 , 16 ],
 	},
+
+	ImageDefinition AnimationIcon =
+	{
+		string Texture = "ToolIcons",
+		int ImageMode = 0,
+		float[] Uv0 = [ 0 , 242 ],
+		float[] Uv1 = [ 16 , 16 ],
+	},
+
+	ImageDefinition MaterialIcon =
+	{
+		string Texture = "ToolIcons",
+		int ImageMode = 0,
+		float[] Uv0 = [ 16 , 242 ],
+		float[] Uv1 = [ 16 , 16 ],
+	},
+
+	ImageDefinition ModelIcon =
+	{
+		string Texture = "ToolIcons",
+		int ImageMode = 0,
+		float[] Uv0 = [ 32 , 242 ],
+		float[] Uv1 = [ 16 , 16 ],
+	},
+
+	ImageDefinition ScriptIcon =
+	{
+		string Texture = "ToolIcons",
+		int ImageMode = 0,
+		float[] Uv0 = [ 48 , 242 ],
+		float[] Uv1 = [ 16 , 16 ],
+	},
 	
 	ImageDefinition CheckIcon =
 	{

@@ -1013,10 +1013,10 @@ public:
         switch(i)
         {
         case 0:
-          mLableBacking[i]->SetColor(Vec4(0.8, 0.294, 0.294, 1));
+          mLableBacking[i]->SetColor(Vec4(0.659, 0.122, 0.122, 1));
           break;
         case 1:
-          mLableBacking[i]->SetColor(Vec4(0.302, 0.8, 0.294, 1));
+          mLableBacking[i]->SetColor(Vec4(0.169, 0.588, 0.165, 1));
           break;
         case 2:
           mLableBacking[i]->SetColor(Vec4(0.294, 0.467, 0.8, 1));
@@ -1296,7 +1296,7 @@ public:
   Vec3 mEulerCurrent;
   bool mEulerMode;
 
-  PropertyEditRotation(PropertyWidgetInitializer& initializer) : PropertyEditVector(initializer, 3, false)
+  PropertyEditRotation(PropertyWidgetInitializer& initializer) : PropertyEditVector(initializer, 3, true)
   {
     // We have to call refresh again because when in our base classes
     // constructor, it calls Refresh, which calls GetDisplayValue().

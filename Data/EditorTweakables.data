@@ -196,15 +196,15 @@ Tweakables
 			}
 			Tags_ 
 			{
-				var BackgroundColor = Vec4{0.301961005, 0.301961005, 0.301961005, 1}
+				var BackgroundColor = Vec4{0.118, 0.118, 0.118, 1}
 				var SearchIconBgColor = Vec4{0.615685999, 0.180391997, 0.0509804003, 1}
 				var SearchIconColor = Vec4{1, 1, 1, 0.9}
 				var SearchIconColorRight = Vec4{0.174999997, 0.174999997, 0.174999997, 1}
 			}
 			TextBox_ 
 			{
-				var BackgroundColor = Vec4{0, 0, 0, 0.25}
-				var BorderColor = Vec4{0.180391997, 0.180391997, 0.180391997, 1}
+				var BackgroundColor = Vec4{0.118, 0.118, 0.118, 1}
+				var BorderColor = Vec4{0.118, 0.118, 0.118, 1}
 				var FocusBorderColor = Vec4{0.196078002, 0.527999997, 0.917647004, 1}
 				var ReadOnlyBackgroundColor = Vec4{0.36500001, 0.36500001, 0.36500001, 1}
 				var ReadOnlyTextColor = Vec4{0.644999981, 0.644999981, 0.644999981, 1}
@@ -234,7 +234,7 @@ Tweakables
 			}
 			Toolbar_ 
 			{
-				var BackgroundColor = Vec4{0.165, 0.165, 0.165, 1}
+				var BackgroundColor = Vec4{0.196, 0.196, 0.196, 1}
 				var DividerColor = Vec4{0.165, 0.165, 0.165, 1}
 			}
 		}
