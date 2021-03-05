@@ -27,31 +27,31 @@ MainPropertyView::MainPropertyView(Composite* parent, MetaSelection* selection, 
 
   this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 5), Thickness::cZero));
 
-  // Create the row of buttons up top
+  //// Create the row of buttons up top
   mButtonRow = new Composite(this);
   mButtonRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Pixels(2, 0), Thickness(1, 0, 0, 0)));
-  {
-    // Previous button
-    IconButton* previousButton = new IconButton(mButtonRow);
-    previousButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
-    previousButton->SetIcon("PreviousObject");
-    previousButton->SetToolTip("Previous Selection");
-    ConnectThisTo(previousButton, Events::ButtonPressed, OnPreviousPressed);
+  //{
+  //  // Previous button
+  //  IconButton* previousButton = new IconButton(mButtonRow);
+  //  previousButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
+  //  previousButton->SetIcon("PreviousObject");
+  //  previousButton->SetToolTip("Previous Selection");
+  //  ConnectThisTo(previousButton, Events::ButtonPressed, OnPreviousPressed);
 
-    // Next button
-    IconButton* nextButton = new IconButton(mButtonRow);
-    nextButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
-    nextButton->SetIcon("NextObject");
-    nextButton->SetToolTip("Next Selection");
-    ConnectThisTo(nextButton, Events::ButtonPressed, OnNextPressed);
+  //  // Next button
+  //  IconButton* nextButton = new IconButton(mButtonRow);
+  //  nextButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
+  //  nextButton->SetIcon("NextObject");
+  //  nextButton->SetToolTip("Next Selection");
+  //  ConnectThisTo(nextButton, Events::ButtonPressed, OnNextPressed);
 
-    // Show button
-    IconButton* showButton = new IconButton(mButtonRow);
-    showButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
-    showButton->SetIcon("ShowObject");
-    showButton->SetToolTip("Show Selection");
-    ConnectThisTo(showButton, Events::ButtonPressed, OnShowPressed);
-  }
+  //  // Show button
+  //  IconButton* showButton = new IconButton(mButtonRow);
+  //  showButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
+  //  showButton->SetIcon("ShowObject");
+  //  showButton->SetToolTip("Show Selection");
+  //  ConnectThisTo(showButton, Events::ButtonPressed, OnShowPressed);
+  //}
 
   // Create the property view
   mPropertyView = new PropertyView(this);

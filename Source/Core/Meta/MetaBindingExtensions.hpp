@@ -54,6 +54,8 @@ namespace PropertyAttributes
 
 /// Implies both [Display] and [Serialize].
 extern const String cProperty;
+/// Used to enable element coloring, designed for transform component
+extern const String cTransformProperty;
 /// Used to hide members from auto-complete.
 extern const String cInternal;
 /// When this property is modified in the property grid, the property grid

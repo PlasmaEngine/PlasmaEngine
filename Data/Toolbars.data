@@ -28,7 +28,6 @@ Menus menus =
 		  "TranslateTool",
 		  "RotateTool",
 		  "ScaleTool",
-		  "ManipulatorTool",
 		]
 	},
 
@@ -37,13 +36,13 @@ Menus menus =
 		string Name = "EditToolsToolbar",
 		Array Entries = 
 		[
-		  "TileEditor2D",
-		  "HeightMapTool",
-		  "JointTool",
-		  "CreationTool",
-		  "Divider",
-		  "Divider",
-		  "Divider",
+		  //"TileEditor2D",
+		  //"HeightMapTool",
+		  //"JointTool",
+		  //"CreationTool",
+		  //"Divider",
+		  //"Divider",
+		  //"Divider",
 		]
 	},	
 	
@@ -63,12 +62,12 @@ Menus menus =
 		string Name = "WindowsToolbar",
 		Array Entries = 
 		[
-		  "Animator",
-		  "Console",
-		  "Properties",
-		  "Objects",
-		  "Library",
-		  "FindAll",
+		  //"Animator",
+		  //"Console",
+		  //"Properties",
+		  //"Objects",
+		  //"Library",
+		  //"FindAll",
 		]
 	}
 	
@@ -89,11 +88,11 @@ Menus menus =
 		string Name = "DebuggerToolbar",
 		Array Entries = 
 		[
-			"DebuggerResume",
-			"DebuggerPause",
-			"DebuggerStepIn",
-			"DebuggerStepOver",
-			"DebuggerStepOut",
+			//"DebuggerResume",
+			//"DebuggerPause",
+			//"DebuggerStepIn",
+			//"DebuggerStepOver",
+			//"DebuggerStepOut",
 		]
 	}
 	
@@ -102,9 +101,9 @@ Menus menus =
 		string Name = "HelpToolbar",
 		Array Entries = 
 		[
-			"Chat",
-			"Market",
-			"Divider",
+			//"Chat",
+			//"Market",
+			//"Divider",
 			"ReportBug",
 		]
 	}

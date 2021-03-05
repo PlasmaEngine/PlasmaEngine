@@ -979,12 +979,12 @@ public:
     PlaceWithLayout(nameLayout, mLabel);
 
     LayoutResult contentLayout = GetContentLayout(nameLayout);
-    mCheckBox->SetTranslation(contentLayout.Translation);
+    mCheckBox->SetTranslation(contentLayout.Translation + Vec3(contentLayout.Size.x - mCheckBox->GetSize().x, 0, 0));
     PropertyWidget::UpdateTransform();
   }
 };
 
-DeclareEnum4(AxisLables, X, Y, PL, W);
+DeclareEnum4(AxisLables, X, Y, Z, W);
 
 // Property editor vector create a text box for
 // each element of a vector for up to four elements
@@ -993,20 +993,47 @@ class PropertyEditVector : public DirectProperty
 public:
   typedef PropertyEditVector LightningSelf;
   TextBox* mEditText[4];
+  ColorBlock* mLableBacking[4];
   Label* mAxisLabel[4];
+  bool mColored;
   uint mDimension;
   PropertyState mState;
 
-  PropertyEditVector(PropertyWidgetInitializer& initializer, uint dimension) : DirectProperty(initializer)
+  PropertyEditVector(PropertyWidgetInitializer& initializer, uint dimension, bool colored) : DirectProperty(initializer)
   {
     mDefSet = initializer.Parent->GetDefinitionSet();
     mDimension = dimension;
+    mColored = colored;
 
     for (uint i = 0; i < mDimension; ++i)
     {
+      if (mColored)
+      {
+        mLableBacking[i] = new ColorBlock(this);
+        switch(i)
+        {
+        case 0:
+          mLableBacking[i]->SetColor(Vec4(0.659, 0.122, 0.122, 1));
+          break;
+        case 1:
+          mLableBacking[i]->SetColor(Vec4(0.169, 0.588, 0.165, 1));
+          break;
+        case 2:
+          mLableBacking[i]->SetColor(Vec4(0.294, 0.467, 0.8, 1));
+          break;
+        case 3:
+          mLableBacking[i]->SetColor(Vec4(1, 1, 1, 1));
+          break;
+        default:
+          mLableBacking[i]->SetColor(Vec4(1, 1, 1, 1));
+          break;
+        }
+        
+        mLableBacking[i]->SetActive(true);
+      }
       mAxisLabel[i] = new Label(this);
       mAxisLabel[i]->SetText(AxisLables::Names[i]);
-      mAxisLabel[i]->SetActive(false);
+      mAxisLabel[i]->SetActive(true);
 
       mEditText[i] = new TextBox(this);
       mEditText[i]->SetReadOnly(mReadOnly);
@@ -1181,40 +1208,47 @@ public:
 
     float cellSize = SnapToPixels(numberSize / float(mDimension));
     float elementLabelSize = Pixels(2);
+    float spacer = Pixels(2);
 
     if (PropertyViewUi::ElementLables)
       elementLabelSize = Pixels(12);
 
     for (uint i = 0; i < mDimension; ++i)
     {
-      Vec3 position = Vec3(startX + cellSize * float(i), startY, 0);
+      Vec3 position = Vec3(startX + (cellSize) * float(i), startY, 0);
       Vec2 labelSize = Vec2(elementLabelSize, PropertyViewUi::PropertySize - 2.0f);
-      Vec2 size = Vec2(cellSize - elementLabelSize, PropertyViewUi::PropertySize - 2.0f);
+      Vec2 size = Vec2(cellSize - elementLabelSize - (spacer * 2), PropertyViewUi::PropertySize - 2.0f);
 
       Vec3 labelPosition = position;
 
-      position.x += elementLabelSize;
+      position.x += elementLabelSize + spacer;
       mEditText[i]->SetTranslation(position);
       mEditText[i]->SetSize(size);
 
+      if (mColored)
+      {
+        mLableBacking[i]->SetTranslation(labelPosition);
+        mLableBacking[i]->SetSize(labelSize);
+      }
+      labelPosition += Vec3(Pixels(1), (-1), 0);
       mAxisLabel[i]->SetTranslation(labelPosition);
       mAxisLabel[i]->SetSize(labelSize);
 
-      // Disabled for now
-      mAxisLabel[i]->SetActive(false);
+      if (!PropertyViewUi::ElementLables)
+        mAxisLabel[i]->SetActive(true);
     }
 
     PropertyWidget::UpdateTransform();
   }
 };
 
-template <typename vectorType, typename elementType, uint dimension>
+template <typename vectorType, typename elementType, uint dimension, bool colored>
 class PropertyEditVectorN : public PropertyEditVector
 {
 public:
   vectorType mCurrent;
 
-  PropertyEditVectorN(PropertyWidgetInitializer& initializer) : PropertyEditVector(initializer, dimension)
+  PropertyEditVectorN(PropertyWidgetInitializer& initializer) : PropertyEditVector(initializer, dimension, colored)
   {
     Refresh();
   }
@@ -1262,7 +1296,7 @@ public:
   Vec3 mEulerCurrent;
   bool mEulerMode;
 
-  PropertyEditRotation(PropertyWidgetInitializer& initializer) : PropertyEditVector(initializer, 3)
+  PropertyEditRotation(PropertyWidgetInitializer& initializer) : PropertyEditVector(initializer, 3, true)
   {
     // We have to call refresh again because when in our base classes
     // constructor, it calls Refresh, which calls GetDisplayValue().
@@ -1642,15 +1676,17 @@ void RegisterGeneralEditors()
   LightningTypeId(int)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditorNumber>));
   LightningTypeId(bool)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditorBool>));
 
-  LightningTypeId(IntVec2)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditVectorN<IntVec2, int, 2>>));
-  LightningTypeId(IntVec3)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditVectorN<IntVec3, int, 3>>));
-  LightningTypeId(IntVec4)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditVectorN<IntVec4, int, 4>>));
-  LightningTypeId(Vec2)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditVectorN<Vec2, float, 2>>));
-  LightningTypeId(Vec3)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditVectorN<Vec3, float, 3>>));
+  LightningTypeId(IntVec2)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditVectorN<IntVec2, int, 2, false>>));
+  LightningTypeId(IntVec3)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditVectorN<IntVec3, int, 3, false>>));
+  LightningTypeId(IntVec4)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditVectorN<IntVec4, int, 4, false>>));
+  LightningTypeId(Vec2)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditVectorN<Vec2, float, 2, false>>));
+  LightningTypeId(Vec3)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditVectorN<Vec3, float, 3, false>>));
   LightningTypeId(Vec4)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditColor>));
   LightningTypeId(Quat)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditRotation>));
   LightningTypeId(Enum)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditorEnum>));
 
+  LightningTypeId(EditorTransformProperty)->
+      Add(new MetaPropertyEditor(&CreateProperty<PropertyEditVectorN<Vec3, float, 3, true>>));
   LightningTypeId(EditorSlider)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditorRange>));
   LightningTypeId(EditorRange)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditorNumber>));
   LightningTypeId(EditorRotationBasis)->Add(new MetaPropertyEditor(&CreateProperty<PropertyEditRotationBasis>));

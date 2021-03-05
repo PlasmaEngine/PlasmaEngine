@@ -16,7 +16,7 @@ CommandSubItem::CommandSubItem(ToolBarGroupPopUp* parent, Command* command) : Co
   mPopUp = parent;
   mCommand = command;
   mBackground = CreateAttached<Element>(cWhiteSquare);
-  mBackground->SetColor(ToFloatColor(ByteColorRGBA(66, 66, 66, 255)));
+  mBackground->SetColor(Vec4(0.196, 0.196, 0.196, 1));
   mText = new Text(this, cText);
   mText->SetText(command->Name);
 

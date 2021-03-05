@@ -83,15 +83,15 @@ MainWindow::MainWindow(OsWindow* window) : RootWidget(window)
 
   Composite* mainMenu = new Composite(menuArea);
   mainMenu->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness(2, 2, 2, 2)));
+  Element* logoSmall = mainMenu->CreateAttached<Element>("PlasmaEngineSmall");
+  logoSmall->mNotInLayout = false;
+  Spacer* spacer2 = new Spacer(mainMenu);
+  spacer2->SetSize(Vec2(4, 0));
   Label* plasmaLabel = new Label(mainMenu);
   plasmaLabel->SetText(window->GetTitle());
   plasmaLabel->mText->ChangeDefinition(mDefSet->GetDefinition("TitleText"));
   Spacer* spacer = new Spacer(mainMenu);
   spacer->SetSize(Vec2(4, 0));
-  Element* arrow = mainMenu->CreateAttached<Element>("TitleDown");
-  arrow->mNotInLayout = false;
-  Spacer* spacer2 = new Spacer(mainMenu);
-  spacer2->SetSize(Vec2(4, 0));
   mMainMenu = mainMenu;
   mMainMenu->SetActive(false);
 

@@ -119,6 +119,7 @@ LightningDefineStaticLibrary(MetaLibrary)
   LightningInitializeType(MetaPropertyRename);
   LightningInitializeType(MetaShaderInput);
   LightningInitializeType(EditorPropertyExtension);
+  LightningInitializeType(EditorTransformProperty);
   LightningInitializeType(EditorIndexedStringArray);
   LightningInitializeType(EditorRange);
   LightningInitializeType(EditorSlider);
@@ -180,6 +181,7 @@ void MetaLibrary::Initialize()
   RegisterPropertyAttributeType(PropertyAttributes::cRenamedFrom, MetaPropertyRename);
   RegisterPropertyAttribute(PropertyAttributes::cLocalModificationOverride);
   RegisterPropertyAttributeType(PropertyAttributes::cGroup, MetaGroup)->AllowStatic(true);
+  RegisterPropertyAttributeType(PropertyAttributes::cTransformProperty, EditorTransformProperty)->TypeMustBe(Vec3)->AllowStatic(true);
   RegisterPropertyAttributeType(PropertyAttributes::cRange, EditorRange)->TypeMustBe(float)->AllowStatic(true);
   RegisterPropertyAttributeType(PropertyAttributes::cSlider, EditorSlider)->TypeMustBe(float)->AllowStatic(true);
 }

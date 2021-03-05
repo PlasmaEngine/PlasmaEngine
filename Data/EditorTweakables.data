@@ -77,7 +77,7 @@ Tweakables
 			}
 			TaskButton_ 
 			{
-				var IconColor = Vec4{0.55686301, 0.55686301, 0.55686301, 1}
+				var IconColor = Vec4{1, 1, 1, 1}
 				var IconFlash = Vec4{0.580392003, 1, 0.0588234998, 1}
 				var IconBackgroundFlash = Vec4{0.580392003, 1, 0.0588234998, 1}
 				var ProgressPrimaryColor = Vec4{0.580392003, 1, 0.0588234998, 1}
@@ -196,15 +196,15 @@ Tweakables
 			}
 			Tags_ 
 			{
-				var BackgroundColor = Vec4{0.301961005, 0.301961005, 0.301961005, 1}
+				var BackgroundColor = Vec4{0.118, 0.118, 0.118, 1}
 				var SearchIconBgColor = Vec4{0.615685999, 0.180391997, 0.0509804003, 1}
 				var SearchIconColor = Vec4{1, 1, 1, 0.9}
 				var SearchIconColorRight = Vec4{0.174999997, 0.174999997, 0.174999997, 1}
 			}
 			TextBox_ 
 			{
-				var BackgroundColor = Vec4{0, 0, 0, 0.25}
-				var BorderColor = Vec4{0.180391997, 0.180391997, 0.180391997, 1}
+				var BackgroundColor = Vec4{0.118, 0.118, 0.118, 1}
+				var BorderColor = Vec4{0.118, 0.118, 0.118, 1}
 				var FocusBorderColor = Vec4{0.196078002, 0.527999997, 0.917647004, 1}
 				var ReadOnlyBackgroundColor = Vec4{0.36500001, 0.36500001, 0.36500001, 1}
 				var ReadOnlyTextColor = Vec4{0.644999981, 0.644999981, 0.644999981, 1}
@@ -234,8 +234,8 @@ Tweakables
 			}
 			Toolbar_ 
 			{
-				var BackgroundColor = Vec4{0.180391997, 0.180391997, 0.180391997, 1}
-				var DividerColor = Vec4{0.180391997, 0.180391997, 0.180391997, 1}
+				var BackgroundColor = Vec4{0.196, 0.196, 0.196, 1}
+				var DividerColor = Vec4{0.165, 0.165, 0.165, 1}
 			}
 		}
 		ConvexMeshEditor_ 
@@ -300,8 +300,20 @@ Tweakables
 		}
 		MainWindow_ 
 		{
-			var TitleBarColor = Vec4{0.164706007, 0.164706007, 0.164706007, 1}
-			var BorderColor = Vec4{0.117647, 0.117647, 0.117647, 1}
+			var TitleBarColor = Vec4{0.165, 0.165, 0.165, 1}
+			var BorderColor = Vec4{0.165, 0.165, 0.165, 1}
+			var BorderPadding = Vec2{2, 2}
+			var ButtonColor = Vec4{0.164706007, 0.164706007, 0.164706007, 1}
+			var ButtonHover = Vec4{0.234999999, 0.234999999, 0.234999999, 1}
+			var ButtonClick = Vec4{0.0599999987, 0.0599999987, 0.0599999987, 1}
+			var CloseColor = Vec4{0.615685999, 0.180391997, 0.0509804003, 0.0}
+			var CloseHover = Vec4{0.709999979, 0.208026007, 0.0587897003, 1}
+			var CloseClick = Vec4{0.504999995, 0.147962004, 0.0418152995, 1}
+		}
+		EditorWindow_ 
+		{
+			var TitleBarColor = Vec4{0.165, 0.165, 0.165, 1}
+			var BorderColor = Vec4{0.165, 0.165, 0.165, 1}
 			var BorderPadding = Vec2{2, 2}
 			var ButtonColor = Vec4{0.164706007, 0.164706007, 0.164706007, 1}
 			var ButtonHover = Vec4{0.234999999, 0.234999999, 0.234999999, 1}
@@ -403,7 +415,7 @@ Tweakables
 			{
 				var ColorWidgetHighlight = Vec4{0.180391997, 0.180391997, 0.180391997, 1}
 				var VectorElementMinSize = 80
-				var ElementLables = false
+				var ElementLables = true
 				var ModifiedTextColor = Vec4{0.952941239, 0.631372571, 0.427451015, 1}
 				var ResourceEditColor = Vec4{0.9, 0.9, 0.9, 1}
 				var ResourceEditMouseOver = Vec4{1, 1, 1, 1}

@@ -8,5 +8,6 @@ Material
 	}
 	SpriteSourceColor 
 	{
+		var SpriteSource = "null"
 	}
 }

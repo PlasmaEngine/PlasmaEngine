@@ -103,7 +103,7 @@ ScrollBar::ScrollBar(BaseScrollArea* scrollparent, uint orientation) : Composite
   if (mScrollParent->IsModernStyle())
   {
     mSlider->SetColor(Vec4(1, 1, 1, 0.45f));
-    mBackground->SetColor(Vec4(0, 0, 0, 0.4f));
+    mBackground->SetColor(Vec4(0.282, 0.282, 0.282, 1.0f));
     mBackground->SetActive(true);
   }
 
