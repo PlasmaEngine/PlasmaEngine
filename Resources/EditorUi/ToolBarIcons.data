@@ -48,14 +48,6 @@ DefinitionSet =
 		float[] Uv0 = [ 140, 0 ],
 		float[] Uv1 = [ 28 , 28 ],
 	},
-	
-	ImageDefinition ScriptIcon =
-	{
-		string Texture = "ToolIcons",
-		int ImageMode = 0,
-		float[] Uv0 = [ 190, 4 ],
-		float[] Uv1 = [ 23 , 26 ],
-	},
   
 	ImageDefinition HistoryEntry =
 	{
