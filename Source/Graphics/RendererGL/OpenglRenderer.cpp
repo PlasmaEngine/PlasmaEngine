@@ -966,7 +966,7 @@ namespace Plasma
         {
             error = "Unable to query OpenGL version. "
                 "Please update your computer's graphics drivers or verify that "
-                "your graphics card supports OpenGL 2.0.";
+                "your graphics card supports OpenGL.";
             return;
         }
 
@@ -993,24 +993,20 @@ namespace Plasma
 
 #ifdef PlasmaWebgl
   // glewIsSupported on emscripten doesn't emulate desktop gl extension queries.
-  bool version_2_0 = true;
-  bool framebuffer_object = true;
+  bool version_4_0 = true;
   bool texture_compression = false;
   bool draw_buffers_blend = false;
   bool sampler_objects = true;
 #else
-        bool version_2_0 = glewIsSupported("GL_VERSION_2_0");
-        bool framebuffer_object = glewIsSupported("GL_ARB_framebuffer_object");
+        bool version_4_0 = glewIsSupported("GL_VERSION_4_0");
         bool texture_compression = glewIsSupported("GL_ARB_texture_compression");
         bool draw_buffers_blend = glewIsSupported("GL_ARB_draw_buffers_blend");
         bool sampler_objects = glewIsSupported("GL_ARB_sampler_objects");
 #endif
 
         PlasmaPrint("OpenGL *Required Extensions\n");
-        PlasmaPrint("OpenGL *(GL_VERSION_2_0) Shader Program support                 : %s\n",
-                    version_2_0 ? "True" : "False");
-        PlasmaPrint("OpenGL *(GL_ARB_framebuffer_object) Deferred Rendering support  : %s\n",
-                    framebuffer_object ? "True" : "False");
+        PlasmaPrint("OpenGL *(GL_VERSION_4_0) Shader Program support                 : %s\n",
+                    version_4_0 ? "True" : "False");
 
         PlasmaPrint("OpenGL (GL_ARB_texture_compression) Texture Compression support : %s\n",
                     texture_compression ? "True" : "False");
@@ -1020,19 +1016,6 @@ namespace Plasma
                     sampler_objects ? "True" : "False");
 
         PlasmaPrint("OpenGL All Extensions : %s\n", gl_extensions ? gl_extensions : "(no data)");
-
-        // Required OpenGL extensions
-        if (!version_2_0 || !framebuffer_object)
-        {
-            String failedExtensions =
-                BuildString(version_2_0 ? "" : "GL_VERSION_2_0, ",
-                            framebuffer_object ? "" : "GL_ARB_framebuffer_object, ");
-            error = String::Format("Required OpenGL extensions: %s are unsupported by the active driver. "
-                                   "Please update your computer's graphics drivers or verify that your "
-                                   "graphics card supports the listed features.",
-                                   failedExtensions.c_str());
-            return;
-        }
 
         mDriverSupport.mTextureCompression = texture_compression;
         mDriverSupport.mMultiTargetBlend = draw_buffers_blend;
@@ -1045,7 +1028,7 @@ namespace Plasma
             mDriverSupport.mIntel = true;
 
         // V-Sync off by default
-        zglSetSwapInterval(this, 0);
+        plGlSetSwapInterval(this, 0);
 
         // No padding
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -1518,7 +1501,7 @@ namespace Plasma
     void OpenglRenderer::SetVSync(bool vsync)
     {
         int swapInterval = vsync ? 1 : 0;
-        zglSetSwapInterval(this, swapInterval);
+        plGlSetSwapInterval(this, swapInterval);
         mVsync = vsync;
     }
 
@@ -1570,7 +1553,7 @@ namespace Plasma
         bool splashMode = info->mSplashMode;
         float alpha = splashMode ? info->mSplashFade : 1.0f;
 
-        IntVec2 size = zglGetWindowRenderableSize(this);
+        IntVec2 size = plGlGetWindowRenderableSize(this);
 
         Mat4 viewportToNdc;
         viewportToNdc.BuildTransform(Vec3(-1.0f, 1.0f, 0.0f), Mat3::cIdentity,
@@ -1614,12 +1597,12 @@ namespace Plasma
         textTransform.BuildTransform(textTranslation, Mat3::cIdentity, textScale);
         textTransform = viewportToNdc * textTransform;
 
-        Vec3 splashScale = Vec3(static_cast<float>(splashTexture->mWidth), static_cast<float>(splashTexture->mHeight),
+        Vec3 splashScale = Vec3(static_cast<float>(size.x), static_cast<float>(size.y),
                                 1.0f);
-        if (size.x < splashScale.x)
-            splashScale *= size.x / splashScale.x;
-        if (size.y < splashScale.y)
-            splashScale *= size.y / splashScale.y;
+        //if (size.x < splashScale.x)
+        //    splashScale *= size.x / splashScale.x;
+        //if (size.y < splashScale.y)
+        //    splashScale *= size.y / splashScale.y;
         Vec3 splashTranslation = Vec3(size.x * 0.5f, size.y * 0.5f, 0.0f);
         Mat4 splashTransform;
         splashTransform.BuildTransform(splashTranslation, Mat3::cIdentity, splashScale);
@@ -1698,12 +1681,12 @@ namespace Plasma
 
         // Disable v-sync so we don't wait on frames (mostly for single threaded mode)
         // This could cause tearing, but it's the loading screen.
-        zglSetSwapInterval(this, 0);
+        plGlSetSwapInterval(this, 0);
 
-        zglSwapBuffers(this);
+        plGlSwapBuffers(this);
 
         int swapInterval = mVsync ? 1 : 0;
-        zglSetSwapInterval(this, swapInterval);
+        plGlSetSwapInterval(this, swapInterval);
     }
 
     GlShader* OpenglRenderer::GetShader(ShaderKey& shaderKey)
@@ -1732,7 +1715,7 @@ namespace Plasma
 		{
           ZoneScopedN("SwapBuffers");
      	  TracyGpuZone("SwapBuffer")
-	      zglSwapBuffers(this);
+	      plGlSwapBuffers(this);
 		}
 
     	{

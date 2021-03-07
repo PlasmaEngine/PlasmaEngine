@@ -49,6 +49,9 @@ class DeferredRenderer : LightningComponent
   [Group("Debug")]
   [Property] var RenderSkybox : Boolean = true;
   
+    // Path to object with DirectionalLight component to use for direct lighting.
+  [Property] var DirectionalLight : CogPath = CogPath();
+  
   var GBuffer1 : RenderTarget; // XY = Normal, Z = Depth, A = Roughness
   var GBuffer2 : RenderTarget; // XYZ = Albedo,  A = Metallic/Specular
   var GBuffer3 : RenderTarget; // XY = Unused , Z = EmissivePower, A = AO
@@ -255,6 +258,38 @@ class DeferredRenderer : LightningComponent
     alphaSettings.DepthSettings.DepthMode = DepthMode.Read;
     alphaSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
     event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AdditiveBlend, ColorOutput(), "AdditiveMaterials");
+    
+        var forwardAlpha = ForwardPassAlpha();
+    forwardAlpha.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
+    forwardAlpha.DitherTexture = Texture.BlueNoise;
+    forwardAlpha.Skybox = this.Skybox;
+    forwardAlpha.IndirectIntensity = this.IndirectIntensity;
+    forwardAlpha.RenderDiffuse = this.RenderDiffuse;
+    forwardAlpha.RenderSpecular = this.RenderSpecular;
+      
+    forwardAlpha.DirectLightIntensity = 0.0;
+       
+    var light = this.DirectionalLight.Cog;
+    if (light != null && light.DirectionalLight != null)
+    {
+       
+      forwardAlpha.DirectLightColor = light.DirectionalLight.LightColor.XYZ;
+      forwardAlpha.DirectLightDirection = light.DirectionalLight.LightDirection;
+      forwardAlpha.DirectLightIntensity = light.DirectionalLight.LightIntensity;
+      forwardAlpha.LightTemperature = light.DirectionalLight.LightTemperature;
+      
+    }
+   
+    
+    forwardAlpha.DirectLightIntensity *= this.DirectLighting as Real;
+    forwardAlpha.IndirectIntensity *= this.IndirectLighting as Real;
+    
+  //  alphaSettings.ColorTarget = this.FinalOutput;
+      alphaSettings.CullMode = CullMode.BackFace;
+    
+    alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
+    
+    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AlphaBlend, forwardAlpha, "AlphaMaterials");
   
     event.AddRenderTaskClearTarget(this.SSRBuffer, Real4.Zero);
     
@@ -281,11 +316,6 @@ class DeferredRenderer : LightningComponent
     // FXAA
     if(this.Owner.PostProcessFXAA != null)
         this.Owner.PostProcessFXAA.AddRenderTasks(event, this.FinalOutput);
-        
-    // Alpha materials
-    alphaSettings.ColorTarget = this.FinalOutput;
-    alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
-    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AlphaBlend, AlphaPass(), "AlphaMaterials");
     
     this.FirstFrame = false;
     

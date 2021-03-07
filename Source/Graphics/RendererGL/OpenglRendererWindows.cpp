@@ -72,12 +72,12 @@ Renderer* CreateRenderer(OsHandle windowHandle, String& error)
   return new OpenglRendererWindows(windowHandle, error);
 }
 
-void zglSetSwapInterval(OpenglRenderer* renderer, int interval)
+void plGlSetSwapInterval(OpenglRenderer* renderer, int interval)
 {
   wglSwapIntervalEXT(interval);
 }
 
-IntVec2 zglGetWindowRenderableSize(OpenglRenderer* renderer)
+IntVec2 plGlGetWindowRenderableSize(OpenglRenderer* renderer)
 {
   RECT rect;
   GetClientRect((HWND)renderer->mWindow, &rect);
@@ -85,7 +85,7 @@ IntVec2 zglGetWindowRenderableSize(OpenglRenderer* renderer)
   return size;
 }
 
-void zglSwapBuffers(OpenglRenderer* renderer)
+void plGlSwapBuffers(OpenglRenderer* renderer)
 {
   SwapBuffers((HDC)renderer->mDeviceContext);
 }

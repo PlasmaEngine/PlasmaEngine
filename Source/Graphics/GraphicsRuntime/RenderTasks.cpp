@@ -753,6 +753,8 @@ bool RenderTaskHelper::ValidateRenderTargets(RenderSettings& renderSettings)
 
 void RenderTasksUpdateHelper(RenderTasksUpdateData& update)
 {
+  ZoneScoped;
+  
   Array<RenderTaskRange>& renderTaskRanges = update.mEvent->mRenderTasks->mRenderTaskRanges;
   RenderTaskBuffer& renderTaskBuffer = update.mEvent->mRenderTasks->mRenderTaskBuffer;
 
@@ -763,8 +765,11 @@ void RenderTasksUpdateHelper(RenderTasksUpdateData& update)
 
   update.mCamera->mUsedRenderGroupIds.Clear();
 
-  // get tasks from renderer script
-  update.mDispatcher->Dispatch(Events::RenderTasksUpdate, update.mEvent);
+  {
+    ZoneScopedN("Dispatch Render Tasks");
+    // get tasks from renderer script
+    update.mDispatcher->Dispatch(Events::RenderTasksUpdate, update.mEvent);
+  }
 
   range.mTaskCount = renderTaskBuffer.mTaskCount - startingTaskCount;
 

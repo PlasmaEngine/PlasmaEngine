@@ -8,7 +8,7 @@
 struct AlphaPass
 {
   [Input] var Color : Real4 = Real4(0.0, 0.0, 0.0, 0.0);
-  [Input] var Albedo : Real3 = Real3.Zero;
+  [Input] var Albedo : Real3 = Real3(0.0, 0.0, 0.0);
   [Input] var Alpha : Real = 0.0;
 
   [Output] var Target0 : Real4;
