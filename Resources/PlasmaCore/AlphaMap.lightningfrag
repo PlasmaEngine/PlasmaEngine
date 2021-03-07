@@ -11,7 +11,10 @@ struct AlphaMap
   function Main()
   {
     var alphaMap = this.AlphaMap.Sample(this.Uv).X;
-    this.Alpha += (this.Invert as Integer) - alphaMap;
+    if(this.Invert)
+      this.Alpha -= (alphaMap);
+    else
+      this.Alpha -= (1.0 - alphaMap);
     this.Alpha = Math.Clamp(this.Alpha, 0, 1);
   }
 }
