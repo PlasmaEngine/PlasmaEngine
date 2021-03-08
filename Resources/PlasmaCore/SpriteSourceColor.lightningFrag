@@ -9,10 +9,18 @@ struct SpriteSourceColor
 
   [FragmentInput][StageInput] var Uv : Real2;
   [FragmentInput][StageInput][Output] var Color : Real4;
+  [FragmentInput][Output] var Albedo : Real3;
+  [FragmentInput][Output] var Alpha : Real;
 
   function Main()
   {
     // Multiply sample with vertex color.
-    this.Color = this.SpriteSource.Sample(this.Uv) * this.Color;
+    
+    var spriteColor =  this.SpriteSource.Sample(this.Uv);
+    // Used for Editor UI
+    this.Color = spriteColor * this.Color;
+    // Used for Game Renderer
+    this.Albedo = spriteColor.XYZ;
+    this.Alpha += spriteColor.W;
   }
 }
