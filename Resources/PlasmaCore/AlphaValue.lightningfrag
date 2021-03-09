@@ -8,6 +8,7 @@ struct AlphaValue
 
   function Main()
   {
-    this.Alpha -=  this.AlphaValue;
+    this.Alpha += 1.0 - this.AlphaValue;
+    this.Alpha = Math.Clamp(this.Alpha, 0, 1);
   }
 }

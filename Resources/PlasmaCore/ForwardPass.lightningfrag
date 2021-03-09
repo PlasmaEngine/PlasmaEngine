@@ -62,7 +62,7 @@ struct ForwardPass
     directInputs.ViewNormal = this.ViewNormal;
     directInputs.ViewDirection = viewDirection;
     directInputs.LightDirection = Math.Normalize(-Math.MultiplyNormal(this.WorldToView, this.DirectLightDirection));
-    directInputs.LightColor = this.DirectLightColor;
+    directInputs.LightColor = this.DirectLightColor / 100;
     directInputs.LightRadius = 0.0;
     directInputs.LightDistance = 1.0;
     directInputs.Albedo = this.Albedo;
@@ -79,9 +79,103 @@ struct ForwardPass
     directColor = Utility.ApplyDither(directColor, &this.DitherTexture, screenUv, this.ViewportSize);
     
     indirectColor *= this.IndirectIntensity;
-    directColor *= this.DirectLightIntensity;
+    directColor *= this.DirectLightIntensity / 100;
     
     this.Target0 = Real4(indirectColor + directColor, 1.0);
+  }
+}
+
+[Pixel][RenderPass]
+struct ForwardPassAlpha
+{
+  [AppBuiltInInput] var ViewToWorld : Real4x4;
+  [AppBuiltInInput] var WorldToView : Real4x4;
+  [AppBuiltInInput] var ViewportSize : Real2;
+  
+  [StageInput] var PerspectivePosition : Real4;
+  [FragmentInput][StageInput] var ViewPosition : Real3;
+  
+  [Input] var Albedo : Real3 = Real3(1.0, 0.0, 0.0);
+  [Input] var ViewNormal : Real3 = Real3(0.0, 0.0, 1.0);
+  [Input] var Metallic : Real = 0.0;
+  [Input] var Roughness : Real = 1.0;
+  [Input] var Specular : Real = 0.5;
+  [Input] var Emissive : Real3 = Real3(0.0, 0.0, 0.0);
+  [Input] var Alpha : Real = 0.0;
+  
+  [Input] var DitherTexture : SampledImage2d;
+  [Input] var EnvironmentBrdfLut : SampledImage2d;
+  [Input] var Skybox : SampledImageCube;
+  [Input] var IndirectIntensity : Real = 1.0;
+  [Input] var RenderDiffuse : Boolean = true;
+  [Input] var RenderSpecular : Boolean = true;
+  
+  [Input] var DirectLightColor : Real3 = Real3(1.0);
+  [Input] var DirectLightDirection : Real3 = Real3(0.0, -1.0, 0.0);
+  [Input] var DirectLightIntensity : Real = 1.0;
+
+  
+  [Input] var LightTemperature : Real = 6500.0;
+  
+  [Output] var Target0 : Real4;
+
+  function Main()
+  {
+    this.Roughness = Math.Clamp(this.Roughness, 0.001, 1.0);
+    this.Metallic = Math.Saturate(this.Metallic);
+    this.Specular = Math.Saturate(this.Specular);
+    
+    if(this.Alpha < 0.01)
+    {
+      ShaderIntrinsics.Kill();
+      return;
+    }
+    
+    var screenUv = Utility.NdcToScreenUv(this.PerspectivePosition.XY / this.PerspectivePosition.W);
+    var viewDirection = Math.Normalize(-this.ViewPosition);
+    
+    if(Math.Length(this.Emissive) > 0)
+      this.Albedo = this.Emissive;
+    
+    // Indirect lighting
+    var indirectInputs = ImageBasedLightingInputs();
+    indirectInputs.WorldNormal = Math.MultiplyNormal(this.ViewToWorld, -this.ViewNormal);
+    indirectInputs.WorldViewDirection = Math.MultiplyNormal(this.ViewToWorld, viewDirection);
+    indirectInputs.Albedo = this.Albedo;
+    indirectInputs.Metallic = this.Metallic;
+    indirectInputs.Roughness = this.Roughness;
+    indirectInputs.Specular = this.Specular;
+    indirectInputs.RenderDiffuse = this.RenderDiffuse;
+    indirectInputs.RenderSpecular = this.RenderSpecular;
+    
+    var indirectColor = ImageBasedLighting.Compute(indirectInputs, &this.Skybox, &this.EnvironmentBrdfLut);
+    
+    // Direct lighting
+    var directInputs = DirectLightingInputs();
+    directInputs.ViewNormal = this.ViewNormal;
+    directInputs.ViewDirection = viewDirection;
+    directInputs.LightDirection = Math.Normalize(-Math.MultiplyNormal(this.WorldToView, this.DirectLightDirection));
+    directInputs.LightColor = this.DirectLightColor * (Utility.KelvinToRGB(this.LightTemperature) /1000);
+    directInputs.LightRadius = 10;
+    directInputs.LightLength = 0;
+    directInputs.LightDistance = 10;
+    directInputs.Albedo = this.Albedo;
+    directInputs.Metallic = this.Metallic;
+    directInputs.Roughness = this.Roughness;
+    directInputs.Specular = this.Specular;
+    directInputs.RenderDiffuse = this.RenderDiffuse;
+    directInputs.RenderSpecular = this.RenderSpecular;
+    
+    var directColor = DirectLighting.Compute(directInputs);
+    
+    // Remove color banding
+    indirectColor = Utility.ApplyDither(indirectColor, &this.DitherTexture, screenUv, this.ViewportSize);
+    directColor = Utility.ApplyDither(directColor, &this.DitherTexture, screenUv, this.ViewportSize);
+    
+    indirectColor *= this.IndirectIntensity ;
+    directColor *= this.DirectLightIntensity / 50;
+    
+    this.Target0 = Real4(indirectColor + directColor, this.Alpha);
   }
 }
 
@@ -147,7 +241,7 @@ struct ForwardPassShadows
     directInputs.ViewNormal = this.ViewNormal;
     directInputs.ViewDirection = viewDirection;
     directInputs.LightDirection = Math.Normalize(-Math.MultiplyNormal(this.WorldToView, this.DirectLightDirection));
-    directInputs.LightColor = this.DirectLightColor;
+    directInputs.LightColor = this.DirectLightColor / 100;
     directInputs.LightRadius = 0.0;
     directInputs.LightDistance = 1.0;
     directInputs.Albedo = this.Albedo;
@@ -161,7 +255,7 @@ struct ForwardPassShadows
     
     // Remove color banding
     indirectColor = Utility.ApplyDither(indirectColor, &this.DitherTexture, screenUv, this.ViewportSize);
-    directColor = Utility.ApplyDither(directColor, &this.DitherTexture, screenUv, this.ViewportSize);
+   // directColor = Utility.ApplyDither(directColor, &this.DitherTexture, screenUv, this.ViewportSize);
     
     indirectColor *= this.IndirectIntensity;
     directColor *= this.DirectLightIntensity;

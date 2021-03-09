@@ -7,14 +7,14 @@ struct AlphaMap
   [Input] var AlphaMap : SampledImage2d;
   [Input] var Invert : Boolean = false;
   [FragmentInput][Output] var Alpha : Real;
-  
+
   function Main()
   {
-    //TODO: can we do this without if
+    var alphaMap = this.AlphaMap.Sample(this.Uv).X;
     if(this.Invert)
-      this.Alpha =  this.AlphaMap.Sample(this.Uv).X - 1.0;
+      this.Alpha -= (alphaMap);
     else
-      this.Alpha = -this.AlphaMap.Sample(this.Uv).X;
-    
+      this.Alpha -= (1.0 - alphaMap);
+    this.Alpha = Math.Clamp(this.Alpha, 0, 1);
   }
 }

@@ -9,9 +9,9 @@ namespace Plasma
 // only be one implementation of OpenGL per platform, so we can avoid the
 // virtual overhead.
 class OpenglRenderer;
-extern void zglSetSwapInterval(OpenglRenderer* renderer, int interval);
-extern IntVec2 zglGetWindowRenderableSize(OpenglRenderer* renderer);
-extern void zglSwapBuffers(OpenglRenderer* renderer);
+extern void plGlSetSwapInterval(OpenglRenderer* renderer, int interval);
+extern IntVec2 plGlGetWindowRenderableSize(OpenglRenderer* renderer);
+extern void plGlSwapBuffers(OpenglRenderer* renderer);
 
 // Links regarding the portability of GLAPIENTRY:
 // http://lists.openscenegraph.org/pipermail/osg-users-openscenegraph.org/2007-October/003023.html
