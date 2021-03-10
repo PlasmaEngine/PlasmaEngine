@@ -7,11 +7,24 @@ struct SpecularMap
 {
   [FragmentInput][StageInput] var Uv : Real2;
   [Input] var SpecularMap : SampledImage2d;
+  [Input] var InvertSpecMax : Boolean;
+  [Input] var SpecMaxTweak : Real;
+  [Input] var Pow2Metal : Boolean;
   
-  [Output] var Specular : Real;
+  [FragmentInput][Output] var Albedo : Real3;
+  [FragmentInput][StageInput][Output] var Metallic : Real;
   
   function Main()
   {
-    this.Specular = this.SpecularMap.Sample(this.Uv).X;
+    var specular = this.SpecularMap.Sample(this.Uv);
+    var specularMax = Math.Max(specular.X, Math.Max(specular.Y, specular.Z));
+    if(this.InvertSpecMax)
+      specularMax = (1.0 - specularMax) ;
+    
+    this.Albedo = Math.Lerp(this.Albedo, specular.XYZ,  specularMax + this.SpecMaxTweak);
+    if(this.Pow2Metal)
+      this.Metallic += Math.Pow(specularMax, 2); 
+    else
+      this.Metallic += specularMax; 
   }
 }
