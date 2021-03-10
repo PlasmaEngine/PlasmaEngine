@@ -19,11 +19,23 @@ struct EmissiveMap
     [FragmentInput][StageInput] var Uv : Real2;
     [Input] var EmissiveTexture : SampledImage2d;
     [Input] var EmissivePower : Real = 5.0;
+    [Input] var UnlitEmissive : Boolean = true;
     
+    [FragmentInput][StageInput][Output] var Roughness : Real;
+    [FragmentInput][StageInput][Output] var Metallic : Real;
     [Output] var Emissive : Real3;
 
     function Main()
     {
         this.Emissive = Math.Saturate(this.EmissiveTexture.Sample(this.Uv).XYZ) * (this.EmissivePower);
+        
+        if(this.UnlitEmissive)
+        {
+          if(Math.Max(this.Emissive.X, Math.Max(this.Emissive.Y, this.Emissive.Z)) > 0)
+          {
+            this.Roughness = 1;
+            this.Metallic = 0;
+          }
+        }
     }
 }
