@@ -4,6 +4,7 @@
 
 namespace Plasma
 {
+#if defined(PlasmaPlatformWindows)
 class OpenglRendererWindows : public OpenglRenderer
 {
 public:
@@ -89,5 +90,5 @@ void plGlSwapBuffers(OpenglRenderer* renderer)
 {
   SwapBuffers((HDC)renderer->mDeviceContext);
 }
-
+#endif
 } // namespace Plasma
