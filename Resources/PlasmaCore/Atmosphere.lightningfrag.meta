@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "Atmosphere"
+		var ResourceId = 0x60165c7f5599afc6
+	}
+}

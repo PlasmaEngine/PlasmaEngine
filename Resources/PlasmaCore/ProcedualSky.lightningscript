@@ -1,0 +1,58 @@
+// MIT Licensed (see LICENSE.md).
+
+class ProcedualSky : LightningComponent
+{
+  [Property] var Enabled : Boolean = true;
+  [Property] var MainLight : CogPath = null;
+  
+  [Property] var RayleighBrightness : Real = 3.3;
+  [Property] var MieBrightness : Real = 0.1;
+  [Property] var SpotBrightness : Real = 50.0;
+  [Property][Slider(0.01, 1, 0.01)] var ScatterStrength : Real = 0.028;
+  [Property][Slider(0.01, 1, 0.01)] var RayleighStrength : Real = 0.139;
+  [Property][Slider(0.01, 1, 0.01)]  var MieStrength : Real = 0.264;
+  [Property] var RayleighCollectionPower : Real = 0.81;
+  [Property] var MieCollectionPower : Real = 0.39;
+  [Property] var MieDistribution : Real = 0.63;
+  [Property] var KR : Real4 = Real4(0.18867780436772762, 0.4978442963618773, 0.6616065586417131, 1);
+  
+  [Property] var SurfaceHeight = 0.99;
+  [Property] var Intensity = 1.8;
+  [Property] var StepCount = 16;
+  
+  function AddSlyRenderTasks(event : RenderTasksEvent, lightSettings : RenderSettings, gbuffer0 : RenderTarget)
+  {
+    // Return if disabled
+    if(!this.Enabled)
+      return;
+      
+    // Return if no light is set
+    if(this.MainLight == null)
+      return;
+      
+    // Return if the set cog does not contain a directional light
+    var light = this.MainLight.DirectionalLight;
+    if(light == null)
+      return;
+      
+    var atmosphere = Atmosphere();
+    atmosphere.LightDirection = light.LightDirection;
+    atmosphere.GeometryBuffer0 = gbuffer0.Texture;
+    atmosphere.RayleighBrightness = this.RayleighBrightness;
+    atmosphere.MieStrength = this.MieStrength;
+    atmosphere.SpotBrightness = this.SpotBrightness;
+    atmosphere.ScatterStrength = this.ScatterStrength;
+    atmosphere.RayleighStrength = this.RayleighStrength;
+    atmosphere.MieStrength = this.MieStrength;
+    atmosphere.RayleighCollectionPower = this.MieCollectionPower;
+    atmosphere.MieCollectionPower = this.MieCollectionPower;
+    atmosphere.MieDistribution = this.MieDistribution;
+    atmosphere.KR = this.KR.XYZ;
+    atmosphere.SurfaceHeight = this.SurfaceHeight;
+    atmosphere.Intensity = this.Intensity;
+    atmosphere.StepCount = this.StepCount;
+    atmosphere.DitherTexture = Texture.BlueNoise;
+    
+    event.AddRenderTaskPostProcess(lightSettings, atmosphere, "Atmosphere");
+  }
+}

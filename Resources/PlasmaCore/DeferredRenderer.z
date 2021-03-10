@@ -131,7 +131,11 @@ class DeferredRenderer : LightningComponent
     lightSettings.DepthSettings.DepthPassOp = StencilOp.Keep;
     lightSettings.DepthSettings.StencilTestValue = 0 as Byte;
     
-    if (this.RenderSkybox && this.Skybox != null && this.Skybox.Type == TextureType.TextureCube)
+    if(this.Owner.ProcedualSky != null)
+    {
+      this.Owner.ProcedualSky.AddSlyRenderTasks(event, lightSettings, this.GBuffer1);
+    }
+    else if (this.RenderSkybox && this.Skybox != null && this.Skybox.Type == TextureType.TextureCube)
     {
       var skybox = Skybox();
       skybox.Skybox = this.Skybox;
@@ -145,7 +149,7 @@ class DeferredRenderer : LightningComponent
       event.AddRenderTaskPostProcess(lightSettings, copyValue, "SkyboxColor");
     }
     
-        var velocityBuffer = VelocityBuffer();
+    var velocityBuffer = VelocityBuffer();
     velocityBuffer.FirstFrame = this.FirstFrame;
     event.AddRenderTaskPostProcess(this.VelPosBuffer, velocityBuffer, "VelocityBuffer");
     

@@ -1,0 +1,124 @@
+// MIT Licensed (see LICENSE.md).
+
+// PostProcess fragments are intended to be constructed in script
+// and passed directly to the AddRenderTaskPostProcess method.
+[Pixel][PostProcess]
+struct Atmosphere
+{
+  [AppBuiltInInput] var ViewToWorld : Real4x4;
+  [AppBuiltInInput] var FarPlane : Real;
+  [AppBuiltInInput] var PerspectiveToView : Real4x4;
+  [AppBuiltInInput] var ViewToPerspective : Real4x4;
+  [AppBuiltInInput] var ViewportSize : Real2;
+ 
+  [StageInput] var Uv : Real2;
+  [StageInput] var PerspectivePosition : Real4;
+  
+	[FragmentInput][StageInput] var ViewNormal : Real3;
+  
+  [Input] var LightDirection : Real3;
+  [Input] var GeometryBuffer0 : SampledImage2d;
+  
+  [Input] var RayleighBrightness : Real = 3.3;
+  [Input] var MieBrightness : Real = 0.1;
+  [Input] var SpotBrightness : Real = 50.0;
+  [Input] var ScatterStrength : Real = 0.028;
+  [Input] var RayleighStrength : Real = 0.139;
+  [Input] var MieStrength : Real = 0.264;
+  [Input] var RayleighCollectionPower : Real = 0.81;
+  [Input] var MieCollectionPower : Real = 0.39;
+  [Input] var MieDistribution : Real = 0.63;
+  [Input] var KR : Real3 = Real3(0.18867780436772762, 0.4978442963618773, 0.6616065586417131);
+  
+  [Input] var SurfaceHeight = 0.99;
+  [Input] var Intensity = 1.8;
+  [Input] var StepCount = 16;
+
+  [Input] var DitherTexture : SampledImage2d;
+
+  [Output] var Target0 : Real4;
+
+  function AtmosphericDepth( position : Real3, direction : Real3) : Real
+  {
+    var a = Math.Dot(direction, direction);
+    var b = 2.0 * Math.Dot(direction, position);
+    var c = Math.Dot(position, position) - 1.0;
+    var destination = b * b - 4.0 * a * c;
+    var destSqrt = Math.Sqrt(destination);
+    var q = (-b - destSqrt) / 2.0;
+    var t1 = c / q;
+    return t1;
+  }
+  
+  function HorizonExtinction(position : Real3, direction : Real3, radius : Real) : Real
+  {
+    var u = Math.Dot(direction, -position);
+    if(u < 0.0)
+      return 1.0;
+    
+    var near = position + u * direction;
+    if(Math.Length(near) < radius)
+      return 0.0;
+    else
+    {
+      var v2 = Math.Normalize(near) * radius - position;
+      var diff = Math.ACos(Math.Dot(Math.Normalize(v2), direction));
+      return Math.SmoothStep(0.0, 1.0, Math.Pow(diff * 2.0, 3.0));
+    }
+  }
+
+  function Phase(alpha : Real, g : Real) : Real
+  {
+    var a = 3.0 * ( 1.0 - g * g);
+    var b = 2.0 * ( 2.0 - g * g);
+    var c = 1.0 + alpha * alpha;
+    var d = Math.Pow(1.0 + g * g - 2.0 * g * alpha, 1.5);
+    return (a / b) * ( c / d);
+  } 
+
+  function Absorb(distance : Real, color : Real3, factor : Real) : Real3
+  {
+    return color - color * Math.Pow(this.KR, Real3(factor / distance));
+  }
+
+  function Main()
+  {
+    this.LightDirection = -this.LightDirection;
+    this.LightDirection = Math.Normalize(this.LightDirection);
+    var geometrySample0 = this.GeometryBuffer0.Sample(this.Uv);
+    var viewPosition = GeometryPass.ReconstructViewPosition(geometrySample0, this.PerspectiveToView, this.PerspectivePosition, this.FarPlane);
+    var worldPosition = Math.Normalize(Math.Multiply(this.ViewToWorld, Real4(viewPosition.XYZ, 1.0)).XYZ);
+    
+    var alpha = Math.Clamp(Math.Dot(this.LightDirection, worldPosition), 0 ,1);
+    var rayleighFactor = this.Phase(alpha, -0.01) * this.RayleighBrightness;
+    var mieFactor = this.Phase(alpha, this.MieDistribution) * this.MieBrightness;
+    var spot = Math.SmoothStep(0.0, 15.0, this.Phase(alpha, 0.995)) * this.SpotBrightness;
+    
+    var eyePos = Real3(0.0, this.SurfaceHeight, 0.0);
+    var eyeDepth = this.AtmosphericDepth(eyePos, worldPosition);
+    var stepLength = eyeDepth / this.StepCount;
+    var eyeExtinction = this.HorizonExtinction(eyePos, worldPosition, this.SurfaceHeight - 0.15);
+    
+    var rayleighCollected = Real3(0,0,0);
+    var mieCollected = Real3(0,0,0);
+    
+    for(var i = 0; i < this.StepCount; ++i)
+    {
+      var sampledDistance = stepLength * i;
+      var pos = eyePos + worldPosition * sampledDistance;
+      var extinction = this.HorizonExtinction(pos, this.LightDirection, this.SurfaceHeight - 0.35);
+      var sampleDepth = this.AtmosphericDepth(pos, this.LightDirection);
+      var influx = this.Absorb(sampledDistance, Real3(this.Intensity), this.ScatterStrength) * extinction;
+      rayleighCollected += this.Absorb(sampledDistance, this.KR * influx, this.RayleighStrength);
+      mieCollected += this.Absorb(sampledDistance, influx, this.MieStrength);
+    }
+    
+    rayleighCollected = (rayleighCollected * eyeExtinction * Math.Pow(eyeDepth, this.RayleighCollectionPower)) / this.StepCount;
+    mieCollected = (mieCollected * eyeExtinction * Math.Pow(eyeDepth, this.MieCollectionPower)) / this.StepCount;
+
+    
+    var output : Real3 = spot*mieCollected + mieFactor*mieCollected + rayleighFactor*rayleighCollected;
+    output = Utility.ApplyDither(output, &this.DitherTexture, this.Uv, this.ViewportSize);
+    this.Target0 = Real4(output,1);
+  }
+}
