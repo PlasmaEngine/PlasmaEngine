@@ -23,11 +23,14 @@ struct Brdf
     var dotnv = Math.Saturate(Math.Dot(n, v));
     var dotlh = Math.Saturate(Math.Dot(l, h));
     
-    var fd90 = 0.5 + 2.0 * dotlh * dotlh * alpha;
+    var energyBias = 0.5 * alpha;
+    var energyFactor = Math.Lerp(1.0, 1.0 / 1.51, alpha);
+    
+    var fd90 = energyBias  + 2.0 * dotlh * dotlh * alpha;
     var diffuse = dotnl / Math.Pi;
     diffuse *= 1.0 + (fd90 - 1.0) * Math.Pow(1.0 - dotnl, 5.0);
     diffuse *= 1.0 + (fd90 - 1.0) * Math.Pow(1.0 - dotnv, 5.0);
-    return diffuse;
+    return diffuse * energyFactor;
   }
   
   // SpecularD equation - NDF (Normalized Distribution Function)
@@ -46,7 +49,7 @@ struct Brdf
   {
     var dotvh = Math.Saturate(Math.Dot(v, h));
     
-    var schlick = Math.Pow(1.0 - dotvh, 5.0);
+    var schlick = Math.Exp2((-5.55473 * dotvh - 6.983146) * dotvh);
     return schlick;
   }
   
