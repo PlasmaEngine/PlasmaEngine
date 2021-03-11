@@ -224,7 +224,7 @@ struct GeometryDebug
     var metallicColor = metallic.XXX * (this.ShowMetallic as Real);
     var specularColor = specular.XXX * (this.ShowSpecular as Real);
     var emissiveColor = albedo * emissive * (this.ShowEmissive as Real);
-    var aoColor = ao.XXX * (this.ShowAO as Real);
+    var aoColor = (Real3(1.0) - ao.XXX) * (this.ShowAO as Real);
     
     var outputColor = normalColor + depthColor + roughnessColor + albedoColor + metallicColor + specularColor + emissiveColor + aoColor;
     this.Target0 = Real4(outputColor, 1.0);
