@@ -23,7 +23,7 @@ const initialize = () => {
     executableExtension = ".exe";
     break;
   case "darwin":
-    hostos = "Mac";
+    hostos = "macOS";
     break;
   default:
     hostos = "Linux";
@@ -466,11 +466,19 @@ const determineCmakeCombo = (options) => {
       vfs: true
     },
     Linux: {
-      builder: "Ninja",
+      builder: "Xcode",
       config: "Release",
-      platform: "SDLSTDEmpty",
+      platform: "Linux",
       targetos: "Linux",
       toolchain: "Clang",
+      vfs: false
+    },
+    MacOS: {
+      builder: "Ninja",
+      config: "Release",
+      platform: "MacOS",
+      targetos: "MacOS",
+      toolchain: "GCC",
       vfs: false
     },
     Windows: {

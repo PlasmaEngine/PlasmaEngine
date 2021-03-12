@@ -56,11 +56,3 @@ target_link_libraries(Platform
     Libgit2
     SDL
 )
-
-if (PLASMA_TARGETOS STREQUAL "Linux")
-  target_link_libraries(Platform
-    PUBLIC
-      stdc++fs
-      dl
-  )
-endif()

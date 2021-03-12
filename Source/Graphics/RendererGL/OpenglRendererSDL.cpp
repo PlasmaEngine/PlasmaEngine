@@ -5,6 +5,7 @@
 
 namespace Plasma
 {
+#if !defined(PlasmaPlatformWindows)
 class OpenglRendererSDL : public OpenglRenderer
 {
 public:
@@ -74,5 +75,5 @@ void zglSwapBuffers(OpenglRenderer* renderer)
 {
   SDL_GL_SwapWindow((SDL_Window*)renderer->mWindow);
 }
-
+#endif
 } // namespace Plasma
