@@ -14,6 +14,15 @@ jobs:
     - 13
     script:
     - node index.js all --alias=Linux
+  - name: MacOS
+    os: osx
+    env:
+    - CACHE_NAME=MacOS
+    language: node_js
+    node_js:
+    - 13
+    script:
+    - node index.js all --alias=MacOS
   - name: Windows
     os: windows
     env:
