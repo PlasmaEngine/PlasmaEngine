@@ -466,7 +466,7 @@ const determineCmakeCombo = (options) => {
       vfs: true
     },
     Linux: {
-      builder: "Xcode",
+      builder: "Ninja",
       config: "Release",
       platform: "Linux",
       targetos: "Linux",
@@ -474,7 +474,7 @@ const determineCmakeCombo = (options) => {
       vfs: false
     },
     MacOS: {
-      builder: "Ninja",
+      builder: "Xcode",
       config: "Release",
       platform: "MacOS",
       targetos: "MacOS",
