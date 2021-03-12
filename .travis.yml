@@ -5,7 +5,7 @@ git:
   depth: false
 jobs:
   include:
-    - name: Linux
+  - name: Linux
     os: linux
     env:
     - CACHE_NAME=Linux
