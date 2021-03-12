@@ -478,7 +478,7 @@ const determineCmakeCombo = (options) => {
       config: "Release",
       platform: "MacOS",
       targetos: "MacOS",
-      toolchain: "GCC",
+      toolchain: "Clang",
       vfs: false
     },
     Windows: {
