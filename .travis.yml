@@ -5,6 +5,15 @@ git:
   depth: false
 jobs:
   include:
+    - name: Linux
+    os: linux
+    env:
+    - CACHE_NAME=Linux
+    language: node_js
+    node_js:
+    - 13
+    script:
+    - node index.js all --alias=Linux
   - name: Windows
     os: windows
     env:
