@@ -15,6 +15,7 @@ jobs:
     - 13
     before_install:
     - sudo apt-get install libgl1-mesa-dev
+    - sudo apt-get install mesa-common-dev
     script:
     - node index.js all --alias=Linux
   - name: MacOS
@@ -29,7 +30,7 @@ jobs:
     - brew install openssl
     - export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
     - export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
-    - export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"r
+    - export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
     script:
     - node index.js all --alias=MacOS -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib
   - name: Windows
