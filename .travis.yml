@@ -10,8 +10,9 @@ jobs:
     env:
     - CACHE_NAME=Linux
     sudo: required
-    services:
-    - docker
+    language: node_js
+    node_js:
+    - 13
     script:
     - node index.js all --alias=Linux
   - name: MacOS
