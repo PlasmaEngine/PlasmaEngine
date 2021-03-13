@@ -466,7 +466,7 @@ const determineCmakeCombo = (options) => {
       vfs: true
     },
     Linux: {
-      builder: "Ninja",
+      builder: "Unix Makefiles",
       config: "Release",
       platform: "Linux",
       targetos: "Linux",
