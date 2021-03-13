@@ -13,8 +13,8 @@ jobs:
     services:
     - docker
     script:
-    - ./dockerbuildserver.sh
-    - ./PlasmaDocker.sh node index.js all --alias=Linux
+    - sudo ./dockerbuildserver.sh
+    - sudo ./PlasmaDocker.sh node index.js all --alias=Linux
   - name: MacOS
     os: osx
     env:
