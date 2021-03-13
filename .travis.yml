@@ -13,17 +13,12 @@ jobs:
     language: node_js
     node_js:
     - 13
-    addons:
-    apt:
-        packages:
-          - libgdal-dev
-          - libproj-dev
     before_install:
     - sudo apt-get update
     - sudo apt-get install libgl1-mesa-dev
     - sudo apt-get install mesa-common-dev
     - sudo apt-get install build-essential libxmu-dev libxi-dev libgl-dev libosmesa-dev git
-    script:
+    install:
     - node index.js all --alias=Linux
   - name: MacOS
     os: osx
