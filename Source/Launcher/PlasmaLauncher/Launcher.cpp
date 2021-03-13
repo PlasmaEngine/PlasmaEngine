@@ -52,8 +52,10 @@ Launcher::Launcher(OsWindow* window)
 
   mLauncherWindow = launcher;
 
+#if defined(PlasmaDebug)
  if (Os::IsDebuggerAttached())
     OpenTweakablesWindow();
+#endif
 
   CommandManager* commands = CommandManager::GetInstance();
   BindAppCommands(PL::gEngine->GetConfigCog(), commands);
