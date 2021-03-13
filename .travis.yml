@@ -21,6 +21,11 @@ jobs:
     language: node_js
     node_js:
     - 13
+    before_install:
+    - brew update
+    - brew install openssl
+    - export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
+    - export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
     script:
     - node index.js all --alias=MacOS
   - name: Windows
