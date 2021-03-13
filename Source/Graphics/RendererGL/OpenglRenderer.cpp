@@ -1604,13 +1604,13 @@ namespace Plasma
 
         Vec3 progressScale = Vec3(progressWidth * currentPercent, 20.0f, 1.0f);
         Vec3 progressTranslation =
-            Vec3((size.x - loadingScale.x + progressScale.x) * 0.5f, (size.y + loadingScale.y) * 0.5f + 40.0f, 0.0f);
+            Vec3((size.x - loadingScale.x + progressScale.x) * 0.5f, (size.y + loadingScale.y) * 0.5f + 300.0f, 0.0f);
         Mat4 progressTransform;
         progressTransform.BuildTransform(progressTranslation, Mat3::cIdentity, progressScale);
         progressTransform = viewportToNdc * progressTransform;
 
         Vec3 textScale = Vec3(1.0f);
-        Vec3 textTranslation = Vec3((size.x - loadingScale.x) * 0.5f, (size.y + loadingScale.y) * 0.5f + 5.0f, 0.0f);
+        Vec3 textTranslation = Vec3((size.x - loadingScale.x) * 0.5f, (size.y + loadingScale.y) * 0.5f + 250.0f, 0.0f);
         Mat4 textTransform;
         textTransform.BuildTransform(textTranslation, Mat3::cIdentity, textScale);
         textTransform = viewportToNdc * textTransform;
@@ -1657,9 +1657,15 @@ namespace Plasma
 
         if (!splashMode)
         {
-            // Loading
-            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, loadingTransform.array);
-            glBindTexture(GL_TEXTURE_2D, loadingTexture->mId);
+            //// Loading
+            //glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, loadingTransform.array);
+            //glBindTexture(GL_TEXTURE_2D, loadingTexture->mId);
+            //mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
+            //mStreamedVertexBuffer.FlushBuffer(true);
+            
+            // Logo
+            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, splashTransform.array);
+            glBindTexture(GL_TEXTURE_2D, splashTexture->mId);
             mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
             mStreamedVertexBuffer.FlushBuffer(true);
 
@@ -1677,13 +1683,6 @@ namespace Plasma
                 mStreamedVertexBuffer.AddVertices(&progressText[0], progressText.Size(), PrimitiveType::Triangles);
                 mStreamedVertexBuffer.FlushBuffer(true);
             }
-
-            // Logo
-            glUniformMatrix3fv(uvTransformLoc, 1, cTransposeMatrices, logoUvTransform.array);
-            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, logoTransform.array);
-            glBindTexture(GL_TEXTURE_2D, logoTexture->mId);
-            mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
-            mStreamedVertexBuffer.FlushBuffer(true);
         }
         else
         {
