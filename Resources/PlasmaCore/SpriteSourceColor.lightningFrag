@@ -20,7 +20,7 @@ struct SpriteSourceColor
     // Used for Editor UI
     this.Color = spriteColor * this.Color;
     // Used for Game Renderer
-    this.Albedo = spriteColor.XYZ;
-    this.Alpha += spriteColor.W;
+    this.Albedo = this.Color.XYZ;
+    this.Alpha += this.Color.W;
   }
 }
