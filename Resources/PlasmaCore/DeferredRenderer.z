@@ -263,7 +263,7 @@ class DeferredRenderer : LightningComponent
     alphaSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
     event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AdditiveBlend, ColorOutput(), "AdditiveMaterials");
     
-        var forwardAlpha = ForwardPassAlpha();
+    var forwardAlpha = ForwardPassAlpha();
     forwardAlpha.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
     forwardAlpha.DitherTexture = Texture.BlueNoise;
     forwardAlpha.Skybox = this.Skybox;

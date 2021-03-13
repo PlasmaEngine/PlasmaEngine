@@ -57,6 +57,7 @@ Texture::Texture() : mRenderData(nullptr)
 
   mWidth = 0;
   mHeight = 0;
+  mDepth = 0;
 
   mFormat = TextureFormat::None;
   mAddressingX = TextureAddressing::Clamp;
@@ -92,6 +93,26 @@ void Texture::SetSize(IntVec2 size)
 
   mWidth = size.x;
   mHeight = size.y;
+  mDirty = true;
+}
+
+ IntVec3 Texture::GetSize3D()
+{
+  return IntVec3(mWidth, mHeight, mDepth);
+}
+
+void Texture::SetSize3D(IntVec3 size)
+{
+  CheckProtected();
+
+  size = Math::Clamp(size, IntVec3(1, 1, 1), IntVec3(4096, 4096, 4096));
+  if (size.x == mWidth && size.y == mHeight && size.z == mDepth)
+    return;
+
+  mWidth = size.x;
+  mHeight = size.y;
+  mDepth = size.z;
+
   mDirty = true;
 }
 

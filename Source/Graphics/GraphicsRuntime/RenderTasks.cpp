@@ -684,6 +684,7 @@ void RenderTaskHelper::AddRenderTaskTextureUpdate(Texture* texture)
   renderTask->mRenderData = texture->mRenderData;
   renderTask->mWidth = texture->mWidth;
   renderTask->mHeight = texture->mHeight;
+  renderTask->mDepth = texture->mDepth;
   renderTask->mType = texture->mType;
   renderTask->mFormat = texture->mFormat;
   renderTask->mAddressingX = texture->mAddressingX;

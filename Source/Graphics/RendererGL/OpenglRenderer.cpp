@@ -703,6 +703,7 @@ namespace Plasma
         glActiveTexture(GL_TEXTURE0 + textureSlot);
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        glBindTexture(GL_TEXTURE_3D, 0);
         if (samplerObjects)
             glBindSampler(textureSlot, 0);
         // Bind texture
@@ -1037,6 +1038,7 @@ namespace Plasma
 #if !defined(PlasmaWebgl)
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_TEXTURE_CUBE_MAP);
+        glEnable((GL_TEXTURE_3D));
 #endif
 
         if (glewIsSupported("GL_ARB_seamless_cube_map"))
@@ -1126,7 +1128,7 @@ namespace Plasma
 #define PlasmaGlVertexOut PlasmaIfGl("out") PlasmaIfWebgl("varying")
 #define PlasmaGlPixelIn PlasmaIfGl("in") PlasmaIfWebgl("varying")
 
-        // @Nate: This will most likley have to change to use uniform buffers
+        // This will most likley have to change to use uniform buffers
         String loadingShaderVertex = PlasmaIfGl("#version 150\n") PlasmaIfWebgl("#version 100\n")
             PlasmaIfWebgl("precision mediump float;\n") "uniform mat4 Transform;\n"
             "uniform mat3 "
@@ -1332,16 +1334,32 @@ namespace Plasma
                 PlasmaIfWebgl(WebglConvertRenderTargetFormat(info));
                 GlTextureEnums glEnums = gTextureEnums[info->mFormat];
 
-                // Rendering to cubemap is not implemented.
-                glTexImage2D(GL_TEXTURE_2D,
-                             0,
-                             glEnums.mInternalFormat,
-                             info->mWidth,
-                             info->mHeight,
-                             0,
-                             glEnums.mFormat,
-                             glEnums.mType,
-                             nullptr);
+                switch(info->mType)
+                {
+                case TextureType::TextureCube:
+              
+                case TextureType::Texture3D:
+                break;
+                    //glTexImage3D(GL_TEXTURE_3D, 0, )
+                case TextureType::Texture2D: 
+                    // Intentional fall through.
+                default:
+                {
+                  // Rendering to cubemap is not implemented.
+                  glTexImage2D(GL_TEXTURE_2D,
+                               0,
+                               glEnums.mInternalFormat,
+                               info->mWidth,
+                               info->mHeight,
+                               0,
+                               glEnums.mFormat,
+                               glEnums.mType,
+                               nullptr);
+                  break;
+                }
+                }
+
+               
             }
                 // Do not try to reallocate texture data if no new data is given.
             else if (info->mImageData != nullptr)
@@ -1975,6 +1993,7 @@ namespace Plasma
         AddTextureInfo info;
         info.mRenderData = task->mRenderData;
         info.mWidth = task->mWidth;
+        info.mDepth = task->mDepth;
         info.mHeight = task->mHeight;
         info.mType = task->mType;
         info.mFormat = task->mFormat;
