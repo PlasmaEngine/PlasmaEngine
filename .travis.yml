@@ -9,11 +9,12 @@ jobs:
     os: linux
     env:
     - CACHE_NAME=Linux
-    language: node_js
-    node_js:
-    - 13
+    sudo: required
+    services:
+    - docker
     script:
-    - node index.js all --alias=Linux
+    - ./dockerbuildserver.sh
+    - ./PlasmaDocker.sh node index.js all --alias=Linux
   - name: MacOS
     os: osx
     env:
