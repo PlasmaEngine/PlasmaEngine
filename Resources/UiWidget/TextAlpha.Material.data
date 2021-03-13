@@ -1,0 +1,17 @@
+[Version:1]
+Material 
+{
+	var RenderGroups = Array
+	{
+		"5961eaa40f1649f6:ZSort"
+		"56dc0b2bbc86c4cb:AlphaBlend"
+	}
+	SpriteSourceColor 
+	{
+		var SpriteSource = "null"
+	}
+	AlphaValue 
+	{
+		var AlphaValue = 0.868099868
+	}
+}
