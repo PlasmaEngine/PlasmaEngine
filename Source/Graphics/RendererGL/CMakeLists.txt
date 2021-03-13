@@ -12,6 +12,7 @@ target_sources(RendererGL
       ${CMAKE_CURRENT_LIST_DIR}/RendererGLStandard.hpp
       ${CMAKE_CURRENT_LIST_DIR}/RendererGLStandard.cpp  
       ${CMAKE_CURRENT_LIST_DIR}/OpenglRendererWindows.cpp
+      ${CMAKE_CURRENT_LIST_DIR}/OpenglRendererSDL.cpp
 )
 
 plasma_target_includes(RendererGL
