@@ -11,8 +11,12 @@ if(NOT EMSCRIPTEN)
 	 	git2
 	)
 
-	set_property(TARGET "git2" PROPERTY FOLDER "External/Libgit2")
-	set_property(TARGET "git2internal" PROPERTY FOLDER "External/Libgit2")
-	set_property(TARGET "http-parser" PROPERTY FOLDER "External/Libgit2")
-	set_property(TARGET "pcre" PROPERTY FOLDER "External/Libgit2")
+	# TODO: Investigate
+	# some targets break linux biulds 
+	if(win32) 
+		set_property(TARGET "git2" PROPERTY FOLDER "External/Libgit2")
+		set_property(TARGET "git2internal" PROPERTY FOLDER "External/Libgit2")
+		set_property(TARGET "http-parser" PROPERTY FOLDER "External/Libgit2")
+		set_property(TARGET "pcre" PROPERTY FOLDER "External/Libgit2")
+	endif()
 endif()
