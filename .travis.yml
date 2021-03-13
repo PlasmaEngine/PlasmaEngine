@@ -27,6 +27,7 @@ jobs:
     - brew install openssl
     - export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
     - export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
+    - export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
     script:
     - node index.js all --alias=MacOS -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib
   - name: Windows
