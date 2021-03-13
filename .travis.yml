@@ -14,7 +14,9 @@ jobs:
     node_js:
     - 13
     before_install:
-    - sudo apt-get install libmesa-dev
+    - sudo apt-get install libgl1-mesa-dev
+    - sudo apt-get install mesa-common-dev
+    - sudo apt-get install build-essential libxmu-dev libxi-dev libgl-dev libosmesa-dev git
     script:
     - node index.js all --alias=Linux
   - name: MacOS
