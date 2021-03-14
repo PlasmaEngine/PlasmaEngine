@@ -55,7 +55,7 @@ Renderer* CreateRenderer(OsHandle windowHandle, String& error)
   return new OpenglRendererSDL(windowHandle, error);
 }
 
-void zglSetSwapInterval(OpenglRenderer* renderer, int interval)
+void plGlSetSwapInterval(OpenglRenderer* renderer, int interval)
 {
 // On Emscripten we don't want to set this because the browser emits errors.
 #if !defined(PlasmaTargetOsEmscripten)
@@ -63,7 +63,7 @@ void zglSetSwapInterval(OpenglRenderer* renderer, int interval)
 #endif
 }
 
-IntVec2 zglGetWindowRenderableSize(OpenglRenderer* renderer)
+IntVec2 plGlGetWindowRenderableSize(OpenglRenderer* renderer)
 {
   // Use a default size just in case the call fails.
   IntVec2 size(1024, 768);
@@ -71,7 +71,7 @@ IntVec2 zglGetWindowRenderableSize(OpenglRenderer* renderer)
   return size;
 }
 
-void zglSwapBuffers(OpenglRenderer* renderer)
+void plGlSwapBuffers(OpenglRenderer* renderer)
 {
   SDL_GL_SwapWindow((SDL_Window*)renderer->mWindow);
 }
