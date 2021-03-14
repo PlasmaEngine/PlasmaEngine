@@ -75,7 +75,6 @@ public:
   int mPatchVersion;
   int mRevisionId;
   String mShortChangeSet;
-  u64 mMsSinceEpoch;
   String mTargetOs;
   String mArchitecture;
   String mConfig;

@@ -55,7 +55,7 @@ public:
   Text* mBuildVersion;
   Text* mInstallState;
   Text* mTags;
-  Text* mReleaseDate;
+ // Text* mReleaseDate;
 
   /// Whether or not this build version is selected.
   bool mSelected;
