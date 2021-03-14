@@ -32,7 +32,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cfloat>
+
+#if !defined(PlasmaPlatformMacOS)
 #include <malloc.h>
+#else
+#include <stdlib.h>
+#endif
 
 #include <Tracy.hpp>
 
