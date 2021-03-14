@@ -10,7 +10,7 @@
 #if defined(PlasmaPlatformWindows)
 	#include <GL/wglew.h>
 #else
-	#include "#include SDL.h"
+	#include "SDL.h"
 #endif
 
 
