@@ -32,7 +32,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cfloat>
-#include <malloc.h>
+
+#ifdef _WIN32
+#  include <malloc.h>
+#elif __APPLE__ || __linux__ || __unix__
+#  include <stdlib.h>
+#endif
 
 #include <Tracy.hpp>
 
