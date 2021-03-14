@@ -22,6 +22,18 @@ project(Plasma)
 set(PLASMA_RENDERER "OpenGL" CACHE STRING "Rendering backend used by the engine")
 set_property(CACHE PLASMA_RENDERER PROPERTY STRINGS OpenGL DirectX12 Vulkan) 
 
+# Search OpenSSL
+find_package(PkgConfig REQUIRED)
+pkg_search_module(OPENSSL REQUIRED openssl)
+
+if( OPENSSL_FOUND )
+
+    include_directories(${OPENSSL_INCLUDE_DIRS})
+    message(STATUS "Using OpenSSL ${OPENSSL_VERSION}")
+else()
+    # Error; with REQUIRED, pkg_search_module() will throw an error by it's own
+endif()
+
 add_definitions(-DPlasmaMsSinceEpoch=${PLASMA_MS_SINCE_EPOCH})
 add_definitions(-DPlasmaBranchName="${PLASMA_BRANCH}")
 add_definitions(-DPlasmaRevisionId=${PLASMA_REVISION})
