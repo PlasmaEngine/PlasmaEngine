@@ -84,17 +84,17 @@ struct Atmosphere
   function Main()
   {
     this.LightDirection = -this.LightDirection;
-    this.LightDirection = Math.Normalize(this.LightDirection);
+    this.LightDirection = Math.Normalize(this.LightDirection) ;
     var geometrySample0 = this.GeometryBuffer0.Sample(this.Uv);
     var viewPosition = GeometryPass.ReconstructViewPosition(geometrySample0, this.PerspectiveToView, this.PerspectivePosition, this.FarPlane);
-    var worldPosition = Math.Normalize(Math.Multiply(this.ViewToWorld, Real4(viewPosition.XYZ, 1.0)).XYZ);
+    var worldPosition = Math.Normalize(Math.Multiply(this.ViewToWorld, Real4(viewPosition.XYZ, 0.0)).XYZ);
     
     var alpha = Math.Clamp(Math.Dot(this.LightDirection, worldPosition), 0 ,1);
     var rayleighFactor = this.Phase(alpha, -0.01) * this.RayleighBrightness;
     var mieFactor = this.Phase(alpha, this.MieDistribution) * this.MieBrightness;
     var spot = Math.SmoothStep(0.0, 15.0, this.Phase(alpha, 0.995)) * this.SpotBrightness;
     
-    var eyePos = Real3(0.0, this.SurfaceHeight, 0.0);
+    var eyePos = Real3(0.0, this.SurfaceHeight, 0);
     var eyeDepth = this.AtmosphericDepth(eyePos, worldPosition);
     var stepLength = eyeDepth / this.StepCount;
     var eyeExtinction = this.HorizonExtinction(eyePos, worldPosition, this.SurfaceHeight - 0.15);
@@ -106,7 +106,7 @@ struct Atmosphere
     {
       var sampledDistance = stepLength * i;
       var pos = eyePos + worldPosition * sampledDistance;
-      var extinction = this.HorizonExtinction(pos, this.LightDirection, this.SurfaceHeight - 0.35);
+      var extinction = this.HorizonExtinction(pos, this.LightDirection, this.SurfaceHeight - 0.35 );
       var sampleDepth = this.AtmosphericDepth(pos, this.LightDirection);
       var influx = this.Absorb(sampledDistance, Real3(this.Intensity), this.ScatterStrength) * extinction;
       rayleighCollected += this.Absorb(sampledDistance, this.KR * influx, this.RayleighStrength);

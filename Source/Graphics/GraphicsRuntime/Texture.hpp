@@ -36,10 +36,18 @@ public:
   /// Height of the Texture in pixels. Set on Upload() for runtime Textures.
   uint mHeight;
 
+  // Depth of the Texture in pixels. Set on Upload() for runtime Textures. Only used in Texture3D.
+  uint mDepth;
+
   /// Width and height (x, y) of the Texture in pixels. Set on Upload() for
   /// runtime Textures.
   IntVec2 GetSize();
   void SetSize(IntVec2 size);
+
+  /// Width and height and depth (x, y, z) of the Texture in pixels. Set on Upload() for
+  /// runtime Textures.
+  IntVec3 GetSize3D();
+  void SetSize3D(IntVec3 size);
 
   /// Memory format of the stored pixel data. Set on Upload() for runtime
   /// Textures.

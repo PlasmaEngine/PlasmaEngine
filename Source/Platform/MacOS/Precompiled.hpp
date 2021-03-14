@@ -1,7 +1,7 @@
 // MIT Licensed (see LICENSE.md).
 #pragma once
 
-#include "Common/CommonStandard.hpp"
+#include "CommonStandard.hpp"
 #include "PlatformStandard.hpp"
 
 #include "SDL.h"
@@ -10,7 +10,7 @@
 
 #include <GL/gl.h>
 
-#ifdef PlasmaTargetOsMac
+#ifdef PlasmaTargetOsMacOS
 #  include <CoreServices/CoreServices.h>
 #  include <mach/mach.h>
 #  include <mach/mach_time.h>

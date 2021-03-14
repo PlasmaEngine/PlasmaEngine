@@ -19,7 +19,7 @@ void PlatformLibrary::Initialize()
 
   if (SDL_Init(flags) != 0)
   {
-    ZPrint("Unable to initialize SDL: %s\n", SDL_GetError());
+    PlasmaPrint("Unable to initialize SDL: %s\n", SDL_GetError());
     CrashHandler::FatalError(1);
   }
 

@@ -130,10 +130,14 @@ static_assert(CHAR_BIT == 8, "Platform byte length must be 8 bits");
 typedef NEAREST_UINT(BYTES_TO_BITS(sizeof(void*))) uintptr;
 
 /// Returns the minimum of a and b
+#if !defined(MIN)
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
+#endif
 
 /// Returns the maximum of a and b
+#if !defined(MAX)
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
+#endif
 
 /// Endianness (Byte Order)
 namespace Endianness

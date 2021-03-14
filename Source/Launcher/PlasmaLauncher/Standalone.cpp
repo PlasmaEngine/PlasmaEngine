@@ -32,7 +32,6 @@ BuildId::BuildId()
   mMinorVersion = 0;
   mPatchVersion = 0;
   mRevisionId = 0;
-  mMsSinceEpoch = 0;
 }
 
 void BuildId::Serialize(Serializer& stream, bool includePlatform)
@@ -44,7 +43,6 @@ void BuildId::Serialize(Serializer& stream, bool includePlatform)
   SerializeNameDefault(mPatchVersion, 0);
   SerializeNameDefault(mRevisionId, 0);
   SerializeNameDefault(mShortChangeSet, String());
-  SerializeNameDefault(mMsSinceEpoch, (u64)0);
   // Projects save this save information but without the platform
   if (includePlatform)
   {
@@ -69,7 +67,6 @@ BuildId BuildId::GetCurrentApplicationId()
   id.mPatchVersion = GetPatchVersion();               // Patch [0]
   id.mRevisionId = GetRevisionNumber();               // Revision [1501]
   id.mShortChangeSet = GetShortChangeSetString();     // ShortChangeset [fb02756c46a4]
-  id.mMsSinceEpoch = PlasmaMsSinceEpoch;              // MsSinceEpoch [1574702096290]
   id.mTargetOs = PlasmaTargetOsName;                  // TargetOs [Windows]
   id.mArchitecture = PlasmaArchitectureName;          // Architecture [x86]
   id.mConfig = PlasmaConfigName;                      // Config [Release]
@@ -82,10 +79,11 @@ bool BuildId::Parse(StringParam buildName)
   /*
    * This needs to match
    * index.js:pack/Standalone.cpp:BuildId::Parse/BuildId::GetFullId/BuildVersion.cpp:GetBuildVersionName
-   * Application.Branch.Major.Minor.Patch.Revision.ShortChangeset.MsSinceEpoch.TargetOs.Architecture.Config.Extension
+   * Application.Branch.Major.Minor.Patch.Revision.ShortChangeset.TargetOs.Architecture.Config.Extension
    * Example: PlasmaEditor.master.1.5.0.1501.fb02756c46a4.1574702096290.Windows.x86.Release.zip
    */
   const Regex cBuildNameRegex("([a-zA-Z0-9_]+)\\." // Application [PlasmaEditor]
+                              "([a-zA-Z0-9_]+)\\." // Branch [Master] 
                               "([0-9]+)\\."        // Major [1]
                               "([0-9]+)\\."        // Minor [5]
                               "([0-9]+)\\."        // Patch [0]
@@ -93,6 +91,7 @@ bool BuildId::Parse(StringParam buildName)
                               "([0-9a-fA-F]+)\\."  // ShortChangeset [fb02756c46a4]
                               "([a-zA-Z0-9_]+)\\." // TargetOs [Windows]
                               "([a-zA-Z0-9_]+)\\." // Architecture [x86]
+                              "([a-zA-Z0-9_]+)\\." // Config [Release]
                               "([a-zA-Z0-9_]+)"    // Extension [zip]
   );
 
@@ -107,17 +106,17 @@ bool BuildId::Parse(StringParam buildName)
   // Application.Major.Minor.Patch.Revision.ShortChangeset.TargetOs.Architecture.Extension
 
   mApplication = matches[1];
-  mBranch = "Master";
-  ToValue(matches[2], mMajorVersion);
-  ToValue(matches[3], mMinorVersion);
-  ToValue(matches[4], mPatchVersion);
-  ToValue(matches[5], mRevisionId);
-  mShortChangeSet = matches[6];
-  ToValue("0000", mMsSinceEpoch);
-  mTargetOs = matches[7];
-  mArchitecture = matches[8];
-  mConfig = "Release";
-  mPackageExtension = matches[9];
+  mBranch = matches[2];
+  ToValue(matches[3], mMajorVersion);
+  ToValue(matches[4], mMinorVersion);
+  ToValue(matches[5], mPatchVersion);
+  ToValue(matches[6], mRevisionId);
+  mShortChangeSet = matches[7];
+  mTargetOs = matches[8];
+  mArchitecture = matches[9];
+  mConfig = matches[10];
+  mPackageExtension = matches[11];
+  ;
   return true;
 }
 
@@ -134,8 +133,8 @@ String BuildId::GetFullId() const
   /*
    * This needs to match
    * index.js:pack/Standalone.cpp:BuildId::Parse/BuildId::GetFullId/BuildVersion.cpp:GetBuildVersionName
-   * Application.Branch.Major.Minor.Patch.Revision.ShortChangeset.MsSinceEpoch.TargetOs.Architecture.Config.Extension
-   * Example: PlasmaEditor.master.1.5.0.1501.fb02756c46a4.1574702096290.Windows.x86.Release.zip
+   * Application.Branch.Major.Minor.Patch.Revision.ShortChangeset.TargetOs.Architecture.Config.Extension
+   * Example: PlasmaEditor.master.0.1.4.1.fb02756c46a4.Windows.x86.Release.zip
    */
   StringBuilder builder;
   builder.AppendFormat("%s.", mApplication.c_str());     // Application [PlasmaEditor]
@@ -145,7 +144,6 @@ String BuildId::GetFullId() const
   builder.AppendFormat("%d.", mPatchVersion);            // Patch [0]
   builder.AppendFormat("%d.", mRevisionId);              // Revision [1501]
   builder.AppendFormat("%s.", mShortChangeSet.c_str());  // ShortChangeset [fb02756c46a4]
-  builder.AppendFormat("%llu.", mMsSinceEpoch);          // MsSinceEpoch [1574702096290]
   builder.AppendFormat("%s.", mTargetOs.c_str());        // TargetOs [Windows]
   builder.AppendFormat("%s.", mArchitecture.c_str());    // Architecture [x86]
   builder.AppendFormat("%s.", mConfig.c_str());          // Config [Release]
@@ -250,7 +248,7 @@ void BuildId::SetToThisPlatform()
 String BuildId::GetChangeSetDate() const
 {
   char buffer[256];
-  time_t time = mMsSinceEpoch / 1000;
+  time_t time = 0;
   auto tm = localtime(&time);
   strftime(buffer, sizeof(buffer), "%Y-%m-%d", tm);
   return buffer;

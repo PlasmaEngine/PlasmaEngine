@@ -1,0 +1,49 @@
+// MIT Licensed (see LICENSE.md).
+
+// Shader input attribute definitions
+// [AppBuiltInInput] Input comes from predefined data given by the graphics engine
+// [StageInput]      Input comes from the previous hardware stage (mesh -> vertex -> geometry -> pixel)
+// [FragmentInput]   Input comes from a previous fragment in the same stage
+// [PropertyInput]   Input comes from this fragment
+// [Input]           Input auto resolves from any of the previous in the order
+//                   [FragmentInput][StageInput][AppBuiltInInput][PropertyInput]
+//
+// Pixel fragment Example:
+// [FragmentInput][StageInput] var ViewNormal : Real3;
+// Input will come from a previous pixel fragment that outputs ViewNormal
+// otherwise, input will come from the vertex shader
+
+[Vertex]
+struct Inflate
+{
+  [AppBuiltInInput] var LocalToView : Real4x4;
+  [AppBuiltInInput] var ViewToWorld : Real4x4;
+  [AppBuiltInInput] var LocalToViewNormal : Real3x3;
+  [AppBuiltInInput] var LocalToPerspective : Real4x4;
+
+  [StageInput] var LocalPosition : Real3;
+  [StageInput] var LocalTangent : Real3;
+  [StageInput] var LocalBitangent : Real3;
+  [StageInput] var LocalNormal : Real3;
+
+  [StageInput][Output] var Uv : Real2;
+
+  [Output] var ViewPosition : Real3;
+  [Output] var ViewNormal : Real3;
+  [Output] var ViewTangent : Real3;
+  [Output] var ViewBitangent : Real3;
+
+  [Output] var PerspectivePosition : Real4;
+
+  function Main()
+  {
+    // Viewspace outputs for pixel shaders
+    this.ViewNormal = Math.Normalize(Math.Multiply(this.LocalToViewNormal, this.LocalNormal));
+    this.ViewPosition = Math.MultiplyPoint(this.LocalToView, this.LocalPosition);
+    this.ViewTangent = Math.Normalize(Math.Multiply(this.LocalToViewNormal, this.LocalTangent));
+    this.ViewBitangent = Math.Normalize(Math.Multiply(this.LocalToViewNormal, this.LocalBitangent));
+
+    // Perspective output for graphics api
+    this.PerspectivePosition = Math.Multiply(this.LocalToPerspective, Real4(this.LocalPosition + this.LocalNormal * 0.3, 1.0));
+  }
+}

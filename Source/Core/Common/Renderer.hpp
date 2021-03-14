@@ -396,6 +396,7 @@ namespace Plasma
         TextureRenderData* mRenderData;
         uint mWidth;
         uint mHeight;
+        uint mDepth;
         uint mMipCount;
         uint mTotalDataSize;
         MipHeader* mMipHeaders;
@@ -909,6 +910,7 @@ namespace Plasma
         TextureRenderData* mRenderData;
         uint mWidth;
         uint mHeight;
+        uint mDepth;
         TextureType::Enum mType;
         TextureFormat::Enum mFormat;
         TextureAddressing::Enum mAddressingX;

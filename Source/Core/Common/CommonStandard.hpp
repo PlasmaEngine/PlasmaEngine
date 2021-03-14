@@ -33,10 +33,10 @@
 #include <cstdlib>
 #include <cfloat>
 
-#ifdef _WIN32
-#  include <malloc.h>
-#elif __APPLE__ || __linux__ || __unix__
-#  include <stdlib.h>
+#if !defined(PlasmaPlatformMacOS)
+#include <malloc.h>
+#else
+#include <stdlib.h>
 #endif
 
 #include <Tracy.hpp>

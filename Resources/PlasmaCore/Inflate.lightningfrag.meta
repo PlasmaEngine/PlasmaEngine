@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "Inflate"
+		var ResourceId = 0x601401dad274432e
+	}
+}

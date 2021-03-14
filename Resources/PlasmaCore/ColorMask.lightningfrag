@@ -17,7 +17,7 @@ struct ColorMaskMap
         albedo = Math.Lerp(albedo, this.MainColor.XYZ, colorMask.X);
         albedo = Math.Lerp(albedo, this.SecondaryColor.XYZ, colorMask.Y);
         albedo = Math.Lerp(albedo, this.VisorColor.XYZ, colorMask.Z);
-        this.Albedo = albedo;
+        this.Albedo *= albedo;
         
         var power = Math.Lerp(Real3(1.0), Real3(2.2), this.GammaCorrect as Real);
         this.Albedo *= Math.Pow(this.Albedo.XYZ, power);

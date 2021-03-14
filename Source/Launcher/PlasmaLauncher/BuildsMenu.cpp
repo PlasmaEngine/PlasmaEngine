@@ -72,10 +72,10 @@ BuildItem::BuildItem(Composite* parent, PlasmaBuild* version, BuildsMenu* builds
     mTags->mAlign = TextAlign::Right;
     mTags->SetColor(BuildsUi::Tags);
 
-    mReleaseDate = new Text(rightHalf, mLauncherBoldFont, 10);
+    /*mReleaseDate = new Text(rightHalf, mLauncherBoldFont, 10);
     mReleaseDate->SetText(version->GetBuildId().GetChangeSetDate());
     mReleaseDate->mAlign = TextAlign::Right;
-    mReleaseDate->SetColor(BuildsUi::ReleaseDate);
+    mReleaseDate->SetColor(BuildsUi::ReleaseDate);*/
   }
 
   mDownloadProgress = nullptr;
@@ -120,7 +120,7 @@ void BuildItem::UpdateTransform()
     mBuildVersion->SetColor(BuildsUi::ReleaseDate);
     mInstallState->SetColor(Vec4(0, 0, 0, 0.5f));
     mTags->SetColor(BuildsUi::ReleaseDate);
-    mReleaseDate->SetColor(BuildsUi::Tags);
+    //mReleaseDate->SetColor(BuildsUi::Tags);
   }
   else
   {
@@ -128,7 +128,7 @@ void BuildItem::UpdateTransform()
 
     mBuildVersion->SetColor(BuildsUi::BuildVersion);
     mTags->SetColor(BuildsUi::Tags);
-    mReleaseDate->SetColor(BuildsUi::ReleaseDate);
+    //mReleaseDate->SetColor(BuildsUi::ReleaseDate);
   }
 
   if (IsMouseOver())
@@ -194,7 +194,7 @@ void BuildItem::OnInstallStarted(Event* e)
 
   // Hide the text that the progress bar will be on top of
   mInstallState->SetVisible(false);
-  mReleaseDate->SetVisible(false);
+  //mReleaseDate->SetVisible(false);
 }
 
 void BuildItem::Uninstall()
@@ -300,7 +300,7 @@ void BuildItem::OnDownloadCompleted(BackgroundTaskEvent* e)
 
   // Make the hidden text visible again
   mInstallState->SetVisible(true);
-  mReleaseDate->SetVisible(true);
+  //mReleaseDate->SetVisible(true);
 
   // We're now installed, so update the state
   UpdateInstallState();

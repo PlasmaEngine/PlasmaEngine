@@ -139,7 +139,7 @@ String LightningShaderIRType::GetMemberName(u32 memberIndex)
 
 u32 LightningShaderIRType::FindMemberIndex(const String& memberName)
 {
-  return mMemberNamesToIndex.FindValue(memberName, cInvalidIndex);
+  return mMemberNamesToIndex.FindValue(memberName, size_t(-1));
 }
 
 LightningShaderIRType* LightningShaderIRType::GetSubType(u32 index) const

@@ -131,6 +131,7 @@ void VersionSelector::LoadInstalledBuild(StringParam directoryPath, StringParam 
   {
     localBuild = new PlasmaBuild();
     localBuild->SetBuildId(buildId);
+    
     // Add this build by id and into an array (sorted by id)
     mVersionMap.Insert(buildId, localBuild);
     mVersions.PushBack(localBuild);

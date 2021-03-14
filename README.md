@@ -26,6 +26,10 @@ Building on Windows:
   - Run GenerateVS2019.bat
   - Open and Build the .sln file located in `Build\Active`
 
+Building on Linux:
+  Requires Clang 7.0
+  - Open terminal in project root
+  - run ' node index.js all --alias=Linux '
 ## Key Features
 
   - Custom Scripting Language called Lightning (a friend called it js mixed with C#)

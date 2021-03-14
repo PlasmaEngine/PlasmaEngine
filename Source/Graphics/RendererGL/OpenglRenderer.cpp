@@ -703,6 +703,7 @@ namespace Plasma
         glActiveTexture(GL_TEXTURE0 + textureSlot);
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        glBindTexture(GL_TEXTURE_3D, 0);
         if (samplerObjects)
             glBindSampler(textureSlot, 0);
         // Bind texture
@@ -1037,6 +1038,7 @@ namespace Plasma
 #if !defined(PlasmaWebgl)
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_TEXTURE_CUBE_MAP);
+        glEnable((GL_TEXTURE_3D));
 #endif
 
         if (glewIsSupported("GL_ARB_seamless_cube_map"))
@@ -1126,7 +1128,7 @@ namespace Plasma
 #define PlasmaGlVertexOut PlasmaIfGl("out") PlasmaIfWebgl("varying")
 #define PlasmaGlPixelIn PlasmaIfGl("in") PlasmaIfWebgl("varying")
 
-        // @Nate: This will most likley have to change to use uniform buffers
+        // This will most likley have to change to use uniform buffers
         String loadingShaderVertex = PlasmaIfGl("#version 150\n") PlasmaIfWebgl("#version 100\n")
             PlasmaIfWebgl("precision mediump float;\n") "uniform mat4 Transform;\n"
             "uniform mat3 "
@@ -1332,16 +1334,32 @@ namespace Plasma
                 PlasmaIfWebgl(WebglConvertRenderTargetFormat(info));
                 GlTextureEnums glEnums = gTextureEnums[info->mFormat];
 
-                // Rendering to cubemap is not implemented.
-                glTexImage2D(GL_TEXTURE_2D,
-                             0,
-                             glEnums.mInternalFormat,
-                             info->mWidth,
-                             info->mHeight,
-                             0,
-                             glEnums.mFormat,
-                             glEnums.mType,
-                             nullptr);
+                switch(info->mType)
+                {
+                case TextureType::TextureCube:
+              
+                case TextureType::Texture3D:
+                break;
+                    //glTexImage3D(GL_TEXTURE_3D, 0, )
+                case TextureType::Texture2D: 
+                    // Intentional fall through.
+                default:
+                {
+                  // Rendering to cubemap is not implemented.
+                  glTexImage2D(GL_TEXTURE_2D,
+                               0,
+                               glEnums.mInternalFormat,
+                               info->mWidth,
+                               info->mHeight,
+                               0,
+                               glEnums.mFormat,
+                               glEnums.mType,
+                               nullptr);
+                  break;
+                }
+                }
+
+               
             }
                 // Do not try to reallocate texture data if no new data is given.
             else if (info->mImageData != nullptr)
@@ -1586,13 +1604,13 @@ namespace Plasma
 
         Vec3 progressScale = Vec3(progressWidth * currentPercent, 20.0f, 1.0f);
         Vec3 progressTranslation =
-            Vec3((size.x - loadingScale.x + progressScale.x) * 0.5f, (size.y + loadingScale.y) * 0.5f + 40.0f, 0.0f);
+            Vec3((size.x - loadingScale.x + progressScale.x) * 0.5f, (size.y + loadingScale.y) * 0.5f + 300.0f, 0.0f);
         Mat4 progressTransform;
         progressTransform.BuildTransform(progressTranslation, Mat3::cIdentity, progressScale);
         progressTransform = viewportToNdc * progressTransform;
 
         Vec3 textScale = Vec3(1.0f);
-        Vec3 textTranslation = Vec3((size.x - loadingScale.x) * 0.5f, (size.y + loadingScale.y) * 0.5f + 5.0f, 0.0f);
+        Vec3 textTranslation = Vec3((size.x - loadingScale.x) * 0.5f, (size.y + loadingScale.y) * 0.5f + 250.0f, 0.0f);
         Mat4 textTransform;
         textTransform.BuildTransform(textTranslation, Mat3::cIdentity, textScale);
         textTransform = viewportToNdc * textTransform;
@@ -1639,9 +1657,15 @@ namespace Plasma
 
         if (!splashMode)
         {
-            // Loading
-            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, loadingTransform.array);
-            glBindTexture(GL_TEXTURE_2D, loadingTexture->mId);
+            //// Loading
+            //glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, loadingTransform.array);
+            //glBindTexture(GL_TEXTURE_2D, loadingTexture->mId);
+            //mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
+            //mStreamedVertexBuffer.FlushBuffer(true);
+            
+            // Logo
+            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, splashTransform.array);
+            glBindTexture(GL_TEXTURE_2D, splashTexture->mId);
             mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
             mStreamedVertexBuffer.FlushBuffer(true);
 
@@ -1659,13 +1683,6 @@ namespace Plasma
                 mStreamedVertexBuffer.AddVertices(&progressText[0], progressText.Size(), PrimitiveType::Triangles);
                 mStreamedVertexBuffer.FlushBuffer(true);
             }
-
-            // Logo
-            glUniformMatrix3fv(uvTransformLoc, 1, cTransposeMatrices, logoUvTransform.array);
-            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, logoTransform.array);
-            glBindTexture(GL_TEXTURE_2D, logoTexture->mId);
-            mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
-            mStreamedVertexBuffer.FlushBuffer(true);
         }
         else
         {
@@ -1975,6 +1992,7 @@ namespace Plasma
         AddTextureInfo info;
         info.mRenderData = task->mRenderData;
         info.mWidth = task->mWidth;
+        info.mDepth = task->mDepth;
         info.mHeight = task->mHeight;
         info.mType = task->mType;
         info.mFormat = task->mFormat;
