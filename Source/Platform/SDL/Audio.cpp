@@ -89,7 +89,7 @@ StreamStatus::Enum AudioInputOutput::InitializeStream(StreamTypes::Enum whichStr
   }
 
   SDL_AudioSpec want, have;
-  SDL_plasma(want);
+  SDL_Zero(want);
 
   want.freq = 48000;
   want.format = AUDIO_F32;
