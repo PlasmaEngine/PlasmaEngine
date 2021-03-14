@@ -415,7 +415,7 @@ HandleOf<ResourcePackage> ImportJob::BuildContentItems(Status& status, ContentIt
   {
     // Process from this contentItem down.
     ContentItem* contentItem = toBuild[i];
-    static const String cProcessing(String::Format("Processing : %s", contentItem->Filename));
+    static const String cProcessing(String::Format("Processing : %s", contentItem->Filename.c_str()));
     
     UpdateTaskProgress((float)(i + 1) / toBuild.Size(), "Processing : " + contentItem->Filename);
 
