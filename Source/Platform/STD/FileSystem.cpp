@@ -1,7 +1,10 @@
 // MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
-#if __has_include(<experimental/filesystem>)
+#if defined(PlasmaTargetOsMacOS_
+#  include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+#elif __has_include(<experimental/filesystem>)
 #  include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 #else
