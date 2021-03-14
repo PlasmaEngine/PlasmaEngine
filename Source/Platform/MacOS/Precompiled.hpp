@@ -1,7 +1,7 @@
 // MIT Licensed (see LICENSE.md).
 #pragma once
 
-#include "Common/CommonStandard.hpp"
+#include "CommonStandard.hpp"
 #include "PlatformStandard.hpp"
 
 #include "SDL.h"
