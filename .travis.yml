@@ -34,7 +34,7 @@ jobs:
     - export PKG_CONFIG_PATH="/usr/local/opt/openssl@1.1/lib/pkgconfig"
     - pkg-config --modversion openssl
 
-    - brew install glew
+    # - brew install glew
     script:
     - node index.js all --alias=MacOS
   - name: Windows

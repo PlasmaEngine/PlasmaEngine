@@ -22,16 +22,21 @@ project(Plasma)
 set(PLASMA_RENDERER "OpenGL" CACHE STRING "Rendering backend used by the engine")
 set_property(CACHE PLASMA_RENDERER PROPERTY STRINGS OpenGL DirectX12 Vulkan) 
 
-# Search OpenSSL
+# Find OpenSSL
 find_package(PkgConfig REQUIRED)
 pkg_search_module(OPENSSL REQUIRED openssl)
 
-if( OPENSSL_FOUND )
+if(OPENSSL_FOUND)
 
     include_directories(${OPENSSL_INCLUDE_DIRS})
     message(STATUS "Using OpenSSL ${OPENSSL_VERSION}")
-else()
-    # Error; with REQUIRED, pkg_search_module() will throw an error by it's own
+endif()
+
+# Find GLEW
+find_package(GLEW REQUIRED)
+if(GLEW_found)
+  include_directories(${GLEW_INCLUDE_DIRS})
+  link_libraries(${GLEW_LIBRARIES})
 endif()
 
 add_definitions(-DPlasmaMsSinceEpoch=${PLASMA_MS_SINCE_EPOCH})
