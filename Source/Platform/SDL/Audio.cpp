@@ -6,7 +6,7 @@ namespace Plasma
 
 inline static void LogAudioIoError(Plasma::StringParam message, Plasma::String* savedMessage = nullptr)
 {
-  ZPrint(message.c_str());
+  PlasmaPrint(message.c_str());
   if (savedMessage)
     *savedMessage = message;
 }
@@ -73,7 +73,7 @@ AudioInputOutput::~AudioInputOutput()
 
 StreamStatus::Enum AudioInputOutput::InitializeAPI(Plasma::String* resultMessage)
 {
-  ZPrint("Initializing SDL Audio\n");
+  PlasmaPrint("Initializing SDL Audio\n");
   return StreamStatus::Initialized;
 }
 
@@ -98,7 +98,7 @@ StreamStatus::Enum AudioInputOutput::InitializeStream(StreamTypes::Enum whichStr
   want.callback = SDLCallback;
   want.userdata = &data;
 
-  ZPrint("Initializing audio %s stream\n", data.mStreamTypeName.c_str());
+  PlasmaPrint("Initializing audio %s stream\n", data.mStreamTypeName.c_str());
 
   int capture = 0;
   if (whichStream == StreamTypes::Input)
@@ -128,11 +128,11 @@ StreamStatus::Enum AudioInputOutput::InitializeStream(StreamTypes::Enum whichStr
   if (!name)
     name = "Audio";
 
-  ZPrint("Device name : %s\n", name);
-  ZPrint("Channels    : %d\n", data.mChannels);
-  ZPrint("Sample rate : %d\n", data.mSampleRate);
+  PlasmaPrint("Device name : %s\n", name);
+  PlasmaPrint("Channels    : %d\n", data.mChannels);
+  PlasmaPrint("Sample rate : %d\n", data.mSampleRate);
 
-  ZPrint("Audio %s stream successfully initialized\n", data.mStreamTypeName.c_str());
+  PlasmaPrint("Audio %s stream successfully initialized\n", data.mStreamTypeName.c_str());
 
   return StreamStatus::Initialized;
 }
@@ -151,7 +151,7 @@ StreamStatus::Enum AudioInputOutput::StartStream(StreamTypes::Enum whichStream,
 
     SDL_PauseAudioDevice(data.mDeviceID, 0);
 
-    ZPrint("Started audio %s stream\n", data.mStreamTypeName.c_str());
+    PlasmaPrint("Started audio %s stream\n", data.mStreamTypeName.c_str());
 
     return StreamStatus::Started;
   }
@@ -172,11 +172,11 @@ StreamStatus::Enum AudioInputOutput::StopStream(StreamTypes::Enum whichStream, P
     SDL_CloseAudioDevice(data.mDeviceID);
     data.mDeviceID = 0;
 
-    ZPrint("Stopped audio %s stream\n", data.mStreamTypeName.c_str());
+    PlasmaPrint("Stopped audio %s stream\n", data.mStreamTypeName.c_str());
   }
   else
   {
-    ZPrint("Unable to stop audio %s stream: not open\n", data.mStreamTypeName.c_str());
+    PlasmaPrint("Unable to stop audio %s stream: not open\n", data.mStreamTypeName.c_str());
   }
 
   return StreamStatus::Stopped;
@@ -184,7 +184,7 @@ StreamStatus::Enum AudioInputOutput::StopStream(StreamTypes::Enum whichStream, P
 
 void AudioInputOutput::ShutDownAPI()
 {
-  ZPrint("SDL Audio was shut down\n");
+  PlasmaPrint("SDL Audio was shut down\n");
 }
 
 unsigned AudioInputOutput::GetStreamChannels(StreamTypes::Enum whichStream)
