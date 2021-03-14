@@ -499,7 +499,7 @@ void Shell::Update()
       // we're ending a drop...
       if (window && window->mOnMouseDropFiles && !info.mBeganDropFiles)
       {
-        IntVec2 clientPosition = IntVec2::cPlasma;
+        IntVec2 clientPosition = IntVec2::cZero;
         SDL_GetMouseState(&clientPosition.x, &clientPosition.y);
 
         window->mOnMouseDropFiles(clientPosition, info.mDropFiles, window);
@@ -593,7 +593,7 @@ void Shell::Update()
 
     case SDL_MOUSEWHEEL:
     {
-      IntVec2 clientPosition = IntVec2::cPlasma;
+      IntVec2 clientPosition = IntVec2::cZero;
       SDL_GetMouseState(&clientPosition.x, &clientPosition.y);
 
       // May need to handle SDL_MOUSEWHEEL_FLIPPED here
