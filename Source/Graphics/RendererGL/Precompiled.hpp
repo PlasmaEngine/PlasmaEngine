@@ -6,7 +6,11 @@
 
 // Include glew before OpenGl
 #include <GL/glew.h>
-#include <GL/wglew.h>
+
+#if defined(PlasmaPlatformWindows)
+	#include <GL/wglew.h>
+#endif
+
 
 // Include OpenGl
 #include <GL/gl.h>
