@@ -1,0 +1,40 @@
+[Version:1]
+Material 
+{
+	var RenderGroups = Array
+	{
+		"56dc0b2bbc86c4cb:AlphaBlend"
+		"5961eaa40f1649f6:ZSort"
+	}
+	AlbedoMap 
+	{
+		var AlbedoMap = "5827bc9481103535:PlasmaAlbedo"
+		var InvertAlpha = false
+	}
+	NormalMap 
+	{
+		var NormalMap = "5827b28df61127a4:PlasmaNormal"
+		var Bumpiness = 0.5
+		var RedLeft = false
+		var GreenDown = false
+	}
+	MetallicMap 
+	{
+		var MetallicMap = "5827acd640fecdcb:PlasmaMetallic"
+		var Invert = true
+	}
+	RoughnessMap 
+	{
+		var RoughnessMap = "5827b28df611775d:PlasmaRoughness"
+		var Invert = false
+	}
+	AlphaMap 
+	{
+		var AlphaMap = "5573a48b3504254e:SsaoRandom4x4"
+		var Invert = true
+	}
+	RoughnessValue 
+	{
+		var RoughnessValue = -0.294349283
+	}
+}

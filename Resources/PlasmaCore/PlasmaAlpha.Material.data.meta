@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "PlasmaAlpha"
+		var ResourceId = 0x6013191a9a244dc2
+		var LoaderType = "Material"
+		var Version = 0
+	}
+}

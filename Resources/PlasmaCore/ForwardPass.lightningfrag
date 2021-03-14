@@ -155,10 +155,10 @@ struct ForwardPassAlpha
     directInputs.ViewNormal = this.ViewNormal;
     directInputs.ViewDirection = viewDirection;
     directInputs.LightDirection = Math.Normalize(-Math.MultiplyNormal(this.WorldToView, this.DirectLightDirection));
-    directInputs.LightColor = this.DirectLightColor * (Utility.KelvinToRGB(this.LightTemperature) /1000);
-    directInputs.LightRadius = 10;
+    directInputs.LightColor = this.DirectLightColor * (Utility.KelvinToRGB(this.LightTemperature) /10000);
+    directInputs.LightRadius = 0;
     directInputs.LightLength = 0;
-    directInputs.LightDistance = 10;
+    directInputs.LightDistance = 1;
     directInputs.Albedo = this.Albedo;
     directInputs.Metallic = this.Metallic;
     directInputs.Roughness = this.Roughness;
@@ -173,7 +173,7 @@ struct ForwardPassAlpha
     directColor = Utility.ApplyDither(directColor, &this.DitherTexture, screenUv, this.ViewportSize);
     
     indirectColor *= this.IndirectIntensity ;
-    directColor *= this.DirectLightIntensity / 50;
+    directColor *= this.DirectLightIntensity ;
     
     this.Target0 = Real4(indirectColor + directColor, this.Alpha);
   }
@@ -258,7 +258,7 @@ struct ForwardPassShadows
    // directColor = Utility.ApplyDither(directColor, &this.DitherTexture, screenUv, this.ViewportSize);
     
     indirectColor *= this.IndirectIntensity;
-    directColor *= this.DirectLightIntensity;
+    directColor *= this.DirectLightIntensity /10;
     
     // Shadows
     var viewPosition = this.ViewPosition + this.ViewNormal * this.NormalOffsetBias;
