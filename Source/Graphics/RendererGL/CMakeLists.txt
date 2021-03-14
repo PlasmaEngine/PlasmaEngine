@@ -27,3 +27,10 @@ target_link_libraries(RendererGL
     Glew
     tracy
 )
+
+if (NOT WIN32)
+  target_link_libraries(RendererGL
+    PUBLIC
+      SDL
+  )
+endif()
