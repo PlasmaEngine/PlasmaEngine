@@ -6,9 +6,13 @@
 
 #include "SDL.h"
 
-#include <GL/glew.h>
-
-#include <GL/gl.h>
+#if !defined(PlasmaPlatformMacOS)
+#  include <GL/glew.h>
+#  include <GL/gl.h>
+#else
+#  include <OpenGl/glew.h>
+#  include <OpenGL/gl.h>
+#endif
 
 #ifdef PlasmaTargetOsMacOS
 #  include <CoreServices/CoreServices.h>
