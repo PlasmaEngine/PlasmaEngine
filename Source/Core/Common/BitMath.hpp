@@ -133,7 +133,9 @@ typedef NEAREST_UINT(BYTES_TO_BITS(sizeof(void*))) uintptr;
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 /// Returns the maximum of a and b
+#if !defined(MAX)
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
+#endif
 
 /// Endianness (Byte Order)
 namespace Endianness
