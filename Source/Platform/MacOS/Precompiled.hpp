@@ -10,7 +10,7 @@
 #  include <GL/glew.h>
 #  include <GL/gl.h>
 #else
-#  include <OpenGl/glew.h>
+#  include <Gl/glew.h>
 #  include <OpenGL/gl.h>
 #endif
 
