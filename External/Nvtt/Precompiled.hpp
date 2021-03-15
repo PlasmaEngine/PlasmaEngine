@@ -15,7 +15,9 @@
 #include <float.h>
 #include <limits.h>
 #include <limits>
+#if !defined(PlasmaPlatformMacOS)
 #include <malloc.h>
+#endif
 #include <math.h>
 #include <new>
 #include <stdarg.h>
