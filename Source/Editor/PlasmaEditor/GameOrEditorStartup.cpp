@@ -70,16 +70,16 @@ void GameOrEditorStartup::UserInitialize()
   mProjectCog = projectCog;
   mProjectFile = projectFile;
   mNewProject = newProject;
+}
 
+void GameOrEditorStartup::UserStartup()
+{
   IntVec2 displaySize = PL::gEngine->Has<OsShell>()->GetPrimaryMonitorSize();
   mWindowSize = (displaySize / 5) * 4;
   mMinimumWindowSize = IntVec2(1024, 595);
   mWindowCentered = true;
   mWindowState = WindowState::Maximized;
-}
 
-void GameOrEditorStartup::UserStartup()
-{
   if (mPlayGame)
   {
     LoadGamePackages(mProjectFile, mProjectCog);
