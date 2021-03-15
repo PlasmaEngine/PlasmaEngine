@@ -20,6 +20,10 @@
 #  include <mach/mach_time.h>
 #endif
 
+#include <CoreServices/CoreServices.h>
+#include <mach/mach.h>
+#include <mach/mach_time.h>
+
 #include <new>
 #include <stdlib.h>
 #include <stdio.h>
