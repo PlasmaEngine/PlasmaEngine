@@ -6,15 +6,9 @@
 
 #include "SDL.h"
 
-#include <GL/glew.h>
-
-#include <GL/gl.h>
-
-#ifdef PlasmaTargetOsMacOS
-#  include <CoreServices/CoreServices.h>
-#  include <mach/mach.h>
-#  include <mach/mach_time.h>
-#endif
+#include <CoreServices/CoreServices.h>
+#include <mach/mach.h>
+#include <mach/mach_time.h>
 
 #include <new>
 #include <stdlib.h>

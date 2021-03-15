@@ -15,7 +15,12 @@
 
 
 // Include OpenGl
-#include <GL/gl.h>
+#if defined(PlasmaPlatformMacOS)
+	#include <OpenGL/gl.h>
+#else
+	#include <GL/gl.h>
+#endif
+
 
 #include "OpenglRenderer.hpp"
 
