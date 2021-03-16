@@ -30,11 +30,13 @@ set(PLASMA_C_CXX_FLAGS_MINSIZEREL "\
 ")
 
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker /ignore:4049,4217")
-if(NOT APPLE )
+if(APPLE)
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker -c")
+else()
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker --start-group")
 endif()
 
-set(PLASMA_C_CXX_EXTERNAL_FLAGS -Wno-everything)
+  set(PLASMA_C_CXX_EXTERNAL_FLAGS -Wno-everything)
 
 function(plasma_toolchain_setup_library target)
 endfunction()
