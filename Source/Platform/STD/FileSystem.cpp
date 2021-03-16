@@ -164,7 +164,9 @@ TimeType GetFileModifiedTime(StringParam filename)
 {
   std::error_code error;
   fs::file_time_type time = fs::last_write_time(filename.c_str(), error);
-  return std::chrono::system_clock::to_time_t(time);
+  auto convertedTime = std::chrono::time_point_cast<std::chrono::system_clock::duration>(time - fs::file_time_type::clock::now()
+              + std::chrono::system_clock::now());
+  return std::chrono::system_clock::to_time_t(convertedTime);
 }
 
 bool SetFileToCurrentTime(StringParam filename)
