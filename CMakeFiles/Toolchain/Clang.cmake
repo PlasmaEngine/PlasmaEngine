@@ -1,6 +1,19 @@
 add_definitions(-DPlasmaCompilerClang=1 -DPlasmaCompilerName="Clang")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+if(APPLE)
+set(PLASMA_C_CXX_FLAGS "\
+  -Wno-address-of-packed-member\
+  -Wno-empty-body\
+  -fexceptions\
+  -frtti\
+  -fno-vectorize\
+  -fno-slp-vectorize\
+  -fno-tree-vectorize\
+  -pthread\
+  -framework SDL2\
+")
+else()
 set(PLASMA_C_CXX_FLAGS "\
   -Wno-address-of-packed-member\
   -Wno-empty-body\
@@ -11,6 +24,7 @@ set(PLASMA_C_CXX_FLAGS "\
   -fno-tree-vectorize\
   -pthread\
 ")
+endif()
 
 set(PLASMA_C_CXX_FLAGS_DEBUG "\
   -g\
