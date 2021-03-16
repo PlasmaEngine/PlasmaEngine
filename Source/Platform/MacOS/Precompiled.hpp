@@ -4,6 +4,7 @@
 #include "CommonStandard.hpp"
 #include "PlatformStandard.hpp"
 
+#include "SDL_main.h"
 #include "SDL.h"
 
 #include <CoreServices/CoreServices.h>
