@@ -30,9 +30,8 @@ jobs:
     before_install:
     - brew update
     - brew install openssl
-    - brew link --force openssl
-    - export PKG_CONFIG_PATH="/usr/local/opt/openssl@1.1/lib/pkgconfig"
-    - pkg-config --modversion openssl
+    - export OPENSSL_ROOT_DIR=/usr/local/opt/openssl
+    - export OPENSSL_LIBRARIES=/usr/local/opt/openssl/lib
     script:
     - node index.js all --alias=MacOS
   - name: Windows
