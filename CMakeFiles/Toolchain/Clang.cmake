@@ -33,7 +33,7 @@ set(PLASMA_C_CXX_FLAGS_MINSIZEREL "\
 if(APPLE)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker -c")
 else()
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker --start-group")
+  #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker --start-group")
 endif()
 
   set(PLASMA_C_CXX_EXTERNAL_FLAGS -Wno-everything)
