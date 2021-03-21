@@ -201,12 +201,10 @@ bool ErrorProcessHandler(ErrorSignaler::ErrorData& errorData)
   }
 }
 
-cwstr windowsVerbNames[] = {NULL, L"open", L"edit", L"run"};
-
-bool SystemOpenFile(Status& status, cstr file, uint verb, cstr parameters, cstr workingDirectory)
+bool SystemOpenFile(Status& status, cstr file, cwstr verb, cstr parameters = nullptr, cstr workingDirectory = nullptr)
 {
   HINSTANCE success = ShellExecute(NULL,
-                                   windowsVerbNames[verb],
+                                   verb,
                                    Widen(file).c_str(),
                                    Widen(parameters).c_str(),
                                    Widen(workingDirectory).c_str(),
@@ -236,44 +234,35 @@ void DownloadFile(cstr fileName, const DataBlock& data)
 void OpenUrl(cstr url)
 {
   Status status;
-  SystemOpenFile(status, url, 1, "", GetWorkingDirectory().c_str());
+  SystemOpenFile(status, url, L"open", NULL, NULL);
 }
 
 bool ShellOpenDirectory(StringParam directory)
 {
   Status status;
-  SystemOpenFile(status, directory.c_str(), 1, "", GetWorkingDirectory().c_str());
-  return status == StatusState::Success ? true : false;
+  SystemOpenFile(status, directory.c_str(), L"open");
+  return status.Succeeded();
 }
 
 bool ShellOpenFile(StringParam file)
 {
   Status status;
-  SystemOpenFile(status, file.c_str(), 1, "", GetWorkingDirectory().c_str());
-  return status == StatusState::Success ? true : false;
+  SystemOpenFile(status, file.c_str(), NULL);
+  return status.Succeeded();
 }
 
 bool ShellEditFile(StringParam file)
 {
   Status status;
-  SystemOpenFile(status, file.c_str(), 2, "", GetWorkingDirectory().c_str());
-  return status == StatusState::Success ? true : false;
+  SystemOpenFile(status, file.c_str(), L"edit");
+  return status.Succeeded();
 }
 
 bool ShellOpenApplication(StringParam file, StringParam parameters)
 {
   Status status;
-  SystemOpenFile(status, file.c_str(), 1, parameters.c_str(), GetWorkingDirectory().c_str());
-
-  if (status == StatusState::Success)
-  {
-    return true;
-  }
-  else
-  {
-    PlasmaPrint("%s", status.Message.c_str());
-    return false;
-  }
+  SystemOpenFile(status, file.c_str(), NULL, parameters.c_str());
+  return status.Succeeded();
 }
 
 String GetInstalledExecutable(StringParam organization, StringParam name, StringParam guid)

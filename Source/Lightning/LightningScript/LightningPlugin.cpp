@@ -348,17 +348,8 @@ void LightningPluginSource::OpenIde()
     return;
 
   String ideFile = FilePath::CombineWithExtension(codeDir, Name, ".bat");
-  StringParam params(ideFile);
-  Status status;
-  if (Os::ShellOpenFile(params))
-  {
-    status = Status(StatusState::Success, "Sucsess");
-  }
-  else
-  {
-    status = Status(StatusState::Failure, "Failed");
-  }
-  DoNotifyStatus(status);
+  if (!Os::ShellOpenFile(ideFile))
+    DoNotifyError("Failed to open IDE", String::Format("ide: %s", ideFile.c_str()));
 
 #else
   DoNotifyErrorNoAssert("Lightning Plugin", "No IDE was detected or supported on this platform");
