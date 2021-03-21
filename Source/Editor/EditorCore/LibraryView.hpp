@@ -62,7 +62,7 @@ namespace Plasma
 
   
   private:
-    TextBox* mLibraryName;
+    TextBox* mNewLibraryName;
     TextBox* mLibraryPath;
     LibraryView* mLibraryView;
 

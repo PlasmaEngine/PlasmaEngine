@@ -271,9 +271,9 @@ AddLibraryUI::AddLibraryUI(Composite* parent, LibraryView* libraryView): Composi
 {
   this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 2), Thickness::cZero));
   new Label(this, "Text", "Library Name:");
-  mLibraryName = new TextBox(this);
-  mLibraryName->SetEditable(true);
-  mLibraryName->SetText("NewLibrary");
+  mNewLibraryName = new TextBox(this);
+  mNewLibraryName->SetEditable(true);
+  mNewLibraryName->SetText("NewLibrary");
   
   new Label(this, "Text", "Library Path:");
 
@@ -316,7 +316,7 @@ AddLibraryUI::AddLibraryUI(Composite* parent, LibraryView* libraryView): Composi
     
     if(projectSettings != nullptr)
     {
-      mLibraryPath->SetText(FilePath::Combine(projectSettings->ProjectFolder, mLibraryName->GetText()));
+      mLibraryPath->SetText(FilePath::Combine(projectSettings->ProjectFolder, mNewLibraryName->GetText()));
     }
   }
 }
@@ -333,7 +333,7 @@ void AddLibraryUI::OnCreate(Event* e)
     return;
   }
   Status s;
-  ContentLibrary* library = PL::gContentSystem->LibraryFromDirectory(s, mLibraryName->GetText(), mLibraryPath->GetText());
+  ContentLibrary* library = PL::gContentSystem->LibraryFromDirectory(s, mNewLibraryName->GetText(), mLibraryPath->GetText());
 
   if(!library)
   {
@@ -373,14 +373,14 @@ void AddLibraryUI::OnCreate(Event* e)
       PL::gEditor->SetExploded(false, true);
       PL::gEditor->ProjectLoaded();
       
-      projectSettings->AddLibrary(mLibraryName->GetText());
+      projectSettings->AddLibrary(mNewLibraryName->GetText());
       projectSettings->Save();
     }
   }
 
   if(mLibraryView)
   {
-    mLibraryView->SetSelectedByName(mLibraryName->GetText());
+    mLibraryView->SetSelectedByName(mNewLibraryName->GetText());
   }
   
   CloseTabContaining(this);
@@ -424,7 +424,7 @@ void AddLibraryUI::OnFolderSelected(OsFileSelection* e)
     {
       forRange (String library, projectSettings->ExtraLibraries.All())
       {
-        if(library == mLibraryName->GetText())
+        if(mNewLibraryName->GetText().ToLower().CompareTo(library.ToLower()))
         {
           valid = false;
         }
