@@ -74,35 +74,35 @@ public:
     typedef typename this_type::value_type value_type;
     typedef reference FrontResult;
 
-    range() : begin(nullptr), end(nullptr), mSize(0)
+    range() : mBegin(nullptr), mEnd(nullptr), mSize(0)
     {
     }
 
-    range(Node* rbegin, Node* rend, size_t size) : begin(rbegin), end(rend)
+    range(Node* rbegin, Node* rend, size_t size) : mBegin(rbegin), mEnd(rend)
     {
       mSize = size;
     }
 
     bool Empty()
     {
-      return begin == end;
+      return mBegin == mEnd;
     }
 
     reference Front()
     {
-      return begin->Value;
+      return mBegin->Value;
     }
 
     void PopFront()
     {
       ErrorIf(Empty(), "Popped an empty range.");
-      ++begin;
+      ++mBegin;
       --mSize;
 
-      begin = SkipDead(begin, end);
+      mBegin = SkipDead(mBegin, mEnd);
       // Skip empty slots
-      while (begin != end && begin->next == cHashOpenNode)
-        ++begin;
+      while (mBegin != mEnd && mBegin->next == cHashOpenNode)
+        ++mBegin;
     }
 
     size_t Length()
@@ -119,9 +119,36 @@ public:
       return *this;
     }
 
+    range begin()
+    {
+      return *this;
+    }
+    range end()
+    {
+      return range(mEnd, mEnd, 0);
+    }
+
+    bool operator==(const range& rhs) const
+    {
+      return mBegin == rhs.mBegin && mEnd == rhs.mEnd;
+    }
+    bool operator!=(const range& rhs) const
+    {
+      return !(*this == rhs);
+    }
+    range& operator++()
+    {
+      PopFront();
+      return *this;
+    }
+    reference operator*()
+    {
+      return Front();
+    }
+
   private:
-    Node* begin;
-    Node* end;
+    Node* mBegin;
+    Node* mEnd;
     size_t mSize;
   };
 
@@ -202,6 +229,16 @@ public:
   {
     Node* start = SkipDead(mTable, mTable + mTableSize);
     return range(start, mTable + mTableSize, mSize);
+  }
+
+  range begin()
+  {
+    return All();
+  }
+
+  range end()
+  {
+    return All().end();
   }
 
   void Swap(this_type& other)

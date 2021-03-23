@@ -67,6 +67,12 @@ public:
   {
   }
 
+  HashMap(const std::initializer_list<pair>& initList)
+  {
+    for (auto&& value : initList)
+      Insert(value);
+  }
+
   ~HashMap()
   {
   }
@@ -111,6 +117,32 @@ public:
     {
       return *this;
     }
+
+    // C++ iterator/range interface
+    valuerange begin()
+    {
+      return *this;
+    }
+    valuerange end()
+    {
+      return valuerange(r.end());
+    }
+    bool operator==(const valuerange& rhs) const
+    {
+      return r == rhs.r;
+    }
+    bool operator!=(const valuerange& rhs) const
+    {
+      return r != rhs.r;
+    }
+    range& operator++()
+    {
+      return ++r;
+    }
+    reference operator*()
+    {
+      return Front();
+    }
   };
 
   struct keyrange
@@ -151,6 +183,32 @@ public:
     const keyrange& All() const
     {
       return *this;
+    }
+
+    // C++ iterator/range interface
+    valuerange begin()
+    {
+      return *this;
+    }
+    valuerange end()
+    {
+      return valuerange(r.end());
+    }
+    bool operator==(const keyrange& rhs) const
+    {
+      return r == rhs.r;
+    }
+    bool operator!=(const keyrange& rhs) const
+    {
+      return r != rhs.r;
+    }
+    range& operator++()
+    {
+      return ++r;
+    }
+    value_type& operator*()
+    {
+      return Front();
     }
   };
 

@@ -73,9 +73,17 @@ public:
     {
       return mBegin;
     }
+    iterator begin()
+    {
+      return Begin();
+    }
     iterator End()
     {
       return mEnd;
+    }
+    iterator end()
+    {
+      return End();
     }
     void PopFront()
     {
@@ -235,6 +243,15 @@ public:
     PushBack(p4);
     PushBack(p5);
   }
+  Array(const std::initializer_list<ValueType>&  initList)
+      : mData(nullptr),
+        mCapacity(0),
+        mSize(0)
+  {
+    Reserve(initList.size());
+    for (auto&& value : initList)
+      PushBack(value);
+  }
 
   /// Destructor
   ~Array()
@@ -309,6 +326,14 @@ public:
   {
     return mData;
   }
+  iterator begin()
+  {
+    return Begin();
+  }
+  const_iterator begin() const
+  {
+    return Begin();
+  }
 
   /// Returns an iterator to the end of the array
   iterator End()
@@ -318,6 +343,14 @@ public:
   const_iterator End() const
   {
     return mData + mSize;
+  }
+  iterator end()
+  {
+    return End();
+  }
+  const_iterator end() const
+  {
+    return End();
   }
 
   /// Returns a range of all elements in the array
