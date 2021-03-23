@@ -325,7 +325,7 @@ uint GenericBasicSolver::FindRigidBodyIndex(Collider* collider)
   uint notFoundVal = uint(-1);
   RigidBody* body = collider->GetActiveBody();
   uint index = mLookupMap.FindValue(body, notFoundVal);
-  uint objectCount = mObjects.Size();
+  uint objectCount = static_cast<uint>(mObjects.Size());
   if (index == notFoundVal)
   {
     ConstraintObjectData objData;

@@ -39,7 +39,7 @@ void CollisionTable::Serialize(Serializer& stream)
     StrArray RegisteredGroups;
     SerializeName(RegisteredGroups);
     // Register the id of each of these types
-    for (uint i = 0; i < RegisteredGroups.Size(); ++i)
+    for (size_t i = 0; i < RegisteredGroups.Size(); ++i)
     {
       CollisionGroup* group = CollisionGroupManager::Find(RegisteredGroups[i]);
       RegisterGroup(group);
@@ -253,7 +253,7 @@ void CollisionTable::Clear()
   for (RegisteredGroups::range r = mRegisteredGroups.All(); !r.Empty(); r.PopFront())
     ids.PushBack(r.Front().first);
 
-  for (uint i = 0; i < ids.Size(); ++i)
+  for (size_t i = 0; i < ids.Size(); ++i)
     RemoveGroupInstancesAndFilters(ids[i]);
 }
 
@@ -332,8 +332,8 @@ void CollisionTable::RemoveGroupInstancesAndFilters(ResourceId groupId)
   // Make sure to remove any filter that referenced this group.
   // We have to iterate from the back to the front so as to not invalidate the
   // index
-  uint size = mCollisionFilters.Size();
-  for (uint i = size - 1; i < size; --i)
+  size_t size = mCollisionFilters.Size();
+  for (size_t i = size - 1; i < size; --i)
   {
     CollisionFilter* filter = mCollisionFilters[i];
     if (filter->mPair.first == groupId || filter->mPair.second == groupId)

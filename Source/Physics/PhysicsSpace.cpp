@@ -89,7 +89,7 @@ void SweepResultRange::PopFront()
 
 uint SweepResultRange::Size()
 {
-  return mRange.Size();
+  return static_cast<uint>(mRange.Size());
 }
 
 bool ClientPairSorter(ClientPair& a, ClientPair& b)
@@ -798,8 +798,8 @@ void PhysicsSpace::NarrowPhase()
   Array<NodePointerPair> Collisions;
   Collisions.SetAllocator(allocator);
 
-  uint size = mPossiblePairs.Size();
-  for (unsigned pairIndex = 0; pairIndex < size; ++pairIndex)
+  size_t size = mPossiblePairs.Size();
+  for (size_t pairIndex = 0; pairIndex < size; ++pairIndex)
   {
     ClientPair* clientPair = &mPossiblePairs[pairIndex];
     Collider* collider1 = static_cast<Collider*>(clientPair->mClientData[0]);
@@ -822,7 +822,7 @@ void PhysicsSpace::NarrowPhase()
     }
 
     // Add all manifolds to the contact manager
-    for (uint i = 0; i < tempManifolds.Size(); ++i)
+    for (size_t i = 0; i < tempManifolds.Size(); ++i)
     {
       Physics::Manifold& manifold = tempManifolds[i];
       mContactManager->AddManifold(tempManifolds[i]);
@@ -1103,9 +1103,9 @@ CastResultsRange PhysicsSpace::CastCollider(Vec3Param offset, Collider* testColl
   // Call the internal cast function
   Physics::ManifoldArray manifoldResults;
   CastCollider(offset, testCollider, manifoldResults, filter);
-  CastResults results(Math::Max(manifoldResults.Size() * cMaxContacts, (size_t)1), filter);
+  CastResults results(Math::Max(static_cast<uint>(manifoldResults.Size()) * cMaxContacts, 1u), filter);
 
-  size_t count = 0;
+  uint count = 0;
   for (size_t i = 0; i < manifoldResults.Size(); ++i)
   {
     CastResult& castResult = results.mArray[count];

@@ -107,12 +107,12 @@ PhysicsMeshIndexData* GenericPhysicsMesh::GetIndices()
   return &mIndexData;
 }
 
-uint GenericPhysicsMesh::GetTriangleCount()
+size_t GenericPhysicsMesh::GetTriangleCount()
 {
   return mIndices.Size() / 3;
 }
 
-Triangle GenericPhysicsMesh::GetTriangle(uint index)
+Triangle GenericPhysicsMesh::GetTriangle(size_t index)
 {
   return GetTriangleFromIndexBufferIndex(index * 3);
 }
@@ -169,8 +169,8 @@ void GenericPhysicsMesh::UpdateAndNotifyIfModified()
 
 void GenericPhysicsMesh::DrawEdges(Mat4Param transform, ByteColor color)
 {
-  uint triCount = GetTriangleCount();
-  for (uint i = 0; i < triCount; ++i)
+  size_t triCount = GetTriangleCount();
+  for (size_t i = 0; i < triCount; ++i)
   {
     Triangle tri = GetTriangle(i);
     tri.p0 = Math::TransformPoint(transform, tri.p0);
@@ -185,8 +185,8 @@ void GenericPhysicsMesh::DrawEdges(Mat4Param transform, ByteColor color)
 
 void GenericPhysicsMesh::DrawFaces(Mat4Param transform, ByteColor color)
 {
-  uint triCount = GetTriangleCount();
-  for (uint i = 0; i < triCount; ++i)
+  size_t triCount = GetTriangleCount();
+  for (size_t i = 0; i < triCount; ++i)
   {
     Triangle tri = GetTriangle(i);
     tri.p0 = Math::TransformPoint(transform, tri.p0);
@@ -201,8 +201,8 @@ void GenericPhysicsMesh::DrawFaces(Mat4Param transform, ByteColor color)
 
 void GenericPhysicsMesh::DrawFaceNormals(Mat4Param transform, ByteColor color)
 {
-  uint triCount = GetTriangleCount();
-  for (uint i = 0; i < triCount; ++i)
+  size_t triCount = GetTriangleCount();
+  for (size_t i = 0; i < triCount; ++i)
   {
     Triangle tri = GetTriangle(i);
     Triangle worldTri = tri.Transform(transform);
@@ -298,7 +298,7 @@ void GenericPhysicsMesh::Support(Vec3Param localDirection, Vec3Ptr support) cons
   Support(mVertices, localDirection, support);
 }
 
-Triangle GenericPhysicsMesh::GetTriangleFromIndexBufferIndex(uint index)
+Triangle GenericPhysicsMesh::GetTriangleFromIndexBufferIndex(size_t index)
 {
   Vec3 p0 = mVertices[mIndices[index]];
   Vec3 p1 = mVertices[mIndices[index + 1]];
@@ -316,7 +316,7 @@ void GenericPhysicsMesh::ComputeLocalVolume()
   if (mVertices.Empty() || mIndices.Empty() || !GetValid())
     return;
 
-  uint triCount = GetTriangleCount();
+  size_t triCount = GetTriangleCount();
   Vec3* verts = mVertices.Begin();
   uint* indices = mIndices.Begin();
   mLocalVolume = Geometry::CalculateTriMeshVolume(verts, indices, triCount);
@@ -327,7 +327,7 @@ void GenericPhysicsMesh::ComputeLocalCenterOfMass()
   if (mVertices.Empty() || mIndices.Empty() || !GetValid())
     return;
 
-  uint triCount = GetTriangleCount();
+  size_t triCount = GetTriangleCount();
   Vec3* verts = mVertices.Begin();
   uint* indices = mIndices.Begin();
   mLocalCenterOfMass = Geometry::CalculateTriMeshCenterOfMass(verts, indices, triCount);
@@ -349,7 +349,7 @@ Mat3 GenericPhysicsMesh::ComputeScaledInvInertiaTensor(Vec3Param worldScale, rea
   if (mVertices.Empty() || mIndices.Empty() || !GetValid())
     return Mat3::cIdentity;
 
-  uint triCount = GetTriangleCount();
+  size_t triCount = GetTriangleCount();
   const uint* triIndices = (uint*)(&mIndices.Front());
 
   Mat3 inertiaTensor;

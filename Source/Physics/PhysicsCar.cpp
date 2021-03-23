@@ -115,7 +115,7 @@ void PhysicsCar::TransformUpdate(TransformUpdateInfo& info)
   }
 
   // Update each wheel's position
-  for (uint i = 0; i < mWheelRefs.Size(); ++i)
+  for (size_t i = 0; i < mWheelRefs.Size(); ++i)
   {
     PhysicsCarWheel* carWheel = mWheelRefs[i].GetCarWheel();
     if (carWheel != nullptr)
@@ -252,7 +252,7 @@ void PhysicsCar::CalculateFrictionImpulses(real dt)
 {
   // Iterate over all the wheels multiple times to converge
   // to a global answer (hardcoded 5 for now...)
-  for (uint iteration = 0; iteration < 5; ++iteration)
+  for (size_t iteration = 0; iteration < 5; ++iteration)
   {
     for (size_t i = 0; i < mActiveWheels.Size(); ++i)
       mActiveWheels[i]->SolveFrictionImpulse(dt);
@@ -322,7 +322,7 @@ void PhysicsCar::SetBrake(real brake)
 uint PhysicsCar::NumberOfWheelsInContact()
 {
   uint numberInContact = 0;
-  for (uint i = 0; i < mActiveWheels.Size(); ++i)
+  for (size_t i = 0; i < mActiveWheels.Size(); ++i)
   {
     if (mActiveWheels[i]->GetIsInContact())
       ++numberInContact;
@@ -364,7 +364,7 @@ PhysicsCar::CarWheelArray::CarWheelArray()
 
 Cog* PhysicsCar::CarWheelArray::Get(int index)
 {
-  int count = mCarBody->mWheelRefs.Size();
+  int count = static_cast<int>(mCarBody->mWheelRefs.Size());
   if (index >= count)
   {
     String msg = String::Format("Index %d is invalid. Array only contains %d elements.", index, count);
@@ -376,7 +376,7 @@ Cog* PhysicsCar::CarWheelArray::Get(int index)
 
 int PhysicsCar::CarWheelArray::GetCount()
 {
-  return mCarBody->mWheelRefs.Size();
+  return static_cast<int>(mCarBody->mWheelRefs.Size());
 }
 
 } // namespace Plasma

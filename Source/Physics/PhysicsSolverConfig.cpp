@@ -446,7 +446,7 @@ void PhysicsSolverConfig::RebuildConstraintBlockValues()
   mJointBlocks.Resize(JointEnums::JointCount);
   for (size_t i = 0; i < mJointBlocks.Size(); ++i)
   {
-    mJointBlocks[i].mJointId = i;
+    mJointBlocks[i].mJointId = static_cast<uint>(i);
     mJointBlocks[i].ResetDefaultValues();
   }
   mContactBlock.mJointId = JointEnums::JointCount;
@@ -498,7 +498,7 @@ void PhysicsSolverConfig::CopyTo(PhysicsSolverConfig* destination)
 
 uint PhysicsSolverConfig::GetSize() const
 {
-  return mBlocks.Size();
+  return static_cast<uint>(mBlocks.Size());
 }
 
 HandleOf<ConstraintConfigBlock> PhysicsSolverConfig::GetBlockAt(uint index)

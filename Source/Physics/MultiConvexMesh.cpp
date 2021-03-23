@@ -160,7 +160,7 @@ Aabb SubConvexMesh::ComputeAabb(VertexArrayParam verts)
   if (!mValid)
     return mAabb;
 
-  for (uint i = 0; i < mIndices.Size(); ++i)
+  for (size_t i = 0; i < mIndices.Size(); ++i)
     mAabb.Expand(verts[mIndices[i]]);
   return mAabb;
 }
@@ -172,7 +172,7 @@ void SubConvexMesh::Support(VertexArrayParam verts, Vec3Param direction, Vec3Ptr
 
   // N version
   real longestDistance = -Math::PositiveMax();
-  for (uint i = 0; i < mIndices.Size(); ++i)
+  for (size_t i = 0; i < mIndices.Size(); ++i)
   {
     Vec3Param curr = verts[mIndices[i]];
     real dist = Math::Dot(direction, curr);
@@ -212,7 +212,7 @@ bool SubConvexMesh::CastRay(const Ray& localRay, MultiConvexMesh* mesh, ProxyRes
     {
       result.mTime = pointData.T;
       triangleWasHit = true;
-      result.ShapeIndex = i;
+      result.ShapeIndex = static_cast<uint>(i);
       result.mPoints[0] = pointData.Points[0];
       result.mPoints[1] = pointData.Points[1];
       result.mContactNormal = tri.GetRawNormal();
@@ -221,7 +221,7 @@ bool SubConvexMesh::CastRay(const Ray& localRay, MultiConvexMesh* mesh, ProxyRes
   return triangleWasHit;
 }
 
-Triangle SubConvexMesh::GetTriangleIndexed(VertexArrayParam verts, uint index)
+Triangle SubConvexMesh::GetTriangleIndexed(VertexArrayParam verts, size_t index)
 {
   Vec3 p0 = verts[mTriangleIndices[index]];
   Vec3 p1 = verts[mTriangleIndices[index + 1]];
@@ -229,12 +229,12 @@ Triangle SubConvexMesh::GetTriangleIndexed(VertexArrayParam verts, uint index)
   return Triangle(p0, p1, p2);
 }
 
-Triangle SubConvexMesh::GetTriangle(VertexArrayParam verts, uint index)
+Triangle SubConvexMesh::GetTriangle(VertexArrayParam verts, size_t index)
 {
   return GetTriangleIndexed(verts, index * 3);
 }
 
-uint SubConvexMesh::GetTriangleCount()
+size_t SubConvexMesh::GetTriangleCount()
 {
   return mTriangleIndices.Size() / 3;
 }
@@ -266,8 +266,8 @@ void SubConvexMesh::DrawFaces(VertexArrayParam verts, Mat4Param transform, ByteC
   Debug::ActiveDebugConfig config;
   config.Alpha(100).Border(false).Filled(true);
 
-  uint triCount = GetTriangleCount();
-  for (uint i = 0; i < triCount; ++i)
+  size_t triCount = GetTriangleCount();
+  for (size_t i = 0; i < triCount; ++i)
   {
     Triangle tri = GetTriangle(verts, i);
     tri.p0 = Math::TransformPoint(transform, tri.p0);
@@ -282,8 +282,8 @@ void SubConvexMesh::DrawFaces(VertexArrayParam verts, Mat4Param transform, ByteC
 
 void SubConvexMesh::DrawEdges(VertexArrayParam verts, Mat4Param transform, ByteColor color)
 {
-  uint triCount = GetTriangleCount();
-  for (uint i = 0; i < triCount; ++i)
+  size_t triCount = GetTriangleCount();
+  for (size_t i = 0; i < triCount; ++i)
   {
     Triangle tri = GetTriangle(verts, i);
     tri.p0 = Math::TransformPoint(transform, tri.p0);
@@ -301,8 +301,8 @@ void SubConvexMesh::DrawEdges2d(VertexArrayParam verts, Mat4Param transform, Byt
   Debug::ActiveDebugConfig config;
   config.Alpha(100).Border(false).Filled(false);
 
-  uint faceIndexCount = mIndices.Size() / 2;
-  for (uint i = 0; i < faceIndexCount; ++i)
+  size_t faceIndexCount = mIndices.Size() / 2;
+  for (size_t i = 0; i < faceIndexCount; ++i)
   {
     uint currIndex = i;
     uint nextIndex = (i + 1) % faceIndexCount;
@@ -452,12 +452,12 @@ void MultiConvexMesh::Draw(Mat4Param transform, bool drawEdges, bool drawFaces)
 {
   if (mFlags.IsSet(MultiConvexMeshFlags::EditType2D))
   {
-    for (uint i = 0; i < mMeshes.Size(); ++i)
+    for (size_t i = 0; i < mMeshes.Size(); ++i)
       mMeshes[i]->Draw2d(mVertices, transform, drawEdges, drawFaces);
   }
   else
   {
-    for (uint i = 0; i < mMeshes.Size(); ++i)
+    for (size_t i = 0; i < mMeshes.Size(); ++i)
       mMeshes[i]->Draw(mVertices, transform, drawEdges, drawFaces);
   }
 }
@@ -626,7 +626,7 @@ void MultiConvexMesh::ComputeCenterOfMassAndVolume()
   mCenterOfMass = Vec3::cZero;
   mVolume = real(0.0);
   // Accumulate the volume and weighted center of mass of each sub shape
-  for (uint i = 0; i < mMeshes.Size(); ++i)
+  for (size_t i = 0; i < mMeshes.Size(); ++i)
   {
     SubConvexMesh* subMesh = mMeshes[i];
     subMesh->ComputeCenterOfMassAndVolume(mVertices);
@@ -645,7 +645,7 @@ Aabb MultiConvexMesh::ComputeAabb()
 {
   mAabb.SetInvalid();
 
-  for (uint i = 0; i < mMeshes.Size(); ++i)
+  for (size_t i = 0; i < mMeshes.Size(); ++i)
     mAabb.Combine(mMeshes[i]->ComputeAabb(mVertices));
   return mAabb;
 }
