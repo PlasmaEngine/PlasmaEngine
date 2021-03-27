@@ -229,6 +229,17 @@ void UiWidget::Serialize(Serializer& stream)
 
 void UiWidget::Initialize(CogInitializer& initializer)
 {
+  if (GetOwner()->has(UiRootWidget))
+  {
+    // Required to be set for function calls that happen prior to removal.
+    mTransform = GetOwner()->has(Transform);
+    mArea = GetOwner()->has(Area);
+
+    DoNotifyWarning("Invalid component placement", "UiWidget is not compatible with UiRootWidget");
+    GetOwner()->RemoveComponent(this);
+    return;
+  }
+
   ComponentHierarchy::Initialize(initializer);
   mTransform = GetOwner()->has(Transform);
   mArea = GetOwner()->has(Area);
