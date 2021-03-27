@@ -42,7 +42,7 @@ class ZUiHistoryEntry : LightningComponent
     // Data for the operation that needs to be undone/redone.
   var OperationData : Operation;
     // Display for OperationData description
-  var ToolTip : UiLegacyToolTip = UiLegacyToolTip();
+  var ToolTip : UiLegacyToolTip;
   
   var ExpandArrow : SpriteSource = SpriteSource.HistoryArrowRight;
   var CollapseArrow : SpriteSource = SpriteSource.HistoryArrowDown;
