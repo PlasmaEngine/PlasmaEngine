@@ -28,16 +28,13 @@ void LoadGamePackages(StringParam projectFile, Cog* projectCog)
   LoadResourcePackageRelative(projectDirectory, "EditorUi");
   LoadResourcePackageRelative(projectDirectory, "Editor");
 
-  if (SharedContent* sharedContent = projectCog->has(SharedContent))
-  {
-    forRange (ContentLibraryReference libraryRef, sharedContent->ExtraContentLibraries.All())
-    {
-      String libraryName = libraryRef.mContentLibraryName;
-      LoadResourcePackageRelative(projectDirectory, libraryName);
-    }
-  }
 
   ProjectSettings* project = projectCog->has(ProjectSettings);
+
+  forRange (String library, project->ExtraLibraries.All())
+  {
+    LoadResourcePackageRelative(projectDirectory, library);
+  }
 
   LoadResourcePackageRelative(projectDirectory, project->ProjectName);
 }
