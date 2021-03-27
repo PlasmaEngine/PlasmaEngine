@@ -169,16 +169,16 @@ ContentItem* MakeLightningPluginContent(ContentInitializer& initializer)
   String pluginName = initializer.Name;
   String codeDir = GetCodeDirectory(initializer.Library, pluginName);
 
-  // If the directory already exists
-  if (DirectoryExists(codeDir))
-  {
-    DoNotifyWarning("Lightning Plugin",
-                    String::Format("The directory for the Lightning plugin '%s' already exists, "
-                                   "therefore we will not create the template project:\n  '%s'\n",
-                                   pluginName.c_str(),
-                                   codeDir.c_str()));
-    return content;
-  }
+  //// If the directory already exists
+  //if (DirectoryExists(codeDir))
+  //{
+  //  DoNotifyWarning("Lightning Plugin",
+  //                  String::Format("The directory for the Lightning plugin '%s' already exists, "
+  //                                 "therefore we will not create the template project:\n  '%s'\n",
+  //                                 pluginName.c_str(),
+  //                                 codeDir.c_str()));
+  //  return content;
+  //}
 
   Cog* configCog = PL::gEngine->GetConfigCog();
   MainConfig* mainConfig = configCog->has(MainConfig);
