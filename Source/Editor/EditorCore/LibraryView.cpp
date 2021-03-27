@@ -424,7 +424,8 @@ void AddLibraryUI::OnFolderSelected(OsFileSelection* e)
     {
       forRange (String library, projectSettings->ExtraLibraries.All())
       {
-        if(mNewLibraryName->GetText().ToLower().CompareTo(library.ToLower()))
+        String name = mNewLibraryName->GetText().ToLower();
+        if(name.CompareTo(library.ToLower()))
         {
           valid = false;
         }
