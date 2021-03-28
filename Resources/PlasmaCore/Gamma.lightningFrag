@@ -65,13 +65,17 @@ struct ACESTonemap
   {
     var sRGBLo = linearColor * 12.92;
     var sRGBHi = ( Math.Pow( Math.Abs ( linearColor ) , Real3(1.0/2.4)) * 1.055) - Real3(0.055);
+    
     var sRGB =  Real3.Zero;
+    
     if(linearColor.X < 0.0031308 && linearColor.Y < 0.0031308 && linearColor.Z < 0.0031308)
       sRGB = sRGBLo;
     else
       sRGB = sRGBHi;
+      
     return sRGB ;
-  }
+  }
+
   
   function Main()
   {
