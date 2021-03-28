@@ -20,6 +20,6 @@ struct ColorMaskMap
         this.Albedo *= albedo;
         
         var power = Math.Lerp(Real3(1.0), Real3(2.2), this.GammaCorrect as Real);
-        this.Albedo *= Math.Pow(this.Albedo.XYZ, power);
+        this.Albedo *= Math.Pow(albedo, power);
     }
 }

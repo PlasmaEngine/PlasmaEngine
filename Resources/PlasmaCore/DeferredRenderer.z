@@ -28,8 +28,18 @@ class DeferredRenderer : LightningComponent
   [Group("Skybox")]
   [Property] var MaxIntensity : Real = 50.0;
   // If a filmic tonemap should be used when converting lighting results from linear to gamma for monitor display.
-  [Group("Settings")]
-  [Property] var ToneMap : Boolean = true;
+  [Group("Tonemapping")]
+  [Property] var UseACES : Boolean = true;
+  [Group("Tonemapping")]
+  [Property] var ShoulderStrength : Real = 2.51;
+  [Group("Tonemapping")]
+  [Property] var LinearStrength : Real = 0.03;
+  [Group("Tonemapping")]
+  [Property] var LinearAngle : Real = 2.43;
+  [Group("Tonemapping")]
+  [Property] var ToeStrength : Real = 0.59;
+  [Group("Tonemapping")]
+  [Property] var WhitePoint : Real = 6;
   // Outputs values from the geometry pass for debugging.
   [Group("Debug")]
   [Property] var GeometryDebug : GeometryValue = GeometryValue.None;
@@ -328,11 +338,16 @@ class DeferredRenderer : LightningComponent
   
   function LinearToGamma(event : RenderTasksEvent, inputBuffer : RenderTarget, outputBuffer : RenderTarget)
   {
-    if (this.ToneMap)
+    if (this.UseACES)
     {
-      var filmicToneMap = FilmicTonemap();
-      filmicToneMap.Texture = inputBuffer.Texture;
-      event.AddRenderTaskPostProcess(outputBuffer, filmicToneMap, "FilmicTonemapping");
+      var acesTonemapping = ACESTonemap();
+      acesTonemapping.Texture = inputBuffer.Texture;
+      acesTonemapping.A = this.ShoulderStrength;
+      acesTonemapping.B = this.LinearStrength;
+      acesTonemapping.C = this.LinearAngle;
+      acesTonemapping.D = this.ToeStrength;
+      acesTonemapping.WhitePoint = this.WhitePoint;
+      event.AddRenderTaskPostProcess(outputBuffer, acesTonemapping, "ACES");
     }
     else
     {
