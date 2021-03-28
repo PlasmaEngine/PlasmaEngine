@@ -38,3 +38,58 @@ struct FilmicTonemap
     this.Target0 = Real4(gamma, linear.W);
   }
 }
+
+[Pixel][PostProcess]
+struct ACESTonemap
+{
+  [StageInput] var Uv : Real2;
+  [Input] var Texture : SampledImage2d;
+  var Luminosity = Real3(0.299, 0.587, 0.114);
+  
+  [Input] var A = 2.51;
+  [Input] var B = 0.03;
+  [Input] var C = 2.43;
+  [Input] var D = 0.59;
+  [Input] var WhitePoint = 6.0;
+  var E = 0.01;
+  var F = 0.3;
+  
+  [Output] var Target0 : Real4;
+  
+  function Hable(input : Real3) : Real3
+  {
+     return ((input * (this.A * input + Real3(this.C * this.B))+ Real3(this.D * this.E)) / (input * (this.A * input + Real3(this.B)) + Real3(this.D * this.F))) - Real3(this.E) / Real3(this.F);
+  }
+  
+  function AccurateLinearToSRGB (linearColor : Real3 ) : Real3
+  {
+    var sRGBLo = linearColor * 12.92;
+    var sRGBHi = ( Math.Pow( Math.Abs ( linearColor ) , Real3(1.0/2.4)) * 1.055) - Real3(0.055);
+    
+    var sRGB =  Real3.Zero;
+    
+    if(linearColor.X < 0.0031308 && linearColor.Y < 0.0031308 && linearColor.Z < 0.0031308)
+      sRGB = sRGBLo;
+    else
+      sRGB = sRGBHi;
+      
+    return sRGB ;
+  }
+
+  
+  function Main()
+  {
+
+    var linear = this.Texture.Sample(this.Uv);
+
+    var numerator = this.Hable(linear.XYZ);
+    var denominator = this.Hable(Real3(this.WhitePoint));
+    
+    linear.XYZ = numerator / denominator;
+    
+    var gamma = this.AccurateLinearToSRGB(linear.XYZ);
+  
+  
+    this.Target0 = Real4(gamma, linear.W);
+  }
+}

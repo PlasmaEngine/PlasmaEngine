@@ -3,23 +3,21 @@ struct ColorMaskMap
 {
     [FragmentInput][StageInput] var Uv : Real2;
     [Input] var ColorMaskMap : SampledImage2d;
-    [Input] var MainColor : Real4;
-    [Input] var SecondaryColor : Real4;
-    [Input] var VisorColor : Real4;
-    [Input] var GammaCorrect : Boolean = true;
-
+    [Input] var RedChannelColor : Real4;
+    [Input] var GreenChannelColor : Real4;
+    [Input] var BlueChannelColor : Real4;
+    [Input] var AlphaChannelColor : Real4;
     [FragmentInput][Output] var Albedo : Real3;
 
     function Main()
     {
         var colorMask = this.ColorMaskMap.Sample(this.Uv);
         var albedo = this.Albedo;
-        albedo = Math.Lerp(albedo, this.MainColor.XYZ, colorMask.X);
-        albedo = Math.Lerp(albedo, this.SecondaryColor.XYZ, colorMask.Y);
-        albedo = Math.Lerp(albedo, this.VisorColor.XYZ, colorMask.Z);
-        this.Albedo *= albedo;
+        albedo = Math.Lerp(albedo, this.RedChannelColor.XYZ, colorMask.X);
+        albedo = Math.Lerp(albedo, this.GreenChannelColor.XYZ, colorMask.Y);
+        albedo = Math.Lerp(albedo, this.BlueChannelColor.XYZ, colorMask.Z);
+        albedo = Math.Lerp(albedo, this.AlphaChannelColor.XYZ, colorMask.W);
         
-        var power = Math.Lerp(Real3(1.0), Real3(2.2), this.GammaCorrect as Real);
-        this.Albedo *= Math.Pow(this.Albedo.XYZ, power);
+        this.Albedo *= Math.Pow(albedo, Real3(2.2));
     }
 }
