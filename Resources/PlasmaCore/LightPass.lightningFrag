@@ -22,6 +22,7 @@ struct LightPass
   [Input] var LightDirection : Real3 = Real3(0.0, 1.0, 0.0);
   [Input] var LightColor : Real3 = Real3(1.0);
   [Input] var LightIntensity : Real = 1.0;
+  [Input] var SpecularMultiplier : Real = 1.0;
   [Input] var LightTemperature : Real = 6500.0;
   
   [Input] var LightRadius : Real = 0.0;
@@ -48,6 +49,7 @@ struct LightPass
     directInputs.LightRadius = this.LightRadius;
     directInputs.LightLength = this.LightLength;
     directInputs.LightDistance = this.LightDistance;
+    directInputs.SpecularMultiplier = this.SpecularMultiplier;
     directInputs.Albedo = this.GeoAlbedo;
     directInputs.Metallic = this.GeoMetallic;
     directInputs.Roughness = this.GeoRoughness;

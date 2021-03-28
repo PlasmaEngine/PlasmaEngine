@@ -11,6 +11,7 @@ struct DirectLightingInputs
   var LightRadius : Real;
   var LightLength : Real;
   var LightDistance : Real;
+  var SpecularMultiplier : Real;
   
   var Albedo : Real3;
   var Metallic : Real;
@@ -52,14 +53,14 @@ struct DirectLighting
     var g = Brdf.SpecularGSmithGgx(n, l, v, h, alpha);
     
      //NDF normalization for area lights
-    //var alphaPrime = Math.Saturate(alpha + inputs.LightRadius / (2.0 * inputs.LightDistance));
-    //d *= Math.Pow(alpha / alphaPrime, 2.0);
+    var alphaPrime = Math.Saturate(alpha + inputs.LightRadius / (2.0 * inputs.LightDistance));
+    d *= Math.Pow(alpha / alphaPrime, 2.0);
     
     // Brdf denominator
     var normalization = 1.0 / (4.0 * Math.Max(Math.Dot(n, v), 0.001));
     
     // Final specular, represented as a scale and bias to F0
-    var brdfSpecular = Real2(1.0 - f, f) * (d * g * normalization);
+    var brdfSpecular = Real2(1.0 - f, f) * (d * g * normalization) * inputs.SpecularMultiplier;
     
     // Diffuse calculation
     var diffuseColor = inputs.LightColor * inputs.Albedo * diffuse;

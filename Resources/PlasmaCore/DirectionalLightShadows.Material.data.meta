@@ -8,7 +8,7 @@ DataContent
 		var LoaderType = "Material"
 		var Version = 0
 	}
-	ContentEditorOptions
+	ContentEditorOptions 
 	{
 		var ShowInEditor = true
 	}
