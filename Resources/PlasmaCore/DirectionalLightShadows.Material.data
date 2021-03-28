@@ -7,11 +7,13 @@ Material
 	}
 	FullscreenTriangle 
 	{
+		var VertexId = 0
 	}
 	GeometryInput 
 	{
 		var GeometryBuffer0 = "null"
 		var GeometryBuffer1 = "null"
+		var GeometryBuffer2 = "null"
 	}
 	ShadowMapping 
 	{
@@ -21,8 +23,8 @@ Material
 	}
 	DirectionalLightFragment 
 	{
-		var ShadowFactor = 1
 		var LightIntensity = 1
+		var SpecularMultiplier = 1
 		var LightDirection = Real3{0, -1, 0}
 	}
 }

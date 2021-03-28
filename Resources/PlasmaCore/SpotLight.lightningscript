@@ -23,6 +23,13 @@ class SpotLight : LightningComponent
     set { this.LightIntensityValue = Math.Max(value, 0.0); }
   }
   
+  // Combined with area light falloff and represents total emittance of the light. Value in Lumens.
+  [Property][Slider(0, 100, 0.1)][ShaderInput("SpotLightFragment")] var SpecularMultiplier : Real
+  {
+    get { return this.SpecularMultiplierValue; }
+    set { this.SpecularMultiplierValue = Math.Max(value, 0.0); }
+  }
+  
   // Temperature of the light in kelvin.
   [Property][Slider(1000, 10000, 100)][ShaderInput("LightPass", "LightTemperature")] var LightTemperature : Real = 6500;
   
@@ -93,6 +100,7 @@ class SpotLight : LightningComponent
   
   
   var LightIntensityValue : Real = 800.0;
+  var SpecularMultiplierValue : Real = 1.0;
   var FalloffRadiusValue : Real = 10.0;
   var LightRadiusValue : Real = 0.0;
   var InnerAngleValue : Real = 45.0;

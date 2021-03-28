@@ -19,6 +19,8 @@ struct PointLightFragment
   
   // Combined with area light falloff and represents total emittance of the light.
   [Input][Output] var LightIntensity : Real = 1.0;
+  // Used to control the specular of a light
+  [Input][Output] var SpecularMultiplier : Real = 1.0;
   // Physical radius of the sphere of light.
   // Affects the shape of specular reflection.
   [Input][Output] var LightRadius : Real = 0.0;
@@ -128,7 +130,9 @@ struct SpotLightFragment
   [Input] var SpotAngles : Real2 = Real2(0.5);
   
   // Combined with area light falloff and represents total emittance of the light.
-  [Input][Output] var LightIntensity : Real = 1.0;
+  [Input][Output] var LightIntensity : Real = 1.0;  
+  // Used to control the specular of a light
+  [Input][Output] var SpecularMultiplier : Real = 1.0;
   // Physical radius of the sphere of light.
   // Affects the shape of specular reflection.
   [Input][Output] var LightRadius : Real = 0.0;
@@ -180,6 +184,8 @@ struct DirectionalLightFragment
   
   // Arbitrary scalar for the resultant lighting calculations.
   [Input][Output] var LightIntensity : Real = 1.0;
+  // Used to control the specular of a light
+  [Input][Output] var SpecularMultiplier : Real = 1.0;
   // Direction the light is facing, given in world space.
   [Input][Output] var LightDirection : Real3 = Real3(0.0 , -1.0, 0.0);
   

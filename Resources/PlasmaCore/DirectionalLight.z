@@ -24,13 +24,22 @@ class DirectionalLight : LightningComponent
     set { this.LightIntensityValue = Math.Max(value, 0.0); }
   }
   
+  // Used to control the specular power of lights
+  [Property][Slider(0, 100, 0.1)][ShaderInput("DirectionalLightFragment")] var SpecularMultiplier : Real
+  {
+    get { return this.SpecularMultiplierValue; }
+    set { this.SpecularMultiplierValue = Math.Max(value, 0.0); }
+  }
+
+  
   // Temperature of the light in kelvin.
   [Property][Slider(1000, 10000, 100)][ShaderInput("LightPass", "LightTemperature")] var LightTemperature : Real = 6500.0;
 
   
   [ShaderInput("DirectionalLightFragment")] var LightDirection : Real3;
   [ShaderInput("LightPass", "LightColor")] var LightColorValue : Real3 = Real3(1.0);
-  var LightIntensityValue : Real = 1.0;
+  var LightIntensityValue : Real = 800.0;
+  var SpecularMultiplierValue : Real = 1.0;
   
   function Initialize(init : CogInitializer)
   {
