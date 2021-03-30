@@ -94,7 +94,25 @@ void WaitRendererJob::WaitOnThisJob()
 void CreateRendererJob::Execute()
 {
   ZoneScoped;
-  PL::gRenderer = CreateRenderer(mMainWindowHandle, mError);
+
+  switch (mAPI)
+  {
+    case RenderAPI::Vulkan:
+    {
+      // Fallthrough    
+    }
+    case RenderAPI::OpenGL:
+    {
+      PL::gRenderer = CreateRendererOpenGL(mMainWindowHandle, mError);
+      break;
+    }
+    default:
+    {
+      // OpenGL is the default renderer
+      PL::gRenderer = CreateRendererOpenGL(mMainWindowHandle, mError);
+      break;
+    }
+  }
   mWaitEvent.Signal();
 }
 

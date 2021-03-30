@@ -50,6 +50,11 @@ DeclareEnum3(BlendMode, Disabled, Enabled, Separate);
 
 DeclareEnum4(CoreVertexType, Mesh, SkinnedMesh, Streamed, Count);
 
+// Used to control the active renderer used by the engine. Must be changed prior to renderer creation
+// <param name="OpenGL"> The OpenGL 3 Renderer </param>
+// <param name="Vulkan"> The Vulkan Renderer </param>
+DeclareEnum2(RenderAPI, OpenGL, Vulkan);
+
 /// How triangles should be culled (not rendered) depending on which way they
 /// face. <param name="Disabled">Triangles are always rendered.</param> <param
 /// name="BackFace">Clockwise triangles are not rendered.</param> <param

@@ -167,6 +167,8 @@ public:
   bool mLaunchFullscreen;
   /// Resolution of application when launched in windowed mode.
   IntVec2 mWindowedResolution;
+
+  RenderAPI::Enum mRendererApi = RenderAPI::OpenGL;
 };
 
 /// Settings for how the frame rate of the engine should be controlled.

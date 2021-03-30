@@ -87,6 +87,7 @@ public:
   void Execute() override;
 
   OsHandle mMainWindowHandle;
+  RenderAPI::Enum mAPI;
   String mError;
 };
 

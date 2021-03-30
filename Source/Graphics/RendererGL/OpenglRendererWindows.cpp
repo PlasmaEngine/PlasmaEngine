@@ -68,7 +68,7 @@ OpenglRendererWindows::~OpenglRendererWindows()
   wglDeleteContext((HGLRC)mRenderContext);
 }
 
-Renderer* CreateRenderer(OsHandle windowHandle, String& error)
+Renderer* CreateRendererOpenGL(OsHandle windowHandle, String& error)
 {
   return new OpenglRendererWindows(windowHandle, error);
 }

@@ -4,7 +4,7 @@
 
 namespace Plasma
 {
-// These functions must be defined by the platform (as well as CreateRenderer)
+// These functions must be defined by the platform
 // These could be virtual functions on the OpenglRenderer, however there should
 // only be one implementation of OpenGL per platform, so we can avoid the
 // virtual overhead.

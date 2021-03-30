@@ -364,6 +364,8 @@ LightningDefineType(WindowLaunchSettings, builder, type)
                                                // bool, false);
   LightningBindFieldProperty(mWindowedResolution); //->PlasmaFilterEquality(mUseLaunchOptionsPopup,
                                                // bool, false);
+
+  LightningBindFieldProperty(mRendererApi);
 }
 
 void WindowLaunchSettings::Serialize(Serializer& stream)
