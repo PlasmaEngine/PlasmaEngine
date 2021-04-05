@@ -450,7 +450,7 @@ const determineCmakeCombo = (options) => {
   const aliases = {
     Empty: {
       builder: "Ninja",
-      config: "Release",
+      config: "Debug",
       platform: "Stub",
       targetos: hostos,
       toolchain: "Clang",
@@ -459,7 +459,7 @@ const determineCmakeCombo = (options) => {
     Emscripten: {
       architecture: "wasm",
       builder: "Ninja",
-      config: "Release",
+      config: "Debug",
       platform: "Emscripten",
       targetos: "Emscripten",
       toolchain: "Emscripten",
@@ -467,7 +467,7 @@ const determineCmakeCombo = (options) => {
     },
     Linux: {
       builder: "Unix Makefiles",
-      config: "Release",
+      config: "Debug",
       platform: "Linux",
       targetos: "Linux",
       toolchain: "Clang",
@@ -475,7 +475,7 @@ const determineCmakeCombo = (options) => {
     },
     MacOS: {
       builder: "Xcode",
-      config: "Release",
+      config: "Debug",
       platform: "MacOS",
       targetos: "MacOS",
       toolchain: "Clang",
@@ -483,7 +483,7 @@ const determineCmakeCombo = (options) => {
     },
     Windows: {
       builder: "Visual Studio 16 2019",
-      config: "Release",
+      config: "Debug",
       platform: "Windows",
       targetos: "Windows",
       toolchain: "MSVC",
