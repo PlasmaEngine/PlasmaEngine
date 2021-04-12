@@ -607,7 +607,11 @@ DelayLine::DelayLine() :
     mInterpolatingWetLevel(false)
 {
   mDelaySamples = (int)mDelaySamplesFractional;
-  memset(mBuffersPerChannel, 0, sizeof(float) * cMaxChannels);
+  for (int i = 0; i < cMaxChannels; i++)
+  {
+    mBuffersPerChannel[i] = new float[mDelaySamples];
+    memset(mBuffersPerChannel[i], 0, sizeof(float) * mDelaySamples);
+  }
 }
 
 DelayLine::~DelayLine()
