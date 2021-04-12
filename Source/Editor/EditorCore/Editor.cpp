@@ -852,8 +852,12 @@ void BuildContent(ProjectSettings* project)
 {
   // Build content for this project to make sure all files are up to date.
   Status status;
-  PL::gContentSystem->BuildLibrary(status, project->ProjectContentLibrary, false);
-  DoNotifyStatus(status);
+  if (project->ProjectContentLibrary)
+  {
+    PL::gContentSystem->BuildLibrary(status, project->ProjectContentLibrary, false);
+    DoNotifyStatus(status);
+  }
+	
   forRange (ContentLibrary* library, project->ExtraContentLibraries.All())
   {
     PL::gContentSystem->BuildLibrary(status, library, false);
