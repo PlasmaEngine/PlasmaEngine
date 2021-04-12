@@ -4,12 +4,7 @@
 class PostProcessFXAA : LightningComponent
 {
     [Property] var Active : Boolean = true;
-    [Group("Settings")]
-    [Property] var Span : Real = 1.0;
-    [Group("Settings")]
-    [Property] var ReduceMin : Real = 128.0;
-    [Group("Settings")]
-    [Property] var ReduceMul : Real = 8.0;
+    [Property][Slider(0.1,2, 0.05)] var Stride : Real = 0.1;
     
     function AddRenderTasks(event : RenderTasksEvent, lightBuffer : RenderTarget)
     {
@@ -18,9 +13,7 @@ class PostProcessFXAA : LightningComponent
             
         var postFXAA = PostFXAA();
         postFXAA.Texture = lightBuffer.Texture;
-        postFXAA.SpanMax = -this.Span;
-        postFXAA.ReduceMin = this.ReduceMin;
-        postFXAA.ReduceMul = this.ReduceMul;
+        postFXAA.Stride = this.Stride;
         event.AddRenderTaskPostProcess(lightBuffer, postFXAA, "FXAA");
     }
 }
