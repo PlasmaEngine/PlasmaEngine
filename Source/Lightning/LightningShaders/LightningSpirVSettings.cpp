@@ -39,6 +39,7 @@ String SpirVNameSettings::mRuntimeArrayTypeName = "RuntimeArray";
 SpirVNameSettings::SpirVNameSettings()
 {
   mInputAttribute = "Input";
+  mSliderAttribute = "Slider";
   mFragmentInputAttribute = "FragmentInput";
   mStageInputAttribute = "StageInput";
   mHardwareBuiltInInputAttribute = "HardwareBuiltInInput";

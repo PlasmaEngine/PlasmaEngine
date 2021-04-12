@@ -71,6 +71,7 @@ public:
   static String mRuntimeArrayTypeName;
 
   String mInputAttribute;
+  String mSliderAttribute;
   String mFragmentInputAttribute;
   String mStageInputAttribute;
   String mHardwareBuiltInInputAttribute;

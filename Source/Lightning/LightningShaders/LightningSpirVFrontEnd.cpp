@@ -405,6 +405,10 @@ void LightningSpirVFrontEnd::ParseAttributes(Lightning::Array<Lightning::Attribu
       ValidateNameOverrideAttribute(shaderAttribute);
       ValidateAttributeExclusions(shaderAttribute, shaderAttributes, staticExclusions);
     }
+    else if (attributeName == nameSettings.mSliderAttribute)
+    {
+      ValidateAttributeExclusions(shaderAttribute, shaderAttributes, staticExclusions);
+    }
     else if (attributeName == nameSettings.mFragmentInputAttribute)
     {
       ValidateNameOverrideAttribute(shaderAttribute);
