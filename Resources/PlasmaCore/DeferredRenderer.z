@@ -324,6 +324,8 @@ class DeferredRenderer : LightningComponent
     // Bring final lighting to gamma space for monitor display
     this.LinearToGamma(event, lightBuffer, this.FinalOutput);
     
+    this.DrawDebugObjects(event, this.FinalOutput, this.Depth);
+    
     if(this.Owner.PostProcessTAA != null)
       this.Owner.PostProcessTAA.AddRenderTasks(event, this.FinalOutput, this.LastFrame, this.VelPosBuffer, this.Depth, this.FirstFrame as Integer);
     
@@ -332,8 +334,6 @@ class DeferredRenderer : LightningComponent
         this.Owner.PostProcessFXAA.AddRenderTasks(event, this.FinalOutput);
     
     this.FirstFrame = false;
-    
-    this.DrawDebugObjects(event, this.FinalOutput, this.Depth);
   }
   
   function LinearToGamma(event : RenderTasksEvent, inputBuffer : RenderTarget, outputBuffer : RenderTarget)
