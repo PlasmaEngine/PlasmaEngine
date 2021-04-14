@@ -21,8 +21,6 @@ struct SSRApply
         var albedo = GeometryPass.GetAlbedo(geometrySample1);
         var metallic = GeometryPass.GetMetallic(geometrySample1);
         
-        ssrSample = ssrSample * (1.0 - roughness);
-        
         //if(Math.Max(Math.Max(ssrSample.X, ssrSample.Y), ssrSample.Z) == 0)
         ssrSample.XYZ += (screenSample.XYZ );
             
@@ -148,7 +146,7 @@ struct SSR
         if(this.Jiiter)
         {          
             var jitter = Math.Lerp(Real3.Zero, this.Hash(worldPosition.XYZ, roughness), roughness);
-            direction += jitter - Real3(roughness/2);
+            direction += jitter - Real3(roughness);
         }
         direction *= Real3(this.StepDistance);
  
@@ -200,6 +198,9 @@ struct SSR
                         else
                             hitPosition -= direction;
                     }
+                    
+                    if(hitPosition.Z > depth)
+                      return;
  
                     projectedCoords = Math.Multiply(this.ViewToPerspective,Real4(hitPosition, 1.0));
                     projectedCoords.XY /= projectedCoords.W;
@@ -223,7 +224,7 @@ struct SSR
         
         coords.XY = Math.Saturate(coords.XY);
  
-        var ssr = (this.ScreenBuffer.SampleLod(coords.XY, roughness).XYZ ) * (Real3(0.1) * brdfSpec.X + brdfSpec.YYY);
+        var ssr = reflectionMultipler * (this.ScreenBuffer.SampleLod(coords.XY, roughness).XYZ ) * (Real3(0.1) * brdfSpec.X + brdfSpec.YYY);
         
         if(!(foundResult as Boolean))
           ShaderIntrinsics.Kill();
