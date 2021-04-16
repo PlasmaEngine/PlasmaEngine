@@ -22,6 +22,7 @@ LightningDefineRange(OperationListRange);
 LightningDefineRange(Engine::GameSessionArray::range);
 
 // Enums
+LightningDefineEnum(RenderAPI);
 LightningDefineEnum(ActionExecuteMode);
 LightningDefineEnum(ActionState);
 LightningDefineEnum(AnimationBlendMode);
@@ -109,6 +110,7 @@ LightningDefineStaticLibrary(EngineLibrary)
   LightningInitializeRangeAs(Engine::GameSessionArray::range, "GameSessionRange");
 
   // Enums
+  LightningInitializeEnum(RenderAPI);
   LightningInitializeEnum(ActionExecuteMode);
   LightningInitializeEnum(ActionState);
   LightningInitializeEnum(AnimationBlendMode);

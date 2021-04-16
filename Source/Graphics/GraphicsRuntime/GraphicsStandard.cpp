@@ -14,7 +14,6 @@ LightningDefineRange(Array<HandleOf<Material>>);
 LightningDefineRange(Array<HandleOf<RenderGroup>>);
 
 // Enums
-LightningDefineEnum(RenderAPI);
 LightningDefineEnum(BlendMode);
 LightningDefineEnum(BlendFactor);
 LightningDefineEnum(BlendEquation);
@@ -54,7 +53,6 @@ LightningDefineStaticLibrary(GraphicsLibrary)
   LightningInitializeRange(Array<HandleOf<RenderGroup>>);
 
   // Enums
-  LightningInitializeEnum(RenderAPI);
   LightningInitializeEnum(BlendMode);
   LightningInitializeEnum(BlendFactor);
   LightningInitializeEnum(BlendEquation);
