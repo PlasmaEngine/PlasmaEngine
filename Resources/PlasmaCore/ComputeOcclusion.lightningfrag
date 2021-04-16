@@ -1,0 +1,21 @@
+// PostProcess fragments are intended to be constructed in script
+// and passed directly to the AddRenderTaskPostProcess method.
+[Pixel][PostProcess]
+struct ComputeOcclusion
+{
+  [StageInput] var Uv : Real2;
+  // Normal, Depth, Roughness
+  [Input] var GBuffer0 : SampledImage2d;
+  [Output] var Target0 : Real4;
+
+  function Main()
+  {
+    var depth = this.GBuffer0.Sample(this.Uv).Z;
+    // If depth is of sky the access otherwise none.
+    if(depth >= 1.0)      
+    this.Target0 = Real4(depth,0.0,0.0,1.0);
+    else
+    this.Target0 = Real4(0.0,0.0,0.0,1.0);
+
+  }
+}

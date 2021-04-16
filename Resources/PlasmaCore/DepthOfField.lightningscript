@@ -1,0 +1,66 @@
+[RunInEditor]
+class DepthOfField : LightningComponent
+{
+  [Property] var Enable : Boolean = true;
+  // Choose Blur Intensity
+  [Property] var BlurAmount : BlurValue = BlurValue.High;
+  // Point of Focus from camera position positive viewspace distance ahead.
+  [Property] var FocusDistance : Real = 10.0;
+  // Focal Length in Viewspace units.
+  [Property] var FocusRange : Real = 30.0;
+  function OnRenderTasksUpdate(event : RenderTasksEvent, depthTarget : Texture, colorTarget : RenderTarget)
+  {
+    if(this.Enable == false)
+      return;
+      
+    var size = event.ViewportSize;
+    var colorCopy = event.GetRenderTarget(size, TextureFormat.RGBA8);
+    var blurredColor = event.GetRenderTarget(size, TextureFormat.RGBA8);
+
+    // Copy the colorTexture
+    var copyTargetSettings = RenderSettings();
+    copyTargetSettings.ColorTarget = colorCopy;
+    copyTargetSettings.CullMode = CullMode.Disabled;
+    copyTargetSettings.DepthSettings.DepthMode = DepthMode.Disabled;
+    var copyPass = CopyTarget();
+    copyPass.Texture = colorTarget.Texture;
+    event.AddRenderTaskClearTarget(copyTargetSettings, Real4(0, 0, 0, 1), 1.0);
+    event.AddRenderTaskPostProcess(copyTargetSettings, copyPass, "DOF Copy");
+    copyTargetSettings.ColorTarget = blurredColor;
+    event.AddRenderTaskClearTarget(copyTargetSettings, Real4(0, 0, 0, 1), 1.0);
+    event.AddRenderTaskPostProcess(copyTargetSettings, copyPass, "DOF Copy 2");
+
+    if(this.BlurAmount == BlurValue.VeryHigh)
+      BlurTexture[SeparableBlurRadius25].Call(event, blurredColor);
+    else if(this.BlurAmount == BlurValue.High)
+      BlurTexture[SeparableBlurRadius20].Call(event, blurredColor);
+    else if(this.BlurAmount == BlurValue.Medium)
+      BlurTexture[SeparableBlurRadius10].Call(event, blurredColor);
+    else if(this.BlurAmount == BlurValue.Low)
+      BlurTexture[SeparableBlurRadius5].Call(event, blurredColor);
+
+    var renderSettings = RenderSettings();
+    renderSettings.ColorTarget = colorTarget;
+    renderSettings.CullMode = CullMode.Disabled;
+    renderSettings.DepthSettings.DepthMode = DepthMode.Disabled;
+
+    var dofPass = DepthOfFeildPass();
+    dofPass.ViewPosTexture = depthTarget;
+    dofPass.FocusDistance = this.FocusDistance;
+    dofPass.DitherTexture = Texture.BlueNoise;
+    dofPass.InvFocusRange = 1.0 / (this.FocusRange + 0.000001);
+    dofPass.TextureFocus = colorCopy.Texture;
+    dofPass.TextureBlurred = blurredColor.Texture;
+    event.AddRenderTaskClearTarget(renderSettings, Real4(0, 0, 0, 1), 1.0);
+    event.AddRenderTaskPostProcess(renderSettings, dofPass, "DOF");
+
+  }
+}
+
+enum BlurValue
+{
+Low,
+Medium,
+High,
+VeryHigh
+}

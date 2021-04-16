@@ -1,0 +1,70 @@
+// Shader input attribute definitions
+// [BuiltInInput]  Input comes from predefined data given by the graphics engine
+// [StageInput]    Input comes from the previous hardware stage (mesh -> vertex -> geometry -> pixel)
+// [FragmentInput] Input comes from a previous fragment in the same stage
+// [PropertyInput] Input comes from this fragment
+// [Input]         Input auto resolves from any of the previous in the order
+//                 [FragmentInput][StageInput][BuiltInInput][PropertyInput]
+//
+// Pixel fragment Example:
+// [FragmentInput][StageInput] var ViewNormal : Real3;
+// Input will come from a previous pixel fragment that outputs ViewNormal
+// otherwise, input will come from the vertex shader
+
+[Pixel][PostProcess]
+struct RayMarch
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  
+  // GodRays Input
+  [Input] var OcclusionTex : SampledImage2d;
+  [Input] var SunPosUV : Real2;
+  [Input] var InitDecay : Real;
+  [Input] var DistDecay : Real;
+  [Input] var MaxDelta : Real;
+  [Input] var Steps : Real;
+  [Input] var StepsDelta : Real;
+  [Input] var IntensityScale : Real = 2.0;
+  [AppBuiltInInput] var WorldToView : Real4x4;
+  [AppBuiltInInput] var ViewToPerspective : Real4x4;
+  // Output intensity texture
+  [Output] var Target0 : Real4;
+  
+  function Main()
+  {
+    // Calculate direction to sun and length.
+    var dirToSun = this.SunPosUV - this.Uv;
+    var rayLength =  Math.Length(dirToSun);
+    dirToSun = Math.Normalize(dirToSun);
+    
+    // Get change per step in the sun's direction.
+    var deltaLength = Math.Min(this.MaxDelta, rayLength * this.StepsDelta);
+    var deltaRay = deltaLength * dirToSun;
+    
+    // Ray intensity decays with each step.
+    var stepDecay = this.DistDecay * deltaLength;
+    
+    // Init.
+    var rayOffset = Real2(0.0,0.0);
+    var currDecay = this.InitDecay;
+    var pixelRayIntensity = 0.0;
+    
+    // Raymarch to the sun.
+    for(var i = 0; i < this.Steps; ++i)
+    {
+      var filterPos = this.Uv + rayOffset;
+      
+      // Make sure the pixel is not occluded.
+      var access = this.OcclusionTex.Sample(filterPos).X;
+      
+      pixelRayIntensity += access * currDecay;
+      
+      rayOffset += deltaRay;
+      
+      // Decrease the decay as we proceed.
+      currDecay = Math.Saturate(currDecay - stepDecay);
+    }
+    
+      this.Target0 = Real4(pixelRayIntensity * this.IntensityScale);
+  }
+}

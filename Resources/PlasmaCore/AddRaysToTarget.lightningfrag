@@ -1,0 +1,18 @@
+// PostProcess fragments are intended to be constructed in script
+// and passed directly to the AddRenderTaskPostProcess method.
+[Pixel][PostProcess]
+struct AddRaysToTarget
+{
+  [StageInput] var Uv : Real2;
+  [Input] var LightIntTexture : SampledImage2d;
+  [Input] var RayColor : Real4;
+  [Input] var RayBrightness : Real;
+  [Output] var Target0 : Real4;
+
+  function Main()
+  {
+    var rayInt = this.LightIntTexture.Sample(this.Uv).X;
+    this.Target0 = Real4(rayInt * (this.RayColor.XYZ / 100) * this.RayBrightness, rayInt);
+  }
+}
+

@@ -1,0 +1,40 @@
+// PostProcess fragments are intended to be constructed in script
+// and passed directly to the AddRenderTaskPostProcess method.
+[Pixel][PostProcess]
+struct DepthOfFeildPass
+{
+  [StageInput] var Uv : Real2;
+  [AppBuiltInInput] var FarPlane : Real;
+  [AppBuiltInInput] var ViewportSize : Real2;
+  [Input] var DitherTexture : SampledImage2d;
+  [Input] var TextureBlurred : SampledImage2d;
+  [Input] var ViewPosTexture : SampledImage2d;
+  [Input] var TextureFocus : SampledImage2d;
+  [Input] var FocusDistance : Real;
+  [Input] var InvFocusRange : Real;
+  [Output] var Target0 : Real4;
+
+  function Main()
+  {
+    // Use a positive value for depth.
+    var depth = Math.Abs(this.ViewPosTexture.Sample(this.Uv).Z * this.FarPlane);
+    
+    //  Get the Focus Color, Blurred Color and Circle of Confusion.
+    // How far is the current pixel from focal point.
+    var disToFocal = Math.Abs(depth - this.FocusDistance);
+    // Divide the distance by focalRange to calc "Blur Factor"
+    var coc = Math.Saturate(disToFocal * this.InvFocusRange);
+    // Get a blur and un-blurred texture sample.
+    var colorFocus = this.TextureFocus.Sample(this.Uv);
+    var colorBlurred = this.TextureBlurred.Sample(this.Uv).XYZ;
+    
+    var colorOutput= Real4(Math.Lerp(colorFocus.XYZ, colorBlurred, coc), colorFocus.W);
+    
+    // Remove color banding
+    colorOutput.XYZ = Utility.ApplyDither(colorOutput.XYZ, &this.DitherTexture, this.Uv, this.ViewportSize);
+    
+    // Interpolate between the color in focus and blurred color by the computed factor.
+    this.Target0 = colorOutput;
+    
+  }
+}

@@ -1,0 +1,69 @@
+[RunInEditor]
+class GodRays : LightningComponent
+{
+  
+  [Property] var Enable : Boolean = false;
+  [Property] var SunLight : CogPath;
+  [Property] var RayPower : Real = 1.0;
+  [Property] var RayBrightness : Real = 1.0;
+  function OnRenderTasksUpdate(event : RenderTasksEvent, depthTexture : Texture, colorTarget : RenderTarget)
+  {
+    if(this.Enable == false)
+      return;
+    
+    if(this.SunLight.Cog == null)
+      return;
+      
+    var sunTransform =  event.CameraViewportCog.CameraViewport.WorldToPerspective;
+    var sunPos = Math.MultiplyPoint(sunTransform, this.SunLight.Cog.Transform.Translation);
+    var sunPosUv = (sunPos.XY + Real2(1.0, -1.0)) * Real2(0.5, -0.5);
+    if(sunPosUv.X < 0.0 || sunPosUv.Y < 0.0 || sunPosUv.X > 1.0 || sunPosUv.Y > 1.0)
+      return;
+    
+    var size = event.ViewportSize;
+    var samplerSettings = SamplerSettings();
+    samplerSettings.Filtering = TextureFiltering.Bilinear;
+    var occ = event.GetRenderTarget(size, TextureFormat.RGBA8, samplerSettings);
+    var light = event.GetRenderTarget(size, TextureFormat.RGBA8, samplerSettings);
+
+    var renderSettings = RenderSettings();
+    renderSettings.ColorTarget = occ;
+    renderSettings.CullMode = CullMode.Disabled;
+    renderSettings.DepthSettings.DepthMode = DepthMode.Disabled;
+    var occPass = ComputeOcclusion();
+    occPass.GBuffer0 = depthTexture;
+    // Do the occ pass.
+    event.AddRenderTaskClearTarget(occ, Real4(0.0));
+    event.AddRenderTaskPostProcess(renderSettings, occPass, "Occlusion Pass");
+    
+    // Compute the light intensity. 
+    var rayMarchPass = RayMarch();
+    rayMarchPass.OcclusionTex = occ.Texture;
+    rayMarchPass.IntensityScale = this.RayPower;
+    // Can expose these properties if needed.
+    rayMarchPass.Steps = 64.0;
+    rayMarchPass.StepsDelta = 1.0 / 64.0;
+    rayMarchPass.InitDecay = 0.2;
+    rayMarchPass.MaxDelta = 0.005;
+    rayMarchPass.SunPosUV = sunPosUv;
+    rayMarchPass.DistDecay = 0.9;
+    
+    // Set target for light intensity.
+    renderSettings.ColorTarget = light;
+    event.AddRenderTaskClearTarget(light, Real4(0,0,0,1));
+    event.AddRenderTaskPostProcess(renderSettings, rayMarchPass, "RayMarch");
+    
+    // Blend it into the colorTarget
+    var addRays = AddRaysToTarget();
+    addRays.LightIntTexture = light.Texture;
+    addRays.RayColor = this.SunLight.DirectionalLight.LightColor;
+    addRays.RayBrightness = this.RayBrightness;
+    renderSettings.BlendSettings.BlendMode = BlendMode.Enabled;
+    renderSettings.BlendSettings.BlendEquation = BlendEquation.Add;
+    renderSettings.BlendSettings.SourceFactor  = BlendFactor.One;
+    renderSettings.BlendSettings.DestFactor  = BlendFactor.One;
+    renderSettings.ColorTarget = colorTarget;
+    event.AddRenderTaskPostProcess(renderSettings, addRays, "God Rays");
+    }
+}
+

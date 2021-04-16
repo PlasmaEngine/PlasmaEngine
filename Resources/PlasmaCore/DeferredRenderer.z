@@ -313,12 +313,22 @@ class DeferredRenderer : LightningComponent
       this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer1, this.GBuffer2, lightBuffer, this.SSRBuffer);
     }
     
+    if(this.Owner.PostProcessFog != null)
+      this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer1, this.GBuffer2, lightBuffer);
+    
+    // Distance Depth of Field.
+    if(this.Owner.DepthOfField != null)
+      this.Owner.DepthOfField.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);
+    
     // Bloom
     if (this.Owner.Bloom != null)
       this.Owner.Bloom.AddRenderTasks(event, lightBuffer);
       
-    if(this.Owner.PostProcessFog != null)
-      this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer1, this.GBuffer2, lightBuffer);
+    
+    // God Rays
+    if(this.Owner.GodRays != null)
+      this.Owner.GodRays.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);
+      
 
     
     // Bring final lighting to gamma space for monitor display
