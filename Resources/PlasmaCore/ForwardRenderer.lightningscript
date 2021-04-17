@@ -141,8 +141,8 @@ class ForwardRenderer : LightningComponent
     event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AdditiveBlend, ColorOutput(), "AdditiveMaterials");
     
     // Bloom
-    if (this.Owner.Bloom != null)
-      this.Owner.Bloom.AddRenderTasks(event, colorTarget);
+    if (this.Owner.PostProcessBloom != null)
+      this.Owner.PostProcessBloom.AddRenderTasks(event, colorTarget);
       
     var forwardPassAlpha = ForwardPassAlpha();
     forwardPassAlpha.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;

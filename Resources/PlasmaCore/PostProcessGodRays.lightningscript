@@ -1,5 +1,5 @@
 [RunInEditor]
-class GodRays : LightningComponent
+class PostProcessGodRays : LightningComponent
 {
   
   [Property] var Enable : Boolean = false;

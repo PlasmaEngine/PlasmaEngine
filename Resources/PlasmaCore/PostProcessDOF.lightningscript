@@ -1,5 +1,5 @@
 [RunInEditor]
-class DepthOfField : LightningComponent
+class PostProcessDOF : LightningComponent
 {
   [Property] var Enable : Boolean = true;
   // Choose Blur Intensity

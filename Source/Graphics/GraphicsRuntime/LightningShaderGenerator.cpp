@@ -589,9 +589,10 @@ namespace Plasma
         // split up to deal with multiple libraries and caching.
         ShaderPipelineDescription pipelineDescription;
 #if !defined(PlasmaDebug)
-        pipelineDescription.mToolPasses.PushBack(new SpirVSpecializationConstantPass());
-        pipelineDescription.mToolPasses.PushBack(new SpirVOptimizerPass());
+        //pipelineDescription.mToolPasses.PushBack(new SpirVSpecializationConstantPass());
+        //pipelineDescription.mToolPasses.PushBack(new SpirVOptimizerPass());
 #endif
+        pipelineDescription.mDebugPasses.PushBack(new SpirVValidatorPass());
         PlasmaLightningShaderGlslBackend* backend = new PlasmaLightningShaderGlslBackend();
         pipelineDescription.mBackend = backend;
 

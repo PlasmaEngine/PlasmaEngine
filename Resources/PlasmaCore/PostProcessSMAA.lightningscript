@@ -1,0 +1,118 @@
+//http://www.iryoku.com/smaa/downloads/SMAA-Enhanced-Subpixel-Morphological-Antialiasing.pdf
+//http://www.cs.cmu.edu/afs/cs/academic/class/15869-f11/www/readings/reshetov09_mlaa.pdf
+//Practical Morphological Anti-Aliasing GPU-Pro 2
+
+
+[RunInEditor]
+class PostProcessSMAA : LightningComponent
+{
+  
+  [Property] var EnableSMAA : Boolean = true;
+  [Property] var EnableDiagnols : Boolean = true;
+  // Use depth info to reject possibly false edges.
+  [Property] var DepthBasedEdges : Boolean = true;
+  // Detect more edges with high setting.
+  [Property] var EdgeDetection : DetectionChance = DetectionChance.Medium;
+  // Switch to Edge and Blend Area to debug intermidiate textures.
+  [Property] var TargetTexture : SMAADebugTargets = SMAADebugTargets.Off;
+  
+  function AddRenderTask(event : RenderTasksEvent, lightBuffer : RenderTarget, depth : RenderTarget)
+  {
+    // Don't bother
+    if(!this.EnableSMAA)
+      return;
+      
+    // Sampler settings for filtering edges texture.
+    var samplerSettings = SamplerSettings();
+    samplerSettings.AddressingX = TextureAddressing.Clamp;
+    samplerSettings.AddressingY = TextureAddressing.Clamp;
+    samplerSettings.Filtering = TextureFiltering.Bilinear;
+    
+    var size = lightBuffer.Texture.Size;
+    var colorCopy = event.GetRenderTarget(size, lightBuffer.Texture.Format, samplerSettings);
+    var edges = event.GetRenderTarget(size, TextureFormat.RGBA8, samplerSettings);
+    var areas = event.GetRenderTarget(size, TextureFormat.RGBA8, samplerSettings);
+    var finalBlend = event.GetRenderTarget(size, lightBuffer.Texture.Format, samplerSettings);
+    
+    var renderSettings = RenderSettings() {CullMode = CullMode.Disabled};
+    renderSettings.DepthTarget = depth;
+    renderSettings.CullMode = CullMode.Disabled;
+    renderSettings.DepthSettings.DepthMode = DepthMode.Disabled;
+    renderSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
+    
+    var copyTarget = CopyTarget();
+    copyTarget.Texture = lightBuffer.Texture;
+    event.AddRenderTaskPostProcess(colorCopy, copyTarget, "Copy");
+    
+    //// First pass, using predicated thresholding here.
+    var postProcess = EdgeDetectionPostProcess();
+    postProcess.DepthTexture = depth.Texture;
+    postProcess.DepthBasedThresholding = this.DepthBasedEdges;
+    if(this.EdgeDetection == DetectionChance.Medium)
+      postProcess.ComparisonThreshold = 0.10;
+    else
+      postProcess.ComparisonThreshold = 0.01;
+    postProcess.Texture = colorCopy.Texture;
+    renderSettings.ColorTarget = edges;
+    
+    ////event.AddRenderTaskClearTarget(edges, Real4(0.0));
+    event.AddRenderTaskPostProcess(renderSettings, postProcess, "Edge Detection");
+    
+    // Second pass.
+    var areasPostProcess = BlendByArea();
+    areasPostProcess.DiagEnabled = this.EnableDiagnols;
+    if (this.TargetTexture == SMAADebugTargets.Area)
+      areasPostProcess.DebugMode = true;
+    areasPostProcess.EdgesTexture = edges.Texture;
+    areasPostProcess.SearchTexture = Texture.SearchTex;
+    areasPostProcess.AreaTexture = Texture.AreaTex;
+    areasPostProcess.SearchSamples = 8.0;
+    renderSettings.ColorTarget = areas;
+    
+    event.AddRenderTaskClearTarget(renderSettings, Real4(0.0));
+    event.AddRenderTaskPostProcess(renderSettings, areasPostProcess, "Blend");
+    
+    // Final pass.
+    var blendPostProcess = NeighborhoodBlend();
+    blendPostProcess.AreaTexture = areas.Texture;
+    blendPostProcess.ColorTexture = colorCopy.Texture;
+    renderSettings.ColorTarget = finalBlend;
+    
+    event.AddRenderTaskPostProcess(renderSettings, blendPostProcess, "BlendNeighbor");
+
+    // Finally, copy to render output.
+    var renderPass = CopyTarget();
+
+    // Debug options
+    if (this.TargetTexture == SMAADebugTargets.Off)
+      renderPass.Texture = finalBlend.Texture;
+    if (this.TargetTexture == SMAADebugTargets.Area)
+      renderPass.Texture = areas.Texture;
+    if (this.TargetTexture == SMAADebugTargets.Edge)
+      renderPass.Texture = edges.Texture;
+      
+    //renderSettings.ColorTarget = colorCopy;
+    renderSettings.ColorTarget = lightBuffer;
+    event.AddRenderTaskPostProcess(renderSettings, renderPass, "Copy");
+
+    // Release the rendertargets used for SMAA.
+    colorCopy.Release();
+    edges.Release();
+    areas.Release();
+    finalBlend.Release();
+  }
+}
+
+// Settings Enums.
+enum SMAADebugTargets
+{
+  Edge,
+  Area,
+  Off
+}
+
+enum DetectionChance
+{
+  High,
+  Medium
+}

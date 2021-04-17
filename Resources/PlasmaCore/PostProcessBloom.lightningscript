@@ -2,7 +2,7 @@
 
 // Makes overly bright elements in a scene appear to glow.
 [RunInEditor]
-class Bloom : LightningComponent
+class PostProcessBloom : LightningComponent
 {
   // If effect is applied to the scene.
   [Property] var Active : Boolean = true;

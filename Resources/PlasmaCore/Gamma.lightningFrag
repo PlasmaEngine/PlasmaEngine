@@ -17,6 +17,22 @@ struct ToGamma
   }
 }
 
+[Pixel][PostProcess]
+struct ToLinear
+{
+  [StageInput] var Uv : Real2;
+  [Input] var Texture : SampledImage2d;
+  
+  [Output] var Target0 : Real4;
+  
+  function Main()
+  {
+    var linear = this.Texture.Sample(this.Uv);
+    var gamma = Utility.GammaToLinear(linear.XYZ);
+    this.Target0 = Real4(gamma, linear.W);
+  }
+}
+
 // Converts colors from linear space to gamma space.
 // Filmic Tonemapping for Real-Time Rendering, Haarm-Pieter Duiker, Siggraph 2010
 // http://www.slideshare.net/hpduiker/filmic-tonemapping-for-realtime-rendering-siggraph-2010-color-course

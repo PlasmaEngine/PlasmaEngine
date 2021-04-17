@@ -3,7 +3,7 @@
 // Darkens occluded areas of the scene.
 // This implementation requires data from DeferredRenderer's GeometryPass.
 [RunInEditor]
-class Ssao : LightningComponent
+class PostProcessSSAO : LightningComponent
 {
   // If effect is applied to the scene.
   [Property] var Active : Boolean = true;

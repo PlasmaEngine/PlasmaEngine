@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "OrderIndependentTransparancy"
+		var ResourceId = 0x60542025453968bb
+	}
+}

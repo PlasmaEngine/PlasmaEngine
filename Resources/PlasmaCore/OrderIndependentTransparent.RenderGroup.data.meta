@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "OrderIndependentTransparent"
+		var ResourceId = 0x605421083fdb33dd
+		var LoaderType = "RenderGroup"
+		var Version = 0
+	}
+}

@@ -3,7 +3,7 @@ TextContent
 {
 	LightningScriptBuilder 
 	{
-		var Name = "Bloom"
+		var Name = "PostProcessBloom"
 		var ResourceId = 0x58132fbc2f455aac
 	}
 }

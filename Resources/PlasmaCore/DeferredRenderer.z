@@ -40,6 +40,11 @@ class DeferredRenderer : LightningComponent
   [Property] var ToeStrength : Real = 0.59;
   [Group("Tonemapping")]
   [Property] var WhitePoint : Real = 6;
+  
+  [Group("Transparancy")]
+  // [100-300] Decrease if high opacity surface seem too transparent.
+  [Property][Slider(100,300,1)] var DepthRangeOIT : Real = 200.0;
+  
   // Outputs values from the geometry pass for debugging.
   [Group("Debug")]
   [Property] var GeometryDebug : GeometryValue = GeometryValue.None;
@@ -124,6 +129,10 @@ class DeferredRenderer : LightningComponent
     this.ResizeBuffers(event);
         
     GBufferPass.AddGBufferRenderPass(event, this.GBuffer1, this.GBuffer2, this.GBuffer3, this.Depth);
+    
+        // Buffers for OIT.
+    var accum = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
+    var revealage = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
     
     // Lighting
     var lightBuffer = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
@@ -222,10 +231,10 @@ class DeferredRenderer : LightningComponent
     }
     
     // Ssao
-    if (this.Owner.Ssao != null)
+    if (this.Owner.PostProcessSSAO != null)
     {
-      this.Owner.Ssao.AddRenderTasks(event, lightBuffer, this.GBuffer1);
-      if (this.Owner.Ssao.DebugBuffer && this.Owner.Ssao.Active)
+      this.Owner.PostProcessSSAO.AddRenderTasks(event, lightBuffer, this.GBuffer1);
+      if (this.Owner.PostProcessSSAO.DebugBuffer && this.Owner.PostProcessSSAO.Active)
       {
         // Don't do any other lighting if debugging ssao buffer
         this.LinearToGamma(event, lightBuffer, this.FinalOutput);
@@ -257,6 +266,71 @@ class DeferredRenderer : LightningComponent
       
       event.AddRenderTaskRenderPass(lightSettings, RenderGroup.Lights, lightPass, "DirectLighting");
     }
+    
+        // Screen Space Reflections
+    if(this.Owner.PostProcessSSR != null)
+      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer1, this.GBuffer2, lightBuffer, this.SSRBuffer);
+    
+    if(this.Owner.PostProcessFog != null)
+      this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer1, this.GBuffer2, lightBuffer);
+    
+    // Distance Depth of Field.
+    if(this.Owner.PostProcessDOF != null)
+      this.Owner.PostProcessDOF.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);
+    
+    // Order Independent Transparancy
+    
+    var wPSetting = RenderSettings();
+    var weighPass = WeighPass();
+    weighPass.DepthRangeSetting = this.DepthRangeOIT;
+    
+    // Set both the rendertargets.
+    wPSetting.MultiRenderTarget.ColorTarget0 = accum;
+    wPSetting.MultiRenderTarget.ColorTarget1 = revealage;
+    
+    // Set the accum target's blend settings.
+    wPSetting.MultiRenderTarget.BlendSettings0.BlendMode = BlendMode.Enabled;
+    wPSetting.MultiRenderTarget.BlendSettings0.SourceFactor = BlendFactor.One;
+    wPSetting.MultiRenderTarget.BlendSettings0.DestFactor = BlendFactor.One;
+    wPSetting.MultiRenderTarget.BlendSettings0.BlendEquation = BlendEquation.Add;
+    
+    //Set the revealage target's blend settings.
+    wPSetting.MultiRenderTarget.BlendSettings1.BlendMode = BlendMode.Separate;
+    wPSetting.MultiRenderTarget.BlendSettings1.SourceFactor = BlendFactor.Plasma;
+    wPSetting.MultiRenderTarget.BlendSettings1.DestFactor = BlendFactor.InvSourceColor;
+    wPSetting.MultiRenderTarget.BlendSettings1.SourceFactorAlpha = BlendFactor.One;
+    wPSetting.MultiRenderTarget.BlendSettings1.DestFactorAlpha = BlendFactor.One;
+    wPSetting.MultiRenderTarget.BlendSettings1.BlendEquation = BlendEquation.Add;
+    
+    // Test with only opaque pixels for depth test.
+    wPSetting.DepthSettings.DepthMode = DepthMode.Read;
+    wPSetting.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
+    wPSetting.DepthTarget = this.Depth;
+    
+    // No culling transparent objects.
+    wPSetting.CullMode = CullMode.Disabled;
+    
+    // Clear the render targets.
+    event.AddRenderTaskClearTarget(accum, Real4(0.0));
+    event.AddRenderTaskClearTarget(revealage, Real4(1.0));
+    
+    // Render "Translucent" object with this pass.
+    event.AddRenderTaskRenderPass(wPSetting, RenderGroup.OrderIndependentTransparent, weighPass, "OrderIndependentTransparancy");
+    
+    var compositePass = WeighComposite();
+    compositePass.Accum = accum.Texture;
+    compositePass.Reveal = revealage.Texture;
+    
+    var compositePassSettings = RenderSettings();
+    compositePassSettings.ColorTarget = lightBuffer;
+    compositePassSettings.BlendSettings.BlendMode = BlendMode.Separate;
+    compositePassSettings.BlendSettings.BlendEquation = BlendEquation.Add;
+    compositePassSettings.BlendSettings.SourceFactor = BlendFactor.InvSourceAlpha;
+    compositePassSettings.BlendSettings.SourceFactorAlpha = BlendFactor.One;
+    compositePassSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
+    compositePassSettings.BlendSettings.DestFactor = BlendFactor.SourceAlpha;
+    compositePassSettings.DepthSettings.DepthMode = DepthMode.Read;
+    event.AddRenderTaskPostProcess(compositePassSettings, compositePass, "Composite");
     
     // Additive materials
     var alphaSettings = RenderSettings();
@@ -299,7 +373,7 @@ class DeferredRenderer : LightningComponent
     forwardAlpha.IndirectIntensity *= this.IndirectLighting as Real;
     
   //  alphaSettings.ColorTarget = this.FinalOutput;
-      alphaSettings.CullMode = CullMode.BackFace;
+    alphaSettings.CullMode = CullMode.BackFace;
     
     alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
     
@@ -307,29 +381,19 @@ class DeferredRenderer : LightningComponent
   
     event.AddRenderTaskClearTarget(this.SSRBuffer, Real4.Zero);
     
-    // Screen Space Reflections
-    if(this.Owner.PostProcessSSR != null)
-    {
-      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer1, this.GBuffer2, lightBuffer, this.SSRBuffer);
-    }
-    
-    if(this.Owner.PostProcessFog != null)
-      this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer1, this.GBuffer2, lightBuffer);
-    
-    // Distance Depth of Field.
-    if(this.Owner.DepthOfField != null)
-      this.Owner.DepthOfField.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);
-    
     // Bloom
-    if (this.Owner.Bloom != null)
-      this.Owner.Bloom.AddRenderTasks(event, lightBuffer);
+    if (this.Owner.PostProcessBloom != null)
+      this.Owner.PostProcessBloom.AddRenderTasks(event, lightBuffer);
       
     
     // God Rays
-    if(this.Owner.GodRays != null)
-      this.Owner.GodRays.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);
+    if(this.Owner.PostProcessGodRays != null)
+      this.Owner.PostProcessGodRays.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);
       
 
+    //Smaa (CRASHES IN RELEASE DO NOT ENABLE)
+    if(this.Owner.PostProcessSMAA != null)
+      this.Owner.PostProcessSMAA.AddRenderTask(event, lightBuffer, this.Depth);
     
     // Bring final lighting to gamma space for monitor display
     this.LinearToGamma(event, lightBuffer, this.FinalOutput);
@@ -366,7 +430,7 @@ class DeferredRenderer : LightningComponent
       event.AddRenderTaskPostProcess(outputBuffer, toGamma, "ToGamma");
     }
   }
-  
+    
   function DrawDebugObjects(event : RenderTasksEvent, color : RenderTarget, depth : RenderTarget)
   {
     if (!this.EditorDebugDraw && this.Space.IsEditorMode || !this.GameDebugDraw && !this.Space.IsEditorMode)

@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "SMAA"
+		var ResourceId = 0x6056f612e138f90a
+	}
+}

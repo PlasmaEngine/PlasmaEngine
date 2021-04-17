@@ -1,0 +1,61 @@
+[Pixel][RenderPass]
+struct WeighPass
+{
+  [Input] var Albedo : Real3 = Real3(1.0, 0.0, 0.0);
+  [Input] var Alpha : Real = 0.5;
+  [Input] var DepthRangeSetting : Real = 200.0;
+  [FragmentInput][StageInput] var ViewPosition : Real3;
+
+  [Output] var Target0 : Real4;
+  [Output] var Target1 : Real4;
+
+  function Main()
+  {
+    // Get the viewspace depth of the current pixel.
+    var depth = Math.Abs(this.ViewPosition.Z);
+    
+    // Color values are between 0-1.
+    var color = Real4(this.Albedo, this.Alpha);
+    
+    // Increase if distant transparencies are blending together too much.
+    // This is something that depends on the viewspace depth units and can be tweaked 
+    // for better results.
+    var depthRangeSetting = Math.Clamp(this.DepthRangeSetting, 100.0, 300.0);
+    var depthStrengthSetting = 6.0;
+    
+    // Calculate the actual weight, this is part of the accum texture computation.
+    // Clamp((Range Adjustment)/(NoZeroDiv + DepthScale), Min(Underflow16f), Max(Overflow16f));
+    var w = Math.Clamp(0.3 / (1e-5 + Math.Pow(depth/depthRangeSetting, depthStrengthSetting)), 1e-2, 3e3);
+    // Scale the weight by maximum coverage.
+    var maxColorTimesAlpha = Math.Min(1.0, Math.Max(Math.Max(color.X, color.Y), color.Z) * color.W);
+    w *= Math.Max(maxColorTimesAlpha, color.W);
+    
+    // Scale the accum texure result by the above computed weight.
+    this.Target0 = Real4(color.XYZ  * color.W, color.W) * w;
+    // Also store the revealage coverage for the composite pass.
+    this.Target1 = Real4(color.W);
+  }
+}
+
+[Pixel][PostProcess]
+struct WeighComposite
+{
+  [StageInput] var Uv : Real2;
+  [Input] var Accum : SampledImage2d;
+  [Input] var Reveal : SampledImage2d;
+  
+  [Output] var Target0 : Real4;
+
+  function Main()
+  {
+    var revealage = this.Reveal.Sample(this.Uv).X;
+    
+    var accum = this.Accum.Sample(this.Uv);
+    
+    // [SrcColor * BlendFactor] "+" [DestColor * BlendFactor].
+    // [(accum.rgb * weight)/(accum.a * weight) * (1 - revealage)] "+" [DestColor * revealage] 
+    // Prevent Division by zero(1e-5).
+    // Look at equation 6 from the paper listed at top of this file.
+    this.Target0 = Real4(accum.XYZ / Math.Max(accum.W, 1e-5), revealage);
+  }
+}

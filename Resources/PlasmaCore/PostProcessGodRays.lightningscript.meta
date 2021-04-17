@@ -3,7 +3,7 @@ TextContent
 {
 	LightningScriptBuilder 
 	{
-		var Name = "GodRays"
+		var Name = "PostProcessGodRays"
 		var ResourceId = 0x5a767be991d93eed
 	}
 }
