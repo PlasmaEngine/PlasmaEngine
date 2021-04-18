@@ -10,7 +10,7 @@ class PostProcessSMAA : LightningComponent
   [Property] var EnableSMAA : Boolean = true;
   [Property] var EnableDiagnols : Boolean = true;
   // Use depth info to reject possibly false edges.
-  [Property] var DepthBasedEdges : Boolean = true;
+  [Property] var DepthBasedEdges : Boolean = false;
   // Detect more edges with high setting.
   [Property] var EdgeDetection : DetectionChance = DetectionChance.Medium;
   // Switch to Edge and Blend Area to debug intermidiate textures.
