@@ -18,11 +18,11 @@ class PostProcessSSR : LightningComponent
     
     [Group("Settings")]
     [Property]
-    var RoughnessBlur : Real = 11;
+    var RoughnessBlur : Real = 5;
     
     [Group("Settings")]
     [Property]
-    var Jitter : Boolean = true;
+    var Jitter : Boolean = false;
     
     [Group("Settings")]
     [Property]

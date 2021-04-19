@@ -1,0 +1,47 @@
+// MIT Licensed (see LICENSE.md).
+
+class PostProcessToon : LightningComponent
+{  
+  [Property] var Enabled : Boolean = true;
+  
+  [Group("Edge")]
+  [Property] var EdgeColor : Real4 = Real4(0.0, 0.0, 0.0, 1.0);
+  [Group("Edge")]
+  [Property] var NormalThreshold : Real = 45;
+  [Group("Edge")]
+  [Property] var DepthThreshold : Real = 0.002;
+  
+  [Group("Brushstroke")]
+  [Property] var BrushStrokeTexture : Texture = Texture.BrushStroke1;
+  [Group("Brushstroke")]
+  [Property][Slider(0.0, 2.0, 0.1)] var BrushStrokeStrength : Real = 1.3;
+  [Group("Brushstroke")]
+  [Property] var BrushStrokeTiling : Real2 = Real2(1.0, 3.0);
+  
+  [Group("Paper")]
+  [Property] var PaperTexture : Texture = Texture.WhitePaperTexture;
+  [Group("Paper")]
+  [Property] var PaperStrength : Real = 2.0;
+  [Group("Paper")]
+  [Property] var PaperTiling : Real2 = Real2(2.0, 1.0);
+  
+  function OnRenderTasksUpdate(event : RenderTasksEvent, inputBuffer : RenderTarget, geoBuffer0 : RenderTarget, outputBuffer : RenderTarget)
+  {
+    if(!this.Enabled)
+      return;
+    
+    var material = Material.ToonShading;
+    material.EdgeFinder.EdgeColor = this.EdgeColor;
+    material.EdgeFinder.NormalThreshold = this.NormalThreshold;
+    material.EdgeFinder.DepthThreshold = this.DepthThreshold;
+    material.EdgeFinder.GeometryBuffer0 = geoBuffer0.Texture;
+    material.ColorExtractor.Texture = inputBuffer.Texture;
+    material.BrushstrokeFilter.Texture = this.BrushStrokeTexture;
+    material.BrushstrokeFilter.UvScale = this.BrushStrokeTiling;
+    material.ShadowFinder.Constant = 2.0 - this.BrushStrokeStrength;
+    material.PaperFilter.Texture = this.PaperTexture;
+    material.PaperFilter.Exponent = this.PaperStrength;
+    material.PaperFilter.UvScale = this.PaperTiling;
+    event.AddRenderTaskPostProcess(outputBuffer, material, "ToonShading");
+  }
+}

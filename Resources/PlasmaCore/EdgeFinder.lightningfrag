@@ -1,0 +1,49 @@
+[Pixel]
+struct EdgeFinder
+{
+  [AppBuiltInInput] var InverseViewportSize : Real2;
+
+  [FragmentInput][StageInput] var Uv : Real2;
+  
+  [Input][Output] var Color : Real4;
+  
+  [Input] var GeometryBuffer0 : SampledImage2d;
+  [Input] var NormalThreshold : Real = 45;
+  [Input] var DepthThreshold = 0.001;
+  [Input] var EdgeColor : Real4 = Colors.Black;
+  [Input] var EdgeStrength : Real = 0.75;
+
+  function Main()
+  {
+    var geometrySample0 = this.GeometryBuffer0.Sample(this.Uv);
+    var normal = GeometryPass.GetNormal(geometrySample0);
+    var depth = GeometryPass.GetDepth(geometrySample0);
+    var uvs = FixedArray[Real2, 4]()
+    {
+      this.Uv + Real2(this.InverseViewportSize.X, 0),
+      this.Uv + Real2(-this.InverseViewportSize.X, 0),
+      this.Uv + Real2(0, this.InverseViewportSize.Y),
+      this.Uv + Real2(0, -this.InverseViewportSize.Y),
+    };
+    var isEdge = false;
+    var edge = 0.0;
+    
+    var cosError = Math.Cos(Math.ToRadians(this.NormalThreshold));
+    for(var i = 0; i < 4; ++i)
+    {
+      var sample = this.GeometryBuffer0.Sample(uvs[i]);
+      var sampleNormal = GeometryPass.GetNormal(sample);
+      var sampleDepth = GeometryPass.GetDepth(sample);
+      
+      var depthEdge = Math.Abs(depth - sampleDepth) > this.DepthThreshold;
+      var normalEdge = Math.Dot(sampleNormal, normal) < cosError;
+      //edge = Math.Lerp(edge, this.EdgeStrength, depthEdge as Real);
+      //edge = Math.Lerp(edge, this.EdgeStrength, normalEdge as Real);
+      isEdge = isEdge || depthEdge;
+      isEdge = isEdge || normalEdge;
+    }
+    
+    if(isEdge)
+      this.Color = Math.Lerp(this.Color, this.EdgeColor, this.EdgeStrength * isEdge as Real);
+  }
+}

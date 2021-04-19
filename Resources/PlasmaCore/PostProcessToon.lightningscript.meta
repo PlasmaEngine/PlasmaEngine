@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningScriptBuilder 
+	{
+		var Name = "PostProcessToon"
+		var ResourceId = 0x60517ccae480bedc
+	}
+}

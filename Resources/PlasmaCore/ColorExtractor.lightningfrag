@@ -1,0 +1,15 @@
+[Pixel]
+struct ColorExtractor
+{  
+  [Input] var Texture : SampledImage2d;
+  [Input] var UvScale : Real2 = Real2(1);
+  [StageInput] var Uv : Real2;
+  [Output] var SceneColor : Real4;
+  [Output] var Color : Real4;
+
+  function Main()
+  {
+    this.SceneColor = this.Texture.Sample(this.Uv * this.UvScale);
+    this.Color = this.SceneColor;
+  }
+}

@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "SimpleToon"
+		var ResourceId = 0x5f3b908f2c9daea7
+	}
+}

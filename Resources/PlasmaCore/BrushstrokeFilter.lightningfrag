@@ -1,0 +1,19 @@
+[Pixel]
+struct BrushstrokeFilter
+{ 
+  [Input] var Texture : SampledImage2d;
+  [Input] var UvScale : Real2 = Real2(1, 3);
+   
+  [FragmentInput] var SceneColor : Real4;
+  [FragmentInput][StageInput] var Uv : Real2;
+  [FragmentInput] var Intensity : Real;
+  [FragmentInput][Output] var Color : Real4;
+
+  function Main()
+  {
+    var sample = this.Texture.Sample(this.Uv * this.UvScale);
+    var mul = sample * this.Color;
+    this.Color = Math.Lerp(this.Color, mul, mul.W);
+    this.Color = Math.Lerp(this.Color, this.SceneColor, this.Intensity);
+  }
+}

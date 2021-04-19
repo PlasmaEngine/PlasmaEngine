@@ -1,0 +1,19 @@
+[Pixel]
+struct PaperFilter
+{ 
+  [Input] var Texture : SampledImage2d;
+  [Input] var UvScale : Real2 = Real2(1); 
+  [Input] var Exponent : Real = 1.5;
+  [FragmentInput][StageInput] var Uv : Real2;
+  [FragmentInput] var SceneColor : Real4;
+  [FragmentInput][Output] var Color : Real4;
+
+  function Main()
+  {
+    var uv = this.Uv * this.UvScale;
+    var paperColor = this.Texture.Sample(uv);
+    var intensity = (paperColor.X + paperColor.Y + paperColor.Z) / 3.0;
+    var scalar = Math.Pow(intensity, this.Exponent);
+    this.Color = scalar * paperColor * this.Color;
+  }
+}

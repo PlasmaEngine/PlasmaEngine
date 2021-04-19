@@ -1,0 +1,142 @@
+// Shader input attribute definitions
+// [BuiltInInput]  Input comes from predefined data given by the graphics engine
+// [StageInput]    Input comes from the previous hardware stage (mesh -> vertex -> geometry -> pixel)
+// [FragmentInput] Input comes from a previous fragment in the same stage
+// [PropertyInput] Input comes from this fragment
+// [Input]         Input auto resolves from any of the previous in the order
+//                 [FragmentInput][StageInput][BuiltInInput][PropertyInput]
+//
+// Pixel fragment Example:
+// [FragmentInput][StageInput] var ViewNormal : Real3;
+// Input will come from a previous pixel fragment that outputs ViewNormal
+// otherwise, input will come from the vertex shader
+
+[Pixel][PostProcess]
+struct ToonPostProcess
+{  
+  [Input] var Texture : SampledImage2d;
+  [Input] var Uv : Real2;
+  [Output] var Target0 : Real4;
+  
+  [Input] var PaperTexture : SampledImage2d;
+  [Input] var BrushstrokeTexture : SampledImage2d;
+  [Input] var BrushstrokeUvScale : Real2 = Real2(5, 1);
+
+  function FindShadows(color : Real4) : Real
+  {
+    //var intensity = (color.X + color.Y + color.Z) / 3.0;
+    var intensity = (color.X + color.Y + color.Z) + 0.55;
+    return Math.Saturate(Math.Pow(intensity, 10));
+  }
+  
+  function ComputePaperTexture(color : Real4) : Real4
+  {
+    var paperColor = this.PaperTexture.Sample(this.Uv);
+    var intensity = (paperColor.X + paperColor.Y + paperColor.Z) / 3.0;
+    intensity = Math.Pow(intensity, 3);
+    //paperColor = Math.Pow(paperColor, Real4(intensity));
+    return paperColor * color * intensity;
+  }
+  
+  function ComputeBrushstroke(color : Real4) : Real4
+  {
+    var sample = this.BrushstrokeTexture.Sample(this.Uv * this.BrushstrokeUvScale);
+    var mul = sample * color;
+    return Math.Lerp(color, mul, mul.W);
+  }
+
+  function Main()
+  {
+    var sceneColor = this.Texture.Sample(this.Uv);
+    var brushstrokeColor = this.ComputeBrushstroke(sceneColor);
+    var shadow = this.FindShadows(sceneColor);
+    var lerp = Math.Lerp(brushstrokeColor, sceneColor, shadow);
+    lerp = sceneColor;
+    this.Target0 = this.ComputePaperTexture(lerp);
+    //this.Target0 = sceneColor;
+  }
+}
+
+[Pixel]
+struct ColorExtractor2
+{  
+  [Input] var Texture : SampledImage2d;
+  [Input] var UvScale : Real2 = Real2(1);
+  [StageInput] var Uv : Real2;
+  [Output] var SceneColor : Real4;
+  [Output] var Color : Real4;
+
+  function Main()
+  {
+    this.SceneColor = this.Texture.Sample(this.Uv * this.UvScale);
+    this.Color = this.SceneColor;
+  }
+}
+
+[Pixel]
+struct PaperFilter2
+{ 
+  [Input] var Texture : SampledImage2d;
+  [Input] var UvScale : Real2 = Real2(1); 
+  [Input] var Exponent : Real = 1;
+  [FragmentInput][StageInput] var Uv : Real2;
+  [FragmentInput] var SceneColor : Real4;
+  [FragmentInput][Output] var Color : Real4;
+
+  function Main()
+  {
+    var uv = this.Uv * this.UvScale;
+    var paperColor = this.Texture.Sample(uv);
+    var intensity = (paperColor.X + paperColor.Y + paperColor.Z) / 3.0;
+    var scalar = Math.Pow(intensity, this.Exponent);
+    this.Color = scalar * paperColor * this.Color;
+  }
+}
+
+[Pixel]
+struct BrushstrokeFilter2
+{ 
+  [Input] var Texture : SampledImage2d;
+  [Input] var UvScale : Real2 = Real2(1);
+   
+  [FragmentInput] var SceneColor : Real4;
+  [FragmentInput][StageInput] var Uv : Real2;
+  [FragmentInput] var Intensity : Real;
+  [FragmentInput][Output] var Color : Real4;
+
+  function Main()
+  {
+    var sample = this.Texture.Sample(this.Uv * this.UvScale);
+    var mul = sample * this.Color;
+    this.Color = Math.Lerp(this.Color, mul, mul.W);
+    this.Color = Math.Lerp(this.Color, this.SceneColor, this.Intensity);
+  }
+}
+
+[Pixel]
+struct ShadowFinder
+{  
+  [Input] var Exponent : Real = 10;
+  [Input] var Constant : Real = 0.55;
+  [FragmentInput] var Color : Real4;
+  [Output] var Intensity : Real;
+
+  function Main()
+  {
+    var intensity = (this.Color.X + this.Color.Y + this.Color.Z) + this.Constant;
+    this.Intensity = Math.Saturate(Math.Pow(intensity, this.Exponent));
+  }
+}
+
+
+[Pixel]
+struct FinalColorOut
+{
+  [FragmentInput] var Color : Real4;
+  [Output] var Target0 : Real4;
+
+  function Main()
+  {
+    this.Target0 = this.Color;
+  }
+}

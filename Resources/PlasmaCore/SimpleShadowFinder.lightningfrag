@@ -1,0 +1,14 @@
+[Pixel]
+struct SimpleShadowFinder
+{  
+  [Input] var Exponent : Real = 1.5;
+  [Input] var Constant : Real = 0.4;
+  [FragmentInput] var Color : Real4;
+  [Output] var Intensity : Real;
+
+  function Main()
+  {
+    var intensity = (this.Color.X + this.Color.Y + this.Color.Z) + this.Constant;
+    this.Intensity = Math.Saturate(Math.Pow(intensity, this.Exponent));
+  }
+}

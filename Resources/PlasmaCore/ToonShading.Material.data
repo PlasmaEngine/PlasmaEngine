@@ -1,0 +1,42 @@
+[Version:1]
+Material 
+{
+	var RenderGroups = Array
+	{
+		"581cffd64d449122:Opaque"
+		"580269d9a1d6b870:ShadowCasters"
+	}
+	ColorExtractor 
+	{
+		var Texture = "null"
+		var UvScale = Real2{1, 1}
+	}
+	EdgeFinder 
+	{
+		var Color = Real4{0, 0, 0, 0.110000014}
+		var GeometryBuffer0 = "null"
+		var NormalThreshold = 45
+		var DepthThreshold = 0.00200000009
+		var EdgeColor = Real4{0, 0, 0, 1}
+		var EdgeStrength = 1.24798715
+	}
+	ShadowFinder 
+	{
+		var Exponent = 1.5
+		var Constant = 0.72362268
+	}
+	BrushstrokeFilter 
+	{
+		var Texture = "5f3b92b7da00c1b6:BrushStroke1"
+		var UvScale = Real2{1, 3}
+	}
+	PaperFilter 
+	{
+		var Texture = "5f3b92b7da01f41b:WhitePaperTexture"
+		var UvScale = Real2{2, 1}
+		var Exponent = 2
+	}
+	FinalColorOut 
+	{
+	}
+}
