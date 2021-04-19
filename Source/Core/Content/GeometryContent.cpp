@@ -556,9 +556,16 @@ void GeometryContent::BuildContentItem(BuildOptions& options)
         String fileDirectory = FilePath::Normalize(FilePath::GetDirectoryPath(fullFilePath));
         if (fileDirectory == contentDirectory)
         {
-          String metaFile = BuildString(fullFilePath, ".meta");
-          DeleteFile(metaFile);
-          DeleteFile(fullFilePath);
+          ProjectSettings* projectSettings = PL::gEngine->GetProjectSettings();
+          String contentDirectory = FilePath::Normalize(projectSettings->GetContentFolder());
+
+		  String fileDirectory = FilePath::Normalize(FilePath::GetDirectoryPath(fullFilePath));
+          if ( fileDirectory == contentDirectory)
+          {
+            String metaFile = BuildString(fullFilePath, ".meta");
+            DeleteFile(metaFile);
+            DeleteFile(fullFilePath);
+          }
         }
       }
       return;
