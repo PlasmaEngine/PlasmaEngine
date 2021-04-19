@@ -43,7 +43,7 @@ struct GeometryPass
     if(Math.Max(Math.Max(this.Emissive.X, this.Emissive.Y), this.Emissive.Z) > 0)
       this.Albedo = this.Emissive;
       
-    var emissivePower = Math.Max(Math.Max(this.Emissive.X, this.Emissive.Y), this.Emissive.Z);
+    var emissivePower = Math.Length(this.Emissive);
     
     this.Target0 = Real4(this.ViewNormal.XY, -this.ViewPosition.Z / this.FarPlane, this.Roughness);
     this.Target1 = Real4(this.Albedo, metallicSpecular);
