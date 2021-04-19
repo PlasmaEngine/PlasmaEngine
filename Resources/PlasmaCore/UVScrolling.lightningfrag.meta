@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "UVScrolling"
+		var ResourceId = 0x6053c96e90a2501b
+	}
+}
