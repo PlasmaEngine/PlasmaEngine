@@ -18,7 +18,7 @@ inline void Vector3::operator*=(real rhs)
 
 inline void Vector3::operator/=(real rhs)
 {
-  ErrorIf(rhs == real(0.0), "Math::Vector3 - Division by plasma.");
+  ErrorIf(rhs == real(0.0), "Math::Vector3 - Division by zero.");
   x /= rhs;
   y /= rhs;
   z /= rhs;
