@@ -121,6 +121,8 @@ struct ForwardPassAlpha
 
   function Main()
   {
+    this.DirectLightIntensity /= 1000;
+    
     this.Roughness = Math.Clamp(this.Roughness, 0.001, 1.0);
     this.Metallic = Math.Saturate(this.Metallic);
     this.Specular = Math.Saturate(this.Specular);
@@ -155,10 +157,11 @@ struct ForwardPassAlpha
     directInputs.ViewNormal = this.ViewNormal;
     directInputs.ViewDirection = viewDirection;
     directInputs.LightDirection = Math.Normalize(-Math.MultiplyNormal(this.WorldToView, this.DirectLightDirection));
-    directInputs.LightColor = this.DirectLightColor * (Utility.KelvinToRGB(this.LightTemperature) /10000);
+    directInputs.LightColor = this.DirectLightColor * (Utility.KelvinToRGB(this.LightTemperature) /1000);
     directInputs.LightRadius = 0;
     directInputs.LightLength = 0;
     directInputs.LightDistance = 1;
+    directInputs.SpecularMultiplier = 1;
     directInputs.Albedo = this.Albedo;
     directInputs.Metallic = this.Metallic;
     directInputs.Roughness = this.Roughness;
