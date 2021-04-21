@@ -256,8 +256,8 @@
 #  define PlasmaExport __declspec(dllexport)
 #  define PlasmaExportC extern "C" __declspec(dllexport)
 #  define PlasmaDebugBreak() __debugbreak()
-#  define PlasmaTodo(text) /* __pragma(message(__FILE__ "("                                                              \
-                            PlasmaStringize(__LINE__) ") : Todo: " text)) */
+#  define PlasmaTodo(text)  __pragma(message(__FILE__ "("                                                              \
+                            PlasmaStringize(__LINE__) ") : Todo: " text)) 
 #  if defined(PlasmaCompilerMsvc)
 #    define PlasmaForceInline inline __forceinline
 #  else

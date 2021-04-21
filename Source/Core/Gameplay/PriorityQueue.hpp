@@ -21,8 +21,6 @@ public:
 /// Node must have the following:
 ///   Priority mPriority;
 ///   size_t mQueueIndex;
-
-/// TODO: Add MIT license comment
 template <typename Node, typename Priority = float>
 class PriorityQueue
 {

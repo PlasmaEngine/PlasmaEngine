@@ -142,7 +142,6 @@ public:
 
   Array<PropertyShaderInput> mPropertyShaderInputs;
 
-  // TODO: add this to separate derived class so it is not bloat for
   // HeightMap/MultiSprite
   GraphicalEntryData mGraphicalEntryData;
 

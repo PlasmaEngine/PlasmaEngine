@@ -16,7 +16,6 @@ set(PLASMA_C_CXX_FLAGS "\
 
 set(PLASMA_C_CXX_FLAGS_DEBUG "\
   -Zi\
-  -Gm\
   -MDd\
   -GS\
   -Od\
@@ -26,7 +25,6 @@ set(PLASMA_C_CXX_FLAGS_DEBUG "\
 
 set(PLASMA_C_CXX_FLAGS_RELWITHDEBINFO "\
   -Zi\
-  -Gm\
   -MT\
   -MP\
   -GS\
@@ -36,7 +34,6 @@ set(PLASMA_C_CXX_FLAGS_RELWITHDEBINFO "\
 ")
 
 set(PLASMA_C_CXX_FLAGS_RELEASE "\
-  -Gm-\
   -MT\
   -MP\
   -GL\
@@ -46,7 +43,6 @@ set(PLASMA_C_CXX_FLAGS_RELEASE "\
 ")
 
 set(PLASMA_C_CXX_FLAGS_MINSIZEREL "\
-  -Gm-\
   -MT\
   -MP\
   -GL\
@@ -65,9 +61,10 @@ function(plasma_toolchain_setup_library target)
 endfunction()
 
 function(plasma_use_precompiled_header target directory)
-  target_compile_options(${target} PRIVATE "/FIPrecompiled.hpp")
-  set_source_files_properties(${directory}/Precompiled.cpp PROPERTIES COMPILE_FLAGS "/YcPrecompiled.hpp")
-  set_target_properties(${target} PROPERTIES COMPILE_FLAGS "/YuPrecompiled.hpp")
+  target_precompile_headers(${target} PRIVATE Precompiled.hpp)
+  #target_compile_options(${target} PRIVATE "/FIPrecompiled.hpp")
+  #set_source_files_properties(${directory}/Precompiled.cpp PROPERTIES COMPILE_FLAGS "/YcPrecompiled.hpp")
+  #set_target_properties(${target} PROPERTIES COMPILE_FLAGS "/YuPrecompiled.hpp")
 endfunction()
 
 function(plasma_source_ignore_precompiled_header source)

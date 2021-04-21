@@ -16,6 +16,10 @@ const String sEditorName = "Editor";
 const String sLauncherGuid = "7489829B-8A03-4B26-B3AC-FDDC6668BAF7";
 const String sLauncherName = "Launcher";
 
+const int gMajor = 0;
+const int gMinor = 1;
+const int gPatch = 5;
+
 String GetEditorFullName()
 {
   return sPlasmaOrganization + sEditorName;
@@ -82,17 +86,17 @@ uint GetConfigVersion()
 
 uint GetMajorVersion()
 {
-  return PlasmaMajorVersion;
+  return gMajor;
 }
 
 uint GetMinorVersion()
 {
-  return PlasmaMinorVersion;
+  return gMinor;
 }
 
 uint GetPatchVersion()
 {
-  return PlasmaPatchVersion;
+  return gPatch;
 }
 
 uint GetRevisionNumber()
@@ -107,17 +111,17 @@ u64 GetShortChangeSet()
 
 cstr GetMajorVersionString()
 {
-  return Stringify(PlasmaMajorVersion);
+  return Stringify(gMajor);
 }
 
 cstr GetMinorVersionString()
 {
-  return Stringify(PlasmaMinorVersion);
+  return Stringify(gMinor);
 }
 
 cstr GetPatchVersionString()
 {
-  return Stringify(PlasmaPatchVersion);
+  return Stringify(gPatch);
 }
 
 cstr GetRevisionNumberString()
@@ -151,7 +155,7 @@ cstr GetChangeSetString()
 
 cstr GetChangeSetDateString()
 {
-  return PlasmaChangeSetDate;
+  return Stringify(PlasmaChangeSetDate);
 }
 
 cstr GetConfigurationString()
@@ -180,11 +184,10 @@ String GetBuildVersionName()
   builder.AppendFormat("%d.", GetPatchVersion());            // Patch [0]
   builder.AppendFormat("%d.", GetRevisionNumber());          // Revision [1501]
   builder.AppendFormat("%s.", GetShortChangeSetString());    // ShortChangeset [fb02756c46a4]
-  builder.AppendFormat("%llu.", PlasmaMsSinceEpoch);         // MsSinceEpoch [1574702096290]
   builder.AppendFormat("%s.", PlasmaTargetOsName);           // TargetOs [Windows]
   builder.AppendFormat("%s.", PlasmaArchitectureName);       // Architecture [x86]
   builder.AppendFormat("%s.", PlasmaConfigName);             // Config [Release]
-  builder.Append("zip");
+  builder.Append("plasmabuild");
   String result = builder.ToString();
   return result;
 }

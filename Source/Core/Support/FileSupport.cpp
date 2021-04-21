@@ -7,8 +7,8 @@
 #include "FilePath.hpp"
 #include "Core/Common/Time.hpp"
 
-extern unsigned char VirtualFileSystemData[];
-extern unsigned int VirtualFileSystemSize;
+unsigned char VirtualFileSystemData[] = { 0 };
+unsigned int VirtualFileSystemSize = 1;
 
 namespace Plasma
 {

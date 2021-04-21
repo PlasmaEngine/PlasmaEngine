@@ -204,7 +204,6 @@ public:
     mRenderSettings->Set##name##Mrt(value, index);                                                                     \
   }
 
-  // TODO: Macro comments for auto-doc
   /// RenderTarget at a specific index for configuring multiple render targets.
   Setter(RenderTarget, ColorTarget, 0);
   /// RenderTarget at a specific index for configuring multiple render targets.
@@ -222,7 +221,6 @@ public:
   /// RenderTarget at a specific index for configuring multiple render targets.
   Setter(RenderTarget, ColorTarget, 7);
 
-  // TODO: Macro comments for auto-doc
   /// GraphicsBlendSettings for a RenderTarget at a specific index for
   /// configuring multiple render targets.
   Getter(GraphicsBlendSettings, BlendSettings, 0);

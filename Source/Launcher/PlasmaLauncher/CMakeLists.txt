@@ -5,7 +5,6 @@ plasma_use_precompiled_header(PlasmaLauncher ${CMAKE_CURRENT_LIST_DIR})
 
 target_sources(PlasmaLauncher
   PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR}/VirtualFileSystem.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ActiveProjectMenu.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ActiveProjectMenu.hpp
     ${CMAKE_CURRENT_LIST_DIR}/BuildsMenu.cpp

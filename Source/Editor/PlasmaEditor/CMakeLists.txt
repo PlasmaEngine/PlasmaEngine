@@ -5,7 +5,6 @@ plasma_use_precompiled_header(PlasmaEditor ${CMAKE_CURRENT_LIST_DIR})
 
 target_sources(PlasmaEditor
   PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR}/VirtualFileSystem.cpp
     ${CMAKE_CURRENT_LIST_DIR}/GameOrEditorStartup.cpp
     ${CMAKE_CURRENT_LIST_DIR}/GameOrEditorStartup.hpp
     ${CMAKE_CURRENT_LIST_DIR}/Main.cpp

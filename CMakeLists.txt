@@ -19,31 +19,67 @@ endif()
 
 project(Plasma)
 
-set(PLASMA_RENDERER "OpenGL" CACHE STRING "Rendering backend used by the engine")
-set_property(CACHE PLASMA_RENDERER PROPERTY STRINGS OpenGL DirectX12 Vulkan) 
+execute_process(COMMAND git rev-list --count HEAD
+                OUTPUT_VARIABLE GIT_REV
+                ERROR_QUIET)
+
+if ("${GIT_REV}" STREQUAL "")
+    set(GIT_REV "0")
+    set(GIT_DIFF "")
+    set(GIT_TAG "N/A")
+    set(GIT_BRANCH "N/A")
+    set(GIT_SHORT_CHANGELIST "00")
+    set(GIT_CHANGELIST "N/A")
+    set(GIT_CHANGESET_DATE "N/A")
+else()
+    execute_process(
+        COMMAND bash -c "git diff --quiet --exit-code || echo +"
+        OUTPUT_VARIABLE GIT_DIFF)
+    execute_process(
+        COMMAND git describe --exact-match --tags
+        OUTPUT_VARIABLE GIT_TAG ERROR_QUIET)
+    execute_process(
+        COMMAND git rev-parse --abbrev-ref HEAD
+        OUTPUT_VARIABLE GIT_BRANCH)
+    execute_process(
+        COMMAND git log -1 --pretty=%h --abbrev=12
+        OUTPUT_VARIABLE GIT_SHORT_CHANGELIST) 
+    execute_process(
+        COMMAND git log -1 --pretty=%H
+        OUTPUT_VARIABLE GIT_CHANGELIST)
+    execute_process(
+        COMMAND git log -1 --pretty=%cd --date=format:%Y-%m-%d
+        OUTPUT_VARIABLE GIT_CHANGESET_DATE)
+
+    string(STRIP "${GIT_REV}" GIT_REV)
+    string(STRIP "${GIT_DIFF}" GIT_DIFF)
+    string(STRIP "${GIT_TAG}" GIT_TAG)
+    string(STRIP "${GIT_BRANCH}" GIT_BRANCH)
+endif()
+
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
 add_definitions(-DPlasmaMsSinceEpoch=${PLASMA_MS_SINCE_EPOCH})
-add_definitions(-DPlasmaBranchName="${PLASMA_BRANCH}")
-add_definitions(-DPlasmaRevisionId=${PLASMA_REVISION})
-add_definitions(-DPlasmaShortChangeSet=${PLASMA_SHORT_CHANGESET})
-add_definitions(-DPlasmaChangeSet=${PLASMA_CHANGESET})
-add_definitions(-DPlasmaChangeSetDate=${PLASMA_CHANGESET_DATE})
-add_definitions(-DPlasmaChangeSetDate=${PLASMA_CHANGESET_DATE})
+add_definitions(-DPlasmaBranchName="${GIT_BRANCH}")
+add_definitions(-DPlasmaRevisionId=${GIT_REV})
+add_definitions(-DPlasmaShortChangeSet=${GIT_SHORT_CHANGELIST})
+add_definitions(-DPlasmaChangeSet=${GIT_CHANGELIST})
+add_definitions(-DPlasmaChangeSetDate=${GIT_CHANGESET_DATE})
+add_definitions(-DPlasmaChangeSetDate=${GIT_CHANGESET_DATE})
 add_definitions(-DPlasmaMajorVersion=${PLASMA_MAJOR_VERSION})
 add_definitions(-DPlasmaMinorVersion=${PLASMA_MINOR_VERSION})
 add_definitions(-DPlasmaPatchVersion=${PLASMA_PATCH_VERSION})
 add_definitions(-DPlasmaConfigName="${PLASMA_CONFIG}")
-add_definitions(-DPlasmaArchitectureName="${PLASMA_ARCHITECTURE}")
-add_definitions(-DPlasmaHostOs${PLASMA_HOSTOS}=1)
-add_definitions(-DPlasmaHostOsName="${PLASMA_HOSTOS}")
-add_definitions(-DPlasmaTargetOs${PLASMA_TARGETOS}=1)
-add_definitions(-DPlasmaTargetOsName="${PLASMA_TARGETOS}")
-add_definitions(-DPlasmaPlatform${PLASMA_PLATFORM}=1)
-add_definitions(-DPlasmaPlatformName="${PLASMA_PLATFORM}")
-add_definitions(-DPlasmaToolchain${PLASMA_TOOLCHAIN}=1)
-add_definitions(-DPlasmaToolchainName="${PLASMA_TOOLCHAIN}")
+add_definitions(-DPlasmaArchitectureName="x64")
+add_definitions(-DPlasmaHostOs${CMAKE_SYSTEM_NAME}=1)
+add_definitions(-DPlasmaHostOsName="${CMAKE_SYSTEM_NAME}")
+add_definitions(-DPlasmaTargetOs${CMAKE_SYSTEM_NAME}=1)
+add_definitions(-DPlasmaTargetOsName="${CMAKE_SYSTEM_NAME}")
+add_definitions(-DPlasmaPlatform${CMAKE_SYSTEM_NAME}=1)
+add_definitions(-DPlasmaPlatformName="${CMAKE_SYSTEM_NAME}")
+add_definitions(-DPlasmaToolchain${CMAKE_CXX_COMPILER_ID}=1)
+add_definitions(-DPlasmaToolchainName="${CMAKE_CXX_COMPILER_ID}")
 add_definitions(-DPlasmaRendererName="${PLASMA_RENDERER}")
-add_definitions(-DPlasmaRenderer${PLASMA_RENDERER})
 
 set(PLASMA_CORE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(PLASMA_CMAKE_DIR ${PLASMA_CORE_DIR}/CMakeFiles/)
@@ -103,11 +139,11 @@ function(plasma_target_includes target)
   target_compile_definitions(${target} PUBLIC $<TARGET_PROPERTY:${fromTarget},INTERFACE_COMPILE_DEFINITIONS>)
   endforeach()
 endfunction()
-
+ 
 #Emscripten
 #MSVC
-include(${PLASMA_TOOLCHAIN_DIR}/${PLASMA_TOOLCHAIN}.cmake)
-include(${PLASMA_TARGETOS_DIR}/${PLASMA_TARGETOS}.cmake)
+include(${PLASMA_TOOLCHAIN_DIR}/${CMAKE_CXX_COMPILER_ID}.cmake)
+include(${PLASMA_TARGETOS_DIR}/${CMAKE_SYSTEM_NAME}.cmake)
 
 set(CMAKE_C_FLAGS                             "${CMAKE_C_FLAGS}                             ${PLASMA_C_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS                           "${CMAKE_CXX_FLAGS}                           ${PLASMA_C_CXX_FLAGS}")
@@ -153,7 +189,7 @@ set(CMAKE_EXE_LINKER_FLAGS_MINSIZEREL         "${CMAKE_EXE_LINKER_FLAGS_MINSIZER
 #Emscripten
 #SDLSTDEmpty
 #Stub
-add_subdirectory(Source/Platform/${PLASMA_PLATFORM})
+add_subdirectory(Source/Platform/${CMAKE_SYSTEM_NAME})
 
 add_subdirectory(External)
 add_subdirectory(Source)

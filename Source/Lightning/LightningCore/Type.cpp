@@ -1872,7 +1872,9 @@ AddMemberResult::Enum BoundType::AddRawField(Field* field)
 
   // Map the name of the field to the field itself
   bool inserted = map.InsertNoOverwrite(field->Name, field);
-  ErrorIf(inserted == false, "Another member with the same name (%s) was added to the BoundType", field->Name.c_str());
+  if (inserted == false)
+    return AddMemberResult::AlreadyExists;
+	// ErrorIf(inserted == false, "Another member with the same name (%s) was added to the BoundType", field->Name.c_str());
 
   // Add the member to the list of all properties
   this->AllProperties.PushBack(field);
