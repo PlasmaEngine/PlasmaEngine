@@ -989,6 +989,20 @@ namespace Plasma
             return;
         }
 
+#if defined (PlasmaPlatformWindows)
+        int attribs[] =
+        {
+            WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+            WGL_CONTEXT_MINOR_VERSION_ARB, 3,
+            WGL_CONTEXT_FLAGS_ARB, 0,
+            0
+        };
+    	
+        HGLRC newRenderContext = wglCreateContextAttribsARB((HDC)deviceContext, 0, attribs);
+        wglMakeCurrent(NULL, NULL);
+        wglDeleteContext((HGLRC)renderContext);
+        wglMakeCurrent((HDC)deviceContext, newRenderContext);
+#endif
     	
         TracyGpuContext;
 
@@ -1858,7 +1872,7 @@ namespace Plasma
 	                continue;
 
 	              ZoneScopedN("RenderSubTask");
-                ZoneText(subTask->mRenderPassDisplayName.c_str(), sizeof(subTask->mRenderPassDisplayName));
+				  ZoneText(subTask->mRenderPassDisplayName.c_str(), sizeof(subTask->mRenderPassDisplayName));
 	              ProfileScopeTree(subTask->mRenderPassDisplayName, "RenderTasksUpdate", Color::LightCyan)
 
 	                  currentTaskIndex = index;
