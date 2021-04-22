@@ -314,25 +314,6 @@ class DeferredRenderer : LightningComponent
     
     event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AlphaBlend, forwardAlpha, "AlphaMaterials");
     
-    // Screen Space Reflections
-    if(this.Owner.PostProcessSSR != null)
-      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer1, this.GBuffer2, lightBuffer, this.SSRBuffer);
-    
-    // Distance Fog
-    if(this.Owner.PostProcessFog != null)
-      this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer1, this.GBuffer2, lightBuffer);
-    
-    // Bloom
-    if (this.Owner.PostProcessBloom != null)
-      this.Owner.PostProcessBloom.AddRenderTasks(event, lightBuffer);
-      
-   if(this.Owner.PostProcessToon != null)
-      this.Owner.PostProcessToon.OnRenderTasksUpdate(event, lightBuffer, this.GBuffer1, lightBuffer);
-    
-    //  Depth of Field.
-    if(this.Owner.PostProcessDOF != null)
-      this.Owner.PostProcessDOF.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);    
-    
     // Order Independent Transparancy
     
     var wPSetting = RenderSettings();
@@ -388,6 +369,25 @@ class DeferredRenderer : LightningComponent
     event.AddRenderTaskPostProcess(compositePassSettings, compositePass, "Composite");
   
     event.AddRenderTaskClearTarget(this.SSRBuffer, Real4.Zero);
+    
+        // Screen Space Reflections
+    if(this.Owner.PostProcessSSR != null)
+      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer1, this.GBuffer2, lightBuffer, this.SSRBuffer);
+    
+    // Distance Fog
+    if(this.Owner.PostProcessFog != null)
+      this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer1, this.GBuffer2, lightBuffer);
+    
+    // Bloom
+    if (this.Owner.PostProcessBloom != null)
+      this.Owner.PostProcessBloom.AddRenderTasks(event, lightBuffer);
+      
+   if(this.Owner.PostProcessToon != null)
+      this.Owner.PostProcessToon.OnRenderTasksUpdate(event, lightBuffer, this.GBuffer1, lightBuffer);
+    
+    //  Depth of Field.
+    if(this.Owner.PostProcessDOF != null)
+      this.Owner.PostProcessDOF.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);   
         
     // God Rays
     if(this.Owner.PostProcessGodRays != null)

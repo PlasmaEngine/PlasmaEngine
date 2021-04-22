@@ -1,21 +1,23 @@
 [Pixel][RenderPass]
 struct WeighPass
 {
-  [Input] var Albedo : Real3 = Real3(1.0, 0.0, 0.0);
+  [Input] var Albedo : Real3;
   [Input] var Alpha : Real = 0.5;
   [Input] var DepthRangeSetting : Real = 200.0;
+  [StageInput] var PerspectivePosition : Real4;
   [FragmentInput][StageInput] var ViewPosition : Real3;
+  [Input] var DitherTexture : SampledImage2d;
 
   [Output] var Target0 : Real4;
   [Output] var Target1 : Real4;
 
   function Main()
   {
-    // Get the viewspace depth of the current pixel.
+    //// Get the viewspace depth of the current pixel.
     var depth = Math.Abs(this.ViewPosition.Z);
     
-    // Color values are between 0-1.
-    var color = Real4(this.Albedo, this.Alpha);
+    //// Color values are between 0-1.
+    var color = Real4(this.Albedo.X, this.Albedo.Y, this.Albedo.Z, this.Alpha);
     
     // Increase if distant transparencies are blending together too much.
     // This is something that depends on the viewspace depth units and can be tweaked 
@@ -31,7 +33,7 @@ struct WeighPass
     w *= Math.Max(maxColorTimesAlpha, color.W);
     
     // Scale the accum texure result by the above computed weight.
-    this.Target0 = Real4(color.XYZ  * color.W, color.W) * w;
+    this.Target0 = Real4(color.XYZ  * color.W, color.W) ;
     // Also store the revealage coverage for the composite pass.
     this.Target1 = Real4(color.W);
   }

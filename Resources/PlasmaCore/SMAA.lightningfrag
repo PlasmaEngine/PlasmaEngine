@@ -1,97 +1,4 @@
 [Pixel][PostProcess]
-struct EdgeDetectionPostProcess
-{
-  
-  [StageInput] var Uv : Real2;
-  [Input][TextureFilteringNearest] var Texture : SampledImage2d;
-  [Input] var DepthTexture : SampledImage2d;
-  [Input] var ComparisonThreshold : Real = 0.1;
-  [Input] var DepthBasedThresholding : Boolean = true;
-  [Output] var Target0 : Real4;
-
-  function DepthBasedThreshold() : Real2
-  {
-    // Just use a constant scalar as a threshold.
-    if(!this.DepthBasedThresholding)
-      return this.ComparisonThreshold.XX;
-      
-    var invTextureSize = Real2(1.0) / this.DepthTexture.SampleSize(0);
-    
-    // Get depth for current and neighboring pixels.
-    var currPixel = this.DepthTexture.Sample(this.Uv).X;
-    var leftPixel = this.DepthTexture.Sample(this.Uv + Real2(-invTextureSize.X, 0.0)).X;
-    var topPixel  = this.DepthTexture.Sample(this.Uv + Real2(0.0, -invTextureSize.Y)).X;
-    // Find depth difference of neighboring pixels.
-    var depthDelta = Real2(Math.Abs(currPixel.XX - Real2(leftPixel, topPixel)));
-    // Remove edges if they are not geometrically far enough, i.e if they belong to the same surface?
-    var possibleEdges = Math.Step(0.01.XX, depthDelta);
-    // Globally scale the threshold. Notice that if local scale below will results in 1 then (no Edge)
-    // then the scaled global threshold in used in the edge detection thus minimizing the detected edges.
-    var scaledThreshold = 2.0 * this.ComparisonThreshold;
-    // Scale the global threshold by 60% if there are edges detected.
-    return scaledThreshold * (1.0.XX - (0.4 * possibleEdges));
-  }
-
-
-  function Main()
-  {
-    var invTextureSize = Real2(1.0) / this.Texture.SampleSize(0);
-
-    var edge = Real2();
-
-    var lumaComparisonThreshold = this.DepthBasedThreshold();
-
-    var lumaConstants = Real3(0.2126, 0.7152, 0.0722);
-    
-    var pow = 1.0;
-
-    // Calculate lumas for the current, left and top pixel
-    var currentPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv).XYZ, Real3(pow)), lumaConstants);
-    var leftPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv + Real2(-invTextureSize.X, 0.0)).XYZ, Real3(pow)), lumaConstants);
-    var topPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv + Real2(0.0, -invTextureSize.Y)).XYZ, Real3(pow)), lumaConstants);
-
-    // Delta luma among the current and left, top neighbors
-    var changeInLumaLT = Math.Abs(currentPixelLuma.XX - Real2(leftPixelLuma, topPixelLuma));
-
-    // We store edges as binary 0 or 1 for each pixel for the edges texture
-    edge = Math.Step(lumaComparisonThreshold.XX, changeInLumaLT);
-        
-    // Compare the neighboring fragments and discard if the luma differnce below threshold.
-    // We want the threshold to be <= changeInLuma, otherwise not edge.
-    if (Math.Dot(edge, Real2(1.0, 1.0)) == 0.0)
-      ShaderIntrinsics.Kill();
-      
-    // Calculate lumas for the right and bottom pixel.
-    var rightPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv + Real2(invTextureSize.X, 0.0)).XYZ, Real3(pow)), lumaConstants);
-    var bottomPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv + Real2(0.0, invTextureSize.Y)).XYZ, Real3(pow)), lumaConstants);
-
-    // Delta luma among the current and right,bottom neighbors.
-    var changeInLumaRB = Real2(Math.Abs(currentPixelLuma.XX - Real2(rightPixelLuma, bottomPixelLuma)));
-
-    // Maximum change across direct neighbors.
-    var maxChangeInLuma = Math.Max(changeInLumaLT, changeInLumaRB);
-
-    // Calculate lumas for the left-left and top-top pixel.
-    var leftLeftPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv + Real2(-2.0 * invTextureSize.X, 0.0)).XYZ, Real3(pow)), lumaConstants);
-    var topTopPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv + Real2(0.0, -2.0 * invTextureSize.Y)).XYZ, Real3(pow)), lumaConstants);
-    var changeInLumaLLTT = Math.Abs(Real2(leftPixelLuma, topPixelLuma) - Real2(leftLeftPixelLuma, topTopPixelLuma));
-
-    // Consider the ll and tt pixels for contrast adaptation.
-    maxChangeInLuma = Math.Max(maxChangeInLuma, changeInLumaLLTT);
-    var overallMax = Math.Max(maxChangeInLuma.X, maxChangeInLuma.Y);
-
-    // Local contrast adaptation: Human eyes don't detect edges with lower contrast over higher ones if they are close
-    // to each other on a given pixel, we ignore the edges with lower contrast below a threshold to avoid visaul artifacts
-    // hence, we only let an edge pass if it is atleast 0.5x the maxChangeInLuma(overall).
-    edge *= Math.Step(overallMax.XX, changeInLumaLT * 2.0);
-
-    // Edge is a 2D binary representing pixel with left/top edges as red and green colors respectively. 
-    this.Target0 = Real4(edge, 0, 1);
-
-  }
-}
-
-[Pixel][PostProcess]
 struct BlendByArea
 {
   //[BuiltInInput] var ViewportSize : Real2;
@@ -322,7 +229,7 @@ struct BlendByArea
     
     // Only used when subsampling.(Might not be always used)
     var subTexelAreaTexture = 1.0 / 7.0;
-    var texcoord = Real2(areaTexMaxDistanceDiagnol.XX) * e + distance;
+    var texcoord = Real2(areaTexMaxDistanceDiagnol) * e + distance;
     
     // Do a scale and bias for mapping to texel space.
     texcoord = areaTexPixelSize * texcoord + (0.5 * areaTexPixelSize);
@@ -449,7 +356,7 @@ struct BlendByArea
         crossingEdges.W = this.EdgesTexture.Sample(coords.ZW + Real2(this.InvTextureSize.X, -this.InvTextureSize.Y)).X;
         
         // Crossing edges stored on both sides stored into a single value each.
-        var horiVertCrossingEdges = Real2(2.0.XX) * crossingEdges.XZ + crossingEdges.YW;
+        var horiVertCrossingEdges = Real2(2.0) * crossingEdges.XZ + crossingEdges.YW;
          
         // Also, remove the crossing edge if end of line not found. This will happen if we ran out of steps during search.
         if(distance.Z >= 0.9) horiVertCrossingEdges.X = 0.0;
@@ -493,7 +400,7 @@ struct BlendByArea
        crossingEdges.ZW = this.EdgesTexture.Sample(coords.ZW + Real2(this.InvTextureSize.X, 0.0)).YX;
        
        // Crossing edges stored on both sides stored into a single value each.
-       var horiVertCrossingEdges = Real2(2.0.XX) * crossingEdges.XZ + crossingEdges.YW;
+       var horiVertCrossingEdges = Real2(2.0) * crossingEdges.XZ + crossingEdges.YW;
        
        // Also, remove the crossing edge if end of line not found. This will happen if we ran out of steps during search.
        if(distance.Z >= 0.9) horiVertCrossingEdges.X = 0.0;
@@ -592,6 +499,102 @@ struct BlendByArea
     //this.Target0 = Real4(xcoord, 0, 0, 1);
   }
 }
+
+
+[Pixel][PostProcess]
+struct EdgeDetectionPostProcess
+{
+  [StageInput] var Uv : Real2;
+  [Input][TextureFilteringNearest] var Texture : SampledImage2d;
+  [Input] var DepthTexture : SampledImage2d;
+  [Input] var FrameTime : Real;
+  [Input] var ComparisonThreshold : Real = 0.1;
+  [Input] var DepthBasedThresholding : Boolean = true;
+  [Output] var Target0 : Real4;
+
+  function DepthBasedThreshold() : Real2
+  {
+    // Just use a constant scalar as a threshold.
+    if(!this.DepthBasedThresholding)
+      return this.ComparisonThreshold.XX;
+      
+    var invTextureSize = Real2(1.0) / this.DepthTexture.SampleSize(0);
+    
+    // Get depth for current and neighboring pixels.
+    var currPixel = this.DepthTexture.Sample(this.Uv).X;
+    var leftPixel = this.DepthTexture.Sample(this.Uv + Real2(-invTextureSize.X, 0.0)).X;
+    var topPixel  = this.DepthTexture.Sample(this.Uv + Real2(0.0, -invTextureSize.Y)).X;
+    // Find depth difference of neighboring pixels.
+    var depthDelta = Real2(Math.Abs(currPixel)) - Real2(Math.Abs(leftPixel), Math.Abs(topPixel));
+    // Remove edges if they are not geometrically far enough, i.e if they belong to the same surface?
+    var possibleEdges = Math.Step(0.01.XX, depthDelta);
+    // Globally scale the threshold. Notice that if local scale below will results in 1 then (no Edge)
+    // then the scaled global threshold in used in the edge detection thus minimizing the detected edges.
+    var scaledThreshold = 2.0 * this.ComparisonThreshold;
+    // Scale the global threshold by 60% if there are edges detected.
+    return scaledThreshold * (1.0.XX - (0.4 * possibleEdges));
+  }
+
+
+  function Main()
+  {    
+    var invTextureSize = Real2(1.0) / this.Texture.SampleSize(0);
+
+    var edge = Real2();
+
+    var lumaComparisonThreshold = this.DepthBasedThreshold();
+
+    var lumaConstants = Real3(0.2126, 0.7152, 0.0722);
+    
+    var pow = 1.0;
+
+    //// Calculate lumas for the current, left and top pixel
+    var currentPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv).XYZ, Real3(pow)), lumaConstants);
+    var leftPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv + Real2(-invTextureSize.X, 0.0)).XYZ, Real3(pow)), lumaConstants);
+    var topPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv + Real2(0.0, -invTextureSize.Y)).XYZ, Real3(pow)), lumaConstants);
+
+    //// Delta luma among the current and left, top neighbors
+    var changeInLumaLT = Math.Abs(currentPixelLuma.XX - Real2(leftPixelLuma, topPixelLuma));
+
+    //// We store edges as binary 0 or 1 for each pixel for the edges texture
+    edge = Math.Step(lumaComparisonThreshold.XX, changeInLumaLT);
+        
+    //// Compare the neighboring fragments and discard if the luma differnce below threshold.
+    //// We want the threshold to be <= changeInLuma, otherwise not edge.
+    if (Math.Dot(edge, Real2(1.0, 1.0)) == 0.0)
+      ShaderIntrinsics.Kill();
+      
+    //// Calculate lumas for the right and bottom pixel.
+    var rightPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv + Real2(invTextureSize.X, 0.0)).XYZ, Real3(pow)), lumaConstants);
+    var bottomPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv + Real2(0.0, invTextureSize.Y)).XYZ, Real3(pow)), lumaConstants);
+
+    //// Delta luma among the current and right,bottom neighbors.
+    //var changeInLumaRB = Real2(Math.Abs(Real2(currentPixelLuma) - Real2(rightPixelLuma, bottomPixelLuma)));
+    var changeInLumaRB = Real2(Math.Abs(currentPixelLuma)) - Real2(Math.Abs(rightPixelLuma), Math.Abs(bottomPixelLuma));
+    //// Maximum change across direct neighbors.
+    var maxChangeInLuma = Math.Max(changeInLumaLT, changeInLumaRB);
+
+    //// Calculate lumas for the left-left and top-top pixel.
+    var leftLeftPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv + Real2(-2.0 * invTextureSize.X, 0.0)).XYZ, Real3(pow)), lumaConstants);
+    var topTopPixelLuma = Math.Dot(Math.Pow(this.Texture.Sample(this.Uv + Real2(0.0, -2.0 * invTextureSize.Y)).XYZ, Real3(pow)), lumaConstants);
+    var changeInLumaLLTT = Math.Abs(Real2(leftPixelLuma, topPixelLuma) - Real2(leftLeftPixelLuma, topTopPixelLuma));
+
+    //// Consider the ll and tt pixels for contrast adaptation.
+    maxChangeInLuma = Math.Max(maxChangeInLuma, changeInLumaLLTT);
+    var overallMax = Math.Max(maxChangeInLuma.X, maxChangeInLuma.Y);
+
+    //// Local contrast adaptation: Human eyes don't detect edges with lower contrast over higher ones if they are close
+    //// to each other on a given pixel, we ignore the edges with lower contrast below a threshold to avoid visaul artifacts
+    //// hence, we only let an edge pass if it is atleast 0.5x the maxChangeInLuma(overall).
+    edge *= Math.Step(overallMax.XX, changeInLumaLT * 2.0);
+
+    //// Edge is a 2D binary representing pixel with left/top edges as red and green colors respectively. 
+    this.Target0 = Real4(edge, 0, 1);
+
+  }
+}
+
+
 
 [Pixel][PostProcess]
 struct NeighborhoodBlend

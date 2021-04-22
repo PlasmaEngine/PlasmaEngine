@@ -31,53 +31,54 @@ Verify(): Runs the function and generates an error if the function returns non
 
 namespace Plasma
 {
+	// Signaler
+	class PlasmaShared ErrorSignaler
+	{
+	public:
+		enum SignalErrorType
+		{
+			Warning,
+			Error,
+			FileError
+		};
 
-// Signaler
-class PlasmaShared ErrorSignaler
-{
-public:
-  enum SignalErrorType
-  {
-    Warning,
-    Error,
-    FileError
-  };
+		struct ErrorData
+		{
+			int Line;
+			cstr Expression;
+			cstr File;
+			cstr Message;
+			bool IgnoreFutureAssert;
+			SignalErrorType ErrorType;
+		};
 
-  struct ErrorData
-  {
-    int Line;
-    cstr Expression;
-    cstr File;
-    cstr Message;
-    bool IgnoreFutureAssert;
-    SignalErrorType ErrorType;
-  };
+		// The error handler can display Ui, filter errors, or other processing
+		// Return true to debug break.
+		typedef bool (*ErrorHandler)(ErrorData& errorData);
 
-  // The error handler can display Ui, filter errors, or other processing
-  // Return true to debug break.
-  typedef bool (*ErrorHandler)(ErrorData& errorData);
-  static void SetErrorHandler(ErrorHandler newHandler)
-  {
-    sActiveErrorHandler = newHandler;
-  }
-  static ErrorHandler GetErrorHandler()
-  {
-    return sActiveErrorHandler;
-  }
+		static void SetErrorHandler(ErrorHandler newHandler)
+		{
+			sActiveErrorHandler = newHandler;
+		}
 
-  static bool SignalError(SignalErrorType erroType, cstr exp, cstr file, int line, bool& ignore, cstr msg = 0, ...);
+		static ErrorHandler GetErrorHandler()
+		{
+			return sActiveErrorHandler;
+		}
 
-private:
-  static ErrorHandler sActiveErrorHandler;
-};
+		static bool SignalError(SignalErrorType erroType, cstr exp, cstr file, int line, bool& ignore,
+		                        cstr msg = nullptr, ...);
 
+	private:
+		static ErrorHandler sActiveErrorHandler;
+	};
 } // namespace Plasma
 
-#if !defined(ZERO_ENABLE_ERROR)
+#if !defined(PLASMA_ENABLE_ERROR)
 #  if defined(PlasmaDebug)
-#    define ZERO_ENABLE_ERROR 1
+#    define PLASMA_ENABLE_ERROR 1
 #  else
-#    define ZERO_ENABLE_ERROR 0
+#    define PLASMA_ENABLE_ERROR 0
 #  endif
 #endif
 
@@ -92,7 +93,16 @@ static int gConditionalFalseConstant = 0;
       PlasmaDebugBreak();                                                                                                \
   } while (gConditionalFalseConstant)
 
-#if ZERO_ENABLE_ERROR
+#define AlwaysError(...)                                                                                                \
+  do                                                                                                                 \
+    {                                                                                                                  \
+      static bool __ignore = false;                                                                                    \
+      if (::Plasma::ErrorSignaler::SignalError(                                                                          \
+              ::Plasma::ErrorSignaler::Error, "", __FILE__, __LINE__, __ignore, ##__VA_ARGS__))                          \
+        PlasmaDebugBreak();                                                                                              \
+    } while (gConditionalFalseConstant)
+
+#if PLASMA_ENABLE_ERROR
 
 #  define UnusedParameter(param) (void)param
 
