@@ -57,8 +57,6 @@ else()
     string(STRIP "${GIT_BRANCH}" GIT_BRANCH)
 endif()
 
-add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-
 add_definitions(-DPlasmaMsSinceEpoch=${PLASMA_MS_SINCE_EPOCH})
 add_definitions(-DPlasmaBranchName="${GIT_BRANCH}")
 add_definitions(-DPlasmaRevisionId=${GIT_REV})
