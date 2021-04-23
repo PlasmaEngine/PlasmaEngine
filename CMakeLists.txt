@@ -23,39 +23,30 @@ execute_process(COMMAND git rev-list --count HEAD
                 OUTPUT_VARIABLE GIT_REV
                 ERROR_QUIET)
 
-if ("${GIT_REV}" STREQUAL "")
-    set(GIT_REV "0")
-    set(GIT_DIFF "")
-    set(GIT_TAG "N/A")
-    set(GIT_BRANCH "N/A")
-    set(GIT_SHORT_CHANGELIST "00")
-    set(GIT_CHANGELIST "N/A")
-    set(GIT_CHANGESET_DATE "N/A")
-else()
-    execute_process(
-        COMMAND bash -c "git diff --quiet --exit-code || echo +"
-        OUTPUT_VARIABLE GIT_DIFF)
-    execute_process(
-        COMMAND git describe --exact-match --tags
-        OUTPUT_VARIABLE GIT_TAG ERROR_QUIET)
-    execute_process(
-        COMMAND git rev-parse --abbrev-ref HEAD
-        OUTPUT_VARIABLE GIT_BRANCH)
-    execute_process(
-        COMMAND git log -1 --pretty=%h --abbrev=12
-        OUTPUT_VARIABLE GIT_SHORT_CHANGELIST) 
-    execute_process(
-        COMMAND git log -1 --pretty=%H
-        OUTPUT_VARIABLE GIT_CHANGELIST)
-    execute_process(
-        COMMAND git log -1 --pretty=%cd --date=format:%Y-%m-%d
-        OUTPUT_VARIABLE GIT_CHANGESET_DATE)
 
-    string(STRIP "${GIT_REV}" GIT_REV)
-    string(STRIP "${GIT_DIFF}" GIT_DIFF)
-    string(STRIP "${GIT_TAG}" GIT_TAG)
-    string(STRIP "${GIT_BRANCH}" GIT_BRANCH)
-endif()
+execute_process(
+    COMMAND bash -c "git diff --quiet --exit-code || echo +"
+    OUTPUT_VARIABLE GIT_DIFF)
+execute_process(
+    COMMAND git describe --exact-match --tags
+    OUTPUT_VARIABLE GIT_TAG ERROR_QUIET)
+execute_process(
+    COMMAND git rev-parse --abbrev-ref HEAD
+    OUTPUT_VARIABLE GIT_BRANCH)
+execute_process(
+    COMMAND git log -1 --pretty=%h --abbrev=12
+    OUTPUT_VARIABLE GIT_SHORT_CHANGELIST) 
+execute_process(
+    COMMAND git log -1 --pretty=%H
+    OUTPUT_VARIABLE GIT_CHANGELIST)
+execute_process(
+    COMMAND git log -1 --pretty=%cd --date=format:%Y-%m-%d
+    OUTPUT_VARIABLE GIT_CHANGESET_DATE)
+
+string(STRIP "${GIT_REV}" GIT_REV)
+string(STRIP "${GIT_DIFF}" GIT_DIFF)
+string(STRIP "${GIT_TAG}" GIT_TAG)
+string(STRIP "${GIT_BRANCH}" GIT_BRANCH)
 
 add_definitions(-DPlasmaMsSinceEpoch=${PLASMA_MS_SINCE_EPOCH})
 add_definitions(-DPlasmaBranchName="${GIT_BRANCH}")
