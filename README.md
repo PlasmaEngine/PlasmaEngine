@@ -41,6 +41,6 @@ Building on Linux:
   - Josh (Engine Developer)
   - Jesco (Engine Developer)
   - Dave (Engine Contributer)
-  - [AdvancedInstaller](https://www.advancedinstaller.com/) (Providing open source licecne for launcher installer)
+  - [AdvancedInstaller](https://www.advancedinstaller.com/) (Providing open source license for launcher installer)
   - Digipen and everyone who worked on Zero
   - WelderFoundation (Useful addition to Zero and thirdparty repos)
