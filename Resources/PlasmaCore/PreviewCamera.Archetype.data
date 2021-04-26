@@ -6,7 +6,7 @@ Cog
 	{
 		var Translation = Real3{0, 0, 0}
 		var Scale = Real3{1, 1, 1}
-		var Rotation = Quaternion{0, 0, 0, 1}
+		var Rotation = Quaternion{0, 0, 0, 0.998312414}
 	}
 	CameraViewport 
 	{
@@ -58,6 +58,10 @@ Cog
 		var PerspectiveMode = PerspectiveMode.Perspective
 		var FieldOfView = 45
 		var Size = 20
+		var Aperture = 16
+		var FocalDistance = 22
+		var ShutterSpeed = 100
+		var ISO = 100
 	}
 	ForwardRenderer 
 	{
@@ -92,7 +96,7 @@ Cog
 	{
 		var Visible = true
 		var VisibilityEvents = true
-		var Material = "56581e2bb81777be:DebugDrawOnTop"
+		var Material = "564a44b7f62c1d67:DebugDraw"
 		var SpriteSource = "58f8e4be7360cf7c:CameraIcon"
 		var ViewScale = 1
 		var OverrideSelections = true
@@ -127,12 +131,13 @@ Cog
 				var LocalAabbHalfExtents = Real3{1, 1, 1}
 				var GroupSortValue = 0
 				var Material = "581a79008d1b94fe:DirectionalLight"
-				var Mesh = "59040f1e835d03e1:Triangle"
+				var Mesh = "4de0354322b345ae:Cube"
 			}
 			DirectionalLight 
 			{
 				var LightColor = Real4{1, 1, 1, 1}
 				var LightIntensity = 4
+				var SpecularMultiplier = 1
 				var LightTemperature = 6500
 			}
 			Hierarchy 

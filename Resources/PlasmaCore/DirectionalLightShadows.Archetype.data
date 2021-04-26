@@ -6,13 +6,13 @@ Cog
 	{
 		var Translation = Real3{0, 0, 0}
 		var Scale = Real3{1, 1, 1}
-		var Rotation = Quaternion{-0.707106829, 0, 0, 0.707106829}
+		var Rotation = Quaternion{-0.705913424, 0, 0, 0.705913424}
 	}
 	SelectionIcon 
 	{
 		var Visible = true
 		var VisibilityEvents = true
-		var Material = "582c50d330d372c3:AdditiveSprite"
+		var Material = "564a44b7f62c1d67:DebugDraw"
 		var SpriteSource = "58f8e4be736f5ea2:LightIcon"
 		var ViewScale = 1
 		var OverrideSelections = true
@@ -27,12 +27,13 @@ Cog
 		var LocalAabbHalfExtents = Real3{1, 1, 1}
 		var GroupSortValue = 0
 		var Material = "580267aabbf7843e:DirectionalLightShadows"
-		var Mesh = "59040f1e835d03e1:Triangle"
+		var Mesh = "4de0354322b345ae:Cube"
 	}
 	DirectionalLight 
 	{
 		var LightColor = Real4{1, 1, 1, 1}
 		var LightIntensity = 2000
+		var SpecularMultiplier = 1
 		var LightTemperature = 6500
 	}
 	CameraViewport 
@@ -85,15 +86,15 @@ Cog
 		var PerspectiveMode = PerspectiveMode.Orthographic
 		var FieldOfView = 45
 		var Size = 64
+		var Aperture = 16
+		var FocalDistance = 22
+		var ShutterSpeed = 100
+		var ISO = 100
 	}
 	ShadowRenderer 
 	{
 		var ResolutionValue = ShadowResolution.High
 		var NormalOffsetBias = 0.100000001
-		var ScreenSpaceShadows = false
-		var Steps = 16
-		var RayMaxDistance = 0.0500000007
-		var Tolerence = 0.0199999996
 	}
 	Hierarchy 
 	{
