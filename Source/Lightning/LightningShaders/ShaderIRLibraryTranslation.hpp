@@ -168,6 +168,7 @@ void ResolveScalarSwizzle(LightningSpirVFrontEnd* translator,
 void ScalarBackupFieldResolver(LightningSpirVFrontEnd* translator,
                                Lightning::MemberAccessNode* memberAccessNode,
                                LightningSpirVFrontEndContext* context);
+void ResolveVectorCopyConstructor(LightningSpirVFrontEnd* translator, Lightning::FunctionCallNode* fnCallNode, Lightning::StaticTypeNode* staticTypeNode, LightningSpirVFrontEndContext* context);
 void ResolveVectorComponentAccess(LightningSpirVFrontEnd* translator,
                                   LightningShaderIROp* selfInstance,
                                   LightningShaderIRType* componentType,

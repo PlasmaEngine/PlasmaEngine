@@ -467,6 +467,32 @@ void ScalarBackupFieldResolver(LightningSpirVFrontEnd* translator,
   //__debugbreak();
 }
 
+void ResolveVectorCopyConstructor(LightningSpirVFrontEnd* translator, Lightning::FunctionCallNode* fnCallNode, Lightning::StaticTypeNode* staticTypeNode, LightningSpirVFrontEndContext* context)
+{
+    if (fnCallNode->Arguments.Size() != 1)
+    {
+        Error("Copy constructor translation can only handle a single element");
+        return;
+    }
+
+    // Get the value type op
+    ILightningShaderIR* argIR = translator->WalkAndGetResult(fnCallNode->Arguments[0], context);
+    LightningShaderIROp* argValueOp = translator->GetOrGenerateValueTypeFromIR(argIR, context);
+    // If the original op was a variable (pointer type) then we can simply load the op to get a value to store or use.
+    // If the original op was a value type then we have to generate a copy somehow since we can't just assign ops.
+    // The easiest way to do this with a vector is to swizzle it to generate the same vector.
+    if (argIR == argValueOp)
+    {
+        LightningShaderIRType* resultType = translator->FindType(fnCallNode->ResultType, fnCallNode);
+        argValueOp = translator->BuildIROp(context->GetCurrentBlock(), OpType::OpVectorShuffle, resultType, argValueOp, argValueOp, context);
+        for (u32 i = 0; i < resultType->mComponents; ++i)
+            argValueOp->mArguments.PushBack(translator->GetOrCreateConstantIntegerLiteral(i));
+    }
+
+    // Also mark this as the return of this tree
+    context->PushIRStack(argValueOp);
+}
+
 void ResolveVectorComponentAccess(LightningSpirVFrontEnd* translator,
                                   LightningShaderIROp* selfInstance,
                                   LightningShaderIRType* componentType,

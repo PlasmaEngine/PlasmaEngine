@@ -238,6 +238,9 @@ void LightningShaderIRCore::RegisterVectorFunctions(LightningSpirVFrontEnd* tran
                                                        TranslateCompositeDefaultConstructor);
     primitiveTypeResolvers.RegisterConstructorResolver(GetConstructor(lightningType, lightningComponentTypeName),
                                                        TranslateCompositeSplatConstructor);
+    Lightning::Function* copyConstructor = GetConstructor(lightningType, lightningTypeName);
+    if (copyConstructor != nullptr)
+        primitiveTypeResolvers.RegisterConstructorResolver(copyConstructor, ResolveVectorCopyConstructor);
     primitiveTypeResolvers.RegisterFunctionResolver(GetStaticProperty(lightningType, "Count")->Get, ResolveVectorTypeCount);
     primitiveTypeResolvers.RegisterFunctionResolver(GetInstanceProperty(lightningType, "Count")->Get,
                                                     ResolveVectorTypeCount);
