@@ -30,8 +30,8 @@ class PostProcessDOF : LightningComponent
     var sizeBokeh = size;
     
     var samplerSettings = SamplerSettings();
-    samplerSettings.AddressingX = TextureAddressing.Repeat;
-    samplerSettings.AddressingY = TextureAddressing.Repeat;
+    samplerSettings.AddressingX = TextureAddressing.Clamp;
+    samplerSettings.AddressingY = TextureAddressing.Clamp;
     
     var dofBuffer = event.GetRenderTarget(size /2, TextureFormat.RGBA16f, samplerSettings);
     var bokehBuffer = event.GetRenderTarget(size, TextureFormat.RGBA16f, samplerSettings);
