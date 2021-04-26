@@ -180,7 +180,7 @@ struct SSR
                     var searchProjectCoords = Real4.Zero;
                     var searchDepth = 0.0;
  
-                    for(var j = 0.0; j < 32; ++j)
+                    for(var j = 0.0; j < 32 && foundResult < 1.0; ++j)
                     {
                         projectedCoords = Math.Multiply(this.ViewToPerspective,Real4(hitPosition, 1.0));
                         projectedCoords.XY /= projectedCoords.W;
@@ -194,12 +194,22 @@ struct SSR
  
                         direction *= Real3(0.5);
                         if(pDepth > 0.0)
+                        {
                             hitPosition += direction;
+                          }
                         else
+                        {
                             hitPosition -= direction;
+                        }
+                            
+                        if(hitPosition.Z < pDepth - 0.1)
+                        {
+                          ShaderIntrinsics.Kill();
+                          return;
+                        }
                     }
                     
-                    if(hitPosition.Z > depth)
+                    if(hitPosition.Z < pDepth)
                       return;
  
                     projectedCoords = Math.Multiply(this.ViewToPerspective,Real4(hitPosition, 1.0));
