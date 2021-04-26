@@ -383,7 +383,7 @@ class DeferredRenderer : LightningComponent
     
     //  Depth of Field.
     if(this.Owner.PostProcessDOF != null)
-      this.Owner.PostProcessDOF.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);   
+      this.Owner.PostProcessDOF.OnRenderTasksUpdate(event, this.GBuffer1, lightBuffer);   
         
         // Bloom
     if (this.Owner.PostProcessBloom != null)

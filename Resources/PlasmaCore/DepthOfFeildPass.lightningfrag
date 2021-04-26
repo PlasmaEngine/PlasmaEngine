@@ -36,30 +36,40 @@ struct COCPass
 struct BokehPass
 {
   [StageInput] var Uv : Real2;
+  [AppBuiltInInput] var FarPlane : Real;
   
   [Input] var DOFBuffer : SampledImage2d;
   
-  [Input] var DOFSampleCount = 16;
+  [PropertyInput] var DOFSampleCount = 16;
+  [PropertyInput] var BokehSize : Real = 8.0;
+  [Input] var Depth : SampledImage2d;
+  [Input] var FocalDistance : Real;
   var DOFBokehRadius = 8.0;
   
-  var Samples : FixedArray[Real2, 16] = FixedArray[Real2, 16]()
+  var Samples : FixedArray[Real2, 22] = FixedArray[Real2, 22]()
   {
     Real2(0, 0),
-    Real2(0.54545456, 0),
-    Real2(0.16855472, 0.5187581),
-    Real2(-0.44128203, 0.3206101),
-    Real2(-0.44128197, -0.3206102),
-    Real2(0.1685548, -0.5187581),
+    Real2(0.53333336, 0),
+    Real2(0.3325279, 0.4169768),
+    Real2(-0.11867785, 0.5199616),
+    Real2(-0.48051673, 0.2314047),
+    Real2(-0.48051673, -0.23140468),
+    Real2(-0.11867763, -0.51996166),
+    Real2(0.33252785, -0.4169769),
     Real2(1, 0),
-    Real2(0.809017, 0.58778524),
-    Real2(0.30901697, 0.95105654),
-    Real2(-0.30901703, 0.9510565),
-    Real2(-0.80901706, 0.5877852),
+    Real2(0.90096885, 0.43388376),
+    Real2(0.6234898, 0.7818315),
+    Real2(0.22252098, 0.9749279),
+    Real2(-0.22252095, 0.9749279),
+    Real2(-0.62349, 0.7818314),
+    Real2(-0.90096885, 0.43388382),
     Real2(-1, 0),
-    Real2(-0.80901694, -0.58778536),
-    Real2(-0.30901664, -0.9510566),
-    Real2(0.30901712, -0.9510565),
-    Real2(0.80901694, -0.5877853)
+    Real2(-0.90096885, -0.43388376),
+    Real2(-0.6234896, -0.7818316),
+    Real2(-0.22252055, -0.974928),
+    Real2(0.2225215, -0.9749278),
+    Real2(0.6234897, -0.7818316),
+    Real2(0.90096885, -0.43388376)
   };
   
   [Output] var Target0 : Real4;
@@ -67,16 +77,23 @@ struct BokehPass
   function Main()
   {
     var color = Real4.Zero;
-    color.W = this.DOFBuffer.Sample(this.Uv).W;
-    
+    color.W = this.DOFBuffer.Sample(this.Uv).W;    
     
     var textureSize = this.DOFBuffer.SampleSize(0);
     
     for(var i = 0; i < this.DOFSampleCount; ++i)
     {
       var sampleUV = this.Samples[i];
-      sampleUV /= (textureSize/ Real2(100)) * 8.0;
-      color.XYZ += this.DOFBuffer.Sample(this.Uv + sampleUV).XYZ;
+      sampleUV *= (Real2(1.0) / textureSize) * this.BokehSize;
+      
+      var depthSample = GeometryPass.GetDepth(this.Depth.Sample(this.Uv +sampleUV)) * this.FarPlane;
+      if(depthSample < this.FocalDistance)
+      {
+        color.XYZ += this.DOFBuffer.Sample(this.Uv).XYZ;
+      
+      }
+      else
+        color.XYZ += this.DOFBuffer.Sample(this.Uv + sampleUV).XYZ;
     }
     
     color.XYZ *= 1.0 / this.DOFSampleCount;
@@ -89,9 +106,14 @@ struct BokehPass
 struct DOFCombinePass
 {
   [StageInput] var Uv : Real2;
+  [AppBuiltInInput] var FarPlane : Real;
+  
+  
   [Input] var ScreenBuffer : SampledImage2d;
   [Input] var DOFBuffer : SampledImage2d;
   [Input] var BokehBuffer : SampledImage2d;
+  [Input] var Depth : SampledImage2d;
+  [Input] var FocalDistance : Real;
   
   [Output] var Target0 : Real4;
   
@@ -105,6 +127,12 @@ struct DOFCombinePass
     var coc = dofSample.W;
     
     var dofStrength = Math.SmoothStep(0.1, 1, Math.Abs(coc));
+    
+    var depthSample = GeometryPass.GetDepth(this.Depth.Sample(this.Uv)) * this.FarPlane;
+    if(depthSample < this.FocalDistance)
+    {
+      dofStrength = 0.0;
+    }
     
     this.Target0 =  Math.Lerp(screenSample, bokehSample, dofStrength);
   }
@@ -120,7 +148,7 @@ struct TentPass
   function Main()
   {
     var texSize = Real2(1.0) / this.BokehBuffer.SampleSize(0);
-    var sample = texSize.XYXY * Real2(-1, 1).XXYY;
+    var sample = texSize.XYXY * Real2(-0.5, 0.5).XXYY;
     var output =
     this.BokehBuffer.Sample(this.Uv + sample.XY) +
     this.BokehBuffer.Sample(this.Uv + sample.ZY) +
@@ -142,9 +170,6 @@ struct DOFDebug
   function Main()
   {
     var dofSample = this.DOFBuffer.Sample(this.Uv);
-  
-   
-   
     this.Target0 = Real4(dofSample.WWW, 1);
   }
 }

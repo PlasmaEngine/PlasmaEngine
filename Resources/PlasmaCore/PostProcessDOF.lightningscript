@@ -4,11 +4,11 @@ class PostProcessDOF : LightningComponent
   [Property] var Enable : Boolean = true;
   // Point of Focus from camera position positive viewspace distance ahead.
   [Group("Settings")]
-  [Property][Slider(1,16,1)] var BlurAmmount : Real = 16.0;
+  [Property][Slider(1,22,1)] var BlurAmmount : Real = 22.0;
   [Group("Settings")]
-  [Property] var BlurBokeh : Boolean = true;
+  [Property][Slider(1,15,1)] var BokehSize : Real = 8.0;
   [Group("Settings")]
-  [Property] var HalfResolutionBokeh = false;
+  [Property] var BlurBokeh : BokehBlurStrength = BokehBlurStrength.Low;
   
   
   [Group("Debug")]
@@ -16,7 +16,7 @@ class PostProcessDOF : LightningComponent
   [Group("Debug")]
   [Property] var DebugType : DebugType = DebugType.COC;
   
-  function OnRenderTasksUpdate(event : RenderTasksEvent, depthTarget : Texture, colorTarget : RenderTarget)
+  function OnRenderTasksUpdate(event : RenderTasksEvent, gBuffer0 : RenderTarget, colorTarget : RenderTarget)
   {
     if(this.Enable == false)
       return;
@@ -28,39 +28,42 @@ class PostProcessDOF : LightningComponent
     var size = event.ViewportSize;
     
     var sizeBokeh = size;
-    if(this.HalfResolutionBokeh)
-      sizeBokeh /= 2;
     
     var samplerSettings = SamplerSettings();
     samplerSettings.AddressingX = TextureAddressing.Repeat;
     samplerSettings.AddressingY = TextureAddressing.Repeat;
     
-    var dofBuffer = event.GetRenderTarget(size, TextureFormat.RGBA16f, samplerSettings);
-    var bokehBuffer = event.GetRenderTarget(sizeBokeh, TextureFormat.RGBA16f, samplerSettings);
+    var dofBuffer = event.GetRenderTarget(size /2, TextureFormat.RGBA16f, samplerSettings);
+    var bokehBuffer = event.GetRenderTarget(size, TextureFormat.RGBA16f, samplerSettings);
     
     var cocPass = COCPass();
     cocPass.Aperture = camera.Aperture;
     cocPass.FocusDistance = camera.FocalDistance;
     cocPass.ScreenBuffer = colorTarget.Texture;
-    cocPass.Depth = depthTarget;
+    cocPass.Depth = gBuffer0.Texture;
     event.AddRenderTaskPostProcess(dofBuffer, cocPass, "Dof COC");
     
     var bokehPass = BokehPass();
     bokehPass.DOFBuffer = colorTarget.Texture;
+    bokehPass.BokehSize = this.BokehSize;
     bokehPass.DOFSampleCount = this.BlurAmmount as Integer;
+    bokehPass.Depth = gBuffer0.Texture;
+    bokehPass.FocalDistance = camera.FocalDistance;
     event.AddRenderTaskPostProcess(bokehBuffer, bokehPass, "Dof Bokeh");
     
-    if(this.BlurBokeh)
+    if(this.BlurBokeh == BokehBlurStrength.Low)
       BlurTexture[SeparableBlurRadius5].Call(event, bokehBuffer);
-        
-    var tentPass = TentPass();
-    tentPass.BokehBuffer = bokehBuffer.Texture;
-    event.AddRenderTaskPostProcess(bokehBuffer, tentPass, "Dof TentPass");
+    else if(this.BlurBokeh == BokehBlurStrength.Medium)  
+      BlurTexture[SeparableBlurRadius10].Call(event, bokehBuffer);
+    else if(this.BlurBokeh == BokehBlurStrength.High)
+      BlurTexture[SeparableBlurRadius20].Call(event, bokehBuffer);
 
     var combinePass = DOFCombinePass();
     combinePass.DOFBuffer = dofBuffer.Texture;
     combinePass.ScreenBuffer = colorTarget.Texture;
     combinePass.BokehBuffer = bokehBuffer.Texture;
+    combinePass.Depth = gBuffer0.Texture;
+    combinePass.FocalDistance = camera.FocalDistance;
     event.AddRenderTaskPostProcess(colorTarget, combinePass, "Dof Combine");
     
     if(this.Debug)
@@ -82,6 +85,14 @@ class PostProcessDOF : LightningComponent
     dofBuffer.Release();
     bokehBuffer.Release();
   }
+}
+
+enum BokehBlurStrength
+{
+  None,
+  Low,
+  Medium,
+  High
 }
 
 enum DebugType
