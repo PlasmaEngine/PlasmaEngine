@@ -1,0 +1,51 @@
+// MIT Licensed (see LICENSE.md).
+
+// PostProcess fragments are intended to be constructed in script
+// and passed directly to the AddRenderTaskPostProcess method.
+[Pixel][PostProcess]
+struct Exposure
+{
+  [StageInput] var Uv : Real2;
+  [Input] var ScreenBuffer : SampledImage2d;
+  [Input] var Aperture : Real;
+  [Input] var ShutterSpeed : Real;
+  [Input] var ISO : Real;
+
+  [Output] var Target0 : Real4;
+
+  function ComputeEV100() : Real
+  {
+    //float l_avg = (1000.0f / 65.0f) * Sqr(aperture) / (iso * shutterSpeed);
+    //return middleGrey / l_avg;
+    var avarage = (1.0 / 65.0) * Math.Sqrt(this.Aperture)/ (this.ISO * this.ShutterSpeed);
+    return 0.18 / avarage;
+    //return Math.Log2((this.Aperture * this.Aperture) / this.ShutterSpeed * 100 / this.ISO);
+  }
+  
+  function ComputeEV100fromLuminance(luminance : Real) : Real
+  {
+    return Math.Log2(luminance * 100.0 / 12.5);
+  }
+  
+  function ConvertEV100ToExposure(ev100 : Real) : Real
+  {
+    var maxLuminance = 1.2 * Math.Pow(2.0, ev100);
+    return 1.0 / maxLuminance;
+  }
+
+  function Main()
+  {
+    
+    var screen = this.ScreenBuffer.Sample(this.Uv);
+    var luminance = Utility.Luminance(screen.XYZ);
+    
+    var ev100 = this.ComputeEV100();
+    
+    //TODO: auto exposure
+    
+    var currentEV = ev100;
+    var exposure = this.ConvertEV100ToExposure(currentEV);
+
+    this.Target0 = Real4(screen.XYZ * ev100, screen.W);
+  }
+}

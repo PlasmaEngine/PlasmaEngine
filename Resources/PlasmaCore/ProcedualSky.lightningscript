@@ -3,7 +3,7 @@
 class ProcedualSky : LightningComponent
 {
   [Property] var Enabled : Boolean = true;
-  [Property] var MainLight : CogPath = null;
+  [Property] var MainLight : CogPath = CogPath(":/DirectionalLightShadows");
   
   [Property] var RayleighBrightness : Real = 3.3;
   [Property] var MieBrightness : Real = 0.1;

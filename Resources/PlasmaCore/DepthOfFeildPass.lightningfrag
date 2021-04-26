@@ -1,40 +1,150 @@
-// PostProcess fragments are intended to be constructed in script
-// and passed directly to the AddRenderTaskPostProcess method.
 [Pixel][PostProcess]
-struct DepthOfFeildPass
+struct COCPass
 {
+  
   [StageInput] var Uv : Real2;
   [AppBuiltInInput] var FarPlane : Real;
-  [AppBuiltInInput] var ViewportSize : Real2;
-  [Input] var DitherTexture : SampledImage2d;
-  [Input] var TextureBlurred : SampledImage2d;
-  [Input] var ViewPosTexture : SampledImage2d;
-  [Input] var TextureFocus : SampledImage2d;
+  
+  [Input] var ScreenBuffer : SampledImage2d;
+  [Input] var Depth : SampledImage2d;
+  
   [Input] var FocusDistance : Real;
-  [Input] var InvFocusRange : Real;
+  [Input] var Aperture : Real;
+  
   [Output] var Target0 : Real4;
-
+  
+  function GetCOC(sampleUV : Real2) : Real
+  {
+    var depth = Math.Abs(this.Depth.Sample(sampleUV).Z * this.FarPlane);
+    var coc =  (depth - this.FocusDistance) / this.Aperture;
+    return Math.Clamp(coc, -1.0, 1.0);
+  }
+  
   function Main()
   {
-    // Use a positive value for depth.
-    var depth = Math.Abs(this.ViewPosTexture.Sample(this.Uv).Z * this.FarPlane);
+    var color = this.ScreenBuffer.Sample(this.Uv).XYZ;
     
-    //  Get the Focus Color, Blurred Color and Circle of Confusion.
-    // How far is the current pixel from focal point.
-    var disToFocal = Math.Abs(depth - this.FocusDistance);
-    // Divide the distance by focalRange to calc "Blur Factor"
-    var coc = Math.Saturate(disToFocal * this.InvFocusRange);
-    // Get a blur and un-blurred texture sample.
-    var colorFocus = this.TextureFocus.Sample(this.Uv);
-    var colorBlurred = this.TextureBlurred.Sample(this.Uv).XYZ;
+    var screenSize = this.ScreenBuffer.SampleSize(0) / Real2(100);
     
-    var colorOutput= Real4(Math.Lerp(colorFocus.XYZ, colorBlurred, coc), colorFocus.W);
+    var coc = this.GetCOC(this.Uv);
     
-    // Remove color banding
-    colorOutput.XYZ = Utility.ApplyDither(colorOutput.XYZ, &this.DitherTexture, this.Uv, this.ViewportSize);
+    this.Target0 = Real4(color, coc);
+  }
+}
+
+[Pixel][PostProcess]
+struct BokehPass
+{
+  [StageInput] var Uv : Real2;
+  
+  [Input] var DOFBuffer : SampledImage2d;
+  
+  [Input] var DOFSampleCount = 16;
+  var DOFBokehRadius = 8.0;
+  
+  var Samples : FixedArray[Real2, 16] = FixedArray[Real2, 16]()
+  {
+    Real2(0, 0),
+    Real2(0.54545456, 0),
+    Real2(0.16855472, 0.5187581),
+    Real2(-0.44128203, 0.3206101),
+    Real2(-0.44128197, -0.3206102),
+    Real2(0.1685548, -0.5187581),
+    Real2(1, 0),
+    Real2(0.809017, 0.58778524),
+    Real2(0.30901697, 0.95105654),
+    Real2(-0.30901703, 0.9510565),
+    Real2(-0.80901706, 0.5877852),
+    Real2(-1, 0),
+    Real2(-0.80901694, -0.58778536),
+    Real2(-0.30901664, -0.9510566),
+    Real2(0.30901712, -0.9510565),
+    Real2(0.80901694, -0.5877853)
+  };
+  
+  [Output] var Target0 : Real4;
+  
+  function Main()
+  {
+    var color = Real4.Zero;
+    color.W = this.DOFBuffer.Sample(this.Uv).W;
     
-    // Interpolate between the color in focus and blurred color by the computed factor.
-    this.Target0 = colorOutput;
     
+    var textureSize = this.DOFBuffer.SampleSize(0);
+    
+    for(var i = 0; i < this.DOFSampleCount; ++i)
+    {
+      var sampleUV = this.Samples[i];
+      sampleUV /= (textureSize/ Real2(100)) * 8.0;
+      color.XYZ += this.DOFBuffer.Sample(this.Uv + sampleUV).XYZ;
+    }
+    
+    color.XYZ *= 1.0 / this.DOFSampleCount;
+    
+    this.Target0 = color;
+  }
+}
+
+[Pixel][PostProcess]
+struct DOFCombinePass
+{
+  [StageInput] var Uv : Real2;
+  [Input] var ScreenBuffer : SampledImage2d;
+  [Input] var DOFBuffer : SampledImage2d;
+  [Input] var BokehBuffer : SampledImage2d;
+  
+  [Output] var Target0 : Real4;
+  
+  function Main()
+  {
+    var screenSample = this.ScreenBuffer.Sample(this.Uv);
+    var dofSample = this.DOFBuffer.Sample(this.Uv);
+    var bokehSample = this.BokehBuffer.Sample(this.Uv);
+    
+    var dof = dofSample.XYZ;
+    var coc = dofSample.W;
+    
+    var dofStrength = Math.SmoothStep(0.1, 1, Math.Abs(coc));
+    
+    this.Target0 =  Math.Lerp(screenSample, bokehSample, dofStrength);
+  }
+}
+
+[Pixel][PostProcess]
+struct TentPass
+{
+  [StageInput] var Uv : Real2;
+  [Input] var BokehBuffer : SampledImage2d;
+  
+  [Output] var Target0 : Real4;
+  function Main()
+  {
+    var texSize = Real2(1.0) / this.BokehBuffer.SampleSize(0);
+    var sample = texSize.XYXY * Real2(-1, 1).XXYY;
+    var output =
+    this.BokehBuffer.Sample(this.Uv + sample.XY) +
+    this.BokehBuffer.Sample(this.Uv + sample.ZY) +
+    this.BokehBuffer.Sample(this.Uv + sample.XW) +
+    this.BokehBuffer.Sample(this.Uv + sample.ZW);
+    
+    this.Target0 = output * 0.25;
+  }
+} 
+
+[Pixel][PostProcess]
+struct DOFDebug
+{
+  [StageInput] var Uv : Real2;
+  [Input] var DOFBuffer : SampledImage2d;
+  
+   [Output] var Target0 : Real4;
+  
+  function Main()
+  {
+    var dofSample = this.DOFBuffer.Sample(this.Uv);
+  
+   
+   
+    this.Target0 = Real4(dofSample.WWW, 1);
   }
 }

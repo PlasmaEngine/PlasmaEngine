@@ -267,52 +267,11 @@ class DeferredRenderer : LightningComponent
       event.AddRenderTaskRenderPass(lightSettings, RenderGroup.Lights, lightPass, "DirectLighting");
     }
   
-     // Additive materials 
-    var alphaSettings = RenderSettings();
-    alphaSettings.ColorTarget = lightBuffer;
-    alphaSettings.DepthTarget = this.Depth;
-    alphaSettings.CullMode = CullMode.Disabled;
-    alphaSettings.BlendSettings.BlendMode = BlendMode.Separate;
-    alphaSettings.BlendSettings.BlendEquation = BlendEquation.Add;
-    alphaSettings.BlendSettings.SourceFactor = BlendFactor.SourceAlpha;
-    alphaSettings.BlendSettings.DestFactor = BlendFactor.One;
-    alphaSettings.BlendSettings.SourceFactorAlpha = BlendFactor.One;
-    alphaSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
-    alphaSettings.DepthSettings.DepthMode = DepthMode.Read;
-    alphaSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
-    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AdditiveBlend, ColorOutput(), "AdditiveMaterials");
+    event.AddRenderTaskClearTarget(this.SSRBuffer, Real4.Zero);
     
-    var forwardAlpha = ForwardPassAlpha();
-    forwardAlpha.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
-    forwardAlpha.DitherTexture = Texture.BlueNoise;
-    forwardAlpha.Skybox = this.Skybox;
-    forwardAlpha.IndirectIntensity = this.IndirectIntensity;
-    forwardAlpha.RenderDiffuse = this.RenderDiffuse;
-    forwardAlpha.RenderSpecular = this.RenderSpecular;
-      
-    forwardAlpha.DirectLightIntensity = 0.0;
-       
-    var light = this.DirectionalLight.Cog;
-    if (light != null && light.DirectionalLight != null)
-    {
-       
-      forwardAlpha.DirectLightColor = light.DirectionalLight.LightColor.XYZ;
-      forwardAlpha.DirectLightDirection = light.DirectionalLight.LightDirection;
-      forwardAlpha.DirectLightIntensity = light.DirectionalLight.LightIntensity;
-      forwardAlpha.LightTemperature = light.DirectionalLight.LightTemperature;
-      
-    }
-   
-    
-    forwardAlpha.DirectLightIntensity *= this.DirectLighting as Real;
-    forwardAlpha.IndirectIntensity *= this.IndirectLighting as Real;
-    
-  //  alphaSettings.ColorTarget = this.FinalOutput;
-    alphaSettings.CullMode = CullMode.BackFace;
-    
-    alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
-    
-    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AlphaBlend, forwardAlpha, "AlphaMaterials");
+        // Screen Space Reflections
+    if(this.Owner.PostProcessSSR != null)
+      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer1, this.GBuffer2, lightBuffer, this.SSRBuffer);
     
     // Order Independent Transparancy
     
@@ -367,20 +326,57 @@ class DeferredRenderer : LightningComponent
     compositePassSettings.BlendSettings.DestFactor = BlendFactor.SourceAlpha;
     compositePassSettings.DepthSettings.DepthMode = DepthMode.Read;
     event.AddRenderTaskPostProcess(compositePassSettings, compositePass, "Composite");
-  
-    event.AddRenderTaskClearTarget(this.SSRBuffer, Real4.Zero);
     
-        // Screen Space Reflections
-    if(this.Owner.PostProcessSSR != null)
-      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer1, this.GBuffer2, lightBuffer, this.SSRBuffer);
+     // Additive materials 
+    var alphaSettings = RenderSettings();
+    alphaSettings.ColorTarget = lightBuffer;
+    alphaSettings.DepthTarget = this.Depth;
+    alphaSettings.CullMode = CullMode.Disabled;
+    alphaSettings.BlendSettings.BlendMode = BlendMode.Separate;
+    alphaSettings.BlendSettings.BlendEquation = BlendEquation.Add;
+    alphaSettings.BlendSettings.SourceFactor = BlendFactor.SourceAlpha;
+    alphaSettings.BlendSettings.DestFactor = BlendFactor.One;
+    alphaSettings.BlendSettings.SourceFactorAlpha = BlendFactor.One;
+    alphaSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
+    alphaSettings.DepthSettings.DepthMode = DepthMode.Read;
+    alphaSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
+    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AdditiveBlend, ColorOutput(), "AdditiveMaterials");
+    
+    var forwardAlpha = ForwardPassAlpha();
+    forwardAlpha.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
+    forwardAlpha.DitherTexture = Texture.BlueNoise;
+    forwardAlpha.Skybox = this.Skybox;
+    forwardAlpha.IndirectIntensity = this.IndirectIntensity;
+    forwardAlpha.RenderDiffuse = this.RenderDiffuse;
+    forwardAlpha.RenderSpecular = this.RenderSpecular;
+      
+    forwardAlpha.DirectLightIntensity = 0.0;
+       
+    var light = this.DirectionalLight.Cog;
+    if (light != null && light.DirectionalLight != null)
+    {
+       
+      forwardAlpha.DirectLightColor = light.DirectionalLight.LightColor.XYZ;
+      forwardAlpha.DirectLightDirection = light.DirectionalLight.LightDirection;
+      forwardAlpha.DirectLightIntensity = light.DirectionalLight.LightIntensity;
+      forwardAlpha.LightTemperature = light.DirectionalLight.LightTemperature;
+      
+    }
+   
+    
+    forwardAlpha.DirectLightIntensity *= this.DirectLighting as Real;
+    forwardAlpha.IndirectIntensity *= this.IndirectLighting as Real;
+    
+  //  alphaSettings.ColorTarget = this.FinalOutput;
+    alphaSettings.CullMode = CullMode.BackFace;
+    
+    alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
+    
+    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AlphaBlend, forwardAlpha, "AlphaMaterials");
     
     // Distance Fog
     if(this.Owner.PostProcessFog != null)
       this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer1, this.GBuffer2, lightBuffer);
-    
-    // Bloom
-    if (this.Owner.PostProcessBloom != null)
-      this.Owner.PostProcessBloom.AddRenderTasks(event, lightBuffer);
       
    if(this.Owner.PostProcessToon != null)
       this.Owner.PostProcessToon.OnRenderTasksUpdate(event, lightBuffer, this.GBuffer1, lightBuffer);
@@ -389,11 +385,28 @@ class DeferredRenderer : LightningComponent
     if(this.Owner.PostProcessDOF != null)
       this.Owner.PostProcessDOF.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);   
         
+        // Bloom
+    if (this.Owner.PostProcessBloom != null)
+      this.Owner.PostProcessBloom.AddRenderTasks(event, lightBuffer);
+        
     // God Rays
     if(this.Owner.PostProcessGodRays != null)
       this.Owner.PostProcessGodRays.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);
+    
+    var camera = event.CameraViewportCog.Camera;
+    
+    if(camera != null)
+    {
+      var exposure = Exposure();
+      exposure.ScreenBuffer = lightBuffer.Texture;
+      exposure.Aperture = camera.Aperture;
+      exposure.ShutterSpeed = 1.0 / camera.ShutterSpeed;
+      exposure.ISO = camera.ISO;
       
-      this.DrawDebugObjects(event, lightBuffer, this.Depth);
+      event.AddRenderTaskPostProcess(lightBuffer, exposure, "Exposure");
+    }
+      
+    this.DrawDebugObjects(event, lightBuffer, this.Depth);
 
     //Smaa
     if(this.Owner.PostProcessSMAA != null)

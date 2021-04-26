@@ -2,65 +2,90 @@
 class PostProcessDOF : LightningComponent
 {
   [Property] var Enable : Boolean = true;
-  // Choose Blur Intensity
-  [Property] var BlurAmount : BlurValue = BlurValue.High;
   // Point of Focus from camera position positive viewspace distance ahead.
-  [Property] var FocusDistance : Real = 10.0;
-  // Focal Length in Viewspace units.
-  [Property] var FocusRange : Real = 30.0;
+  [Group("Settings")]
+  [Property][Slider(1,16,1)] var BlurAmmount : Real = 16.0;
+  [Group("Settings")]
+  [Property] var BlurBokeh : Boolean = true;
+  [Group("Settings")]
+  [Property] var HalfResolutionBokeh = false;
+  
+  
+  [Group("Debug")]
+  [Property] var Debug : Boolean = false;
+  [Group("Debug")]
+  [Property] var DebugType : DebugType = DebugType.COC;
+  
   function OnRenderTasksUpdate(event : RenderTasksEvent, depthTarget : Texture, colorTarget : RenderTarget)
   {
     if(this.Enable == false)
       return;
       
+    var camera = event.CameraViewportCog.Camera;
+    if(camera == null)
+      return;
+      
     var size = event.ViewportSize;
-    var colorCopy = event.GetRenderTarget(size, TextureFormat.RGBA8);
-    var blurredColor = event.GetRenderTarget(size, TextureFormat.RGBA8);
+    
+    var sizeBokeh = size;
+    if(this.HalfResolutionBokeh)
+      sizeBokeh /= 2;
+    
+    var samplerSettings = SamplerSettings();
+    samplerSettings.AddressingX = TextureAddressing.Repeat;
+    samplerSettings.AddressingY = TextureAddressing.Repeat;
+    
+    var dofBuffer = event.GetRenderTarget(size, TextureFormat.RGBA16f, samplerSettings);
+    var bokehBuffer = event.GetRenderTarget(sizeBokeh, TextureFormat.RGBA16f, samplerSettings);
+    
+    var cocPass = COCPass();
+    cocPass.Aperture = camera.Aperture;
+    cocPass.FocusDistance = camera.FocalDistance;
+    cocPass.ScreenBuffer = colorTarget.Texture;
+    cocPass.Depth = depthTarget;
+    event.AddRenderTaskPostProcess(dofBuffer, cocPass, "Dof COC");
+    
+    var bokehPass = BokehPass();
+    bokehPass.DOFBuffer = colorTarget.Texture;
+    bokehPass.DOFSampleCount = this.BlurAmmount as Integer;
+    event.AddRenderTaskPostProcess(bokehBuffer, bokehPass, "Dof Bokeh");
+    
+    if(this.BlurBokeh)
+      BlurTexture[SeparableBlurRadius5].Call(event, bokehBuffer);
+        
+    var tentPass = TentPass();
+    tentPass.BokehBuffer = bokehBuffer.Texture;
+    event.AddRenderTaskPostProcess(bokehBuffer, tentPass, "Dof TentPass");
 
-    // Copy the colorTexture
-    var copyTargetSettings = RenderSettings();
-    copyTargetSettings.ColorTarget = colorCopy;
-    copyTargetSettings.CullMode = CullMode.Disabled;
-    copyTargetSettings.DepthSettings.DepthMode = DepthMode.Disabled;
-    var copyPass = CopyTarget();
-    copyPass.Texture = colorTarget.Texture;
-    event.AddRenderTaskClearTarget(copyTargetSettings, Real4(0, 0, 0, 1), 1.0);
-    event.AddRenderTaskPostProcess(copyTargetSettings, copyPass, "DOF Copy");
-    copyTargetSettings.ColorTarget = blurredColor;
-    event.AddRenderTaskClearTarget(copyTargetSettings, Real4(0, 0, 0, 1), 1.0);
-    event.AddRenderTaskPostProcess(copyTargetSettings, copyPass, "DOF Copy 2");
-
-    if(this.BlurAmount == BlurValue.VeryHigh)
-      BlurTexture[SeparableBlurRadius25].Call(event, blurredColor);
-    else if(this.BlurAmount == BlurValue.High)
-      BlurTexture[SeparableBlurRadius20].Call(event, blurredColor);
-    else if(this.BlurAmount == BlurValue.Medium)
-      BlurTexture[SeparableBlurRadius10].Call(event, blurredColor);
-    else if(this.BlurAmount == BlurValue.Low)
-      BlurTexture[SeparableBlurRadius5].Call(event, blurredColor);
-
-    var renderSettings = RenderSettings();
-    renderSettings.ColorTarget = colorTarget;
-    renderSettings.CullMode = CullMode.Disabled;
-    renderSettings.DepthSettings.DepthMode = DepthMode.Disabled;
-
-    var dofPass = DepthOfFeildPass();
-    dofPass.ViewPosTexture = depthTarget;
-    dofPass.FocusDistance = this.FocusDistance;
-    dofPass.DitherTexture = Texture.BlueNoise;
-    dofPass.InvFocusRange = 1.0 / (this.FocusRange + 0.000001);
-    dofPass.TextureFocus = colorCopy.Texture;
-    dofPass.TextureBlurred = blurredColor.Texture;
-    event.AddRenderTaskClearTarget(renderSettings, Real4(0, 0, 0, 1), 1.0);
-    event.AddRenderTaskPostProcess(renderSettings, dofPass, "DOF");
-
+    var combinePass = DOFCombinePass();
+    combinePass.DOFBuffer = dofBuffer.Texture;
+    combinePass.ScreenBuffer = colorTarget.Texture;
+    combinePass.BokehBuffer = bokehBuffer.Texture;
+    event.AddRenderTaskPostProcess(colorTarget, combinePass, "Dof Combine");
+    
+    if(this.Debug)
+    {
+      if(this.DebugType == DebugType.COC)
+      {
+        var dofDebug = DOFDebug();
+        dofDebug.DOFBuffer = dofBuffer.Texture;
+        event.AddRenderTaskPostProcess(colorTarget, dofDebug, "Dof Debug");
+      }
+      else
+      {
+        var copyPass = CopyTarget();
+        copyPass.Texture = bokehBuffer.Texture;
+        event.AddRenderTaskPostProcess(colorTarget, copyPass, "Dof Debug");
+      }
+    }
+    
+    dofBuffer.Release();
+    bokehBuffer.Release();
   }
 }
 
-enum BlurValue
+enum DebugType
 {
-Low,
-Medium,
-High,
-VeryHigh
+  COC,
+  Bokeh
 }

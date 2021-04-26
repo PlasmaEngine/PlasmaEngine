@@ -4,110 +4,124 @@
 
 namespace Plasma
 {
+	namespace Events
+	{
+		DeclareEvent(CameraUpdate);
+		DeclareEvent(CameraDestroyed);
+	} // namespace Events
 
-namespace Events
-{
-DeclareEvent(CameraUpdate);
-DeclareEvent(CameraDestroyed);
-} // namespace Events
+	/// Represents a viewpoint for rendering.
+	class Camera : public Component
+	{
+	public:
+	LightningDeclareType(Camera, TypeCopyMode::ReferenceType);
 
-/// Represents a viewpoint for rendering.
-class Camera : public Component
-{
-public:
-  LightningDeclareType(Camera, TypeCopyMode::ReferenceType);
+		// Component Interface
 
-  // Component Interface
+		void Serialize(Serializer& stream) override;
+		void Initialize(CogInitializer& initializer) override;
+		void OnDestroy(uint flags = 0) override;
+		void TransformUpdate(TransformUpdateInfo& info) override;
 
-  void Serialize(Serializer& stream) override;
-  void Initialize(CogInitializer& initializer) override;
-  void OnDestroy(uint flags = 0) override;
-  void TransformUpdate(TransformUpdateInfo& info) override;
+		// Properties
 
-  // Properties
+		/// The near clipping plane, always positive and in the view direction.
+		float GetNearPlane();
+		void SetNearPlane(float nearPlane);
+		float mNearPlane;
 
-  /// The near clipping plane, always positive and in the view direction.
-  float GetNearPlane();
-  void SetNearPlane(float nearPlane);
-  float mNearPlane;
+		/// The far clipping plane, always positive and in the view direction.
+		float GetFarPlane();
+		void SetFarPlane(float farPlane);
+		float mFarPlane;
 
-  /// The far clipping plane, always positive and in the view direction.
-  float GetFarPlane();
-  void SetFarPlane(float farPlane);
-  float mFarPlane;
+		/// How the scene is projected on to the view plane.
+		PerspectiveMode::Enum GetPerspectiveMode();
+		void SetPerspectiveMode(PerspectiveMode::Enum perspectiveMode);
+		PerspectiveMode::Enum mPerspectiveMode;
 
-  /// How the scene is projected on to the view plane.
-  PerspectiveMode::Enum GetPerspectiveMode();
-  void SetPerspectiveMode(PerspectiveMode::Enum perspectiveMode);
-  PerspectiveMode::Enum mPerspectiveMode;
+		/// The vertical field of view of the Camera, in degrees. Horizontal fov
+		/// derived from aspect ratio (Hor+).
+		float GetFieldOfView();
+		void SetFieldOfView(float fieldOfView);
+		float mFieldOfView;
 
-  /// The vertical field of view of the Camera, in degrees. Horizontal fov
-  /// derived from aspect ratio (Hor+).
-  float GetFieldOfView();
-  void SetFieldOfView(float fieldOfView);
-  float mFieldOfView;
+		/// Size (width and height) of the orthographic projection, in world units.
+		float GetSize();
+		void SetSize(float size);
+		float mSize;
 
-  /// Size (width and height) of the orthographic projection, in world units.
-  float GetSize();
-  void SetSize(float size);
-  float mSize;
+		float GetAperture();
+		void SetAperture(float aperture);
+		float mAperture;
 
-  /// The object that has a CameraViewport component using this Camera, if any.
-  HandleOf<Cog> GetCameraViewportCog();
+		float GetFocalDistance();
+		void SetFocalDistance(float focalDistance);
+		float mFocalDistance;
 
-  /// Translation of the Camera, in world space.
-  Vec3 GetWorldTranslation();
+		float GetShutterSpeed();
+		void SetShutterSpeed(float shutterSpeed);
+		float mShutterSpeed;
 
-  /// Direction the Camera is facing, in world space.
-  Vec3 GetWorldDirection();
+		float GetISO();
+		void SetISO(float iso);
+		float mISO;
 
-  /// The upright direction of the Camera (perpendicular to facing direction),
-  /// in world space.
-  Vec3 GetWorldUp();
+		/// The object that has a CameraViewport component using this Camera, if any.
+		HandleOf<Cog> GetCameraViewportCog();
 
-  // Internal
+		/// Translation of the Camera, in world space.
+		Vec3 GetWorldTranslation();
 
-  // Set by CameraViewport, not an exposed property.
-  float GetAspectRatio();
-  void SetAspectRatio(float aspectRatio);
-  float mAspectRatio;
+		/// Direction the Camera is facing, in world space.
+		Vec3 GetWorldDirection();
 
-  // Transform getters to recompute when needed.
-  Mat4 GetViewTransform();
-  Mat4 GetPerspectiveTransform();
-  Mat4 GetApiPerspectiveTransform();
-  // Fills ViewBlock with Camera specific data for rendering.
-  void GetViewData(ViewBlock& block);
-  /// Creates a frustum using the Camera's settings along with the given aspect
-  /// ratio.
-  Frustum GetFrustum(float aspect) const;
+		/// The upright direction of the Camera (perpendicular to facing direction),
+		/// in world space.
+		Vec3 GetWorldUp();
 
-  Link<Camera> SpaceLink;
-  Transform* mTransform;
+		// Internal
 
-  // View transforms.
-  Mat4 mWorldToView;
-  Mat4 mViewToPerspective;
-  Mat4 mViewToApiPerspective;
-  // Flags for caching view transforms.
-  bool mDirtyView;
-  bool mDirtyPerspective;
+		// Set by CameraViewport, not an exposed property.
+		float GetAspectRatio();
+		void SetAspectRatio(float aspectRatio);
+		float mAspectRatio;
 
-  // CameraViewport that is using this Camera.
-  ViewportInterface* mViewportInterface;
-  // Used to identify which cameras have visibility of Graphicals.
-  uint mVisibilityId;
+		// Transform getters to recompute when needed.
+		Mat4 GetViewTransform();
+		Mat4 GetPerspectiveTransform();
+		Mat4 GetApiPerspectiveTransform();
+		// Fills ViewBlock with Camera specific data for rendering.
+		void GetViewData(ViewBlock& block);
+		/// Creates a frustum using the Camera's settings along with the given aspect
+		/// ratio.
+		Frustum GetFrustum(float aspect) const;
 
-  // Needed by GraphicsSpace to access graphical entries.
-  Array<uint> mRenderGroupCounts;
-  Array<IndexRange> mGraphicalIndexRanges;
+		Link<Camera> SpaceLink;
+		Transform* mTransform;
 
-  Array<uint> mRenderTaskRangeIndices;
-  bool mRenderQueuesDataNeeded;
+		// View transforms.
+		Mat4 mWorldToView;
+		Mat4 mViewToPerspective;
+		Mat4 mViewToApiPerspective;
+		// Flags for caching view transforms.
+		bool mDirtyView;
+		bool mDirtyPerspective;
 
-  // Id's of all requested RenderGroups during this Camera's RenderTasksEvent.
-  // Reset every frame before the event.
-  HashSet<int> mUsedRenderGroupIds;
-};
+		// CameraViewport that is using this Camera.
+		ViewportInterface* mViewportInterface;
+		// Used to identify which cameras have visibility of Graphicals.
+		uint mVisibilityId;
 
+		// Needed by GraphicsSpace to access graphical entries.
+		Array<uint> mRenderGroupCounts;
+		Array<IndexRange> mGraphicalIndexRanges;
+
+		Array<uint> mRenderTaskRangeIndices;
+		bool mRenderQueuesDataNeeded;
+
+		// Id's of all requested RenderGroups during this Camera's RenderTasksEvent.
+		// Reset every frame before the event.
+		HashSet<int> mUsedRenderGroupIds;
+	};
 } // namespace Plasma
