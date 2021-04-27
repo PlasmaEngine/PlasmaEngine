@@ -1,0 +1,12 @@
+[Version:1]
+RenderGroup 
+{
+	var Materials = Array
+	{
+	}
+	var GraphicalSortMethod = GraphicalSortMethod.BackToFrontView
+	var ParentRenderGroup = ""
+	var ChildRenderGroups = Array
+	{
+	}
+}

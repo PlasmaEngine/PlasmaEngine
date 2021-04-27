@@ -1,0 +1,125 @@
+// MIT Licensed (see LICENSE.md).
+
+struct AlphaForwardSettings
+{
+  var IndirectIntensity : Real;
+  var RenderDiffuse : Boolean;
+  var RenderSpec : Boolean;
+  var DirectLighting : Boolean;
+  var IndirectLighting : Boolean;
+}
+
+class AlphaRenderPass : LightningComponent
+{  
+  [Static]
+  function OnAlpha(event : RenderTasksEvent, renderGroup : RenderGroup, skybox : Texture, alphaForwardSettings : AlphaForwardSettings, alphaRenderSettings : RenderSettings, lightCog : Cog)
+  {
+    var forwardAlpha = ForwardPassAlpha();
+    forwardAlpha.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
+    forwardAlpha.DitherTexture = Texture.BlueNoise;
+    forwardAlpha.Skybox = skybox;
+    forwardAlpha.IndirectIntensity = alphaForwardSettings.IndirectIntensity;
+    forwardAlpha.RenderDiffuse = alphaForwardSettings.RenderDiffuse;
+    forwardAlpha.RenderSpecular = alphaForwardSettings.RenderSpec;
+      
+    forwardAlpha.DirectLightIntensity = 0.0;
+       
+    var light = lightCog;
+    if (light != null && light.DirectionalLight != null)
+    {
+       
+      forwardAlpha.DirectLightColor = light.DirectionalLight.LightColor.XYZ;
+      forwardAlpha.DirectLightDirection = light.DirectionalLight.LightDirection;
+      forwardAlpha.DirectLightIntensity = light.DirectionalLight.LightIntensity;
+      forwardAlpha.LightTemperature = light.DirectionalLight.LightTemperature;
+      
+    }
+   
+    
+    forwardAlpha.DirectLightIntensity *= alphaForwardSettings.DirectLighting as Real;
+    forwardAlpha.IndirectIntensity *= alphaForwardSettings.IndirectLighting as Real;
+    
+  //  alphaSettings.ColorTarget = this.FinalOutput;
+    alphaRenderSettings.CullMode = CullMode.BackFace;
+    
+    alphaRenderSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
+    
+    event.AddRenderTaskRenderPass(alphaRenderSettings, renderGroup, forwardAlpha, "AlphaMaterials");
+  }
+  
+  [Static]
+  function OnAlphaNoPostFX(event : RenderTasksEvent, skybox : Texture, alphaForwardSettings : AlphaForwardSettings, alphaRenderSettings : RenderSettings, light : Cog)
+  {
+    AlphaRenderPass.OnAlpha(event, RenderGroup.AlphaBlendNoPostFX, skybox, alphaForwardSettings, alphaRenderSettings, light);
+  }
+  
+  [Static]
+  function OnAlphaWithPostFX(event : RenderTasksEvent, skybox : Texture, alphaForwardSettings : AlphaForwardSettings, alphaRenderSettings : RenderSettings, light : Cog)
+  {
+    AlphaRenderPass.OnAlpha(event, RenderGroup.AlphaBlend, skybox, alphaForwardSettings, alphaRenderSettings, light);
+  }
+  
+  [Static]
+  function OnOIT(event: RenderTasksEvent, depthRange : Real, depth : RenderTarget, lightBuffer : RenderTarget)
+  {
+    
+    // Buffers for OIT.
+    var accumulation = event.GetRenderTarget(event.ViewportSize, TextureFormat.RGBA16f);
+    var revealage = event.GetRenderTarget(event.ViewportSize, TextureFormat.RGBA16f);
+    
+    var wPSetting = RenderSettings();
+    var weighPass = WeighPass();
+    weighPass.DepthRangeSetting = depthRange;
+    
+    // Set both the rendertargets.
+    wPSetting.MultiRenderTarget.ColorTarget0 = accumulation;
+    wPSetting.MultiRenderTarget.ColorTarget1 = revealage;
+    
+    // Set the accumulation target's blend settings.
+    wPSetting.MultiRenderTarget.BlendSettings0.BlendMode = BlendMode.Enabled;
+    wPSetting.MultiRenderTarget.BlendSettings0.SourceFactor = BlendFactor.One;
+    wPSetting.MultiRenderTarget.BlendSettings0.DestFactor = BlendFactor.One;
+    wPSetting.MultiRenderTarget.BlendSettings0.BlendEquation = BlendEquation.Add;
+    
+    //Set the revealage target's blend settings.
+    wPSetting.MultiRenderTarget.BlendSettings1.BlendMode = BlendMode.Separate;
+    wPSetting.MultiRenderTarget.BlendSettings1.SourceFactor = BlendFactor.Plasma;
+    wPSetting.MultiRenderTarget.BlendSettings1.DestFactor = BlendFactor.InvSourceColor;
+    wPSetting.MultiRenderTarget.BlendSettings1.SourceFactorAlpha = BlendFactor.One;
+    wPSetting.MultiRenderTarget.BlendSettings1.DestFactorAlpha = BlendFactor.One;
+    wPSetting.MultiRenderTarget.BlendSettings1.BlendEquation = BlendEquation.Add;
+    
+    // Test with only opaque pixels for depth test.
+    wPSetting.DepthSettings.DepthMode = DepthMode.Read;
+    wPSetting.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
+    wPSetting.DepthTarget = depth;
+    
+    // No culling transparent objects.
+    wPSetting.CullMode = CullMode.Disabled;
+    
+    // Clear the render targets.
+    event.AddRenderTaskClearTarget(accumulation, Real4(0.0));
+    event.AddRenderTaskClearTarget(revealage, Real4(1.0));
+    
+    // Render "Translucent" object with this pass.
+    event.AddRenderTaskRenderPass(wPSetting, RenderGroup.OrderIndependentTransparent, weighPass, "OrderIndependentTransparancy");
+    
+    var compositePass = WeighComposite();
+    compositePass.Accum = accumulation.Texture;
+    compositePass.Reveal = revealage.Texture;
+    
+    var compositePassSettings = RenderSettings();
+    compositePassSettings.ColorTarget = lightBuffer;
+    compositePassSettings.BlendSettings.BlendMode = BlendMode.Separate;
+    compositePassSettings.BlendSettings.BlendEquation = BlendEquation.Add;
+    compositePassSettings.BlendSettings.SourceFactor = BlendFactor.InvSourceAlpha;
+    compositePassSettings.BlendSettings.SourceFactorAlpha = BlendFactor.One;
+    compositePassSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
+    compositePassSettings.BlendSettings.DestFactor = BlendFactor.SourceAlpha;
+    compositePassSettings.DepthSettings.DepthMode = DepthMode.Read;
+    event.AddRenderTaskPostProcess(compositePassSettings, compositePass, "Composite");
+    
+    accumulation.Release();
+    revealage.Release();
+  }
+}

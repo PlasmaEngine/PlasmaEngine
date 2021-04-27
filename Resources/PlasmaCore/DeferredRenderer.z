@@ -130,10 +130,6 @@ class DeferredRenderer : LightningComponent
         
     GBufferPass.AddGBufferRenderPass(event, this.GBuffer1, this.GBuffer2, this.GBuffer3, this.Depth);
     
-        // Buffers for OIT.
-    var accum = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
-    var revealage = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
-    
     // Lighting
     var lightBuffer = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
     event.AddRenderTaskClearTarget(lightBuffer, Real4(0.0, 0.0, 0.0, 1.0));
@@ -268,64 +264,9 @@ class DeferredRenderer : LightningComponent
     }
   
     event.AddRenderTaskClearTarget(this.SSRBuffer, Real4.Zero);
-    
-        // Screen Space Reflections
-    if(this.Owner.PostProcessSSR != null)
-      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer1, this.GBuffer2, lightBuffer, this.SSRBuffer);
-    
+
     // Order Independent Transparancy
-    
-    var wPSetting = RenderSettings();
-    var weighPass = WeighPass();
-    weighPass.DepthRangeSetting = this.DepthRangeOIT;
-    
-    // Set both the rendertargets.
-    wPSetting.MultiRenderTarget.ColorTarget0 = accum;
-    wPSetting.MultiRenderTarget.ColorTarget1 = revealage;
-    
-    // Set the accum target's blend settings.
-    wPSetting.MultiRenderTarget.BlendSettings0.BlendMode = BlendMode.Enabled;
-    wPSetting.MultiRenderTarget.BlendSettings0.SourceFactor = BlendFactor.One;
-    wPSetting.MultiRenderTarget.BlendSettings0.DestFactor = BlendFactor.One;
-    wPSetting.MultiRenderTarget.BlendSettings0.BlendEquation = BlendEquation.Add;
-    
-    //Set the revealage target's blend settings.
-    wPSetting.MultiRenderTarget.BlendSettings1.BlendMode = BlendMode.Separate;
-    wPSetting.MultiRenderTarget.BlendSettings1.SourceFactor = BlendFactor.Plasma;
-    wPSetting.MultiRenderTarget.BlendSettings1.DestFactor = BlendFactor.InvSourceColor;
-    wPSetting.MultiRenderTarget.BlendSettings1.SourceFactorAlpha = BlendFactor.One;
-    wPSetting.MultiRenderTarget.BlendSettings1.DestFactorAlpha = BlendFactor.One;
-    wPSetting.MultiRenderTarget.BlendSettings1.BlendEquation = BlendEquation.Add;
-    
-    // Test with only opaque pixels for depth test.
-    wPSetting.DepthSettings.DepthMode = DepthMode.Read;
-    wPSetting.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
-    wPSetting.DepthTarget = this.Depth;
-    
-    // No culling transparent objects.
-    wPSetting.CullMode = CullMode.Disabled;
-    
-    // Clear the render targets.
-    event.AddRenderTaskClearTarget(accum, Real4(0.0));
-    event.AddRenderTaskClearTarget(revealage, Real4(1.0));
-    
-    // Render "Translucent" object with this pass.
-    event.AddRenderTaskRenderPass(wPSetting, RenderGroup.OrderIndependentTransparent, weighPass, "OrderIndependentTransparancy");
-    
-    var compositePass = WeighComposite();
-    compositePass.Accum = accum.Texture;
-    compositePass.Reveal = revealage.Texture;
-    
-    var compositePassSettings = RenderSettings();
-    compositePassSettings.ColorTarget = lightBuffer;
-    compositePassSettings.BlendSettings.BlendMode = BlendMode.Separate;
-    compositePassSettings.BlendSettings.BlendEquation = BlendEquation.Add;
-    compositePassSettings.BlendSettings.SourceFactor = BlendFactor.InvSourceAlpha;
-    compositePassSettings.BlendSettings.SourceFactorAlpha = BlendFactor.One;
-    compositePassSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
-    compositePassSettings.BlendSettings.DestFactor = BlendFactor.SourceAlpha;
-    compositePassSettings.DepthSettings.DepthMode = DepthMode.Read;
-    event.AddRenderTaskPostProcess(compositePassSettings, compositePass, "Composite");
+    AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, this.Depth, lightBuffer);
     
      // Additive materials 
     var alphaSettings = RenderSettings();
@@ -342,56 +283,45 @@ class DeferredRenderer : LightningComponent
     alphaSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
     event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AdditiveBlend, ColorOutput(), "AdditiveMaterials");
     
-    var forwardAlpha = ForwardPassAlpha();
-    forwardAlpha.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
-    forwardAlpha.DitherTexture = Texture.BlueNoise;
-    forwardAlpha.Skybox = this.Skybox;
-    forwardAlpha.IndirectIntensity = this.IndirectIntensity;
-    forwardAlpha.RenderDiffuse = this.RenderDiffuse;
-    forwardAlpha.RenderSpecular = this.RenderSpecular;
-      
-    forwardAlpha.DirectLightIntensity = 0.0;
-       
-    var light = this.DirectionalLight.Cog;
-    if (light != null && light.DirectionalLight != null)
-    {
-       
-      forwardAlpha.DirectLightColor = light.DirectionalLight.LightColor.XYZ;
-      forwardAlpha.DirectLightDirection = light.DirectionalLight.LightDirection;
-      forwardAlpha.DirectLightIntensity = light.DirectionalLight.LightIntensity;
-      forwardAlpha.LightTemperature = light.DirectionalLight.LightTemperature;
-      
-    }
-   
+    // Alpha With PostFX
+    var alphaForwardSettigns = AlphaForwardSettings();
+    alphaForwardSettigns.DirectLighting = this.DirectLighting;
+    alphaForwardSettigns.IndirectIntensity = this.IndirectIntensity;
+    alphaForwardSettigns.IndirectLighting = this.IndirectLighting;
+    alphaForwardSettigns.RenderDiffuse = this.RenderDiffuse;
+    alphaForwardSettigns.RenderSpec = this.RenderSpecular;
+
+    AlphaRenderPass.OnAlphaWithPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
     
-    forwardAlpha.DirectLightIntensity *= this.DirectLighting as Real;
-    forwardAlpha.IndirectIntensity *= this.IndirectLighting as Real;
-    
-  //  alphaSettings.ColorTarget = this.FinalOutput;
-    alphaSettings.CullMode = CullMode.BackFace;
-    
-    alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
-    
-    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AlphaBlend, forwardAlpha, "AlphaMaterials");
     
     // Distance Fog
     if(this.Owner.PostProcessFog != null)
       this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer1, this.GBuffer2, lightBuffer);
-      
-   if(this.Owner.PostProcessToon != null)
+    
+    // Toon Rendering  
+    if(this.Owner.PostProcessToon != null)
       this.Owner.PostProcessToon.OnRenderTasksUpdate(event, lightBuffer, this.GBuffer1, lightBuffer);
     
     //  Depth of Field.
     if(this.Owner.PostProcessDOF != null)
       this.Owner.PostProcessDOF.OnRenderTasksUpdate(event, this.GBuffer1, lightBuffer);   
-        
-        // Bloom
+      
+          
+    // Screen Space Reflections
+    if(this.Owner.PostProcessSSR != null)
+      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer1, this.GBuffer2, lightBuffer, this.SSRBuffer);
+     
+      
+    // Bloom
     if (this.Owner.PostProcessBloom != null)
       this.Owner.PostProcessBloom.AddRenderTasks(event, lightBuffer);
         
     // God Rays
     if(this.Owner.PostProcessGodRays != null)
       this.Owner.PostProcessGodRays.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);
+    
+    // Alpha No PostFX
+    AlphaRenderPass.OnAlphaNoPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
     
     var camera = event.CameraViewportCog.Camera;
     
