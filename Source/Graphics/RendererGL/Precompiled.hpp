@@ -15,7 +15,7 @@
 
 
 // Include OpenGl
-#if defined(PlasmaPlatformDarwin)
+#if defined(PlasmaPlatformMacOS)
 	#include <OpenGL/gl.h>
 #else
 	#include <GL/gl.h>

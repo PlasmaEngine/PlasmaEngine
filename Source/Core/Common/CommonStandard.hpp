@@ -33,7 +33,7 @@
 #include <cstdlib>
 #include <cfloat>
 
-#if !defined(PlasmaPlatformDarwin)
+#if !defined(PlasmaPlatformMacOS)
 #include <malloc.h>
 #else
 #include <stdlib.h>

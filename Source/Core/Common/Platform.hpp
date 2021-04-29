@@ -8,6 +8,15 @@
 #  define PlasmaDebug 1
 #endif
 
+// Apple Clang is a form of Clang
+#if defined(PlasmaCompilerAppleClang)
+#   define PlasmaCompilerClang
+#endif
+
+#if defined(PlasmaPlatformDarwin)
+#	define PlasmaPlatformMacOS
+#endif
+
 #ifdef PlasmaCompilerMsvc
 
 // Enable these warnings by setting them to level 3
@@ -181,10 +190,6 @@
 #  pragma warning(disable : 4267)
 #  pragma warning(disable : 4309)
 
-#endif
-
-#if defined(PlasmaCompilerAppleClang)
-#   define PlasmaCompilerClang
 #endif
 
 #if defined(PlasmaCompilerClang)
