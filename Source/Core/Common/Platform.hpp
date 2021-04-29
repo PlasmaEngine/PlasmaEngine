@@ -183,6 +183,10 @@
 
 #endif
 
+#if defined(PlasmaCompilerAppleClang)
+#   define PlasmaCompilerClang
+#endif
+
 #if defined(PlasmaCompilerClang)
 // Ignore unknown pragma warnings...
 #  pragma clang diagnostic ignored "-Wunknown-pragmas"
