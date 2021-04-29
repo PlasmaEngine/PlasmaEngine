@@ -26,7 +26,7 @@ class PostProcessSSR : LightningComponent
     
     [Group("Settings")]
     [Property]
-    var HalfRes : Boolean = false;
+    var HalfRes : Boolean = true;
     
     [Group("Debug")]
     [Property]
@@ -41,7 +41,7 @@ class PostProcessSSR : LightningComponent
         if(this.HalfRes)
             ssrRenderSize = ssrRenderSize/ 2;
             
-        var ssrTemp : RenderTarget = event.GetRenderTarget(ssrRenderSize, TextureFormat.RGBA8);
+        var ssrTemp : RenderTarget = event.GetRenderTarget(ssrRenderSize, TextureFormat.RGBA16f);
    
         event.AddRenderTaskClearTarget(ssrTemp, Real4.Zero);
                    
@@ -60,20 +60,16 @@ class PostProcessSSR : LightningComponent
         
         var blurSSR = event.GetRenderTarget(ssrRenderSize, TextureFormat.RGBA16f);
         
-        //var copySSR = CopyTarget();
-        //copySSR.Texture = ssrTemp.Texture;
-        //event.AddRenderTaskPostProcess(blurSSR, copySSR, "SSRCopy");        
         
-        
-        var blurPass = SSRBlur();
-        blurPass.Texture = ssrTemp.Texture;
-        blurPass.GBuffer0 = geometryBuffer0.Texture;
-        blurPass.BlurAmount = this.RoughnessBlur;
-        event.AddRenderTaskPostProcess(ssrBuffer, blurPass, "SSRBlur");
-        
-        if(this.HalfRes)
-          this.Upsample(event, ssrBuffer, ssrBuffer);
-          
+        BlurTexture[SeparableBlurRadius10].Call(event, ssrTemp);
+        var copySSR = CopyTarget();
+        copySSR.Texture = ssrTemp.Texture;
+        event.AddRenderTaskPostProcess(ssrBuffer, copySSR, "SSRCopy");        
+        //var blurPass = SSRBlur();
+        //blurPass.Texture = ssrTemp.Texture;
+        //blurPass.GBuffer0 = geometryBuffer0.Texture;
+        //blurPass.BlurAmount = this.RoughnessBlur;
+        //event.AddRenderTaskPostProcess(ssrBuffer, blurPass, "SSRBlur");         
 
         if(!this.Debug)
         {
