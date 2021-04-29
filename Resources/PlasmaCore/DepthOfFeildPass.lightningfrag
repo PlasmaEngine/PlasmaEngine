@@ -39,6 +39,7 @@ struct BokehPass
   [AppBuiltInInput] var FarPlane : Real;
   
   [Input] var DOFBuffer : SampledImage2d;
+  [Input] var COCBuffer : SampledImage2d;
   
   [PropertyInput] var DOFSampleCount = 16;
   [PropertyInput] var BokehSize : Real = 8.0;
@@ -87,10 +88,12 @@ struct BokehPass
       sampleUV *= (Real2(1.0) / textureSize) * this.BokehSize;
       
       var depthSample = GeometryPass.GetDepth(this.Depth.Sample(this.Uv +sampleUV)) * this.FarPlane;
-      if(depthSample < this.FocalDistance)
+     
+      var sampleCOC = this.COCBuffer.Sample(this.Uv+ sampleUV).W;
+      var dofStrength = Math.SmoothStep(0.1, 1, Math.Abs(sampleCOC));
+      if(dofStrength < 0.2)
       {
         color.XYZ += this.DOFBuffer.Sample(this.Uv).XYZ;
-      
       }
       else
         color.XYZ += this.DOFBuffer.Sample(this.Uv + sampleUV).XYZ;
@@ -129,10 +132,6 @@ struct DOFCombinePass
     var dofStrength = Math.SmoothStep(0.1, 1, Math.Abs(coc));
     
     var depthSample = GeometryPass.GetDepth(this.Depth.Sample(this.Uv)) * this.FarPlane;
-    if(depthSample < this.FocalDistance)
-    {
-      dofStrength = 0.0;
-    }
     
     this.Target0 =  Math.Lerp(screenSample, bokehSample, dofStrength);
   }

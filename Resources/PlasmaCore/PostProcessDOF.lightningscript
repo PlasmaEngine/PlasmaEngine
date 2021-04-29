@@ -48,6 +48,7 @@ class PostProcessDOF : LightningComponent
     bokehPass.BokehSize = this.BokehSize;
     bokehPass.DOFSampleCount = this.BlurAmmount as Integer;
     bokehPass.Depth = gBuffer0.Texture;
+    bokehPass.COCBuffer = dofBuffer.Texture;
     bokehPass.FocalDistance = camera.FocalDistance;
     event.AddRenderTaskPostProcess(bokehBuffer, bokehPass, "Dof Bokeh");
     
