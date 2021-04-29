@@ -12,7 +12,7 @@ struct PlasmaBuildTagPolicy
 
   PlasmaBuildTagPolicy()
   {
-    mShowExperimentalBranches = false;
+    mShowExperimentalBranches = true;
     mShowOnlyPreferredPlatform = true;
   }
 
@@ -35,8 +35,10 @@ struct PlasmaBuildTagPolicy
   bool ShouldInclude(PlasmaBuild* build)
   {
     BuildId buildId = build->GetBuildId();
-    if (!mShowExperimentalBranches && buildId.mBranch != BuildId::GetMasterBranch())
-      return false;
+
+  	/// TODO: Enable this code once out of Alpha
+	//if (!mShowExperimentalBranches && buildId.mBranch != BuildId::GetMasterBranch())
+    //  return false;
     if (mShowOnlyPreferredPlatform && !buildId.IsForThisPlatform())
       return false;
     return true;
