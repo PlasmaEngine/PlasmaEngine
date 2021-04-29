@@ -52,8 +52,15 @@ Level
 			var IndirectLighting = true
 			var IndirectIntensity = 1
 			var MaxIntensity = 50
-			var ToneMap = true
+			var UseACES = true
+			var ShoulderStrength = 2.50999999
+			var LinearStrength = 0.0299999993
+			var LinearAngle = 2.43000007
+			var ToeStrength = 0.589999974
+			var WhitePoint = 6
+			var DepthRangeOIT = 200
 			var GeometryDebug = GeometryValue.None
+			var VelocityBufferDebug = false
 			var EditorDebugDraw = true
 			var GameDebugDraw = true
 			var RenderDiffuse = true
@@ -74,29 +81,6 @@ Level
 				var PathPreference1 = CogPathPreference.SpaceRelative
 				var PathPreference2 = CogPathPreference.Absolute
 			}
-		}
-		Ssao 
-		{
-			var Active = true
-			var Radius = 1
-			var Intensity = 1
-			var BlurDepthThreshold = 0.0500000007
-			var DebugBuffer = false
-		}
-		Bloom 
-		{
-			var Active = true
-			var Intensity = 0.100000001
-			var Threshold = 1
-			var LensDirt = "5826e695131ca33a:White"
-			var LensDirtIntensity = 0.200000003
-			var LensDirtThreshold = 0.100000001
-			var DebugBuffer = false
-			var Bloom1 = true
-			var Bloom2 = true
-			var Bloom3 = true
-			var Bloom4 = true
-			var Bloom5 = true
 		}
 		ProcedualSky 
 		{
@@ -129,6 +113,37 @@ Level
 			var SurfaceHeight = 0.99000001
 			var Intensity = 1.79999995
 			var StepCount = 16
+		}
+		PostProcessSSAO 
+		{
+			var Active = true
+			var Radius = 1
+			var Intensity = 1
+			var BlurDepthThreshold = 0.100000001
+			var DebugBuffer = false
+		}
+		PostProcessBloom 
+		{
+			var Active = true
+			var Intensity = 0.812307954
+			var Threshold = 0.114280976
+			var LensDirt = "5826e695131ca33a:White"
+			var LensDirtIntensity = 0.200000003
+			var LensDirtThreshold = 0.100000001
+			var DebugBuffer = false
+			var Bloom1 = true
+			var Bloom2 = true
+			var Bloom3 = true
+			var Bloom4 = true
+			var Bloom5 = true
+		}
+		PostProcessSMAA 
+		{
+			var EnableSMAA = true
+			var EnableDiagnols = true
+			var DepthBasedEdges = false
+			var EdgeDetection = DetectionChance.Medium
+			var TargetTexture = SMAADebugTargets.Off
 		}
 	}
 	Cog [ContextId:3]
@@ -165,6 +180,7 @@ Level
 		{
 			var LightColor = Real4{1, 1, 1, 1}
 			var LightIntensity = 1200
+			var SpecularMultiplier = 1
 			var LightTemperature = 5800
 		}
 		CameraViewport 
@@ -217,6 +233,10 @@ Level
 			var PerspectiveMode = PerspectiveMode.Orthographic
 			var FieldOfView = 45
 			var Size = 64
+			var Aperture = 16
+			var FocalDistance = 22
+			var ShutterSpeed = 100
+			var ISO = 100
 		}
 		ShadowRenderer 
 		{
@@ -229,9 +249,9 @@ Level
 		var Name = "EditorCamera"
 		Transform 
 		{
-			var Translation = Real3{-1.59526277, 3.85493231, 12.2761307}
+			var Translation = Real3{-1.48416948, 7.0764513, 7.92509747}
 			var Scale = Real3{1, 1, 1}
-			var Rotation = Quaternion{0.201504484, 0.109995455, -0.022779068, 0.973025203}
+			var Rotation = Quaternion{-0.147993103, -0.0749021992, -0.0112609817, 0.984372139}
 		}
 		CameraViewport 
 		{
@@ -283,15 +303,19 @@ Level
 			var PerspectiveMode = PerspectiveMode.Perspective
 			var FieldOfView = 60
 			var Size = 20
+			var Aperture = 16
+			var FocalDistance = 22
+			var ShutterSpeed = 100
+			var ISO = 100
 		}
 		EditorCameraController 
 		{
 			var ControlMode = ControlMode.Orbit
 			var Previous3DMode = ControlMode.Orbit
 			var LookDistance = 3.67879319
-			var VerticalAngle = -0.408408344
-			var HorizontalAngle = 12.3412371
-			var LookTarget = Real3{-2.34896016, 5.31596184, 8.98510456}
+			var VerticalAngle = 0.298450023
+			var HorizontalAngle = 12.7182608
+			var LookTarget = Real3{-0.952149689, 5.99474239, 4.4494133}
 			var MoveSensitivity = 1
 		}
 	}
@@ -363,6 +387,10 @@ Level
 			var PerspectiveMode = PerspectiveMode.Perspective
 			var FieldOfView = 60
 			var Size = 20
+			var Aperture = 16
+			var FocalDistance = 22
+			var ShutterSpeed = 100
+			var ISO = 100
 		}
 		SoundListener 
 		{
@@ -403,252 +431,6 @@ Level
 	}
 	Cog [ContextId:7]
 	{
-		var Name = "Box"
-		Transform 
-		{
-			var Translation = Real3{-2.21982145, 2, 0}
-			var Scale = Real3{2, 2, 2}
-			var Rotation = Quaternion{0, 0, 0, 1}
-		}
-		Model 
-		{
-			var Visible = true
-			var ViewCulling = true
-			var VisibilityEvents = true
-			var OverrideBoundingBox = false
-			var LocalAabbCenter = Real3{0, 0, 0}
-			var LocalAabbHalfExtents = Real3{1, 1, 1}
-			var GroupSortValue = 0
-			var Material = "583afb5e7bf75e18:PlasmaMaterial"
-			var Mesh = "57b24459d8122a05:Wedge"
-		}
-		RigidBody 
-		{
-			var Velocity = Real3{0, 0, 0}
-			var AngularVelocity = Real3{0, 0, 0}
-			var DynamicState = RigidBodyDynamicState.Dynamic
-			var AllowSleep = true
-			var Asleep = false
-			var RotationLocked = false
-			var Mode2D = Mode2DStates.InheritFromSpace
-		}
-		ConvexMeshCollider 
-		{
-			var Ghost = false
-			var SendsEvents = true
-			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
-			var CollisionGroup = "4e740859314e5515:DefaultGroup"
-			var Offset = Real3{0, 0, 0}
-			var ConvexMesh = "5828ac1063879136:Wedge"
-		}
-	}
-	Cog [ContextId:8]
-	{
-		var Name = "Box"
-		Transform 
-		{
-			var Translation = Real3{-2.21982145, 1.33855796, 2.33903146}
-			var Scale = Real3{2, 0.5, 2}
-			var Rotation = Quaternion{0, 0, 0, 1}
-		}
-		Model 
-		{
-			var Visible = true
-			var ViewCulling = true
-			var VisibilityEvents = true
-			var OverrideBoundingBox = false
-			var LocalAabbCenter = Real3{0, 0, 0}
-			var LocalAabbHalfExtents = Real3{1, 1, 1}
-			var GroupSortValue = 0
-			var Material = "583afb5e7bf75e18:PlasmaMaterial"
-			var Mesh = "57b24459d8122a05:Wedge"
-		}
-		RigidBody 
-		{
-			var Velocity = Real3{0, 0, 0}
-			var AngularVelocity = Real3{0, 0, 0}
-			var DynamicState = RigidBodyDynamicState.Dynamic
-			var AllowSleep = true
-			var Asleep = false
-			var RotationLocked = false
-			var Mode2D = Mode2DStates.InheritFromSpace
-		}
-		ConvexMeshCollider 
-		{
-			var Ghost = false
-			var SendsEvents = true
-			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
-			var CollisionGroup = "4e740859314e5515:DefaultGroup"
-			var Offset = Real3{0, 0, 0}
-			var ConvexMesh = "5828ac1063879136:Wedge"
-		}
-	}
-	Cog [ContextId:9]
-	{
-		var Name = "Box"
-		Transform 
-		{
-			var Translation = Real3{-0.219821453, 2, 0}
-			var Scale = Real3{2, 2, 2}
-			var Rotation = Quaternion{0, 0, 0, 1}
-		}
-		Model 
-		{
-			var Visible = true
-			var ViewCulling = true
-			var VisibilityEvents = true
-			var OverrideBoundingBox = false
-			var LocalAabbCenter = Real3{0, 0, 0}
-			var LocalAabbHalfExtents = Real3{1, 1, 1}
-			var GroupSortValue = 0
-			var Material = "583afb5e7bf75e18:PlasmaMaterial"
-			var Mesh = "57b24459d8122a05:Wedge"
-		}
-		RigidBody 
-		{
-			var Velocity = Real3{0, 0, 0}
-			var AngularVelocity = Real3{0, 0, 0}
-			var DynamicState = RigidBodyDynamicState.Dynamic
-			var AllowSleep = true
-			var Asleep = false
-			var RotationLocked = false
-			var Mode2D = Mode2DStates.InheritFromSpace
-		}
-		ConvexMeshCollider 
-		{
-			var Ghost = false
-			var SendsEvents = true
-			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
-			var CollisionGroup = "4e740859314e5515:DefaultGroup"
-			var Offset = Real3{0, 0, 0}
-			var ConvexMesh = "5828ac1063879136:Wedge"
-		}
-	}
-	Cog [ContextId:10]
-	{
-		var Name = "Box"
-		Transform 
-		{
-			var Translation = Real3{-0.219821453, 1.33855796, 2.33903146}
-			var Scale = Real3{2, 0.5, 2}
-			var Rotation = Quaternion{0, 0, 0, 1}
-		}
-		Model 
-		{
-			var Visible = true
-			var ViewCulling = true
-			var VisibilityEvents = true
-			var OverrideBoundingBox = false
-			var LocalAabbCenter = Real3{0, 0, 0}
-			var LocalAabbHalfExtents = Real3{1, 1, 1}
-			var GroupSortValue = 0
-			var Material = "583afb5e7bf75e18:PlasmaMaterial"
-			var Mesh = "57b24459d8122a05:Wedge"
-		}
-		RigidBody 
-		{
-			var Velocity = Real3{0, 0, 0}
-			var AngularVelocity = Real3{0, 0, 0}
-			var DynamicState = RigidBodyDynamicState.Dynamic
-			var AllowSleep = true
-			var Asleep = false
-			var RotationLocked = false
-			var Mode2D = Mode2DStates.InheritFromSpace
-		}
-		ConvexMeshCollider 
-		{
-			var Ghost = false
-			var SendsEvents = true
-			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
-			var CollisionGroup = "4e740859314e5515:DefaultGroup"
-			var Offset = Real3{0, 0, 0}
-			var ConvexMesh = "5828ac1063879136:Wedge"
-		}
-	}
-	Cog [ContextId:11]
-	{
-		var Name = "Box"
-		Transform 
-		{
-			var Translation = Real3{1.78017855, 2, 0}
-			var Scale = Real3{2, 2, 2}
-			var Rotation = Quaternion{0, 0, 0, 1}
-		}
-		Model 
-		{
-			var Visible = true
-			var ViewCulling = true
-			var VisibilityEvents = true
-			var OverrideBoundingBox = false
-			var LocalAabbCenter = Real3{0, 0, 0}
-			var LocalAabbHalfExtents = Real3{1, 1, 1}
-			var GroupSortValue = 0
-			var Material = "583afb5e7bf75e18:PlasmaMaterial"
-			var Mesh = "57b24459d8122a05:Wedge"
-		}
-		RigidBody 
-		{
-			var Velocity = Real3{0, 0, 0}
-			var AngularVelocity = Real3{0, 0, 0}
-			var DynamicState = RigidBodyDynamicState.Dynamic
-			var AllowSleep = true
-			var Asleep = false
-			var RotationLocked = false
-			var Mode2D = Mode2DStates.InheritFromSpace
-		}
-		ConvexMeshCollider 
-		{
-			var Ghost = false
-			var SendsEvents = true
-			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
-			var CollisionGroup = "4e740859314e5515:DefaultGroup"
-			var Offset = Real3{0, 0, 0}
-			var ConvexMesh = "5828ac1063879136:Wedge"
-		}
-	}
-	Cog [ContextId:12]
-	{
-		var Name = "Box"
-		Transform 
-		{
-			var Translation = Real3{1.78017855, 1.33855796, 2.33903146}
-			var Scale = Real3{2, 0.5, 2}
-			var Rotation = Quaternion{0, 0, 0, 1}
-		}
-		Model 
-		{
-			var Visible = true
-			var ViewCulling = true
-			var VisibilityEvents = true
-			var OverrideBoundingBox = false
-			var LocalAabbCenter = Real3{0, 0, 0}
-			var LocalAabbHalfExtents = Real3{1, 1, 1}
-			var GroupSortValue = 0
-			var Material = "583afb5e7bf75e18:PlasmaMaterial"
-			var Mesh = "57b24459d8122a05:Wedge"
-		}
-		RigidBody 
-		{
-			var Velocity = Real3{0, 0, 0}
-			var AngularVelocity = Real3{0, 0, 0}
-			var DynamicState = RigidBodyDynamicState.Dynamic
-			var AllowSleep = true
-			var Asleep = false
-			var RotationLocked = false
-			var Mode2D = Mode2DStates.InheritFromSpace
-		}
-		ConvexMeshCollider 
-		{
-			var Ghost = false
-			var SendsEvents = true
-			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
-			var CollisionGroup = "4e740859314e5515:DefaultGroup"
-			var Offset = Real3{0, 0, 0}
-			var ConvexMesh = "5828ac1063879136:Wedge"
-		}
-	}
-	Cog [ContextId:13]
-	{
 		var Name = "Sphere"
 		Transform 
 		{
@@ -688,7 +470,7 @@ Level
 			var Radius = 0.5
 		}
 	}
-	Cog [ContextId:14]
+	Cog [ContextId:8]
 	{
 		var Name = "Sphere"
 		Transform 
@@ -727,6 +509,88 @@ Level
 			var CollisionGroup = "4e740859314e5515:DefaultGroup"
 			var Offset = Real3{0, 0, 0}
 			var Radius = 0.5
+		}
+	}
+	Cog [ContextId:9]
+	{
+		var Name = "Cube"
+		Transform 
+		{
+			var Translation = Real3{0.303530931, 5.85021925, 0.0157284141}
+			var Scale = Real3{1, 1, 1}
+			var Rotation = Quaternion{0, 0, 0, 1}
+		}
+		Model 
+		{
+			var Visible = true
+			var ViewCulling = true
+			var VisibilityEvents = true
+			var OverrideBoundingBox = false
+			var LocalAabbCenter = Real3{0, 0, 0}
+			var LocalAabbHalfExtents = Real3{1, 1, 1}
+			var GroupSortValue = 0
+			var Material = "583afb5e7bf75e18:PlasmaMaterial"
+			var Mesh = "4de0354322b345ae:Cube"
+		}
+		RigidBody 
+		{
+			var Velocity = Real3{0, 0, 0}
+			var AngularVelocity = Real3{0, 0, 0}
+			var DynamicState = RigidBodyDynamicState.Dynamic
+			var AllowSleep = true
+			var Asleep = false
+			var RotationLocked = false
+			var Mode2D = Mode2DStates.InheritFromSpace
+		}
+		BoxCollider 
+		{
+			var Ghost = false
+			var SendsEvents = true
+			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
+			var CollisionGroup = "4e740859314e5515:DefaultGroup"
+			var Offset = Real3{0, 0, 0}
+			var HalfSize = Real3{0.5, 0.5, 0.5}
+		}
+	}
+	Cog [ContextId:10]
+	{
+		var Name = "Cube"
+		Transform 
+		{
+			var Translation = Real3{-1.15632868, 6.72889853, 0.0157284141}
+			var Scale = Real3{1, 1, 1}
+			var Rotation = Quaternion{0, 0, 0, 1}
+		}
+		Model 
+		{
+			var Visible = true
+			var ViewCulling = true
+			var VisibilityEvents = true
+			var OverrideBoundingBox = false
+			var LocalAabbCenter = Real3{0, 0, 0}
+			var LocalAabbHalfExtents = Real3{1, 1, 1}
+			var GroupSortValue = 0
+			var Material = "583afb5e7bf75e18:PlasmaMaterial"
+			var Mesh = "4de0354322b345ae:Cube"
+		}
+		RigidBody 
+		{
+			var Velocity = Real3{0, 0, 0}
+			var AngularVelocity = Real3{0, 0, 0}
+			var DynamicState = RigidBodyDynamicState.Dynamic
+			var AllowSleep = true
+			var Asleep = false
+			var RotationLocked = false
+			var Mode2D = Mode2DStates.InheritFromSpace
+		}
+		BoxCollider 
+		{
+			var Ghost = false
+			var SendsEvents = true
+			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
+			var CollisionGroup = "4e740859314e5515:DefaultGroup"
+			var Offset = Real3{0, 0, 0}
+			var HalfSize = Real3{0.5, 0.5, 0.5}
 		}
 	}
 }
