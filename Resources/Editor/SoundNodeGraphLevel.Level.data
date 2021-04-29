@@ -73,6 +73,8 @@ Level
 		{
 			var LightColor = Real4{1, 1, 1, 1}
 			var LightIntensity = 1
+			var SpecularMultiplier = 1
+			var LightTemperature = 6500
 		}
 		CameraViewport 
 		{
@@ -124,6 +126,10 @@ Level
 			var PerspectiveMode = PerspectiveMode.Orthographic
 			var FieldOfView = 45
 			var Size = 64
+			var Aperture = 16
+			var FocalDistance = 22
+			var ShutterSpeed = 100
+			var ISO = 100
 		}
 		ShadowRenderer 
 		{
@@ -136,9 +142,9 @@ Level
 		var Name = "EditorCamera"
 		Transform 
 		{
-			var Translation = Real3{297.5, -229, 10}
+			var Translation = Real3{39, 18, 10}
 			var Scale = Real3{1, 1, 1}
-			var Rotation = Quaternion{0, 0, 0, 1}
+			var Rotation = Quaternion{0, 0, 0, 0.998307168}
 		}
 		CameraViewport 
 		{
@@ -189,7 +195,11 @@ Level
 			var FarPlane = 100
 			var PerspectiveMode = PerspectiveMode.Orthographic
 			var FieldOfView = 60
-			var Size = 1749
+			var Size = 746
+			var Aperture = 16
+			var FocalDistance = 22
+			var ShutterSpeed = 100
+			var ISO = 100
 		}
 		EditorCameraController 
 		{
@@ -198,7 +208,7 @@ Level
 			var LookDistance = 10
 			var VerticalAngle = 0
 			var HorizontalAngle = 0
-			var LookTarget = Real3{297.412659, -228.09639, 2.07247285e-06}
+			var LookTarget = Real3{39.178215, 18.7883148, -9.21531682e-06}
 			var MoveSensitivity = 1
 		}
 	}
@@ -270,6 +280,10 @@ Level
 			var PerspectiveMode = PerspectiveMode.Orthographic
 			var FieldOfView = 60
 			var Size = 20
+			var Aperture = 16
+			var FocalDistance = 22
+			var ShutterSpeed = 100
+			var ISO = 100
 		}
 	}
 	Cog [ContextId:4]
@@ -311,6 +325,7 @@ Level
 			var Visible = true
 			var Interactive = true
 			var InLayout = true
+			var OnTop = false
 			var ClipChildren = false
 			var CanTakeFocus = false
 			var LocalColor = Real4{1, 1, 1, 0}
@@ -340,10 +355,25 @@ Level
 			var ClearColor = Real4{0, 0, 0, 0}
 			var EditorDebugDraw = true
 			var GameDebugDraw = true
+			var GameCamera = CogPath
+			{
+				var Path = ":/GameCamera"
+				var ErrorOnResolveToNull = false
+				var ErrorOnPathCantCompute = false
+				var ErrorOnDirectLinkFail = false
+				var UpdateCogOnPathChange = true
+				var UpdatePathOnCogChange = true
+				var UpdateCogOnInitialize = true
+				var ResolvedNullErrorOccurred = false
+				var Cog = 5
+				var PathPreference0 = CogPathPreference.CogRelative
+				var PathPreference1 = CogPathPreference.SpaceRelative
+				var PathPreference2 = CogPathPreference.Absolute
+			}
 		}
 		Hierarchy 
 		{
-			Cog [ContextId:6]
+			Cog [Id:0x60a5bb048ec69c03][ContextId:6]
 			{
 				var Name = "SoundNodeGraph"
 				Transform 
@@ -363,6 +393,7 @@ Level
 					var Visible = true
 					var Interactive = true
 					var InLayout = true
+					var OnTop = false
 					var ClipChildren = false
 					var CanTakeFocus = false
 					var LocalColor = Real4{1, 1, 1, 1}

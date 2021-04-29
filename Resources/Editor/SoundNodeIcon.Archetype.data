@@ -6,23 +6,23 @@ Cog
 	{
 		var Translation = Real3{0, 0, 0}
 		var Scale = Real3{1, 1, 1}
-		var Rotation = Quaternion{0, 0, 0, 1}
+		var Rotation = Quaternion{0, 0, 0, 0.998312414}
 	}
 	Area 
 	{
 		var Size = Real2{78, 28}
 		var Origin = Location.BottomLeft
 	}
-    ZUiSoundNodeIcon
-    {
-    
-    }
+	ZUiSoundNodeIcon 
+	{
+	}
 	UiWidget 
 	{
 		var Active = true
 		var Visible = true
 		var Interactive = true
 		var InLayout = false
+		var OnTop = false
 		var ClipChildren = false
 		var CanTakeFocus = false
 		var LocalColor = Real4{1, 1, 1, 1}
@@ -53,7 +53,7 @@ Cog
 			var Name = "CircleHighlight"
 			Transform 
 			{
-				var Translation = Real3{-11, 36, 1}
+				var Translation = Real3{-1, 43, 1}
 				var Scale = Real3{1, 1, 1}
 				var Rotation = Quaternion{0, 0, 0, 1}
 			}
@@ -67,9 +67,9 @@ Cog
 				var LocalAabbHalfExtents = Real3{1, 1, 1}
 				var GroupSortValue = 0
 				var Material = "582c575af53d18c9:AlphaSprite"
-				var VertexColor = Real4{0.411764741, 0.698039234, 1, 1}
+				var VertexColor = Real4{0.329411775, 0.556862772, 0.800000072, 1}
 				var GeometryMode = SpriteGeometryMode.ZPlane
-				var SpriteSource = "58a22d11dd76ef3e:SoundNodeGraph__0001_BGHighLight"
+				var SpriteSource = "5275aa4d802dd6dc:Square"
 				var FlipX = false
 				var FlipY = false
 				var AnimationActive = false
@@ -78,7 +78,7 @@ Cog
 			}
 			Area 
 			{
-				var Size = Real2{100, 100}
+				var Size = Real2{80, 20}
 				var Origin = Location.TopLeft
 			}
 			UiWidget 
@@ -87,18 +87,19 @@ Cog
 				var Visible = true
 				var Interactive = true
 				var InLayout = true
+				var OnTop = true
 				var ClipChildren = false
 				var CanTakeFocus = false
-				var LocalColor = Real4{0.411764741, 0.698039234, 1, 1}
+				var LocalColor = Real4{0.329411775, 0.556862772, 0.800000072, 1}
 				var HierarchyColor = Real4{1, 1, 1, 1}
 				var SizePolicyX = UiSizePolicy.Fixed
 				var SizePolicyY = UiSizePolicy.Fixed
 				var FlexSize = Real2{1, 1}
 				var AbsoluteMinSize = Real2{1, 1}
-				var VerticalAlignment = UiVerticalAlignment.Center
+				var VerticalAlignment = UiVerticalAlignment.Top
 				var HorizontalAlignment = UiHorizontalAlignment.Center
 				var MarginLeft = 0
-				var MarginTop = 0
+				var MarginTop = -15
 				var MarginRight = 0
 				var MarginBottom = 0
 				var DockMode = UiDockMode.Left
@@ -109,7 +110,7 @@ Cog
 			var Name = "Circle"
 			Transform 
 			{
-				var Translation = Real3{-11, 36, 1.10000002}
+				var Translation = Real3{0, 42, 1.10000002}
 				var Scale = Real3{1, 1, 1}
 				var Rotation = Quaternion{0, 0, 0, 1}
 			}
@@ -123,9 +124,9 @@ Cog
 				var LocalAabbHalfExtents = Real3{1, 1, 1}
 				var GroupSortValue = 0
 				var Material = "582c575af53d18c9:AlphaSprite"
-				var VertexColor = Real4{0.505882382, 0.505882382, 0.505882382, 1}
+				var VertexColor = Real4{0.207843155, 0.207843155, 0.207843155, 1}
 				var GeometryMode = SpriteGeometryMode.ZPlane
-				var SpriteSource = "58a22d11dd76843e:SoundNodeGraph__0000_Background"
+				var SpriteSource = "5275aa4d802dd6dc:Square"
 				var FlipX = false
 				var FlipY = false
 				var AnimationActive = false
@@ -134,7 +135,7 @@ Cog
 			}
 			Area 
 			{
-				var Size = Real2{100, 100}
+				var Size = Real2{78, 20}
 				var Origin = Location.TopLeft
 			}
 			UiWidget 
@@ -143,18 +144,19 @@ Cog
 				var Visible = true
 				var Interactive = true
 				var InLayout = true
+				var OnTop = true
 				var ClipChildren = false
 				var CanTakeFocus = false
-				var LocalColor = Real4{0.505882382, 0.505882382, 0.505882382, 1}
+				var LocalColor = Real4{0.207843155, 0.207843155, 0.207843155, 1}
 				var HierarchyColor = Real4{1, 1, 1, 1}
 				var SizePolicyX = UiSizePolicy.Fixed
 				var SizePolicyY = UiSizePolicy.Fixed
 				var FlexSize = Real2{1, 1}
 				var AbsoluteMinSize = Real2{1, 1}
-				var VerticalAlignment = UiVerticalAlignment.Center
+				var VerticalAlignment = UiVerticalAlignment.Top
 				var HorizontalAlignment = UiHorizontalAlignment.Center
 				var MarginLeft = 0
-				var MarginTop = 0
+				var MarginTop = -14
 				var MarginRight = 0
 				var MarginBottom = 0
 				var DockMode = UiDockMode.Left
@@ -165,7 +167,7 @@ Cog
 			var Name = "BoxHighlight"
 			Transform 
 			{
-				var Translation = Real3{-1, 1, 1.20000005}
+				var Translation = Real3{-1, 23, 1.20000005}
 				var Scale = Real3{1, 1, 1}
 				var Rotation = Quaternion{0, 0, 0, 1}
 			}
@@ -199,6 +201,7 @@ Cog
 				var Visible = true
 				var Interactive = true
 				var InLayout = true
+				var OnTop = true
 				var ClipChildren = false
 				var CanTakeFocus = false
 				var LocalColor = Real4{0.329411775, 0.556862772, 0.800000072, 1}
@@ -210,7 +213,7 @@ Cog
 				var VerticalAlignment = UiVerticalAlignment.Center
 				var HorizontalAlignment = UiHorizontalAlignment.Center
 				var MarginLeft = 0
-				var MarginTop = 0
+				var MarginTop = 13
 				var MarginRight = 0
 				var MarginBottom = 0
 				var DockMode = UiDockMode.Left
@@ -221,7 +224,7 @@ Cog
 			var Name = "Box"
 			Transform 
 			{
-				var Translation = Real3{0, 0, 1.39999998}
+				var Translation = Real3{0, 22, 1.39999998}
 				var Scale = Real3{1, 1, 1}
 				var Rotation = Quaternion{0, 0, 0, 1}
 			}
@@ -255,6 +258,7 @@ Cog
 				var Visible = true
 				var Interactive = true
 				var InLayout = true
+				var OnTop = true
 				var ClipChildren = false
 				var CanTakeFocus = false
 				var LocalColor = Real4{0.207843155, 0.207843155, 0.207843155, 1}
@@ -266,7 +270,7 @@ Cog
 				var VerticalAlignment = UiVerticalAlignment.Center
 				var HorizontalAlignment = UiHorizontalAlignment.Center
 				var MarginLeft = 0
-				var MarginTop = 0
+				var MarginTop = 13
 				var MarginRight = 0
 				var MarginBottom = 0
 				var DockMode = UiDockMode.Left
@@ -277,7 +281,7 @@ Cog
 			var Name = "Text"
 			Transform 
 			{
-				var Translation = Real3{2, -4, 1.60000002}
+				var Translation = Real3{2, 38, 1.60000002}
 				var Scale = Real3{1, 1, 1}
 				var Rotation = Quaternion{0, 0, 0, 1}
 			}
@@ -295,7 +299,7 @@ Cog
 				var GeometryMode = SpriteGeometryMode.ZPlane
 				var Text = "Attenuation Node"
 				var Font = "57343753bb4eaaec:NotoSans-Regular"
-				var FontSize = 8
+				var FontSize = 9
 				var PixelsPerUnit = 1
 				var TextAlign = TextAlign.Center
 			}
@@ -310,6 +314,7 @@ Cog
 				var Visible = true
 				var Interactive = true
 				var InLayout = true
+				var OnTop = true
 				var ClipChildren = false
 				var CanTakeFocus = false
 				var LocalColor = Real4{1, 1, 1, 1}
@@ -321,7 +326,7 @@ Cog
 				var VerticalAlignment = UiVerticalAlignment.Center
 				var HorizontalAlignment = UiHorizontalAlignment.Center
 				var MarginLeft = 0
-				var MarginTop = 0
+				var MarginTop = -28
 				var MarginRight = 0
 				var MarginBottom = 0
 				var DockMode = UiDockMode.Left
