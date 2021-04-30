@@ -641,7 +641,7 @@ void SampleCurveDrawer::AddCurve(ViewBlock& viewBlock,
   Array<StreamedVertex> triangles;
 
   // The color of the curve
-  Vec4 color = ToFloatColor(Color::Orange);
+  Vec4 color = ToFloatColor(Color::Aqua);
 
   // Create the curve
   Vec3Array curve;

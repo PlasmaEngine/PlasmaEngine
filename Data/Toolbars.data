@@ -36,10 +36,10 @@ Menus menus =
 		string Name = "EditToolsToolbar",
 		Array Entries = 
 		[
-		  //"TileEditor2D",
-		  //"HeightMapTool",
-		  //"JointTool",
-		  //"CreationTool",
+		  "TileEditor2D",
+		  "HeightMapTool",
+		  "JointTool",
+		  "CreationTool",
 		  //"Divider",
 		  //"Divider",
 		  //"Divider",
@@ -88,11 +88,11 @@ Menus menus =
 		string Name = "DebuggerToolbar",
 		Array Entries = 
 		[
-			//"DebuggerResume",
-			//"DebuggerPause",
-			//"DebuggerStepIn",
-			//"DebuggerStepOver",
-			//"DebuggerStepOut",
+			"DebuggerResume",
+			"DebuggerPause",
+			"DebuggerStepIn",
+			"DebuggerStepOver",
+			"DebuggerStepOut",
 		]
 	}
 	

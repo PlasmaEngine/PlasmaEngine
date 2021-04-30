@@ -429,9 +429,9 @@ Tweakables
 			SampleCurve_ 
 			{
 				var PrimaryLineColor = Vec4{0.125, 0.125, 0.125, 1}
-				var PrimaryLineWidth = 1
+				var PrimaryLineWidth = 2
 				var SecondaryLineColor = Vec4{0.224999994, 0.224999994, 0.224999994, 1}
-				var SecondaryLineWidth = 1
+				var SecondaryLineWidth = 2
 			}
 		}
 		ScriptEditor_ 

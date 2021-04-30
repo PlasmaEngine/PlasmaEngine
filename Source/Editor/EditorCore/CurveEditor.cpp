@@ -309,7 +309,7 @@ void CurveDrawer::AddPoint(
 
 CurveObject::CurveObject(CurveEditor* editor) : mEditor(editor)
 {
-  mCurveColor = Color::Orange;
+  mCurveColor = Color::Aqua;
   mError = 0.001f;
   mMouseOverCurve = false;
   editor->AddCurveObject(this);
