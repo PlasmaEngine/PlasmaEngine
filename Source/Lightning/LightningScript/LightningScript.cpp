@@ -73,6 +73,11 @@ LightningDefineType(LightningScript, builder, type)
   PlasmaBindDocumented();
 }
 
+LightningScript::LightningScript()
+{
+  mResourceIconName = cCodeIcon;
+}
+
 void LightningScript::ReloadData(StringRange data)
 {
   LightningDocumentResource::ReloadData(data);

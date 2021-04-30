@@ -11,6 +11,7 @@ LightningDefineType(LightningFragment, builder, type)
 
 LightningFragment::LightningFragment()
 {
+  mResourceIconName = cCodeIcon;
 }
 
 void LightningFragment::ReloadData(StringRange data)

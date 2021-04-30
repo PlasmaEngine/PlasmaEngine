@@ -15,6 +15,11 @@ class ResourceTemplate;
 
 DeclareEnum4(ResourceEditType, Data, Text, Custom, None);
 
+const String cAnimationIcon = "AnimationIcon";
+const String cMaterialIcon = "MaterialIcon";
+const String cModelIcon = "ModelIcon";
+const String cCodeIcon = "ScriptIcon";
+  
 /// Resource Ids are 64 bit numbers. Stored in text files at a 16 digit hex
 /// value.
 typedef Guid ResourceId;
@@ -208,6 +213,9 @@ public:
 
   /// Name of resource for display.
   String Name;
+
+  /// Used to set the resource icon in the editor.
+  String mResourceIconName;
 
   /// Global Unique Id for this resource
   ResourceId mResourceId;

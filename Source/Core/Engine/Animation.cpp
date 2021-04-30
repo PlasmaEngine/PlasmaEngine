@@ -181,6 +181,7 @@ LightningDefineType(Animation, builder, type)
 
 Animation::Animation()
 {
+  mResourceIconName = cAnimationIcon;
   mDuration = 0.0f;
   mNumberOfTracks = 0;
 }

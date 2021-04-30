@@ -286,6 +286,7 @@ LightningDefineType(Resource, builder, type)
 
   PlasmaBindDocumented();
   LightningBindFieldGetterProperty(Name);
+  LightningBindFieldGetterProperty(mResourceIconName);
   type->ToStringFunction = ResourceToString;
 
   PlasmaBindTag(Tags::Resource);
@@ -303,6 +304,7 @@ void Resource::operator delete(void* pMem, size_t size)
 
 Resource::Resource()
 {
+  mResourceIconName = "ResourceIcon";
   mResourceId = 0;
   mManager = nullptr;
   mResourceLibrary = nullptr;

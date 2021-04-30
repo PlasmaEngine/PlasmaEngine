@@ -522,6 +522,7 @@ HandleOf<Mesh> Mesh::RuntimeClone()
 
 Mesh::Mesh()
 {
+  mResourceIconName = cModelIcon;
   mRenderData = nullptr;
   mPrimitiveType = PrimitiveType::Triangles;
 }

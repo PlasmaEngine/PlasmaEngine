@@ -124,22 +124,7 @@ public:
   {
     return false;
   }
-
-  // TODO: investigate moving icon storage into bound type
-  Any GetResourceIcon(BoundType* resourceType)
-  {
-    if (resourceType->Name == "Animation")
-      return String("AnimationIcon");
-    else if (resourceType->Name == "Material")
-      return String("MaterialIcon");
-    else if (resourceType->Name == "Mesh")
-      return String("ModelIcon");
-    else if (resourceType->Name == "LightningScript" || resourceType->Name == "LightningFragment")
-      return String("ScriptIcon");
-    else
-	  return String("ResourceIcon");
-  }
-
+  
   void GetData(DataEntry* dataEntry, Any& variant, StringParam column) override
   {
     LibDataEntry* entry = (LibDataEntry*)dataEntry;
@@ -154,7 +139,7 @@ public:
       else if (column == CommonColumns::Type)
         variant = resourceType->Name;
       else if (column == CommonColumns::Icon)
-        variant = GetResourceIcon(resourceType);
+        variant = resource->mResourceIconName;
     }
     // Icon entry
     else

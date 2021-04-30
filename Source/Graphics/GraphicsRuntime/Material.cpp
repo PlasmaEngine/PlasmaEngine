@@ -33,6 +33,7 @@ Material::Material() :
     mPropertiesChanged(true),
     mInputRangeVersion(-1)
 {
+  mResourceIconName = cMaterialIcon;
   mSerializedList.mDisplayName = "RenderGroups";
   mReferencedByList.mDisplayName = "ReferencedBy";
   mReferencedByList.mReadOnly = true;

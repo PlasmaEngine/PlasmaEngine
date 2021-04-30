@@ -11,6 +11,8 @@ class LightningScript : public LightningDocumentResource
 public:
   LightningDeclareType(LightningScript, TypeCopyMode::ReferenceType);
 
+  LightningScript();
+  
   // DocumentResource Interface.
   void ReloadData(StringRange data) override;
 
