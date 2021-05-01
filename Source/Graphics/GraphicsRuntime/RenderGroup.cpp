@@ -30,6 +30,7 @@ RenderGroup::RenderGroup() :
     mParentInternal(nullptr),
     mSortId(-1)
 {
+  mResourceIconName = cGraphicsIcon;
   mSerializedList.mDisplayName = "Materials";
   mReferencedByList.mDisplayName = "ReferencedBy";
   mReferencedByList.mReadOnly = true;

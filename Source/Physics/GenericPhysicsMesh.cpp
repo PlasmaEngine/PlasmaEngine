@@ -16,6 +16,7 @@ LightningDefineType(GenericPhysicsMesh, builder, type)
 
 GenericPhysicsMesh::GenericPhysicsMesh()
 {
+  mResourceIconName = cPhysicsSmallIcon;
   mModified = false;
   mIsValid = true;
 

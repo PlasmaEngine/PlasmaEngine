@@ -328,6 +328,8 @@ SoundCue::SoundCue() :
     mUseDecibelVariation(false),
     mSoundIndex(0)
 {
+  mResourceIconName = cAudioIcon;
+  
   SoundTags.PushBack();
 
   mAttenuator = SoundAttenuatorManager::GetDefault();

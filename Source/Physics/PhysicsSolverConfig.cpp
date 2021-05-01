@@ -304,6 +304,7 @@ LightningDefineType(PhysicsSolverConfig, builder, type)
 
 PhysicsSolverConfig::PhysicsSolverConfig()
 {
+  mResourceIconName = cPhysicsSmallIcon;
   mTangentType = PhysicsContactTangentTypes::OrthonormalTangents;
   mPositionCorrectionType = PhysicsSolverPositionCorrection::Baumgarte;
   mSolverType = PhysicsSolverType::Basic;

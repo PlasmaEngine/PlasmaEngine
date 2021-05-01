@@ -16,6 +16,7 @@ LightningDefineType(CollisionGroup, builder, type)
 
 CollisionGroup::CollisionGroup()
 {
+  mResourceIconName = cPhysicsSmallIcon;
 }
 
 CollisionGroup::~CollisionGroup()

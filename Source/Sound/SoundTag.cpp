@@ -413,6 +413,7 @@ LightningDefineType(SoundTag, builder, type)
 
 SoundTag::SoundTag() : mTagObject(nullptr), mCompressorTag(nullptr)
 {
+  mResourceIconName = cAudioIcon;
   PL::gSound->mSoundTags.PushBack(this);
 
   if (PL::gSound->mSoundSpaceCounter > 0)

@@ -52,6 +52,7 @@ HandleOf<Texture> Texture::CreateRuntime()
 
 Texture::Texture() : mRenderData(nullptr)
 {
+  mResourceIconName = cGraphicsIcon;
   mType = TextureType::Texture2D;
   mCompression = TextureCompression::None;
 

@@ -28,6 +28,7 @@ LightningDefineType(PhysicsMaterial, builder, type)
 
 PhysicsMaterial::PhysicsMaterial()
 {
+  mResourceIconName = cPhysicsSmallIcon;
   mModified = false;
 }
 

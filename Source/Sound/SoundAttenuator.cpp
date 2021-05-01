@@ -54,6 +54,7 @@ SoundAttenuator::SoundAttenuator() :
     mLowPassStartDistance(20.0f),
     mLowPassCutoffFreq(1000.0f)
 {
+  mResourceIconName = cAudioIcon;
 }
 
 SoundAttenuator::~SoundAttenuator()

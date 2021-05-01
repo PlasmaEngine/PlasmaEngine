@@ -21,6 +21,7 @@ LightningDefineType(CollisionTable, builder, type)
 
 CollisionTable::CollisionTable()
 {
+  mResourceIconName = cPhysicsSmallIcon;
   mAutoRegister = true;
 }
 

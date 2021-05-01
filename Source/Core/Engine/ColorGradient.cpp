@@ -13,6 +13,7 @@ LightningDefineType(ColorGradient, builder, type)
 /// Constructor.
 ColorGradient::ColorGradient()
 {
+  mResourceIconName = cGraphicsIcon;
 }
 
 /// Meta object initialization.

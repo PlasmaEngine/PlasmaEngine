@@ -13,9 +13,7 @@ class Sound : public Resource
 public:
   LightningDeclareType(Sound, TypeCopyMode::ReferenceType);
 
-  Sound() : mAsset(nullptr)
-  {
-  }
+  Sound();
 
   /// The length of the audio file, in seconds.
   float GetLength();

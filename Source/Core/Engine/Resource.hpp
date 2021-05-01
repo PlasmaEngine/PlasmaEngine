@@ -16,8 +16,9 @@ class ResourceTemplate;
 DeclareEnum4(ResourceEditType, Data, Text, Custom, None);
 
 const String cAnimationIcon = "AnimationIcon";
-const String cMaterialIcon = "MaterialIcon";
-const String cModelIcon = "ModelIcon";
+const String cGraphicsIcon = "MaterialIcon";
+const String cAudioIcon = "AudioIcon";
+const String cPhysicsSmallIcon = "SmallPhysicsIcon";
 const String cCodeIcon = "ScriptIcon";
   
 /// Resource Ids are 64 bit numbers. Stored in text files at a 16 digit hex

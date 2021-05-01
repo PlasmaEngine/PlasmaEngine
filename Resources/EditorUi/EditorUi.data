@@ -429,11 +429,19 @@ DefinitionSet =
 		float[] Uv1 = [ 16 , 16 ],
 	},
 
-	ImageDefinition ModelIcon =
+	ImageDefinition AudioIcon =
 	{
 		string Texture = "ToolIcons",
 		int ImageMode = 0,
 		float[] Uv0 = [ 32 , 242 ],
+		float[] Uv1 = [ 16 , 16 ],
+	},
+
+	ImageDefinition SmallPhysicsIcon =
+	{
+		string Texture = "ToolIcons",
+		int ImageMode = 0,
+		float[] Uv0 = [ 64 , 242 ],
 		float[] Uv1 = [ 16 , 16 ],
 	},
 
