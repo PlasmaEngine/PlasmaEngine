@@ -34,7 +34,6 @@ target_sources(Platform
     ${CMAKE_CURRENT_LIST_DIR}/../SDL/Thread.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../SDL/ThreadSync.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../SDL/Timer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/../SDL/Main.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../SDL/Utilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../STD/Atomic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../STD/FileSystem.cpp

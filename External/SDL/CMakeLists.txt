@@ -1,9 +1,9 @@
 set(SDL_SHARED_ENABLED_BY_DEFAULT OFF)
 
 # Only done as a hack because we can't find main for some reason (Ubuntu).
-if(PLASMA_TARGETOS STREQUAL "Linux")
+#if(PLASMA_TARGETOS STREQUAL "Linux")
   add_definitions(-DSDL_MAIN_AVAILABLE)
-endif()
+#endif()
 
 add_subdirectory(Repo)
 
