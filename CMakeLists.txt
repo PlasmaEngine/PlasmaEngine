@@ -20,28 +20,42 @@ endif()
 project(Plasma)
 
 execute_process(COMMAND git rev-list --count HEAD
+                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                 OUTPUT_VARIABLE GIT_REV
                 ERROR_QUIET)
 
 
 execute_process(
     COMMAND bash -c "git diff --quiet --exit-code || echo +"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_DIFF)
+
 execute_process(
     COMMAND git describe --exact-match --tags
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_TAG ERROR_QUIET)
+
 execute_process(
     COMMAND git rev-parse --abbrev-ref HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_BRANCH)
+
 execute_process(
     COMMAND git log -1 --pretty=%h --abbrev=12
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_SHORT_CHANGELIST) 
+
 execute_process(
     COMMAND git log -1 --pretty=%H
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_CHANGELIST)
+
 execute_process(
     COMMAND git log -1 --pretty=%cd --date=format:%Y-%m-%d
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_CHANGESET_DATE)
+
+message(GIT_CHANGESET_DATE)
 
 string(STRIP "${GIT_REV}" GIT_REV)
 string(STRIP "${GIT_DIFF}" GIT_DIFF)
