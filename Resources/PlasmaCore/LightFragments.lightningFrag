@@ -29,8 +29,8 @@ struct PointLightFragment
   [Input][Output] var LightRadius : Real = 0.0;
   [Input][Output] var LightLength : Real = 0.0;
   [Input][Output] var LightDirection : Real3;
+  [Output] var Energy : Real; 
   [Output] var LightDistance : Real;
-  [Output] var Energy : Real;
   
   function  IlluminanceSphere(cosTheta : Real, sinSigmaSqr : Real) : Real
   {
@@ -68,9 +68,13 @@ struct PointLightFragment
     
     var inverseDistLight = Math.RSqrt(Math.Dot(toLight, toLight));
     
+      var falloffDistance = Math.Length(toLight);
+    var falloff = Math.Saturate(1.0 - Math.Pow(falloffDistance / this.FalloffRadius, 4.0));
+    falloff = (falloff * falloff) / (falloffDistance * falloffDistance + 1.0);
+    
     if(this.LightLength > 0.0)
     {
-      var lineAngle = Math.Saturate(this.LightRadius * inverseDistLight);
+      var lineAngle = Math.Saturate(this.LightLength * inverseDistLight);
       energy *= Math.Pow(this.GeoRoughness / Math.Saturate(this.GeoRoughness + 0.5 * lineAngle), 2.0);
       
       var length = this.LightLength;
@@ -88,20 +92,18 @@ struct PointLightFragment
       var distLD = Math.Length(ld);
       
       var t = (dotRL0 * dotRLD - dotL0LD) / (Math.Pow(distLD,2) - Math.Pow(dotRLD, 2));
-      toLight = Math.Normalize(l0 + Math.Saturate(t) * ld);
+      toLight = Math.Normalize(l0 + ld * Math.Saturate(t));
     }
-    
     
     var sphereAngle = Math.Saturate(this.LightRadius * inverseDistLight);
     energy *= Math.Pow(this.GeoRoughness / Math.Saturate(this.GeoRoughness + 0.5 * sphereAngle), 2.0);
       
-    var centerToRay = Math.ProjectOnVector(toLight, reflection) - toLight;
+    var centerToRay = Math.Dot(toLight, reflection) * reflection - toLight;
     closestPoint = toLight + centerToRay * Math.Saturate(this.LightRadius / Math.Length(centerToRay));
 
+    this.Energy = energy;
 
-    var falloffDistance = Math.Length(toLight);
-    var falloff = Math.Saturate(1.0 - Math.Pow(falloffDistance / this.FalloffRadius, 4.0));
-    falloff = (falloff * falloff) / (falloffDistance * falloffDistance + 1.0);
+  
     
     this.LightDirection = Math.Normalize(closestPoint);
     this.LightIntensity *= falloff;
@@ -109,8 +111,8 @@ struct PointLightFragment
     
     var intensityMultiplier = 100.0;
     
-    this.LightIntensity /= intensityMultiplier;
-    this.Energy = energy;
+    this.LightIntensity /= intensityMultiplier / this.Energy;
+    this.SpecularMultiplier /= this.Energy;
     
   }
 }
