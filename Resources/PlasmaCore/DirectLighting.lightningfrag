@@ -12,6 +12,7 @@ struct DirectLightingInputs
   var LightLength : Real;
   var LightDistance : Real;
   var SpecularMultiplier : Real;
+  var Energy : Real;
   
   var Albedo : Real3;
   var Metallic : Real;
@@ -45,7 +46,7 @@ struct DirectLighting
     var alpha = inputs.Roughness * inputs.Roughness;
     
     // Sample brdf's
-    var diffuse = Brdf.DiffuseDisney(n, l, v, h, inputs.Roughness);
+    var diffuse = Brdf.DiffuseDisney(n, l, v, h, inputs.Roughness) ;
 
     // Specular factors
     var f = Brdf.SpecularFSchlick(v, h);
@@ -60,11 +61,11 @@ struct DirectLighting
     var normalization = 1.0 / (4.0 * Math.Max(Math.Dot(n, v), 0.001));
     
     // Final specular, represented as a scale and bias to F0
-    var brdfSpecular = Real2(1.0 - f, f) * (d * g * normalization) * inputs.SpecularMultiplier;
+    var brdfSpecular = Real2(1.0 - f, f) * (d * g * normalization) * inputs.SpecularMultiplier ;
     
     // Diffuse calculation
-    var diffuseColor = inputs.LightColor * inputs.Albedo * diffuse;
-    
+    var diffuseColor = inputs.LightColor * inputs.Albedo * diffuse *  inputs.Energy;
+     
     // Specular calculation
     var metallicSpecular = inputs.LightColor * (inputs.Albedo * brdfSpecular.X + brdfSpecular.YYY);
     var dialectricSpecular = inputs.LightColor * (Real3(0.1) * brdfSpecular.X + brdfSpecular.YYY);
