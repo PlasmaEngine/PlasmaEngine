@@ -1,36 +1,52 @@
 // MIT Licensed (see LICENSE.md).
 
+enum SSRDebugType
+{
+  None,
+  Reflections,
+  HitPixels
+}
+
 class PostProcessSSR : LightningComponent
 {
     [Property] var Active : Boolean = true;
     
     [Group("Settings")]
     [Property]
-    var RayDistance : Real = 32.0;
+    // Max distance a ray can travel
+    var RayDistance : Real = 64.0;
     
     [Group("Settings")]
     [Property]
-    var StepDistance : Real = 0.03;
+    // Distance between the steps in the SSR
+    var StepDistance : Real = 0.04;
     
     [Group("Settings")]
     [Property]
+    // Optimization to prevent reflection above cutoff
     var RoughnessCutoff : Real = 0.85;
     
     [Group("Settings")]
     [Property]
-    var RoughnessBlur : Real = 5;
+    // Used to remove black pixels
+    var DarknessCutoff : Real = 0.02;
     
     [Group("Settings")]
     [Property]
-    var Jitter : Boolean = false;
+    // Used to control the blur from roughness
+    var RoughnessBlur : Real = 40.0;
     
     [Group("Settings")]
     [Property]
+    // Renders relfections at half resolution (Optimization)
     var HalfRes : Boolean = true;
     
     [Group("Debug")]
     [Property]
-    var Debug : Boolean = false;
+    var DebugType : SSRDebugType = SSRDebugType.None;
+    
+    [Property]
+    var Exponent : Real = 2.0;
     
     function AddSSRRenderTasks(event : RenderTasksEvent, geometryBuffer0 : RenderTarget, geometryBuffer1 : RenderTarget, screenBuffer : RenderTarget, ssrBuffer : RenderTarget)
     {
@@ -50,49 +66,31 @@ class PostProcessSSR : LightningComponent
         postSSR.GeometryBuffer1 = geometryBuffer1.Texture;
         postSSR.ScreenBuffer = screenBuffer.Texture;
         postSSR.RoughnessCutoff = this.RoughnessCutoff;
-        postSSR.Debug = this.Debug;
+        postSSR.Blur = this.RoughnessBlur;
         postSSR.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
-        postSSR.Jiiter = this.Jitter;
         postSSR.Itteractions = this.RayDistance;
         postSSR.StepDistance = this.StepDistance;
         
         event.AddRenderTaskPostProcess(ssrTemp, postSSR, "SSR");
         
-        var blurSSR = event.GetRenderTarget(ssrRenderSize, TextureFormat.RGBA16f);
+        var blurPass = SSRBlur();
+        blurPass.Texture = ssrTemp.Texture;
+        blurPass.GBuffer0 = geometryBuffer0.Texture;
+        blurPass.BlurAmount = this.RoughnessBlur;
+        event.AddRenderTaskPostProcess(ssrBuffer, blurPass, "SSRBlur");               
+        BlurTexture[SeparableBlurRadius25].Call(event, ssrBuffer);
         
-        
-        BlurTexture[SeparableBlurRadius10].Call(event, ssrTemp);
-        var copySSR = CopyTarget();
-        copySSR.Texture = ssrTemp.Texture;
-        event.AddRenderTaskPostProcess(ssrBuffer, copySSR, "SSRCopy");        
-        //var blurPass = SSRBlur();
-        //blurPass.Texture = ssrTemp.Texture;
-        //blurPass.GBuffer0 = geometryBuffer0.Texture;
-        //blurPass.BlurAmount = this.RoughnessBlur;
-        //event.AddRenderTaskPostProcess(ssrBuffer, blurPass, "SSRBlur");         
-
-        if(!this.Debug)
-        {
-            
-          var ssrApply = SSRApply();
-          ssrApply.GeometryBuffer0 = geometryBuffer0.Texture;
-          ssrApply.GeometryBuffer1 = geometryBuffer1.Texture;
-          ssrApply.SSRBuffer = ssrBuffer.Texture;
-          ssrApply.ScreenBuffer = screenBuffer.Texture;
-          event.AddRenderTaskPostProcess(screenBuffer, ssrApply, "SSRApply");
-          
-          
-          event.AddRenderTaskClearTarget(ssrBuffer, Real4.Zero);
-        }
-      
-        
-        if(this.Debug)
+        if(this.DebugType == SSRDebugType.Reflections)
         {
           var copyPass = CopyTarget();
           copyPass.Texture = ssrBuffer.Texture;
           event.AddRenderTaskPostProcess(screenBuffer, copyPass, "SSRDebug");
-          
-          event.AddRenderTaskClearTarget(ssrBuffer, Real4.Zero);
+        }
+        else if(this.DebugType == SSRDebugType.HitPixels)
+        {
+          var hitPixelDebug = SSRDebug();
+          hitPixelDebug.SSRBuffer = ssrBuffer.Texture;
+          event.AddRenderTaskPostProcess(screenBuffer, hitPixelDebug, "HitPixelDebug");
         }
         
         var ssrFinalCopy = SSRCopy();
@@ -100,7 +98,6 @@ class PostProcessSSR : LightningComponent
         event.AddRenderTaskPostProcess(screenBuffer, ssrFinalCopy, "ssrFinalCopy");
         
         ssrTemp.Release();
-        blurSSR.Release();
     }
     
     function Upsample(event : RenderTasksEvent, target0 : RenderTarget, target1 : RenderTarget)

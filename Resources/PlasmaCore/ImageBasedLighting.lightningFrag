@@ -28,6 +28,7 @@ struct ImageBasedLighting
   [StageInput] var Uv : Real2;
   [StageInput] var PerspectivePosition : Real4;
   
+  [Input] var SSRTexture : SampledImage2d;
   [Input] var DitherTexture : SampledImage2d;
   [Input] var EnvironmentBrdfLut : SampledImage2d;
   [Input] var Skybox : SampledImageCube;
@@ -63,11 +64,15 @@ struct ImageBasedLighting
     iblInputs.RenderSpecular = this.RenderSpecular;
     
     var color = ImageBasedLighting.Compute(iblInputs, &this.Skybox, &this.EnvironmentBrdfLut);
+    color = Math.Min(color * this.Intensity, Real3(this.MaxIntensity));
+   
+    var ssr = this.SSRTexture.Sample(this.Uv);
+    color = Math.Lerp(color, ssr.XYZ, ssr.W);
     
     // Remove color banding
     color = Utility.ApplyDither(color, &this.DitherTexture, this.Uv, this.ViewportSize);
     
-    this.Target0 = Real4(Math.Min(color * this.Intensity, Real3(this.MaxIntensity)), 1.0);
+    this.Target0 = Real4(color, 1.0);
   }
   
   [Static]

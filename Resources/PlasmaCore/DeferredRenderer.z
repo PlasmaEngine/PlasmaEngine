@@ -213,6 +213,7 @@ class DeferredRenderer : LightningComponent
     if (this.IndirectLighting)
     {
       var imageBasedLighting = ImageBasedLighting();
+      imageBasedLighting.SSRTexture = this.SSRBuffer.Texture;
       imageBasedLighting.DitherTexture = Texture.BlueNoise;
       imageBasedLighting.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
       imageBasedLighting.Skybox = this.Skybox;
