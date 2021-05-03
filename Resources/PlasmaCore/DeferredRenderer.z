@@ -265,9 +265,6 @@ class DeferredRenderer : LightningComponent
   
     event.AddRenderTaskClearTarget(this.SSRBuffer, Real4.Zero);
 
-    // Order Independent Transparancy
-    AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, this.Depth, lightBuffer);
-    
      // Additive materials 
     var alphaSettings = RenderSettings();
     alphaSettings.ColorTarget = lightBuffer;
@@ -322,6 +319,10 @@ class DeferredRenderer : LightningComponent
     
     // Alpha No PostFX
     AlphaRenderPass.OnAlphaNoPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
+    
+    // Order Independent Transparancy
+    AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, this.Depth, lightBuffer);
+    
     
     var camera = event.CameraViewportCog.Camera;
     
