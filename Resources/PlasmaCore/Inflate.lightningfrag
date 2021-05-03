@@ -26,6 +26,8 @@ struct Inflate
   [StageInput] var LocalBitangent : Real3;
   [StageInput] var LocalNormal : Real3;
 
+  [Input][Slider(0,50,1)] var Sise : Real;
+
   [StageInput][Output] var Uv : Real2;
 
   [Output] var ViewPosition : Real3;
@@ -44,6 +46,6 @@ struct Inflate
     this.ViewBitangent = Math.Normalize(Math.Multiply(this.LocalToViewNormal, this.LocalBitangent));
 
     // Perspective output for graphics api
-    this.PerspectivePosition = Math.Multiply(this.LocalToPerspective, Real4(this.LocalPosition + this.LocalNormal * 0.3, 1.0));
+    this.PerspectivePosition = Math.Multiply(this.LocalToPerspective, Real4(this.LocalPosition + this.LocalNormal * (this.Sise / 10), 1.0));
   }
 }
