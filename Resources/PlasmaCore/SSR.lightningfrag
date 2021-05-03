@@ -48,6 +48,8 @@ struct SSRBlur
     var textureSize = this.Texture.SampleSize(0);
     var pixelStep = Real2(this.BlurAmount * roughness) / textureSize;
     
+    var alpha = this.Texture.Sample(this.Uv).W;
+    
     var output = Real4(0.0);
     for (var y = -3; y <= 3; ++y)
     {
@@ -63,6 +65,19 @@ struct SSRBlur
   }
 }
 
+[Pixel][PostProcess]
+struct SSRDebug
+{
+  [StageInput] var Uv : Real2;
+  [Input] var SSRBuffer : SampledImage2d;
+  [Output] var Target0 : Real4;
+  
+  function Main()
+  {
+    var hitPixels = this.SSRBuffer.Sample(this.Uv).WWWW;
+    this.Target0 = hitPixels;
+  }
+}
 
 [Pixel][PostProcess]
 struct SSRCopy
@@ -96,12 +111,11 @@ struct SSR
     [Input] var GeometryBuffer1 : SampledImage2d;
     [Input] var ScreenBuffer : SampledImage2d;
     [Input] var RoughnessCutoff : Real;
-    [Input] var Debug : Boolean;
     [Input] var Brighness :Real;
     [Input] var EnvironmentBrdfLut : SampledImage2d;
-    [Input] var Jiiter : Boolean;
     [Input] var Itteractions : Real;
     [Input] var StepDistance : Real;
+    [Input] var Blur :  Real;
  
     [Output] var Target0 : Real4;
  
@@ -110,11 +124,11 @@ struct SSR
         return f0 + (Real3.One - f0) * Math.Pow(1.0 - cosTheta, 5.0);
     }
  
-    function Hash(input : Real3, roughness : Real) : Real3
+    function Hash(input : Real3) : Real3
     {
-        input = Math.Frac(input * roughness);
+        input = Math.Frac(input * Real3(0.8));
         input += Real3(Math.Dot(input, input.YXZ + Real3(19.19)));
-        return Math.Frac((input.XXY + input.YXX) * input.ZYX);
+        return Math.Frac((input.XXY + input.YZZ) * input.ZYX);
     }   
 
     function Main()
@@ -142,12 +156,6 @@ struct SSR
  
         // Ray March
         var direction = reflected * Math.Max(0.1, -viewPosition.Z);
- 
-        if(this.Jiiter)
-        {          
-            var jitter = Math.Lerp(Real3.Zero, this.Hash(worldPosition.XYZ, roughness), roughness);
-            direction += jitter - Real3(roughness);
-        }
         direction *= Real3(this.StepDistance);
  
         var steps = 0.0;
@@ -180,7 +188,7 @@ struct SSR
                     var searchProjectCoords = Real4.Zero;
                     var searchDepth = 0.0;
  
-                    for(var j = 0.0; j < 32 && foundResult < 1.0; ++j)
+                    for(var j = 0.0; j < this.Itteractions; ++j)
                     {
                         projectedCoords = Math.Multiply(this.ViewToPerspective,Real4(hitPosition, 1.0));
                         projectedCoords.XY /= projectedCoords.W;
@@ -200,12 +208,6 @@ struct SSR
                         else
                         {
                             hitPosition -= direction;
-                        }
-                            
-                        if(hitPosition.Z < pDepth - 0.1)
-                        {
-                          ShaderIntrinsics.Kill();
-                          return;
                         }
                     }
                     
@@ -234,11 +236,14 @@ struct SSR
         
         coords.XY = Math.Saturate(coords.XY);
  
-        var ssr = reflectionMultipler * (this.ScreenBuffer.SampleLod(coords.XY, roughness).XYZ ) * (Real3(0.1) * brdfSpec.X + brdfSpec.YYY);
+        var ssr = reflectionMultipler * (this.ScreenBuffer.SampleLod(coords.XY, roughness).XYZ );
         
         if(!(foundResult as Boolean))
           ShaderIntrinsics.Kill();
+          
+        if(Math.Max(ssr.X, Math.Max(ssr.Y, ssr.Z)) < 0.02)
+          foundResult = 0;
         
-        this.Target0 = Real4(ssr , foundResult);
+        this.Target0 = Real4(ssr, foundResult);
     }
 }
