@@ -48,6 +48,17 @@ add_subdirectory(Source/Platform/${PLASMA_PLATFORM})
 add_subdirectory(External)
 add_subdirectory(Source)
 
+# Enable colored output for Ninja if supported
+if (CMAKE_GENERATOR STREQUAL "Ninja")
+	include(CheckCXXCompilerFlag)
+	
+	check_cxx_compiler_flag("-fdiagnostics-color=always" F_DIAGNOSTIC_COLOR_ALWAYS)
+	if (F_DIAGNOSTIC_COLOR_ALWAYS)
+		add_compile_options("-fdiagnostics-color=always")
+	endif()
+endif()
+
+
 message(STATUS "[PLASMA BUILD] GIT Revision ID: ${PLASMA_REVISION_ID}")
 message(STATUS "[PLASMA BUILD] GIT Short ChangeSet: ${PLASMA_SHORT_CHANGE_SET}")
 message(STATUS "[PLASMA BUILD] GIT ChangeSet: ${PLASMA_CHANGE_SET}")
