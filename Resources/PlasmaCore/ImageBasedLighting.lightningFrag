@@ -13,6 +13,7 @@ struct ImageBasedLightingInputs
   
   var RenderDiffuse : Boolean;
   var RenderSpecular : Boolean;
+  var SSR : Real4;
 }
 
 // Indirect lighting using an image (skybox).
@@ -62,12 +63,13 @@ struct ImageBasedLighting
     iblInputs.Specular = GeometryPass.GetSpecular(geometrySample1);
     iblInputs.RenderDiffuse = this.RenderDiffuse;
     iblInputs.RenderSpecular = this.RenderSpecular;
+    iblInputs.SSR = this.SSRTexture.Sample(this.Uv);
     
     var color = ImageBasedLighting.Compute(iblInputs, &this.Skybox, &this.EnvironmentBrdfLut);
     color = Math.Min(color * this.Intensity, Real3(this.MaxIntensity));
    
-    var ssr = this.SSRTexture.Sample(this.Uv);
-    color = Math.Lerp(color, ssr.XYZ, ssr.W);
+    //var ssr = this.SSRTexture.Sample(this.Uv);
+    //color = Math.Lerp(color, ssr.XYZ, ssr.W);
     
     // Remove color banding
     color = Utility.ApplyDither(color, &this.DitherTexture, this.Uv, this.ViewportSize);
@@ -86,7 +88,7 @@ struct ImageBasedLighting
     var textureSize = skybox.SampleSize(0).X;
     var maxLod = Math.Log2(textureSize);
     
-    var envDiffuse = skybox.SampleLod(diffuseDirection, maxLod).XYZ;
+    var envDiffuse = Math.Lerp(skybox.SampleLod(diffuseDirection, maxLod).XYZ, inputs.SSR.XYZ, inputs.SSR.W);
     var diffuseColor = envDiffuse * inputs.Albedo;
 
     // Sample lod for specular is based on roughness unless screen space derivitives
@@ -103,6 +105,9 @@ struct ImageBasedLighting
     var brdfSpec = brdfLut.Sample(Real2(dotnv, inputs.Roughness)).XY;
     var metallicSpecular = envSpecular * (inputs.Albedo * brdfSpec.X + brdfSpec.YYY);
     var dialectricSpecular = envSpecular * (Real3(0.10) * brdfSpec.X + brdfSpec.YYY);
+    
+    metallicSpecular = Math.Lerp(metallicSpecular, inputs.SSR.XYZ, inputs.SSR.W);
+    dialectricSpecular = Math.Lerp(dialectricSpecular, inputs.SSR.XYZ, inputs.SSR.W);
     
     // For debugging
     diffuseColor *= inputs.RenderDiffuse as Real;
