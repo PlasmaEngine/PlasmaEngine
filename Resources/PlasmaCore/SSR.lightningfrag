@@ -204,7 +204,7 @@ struct SSR
                         if(pDepth > 0.0)
                         {
                             hitPosition += direction;
-                          }
+                        }
                         else
                         {
                             hitPosition -= direction;
@@ -240,10 +240,7 @@ struct SSR
         
         if(!(foundResult as Boolean))
           ShaderIntrinsics.Kill();
-          
-        if(Math.Max(ssr.X, Math.Max(ssr.Y, ssr.Z)) < 0.02)
-          foundResult = 0;
         
-        this.Target0 = Real4(ssr, foundResult);
+        this.Target0 = Real4(ssr, foundResult * reflectionMultipler);
     }
 }
