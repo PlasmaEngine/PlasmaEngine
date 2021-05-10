@@ -1,6 +1,9 @@
 // MIT Licensed (see LICENSE.md).
 #pragma once
 
+
+#include "PlasmaConfig.hpp"
+
 // The first thing we do is detect the platform.
 // The next thing we do is define macros that all platforms may use
 // We also ignore any compiler or platform specific warnings here
@@ -33,7 +36,7 @@
 #include <cstdlib>
 #include <cfloat>
 
-#if !defined(PlasmaPlatformMacOS)
+#if !defined(PLASMA_PLATFORM_OSX)
 #include <malloc.h>
 #else
 #include <stdlib.h>

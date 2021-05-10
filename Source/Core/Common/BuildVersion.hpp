@@ -4,7 +4,7 @@
 namespace Plasma
 {
 
-#define PlasmaPlatform PlasmaTargetOsName "_" PlasmaArchitectureName
+#define PlasmaPlatform PLASMA_PLATFORM_NAME "_" PlasmaArchitectureName
 
 extern const String sPlasmaOrganization;
 extern const String sEditorGuid;

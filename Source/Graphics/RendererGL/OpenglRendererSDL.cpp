@@ -5,7 +5,7 @@
 
 namespace Plasma
 {
-#if !defined(PlasmaPlatformWindows)
+#if !defined(PLASMA_PLATFORM_WINDOWS)
 class OpenglRendererSDL : public OpenglRenderer
 {
 public:

@@ -1,7 +1,7 @@
 // MIT Licensed (see LICENSE.md).
 #pragma once
 
-#if !defined(PlasmaCompilerMsvc)
+#if !defined(PLASMA_COMPILLER_MSVC)
 typedef size_t rsize_t;
 typedef int errno_t;
 

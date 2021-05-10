@@ -1040,7 +1040,7 @@ String NativeStubCode::GenerateCpp()
     builder.WriteLineIndented();
   }
 
-  builder.WriteLineIndented("#if defined(PlasmaCompilerMsvc)");
+  builder.WriteLineIndented("#if defined(PLASMA_COMPILLER_MSVC)");
   builder.WriteLineIndented("#pragma optimize(\"\", off)");
   builder.WriteLineIndented("#endif");
 

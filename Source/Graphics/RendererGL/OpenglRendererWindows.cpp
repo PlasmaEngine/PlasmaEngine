@@ -4,7 +4,7 @@
 
 namespace Plasma
 {
-#if defined(PlasmaPlatformWindows)
+#if defined(PLASMA_PLATFORM_WINDOWS)
 class OpenglRendererWindows : public OpenglRenderer
 {
 public:

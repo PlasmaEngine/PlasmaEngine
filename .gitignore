@@ -38,3 +38,5 @@ enc_temp_folder/
 .vscode/ipch
 
 External/
+
+Source/Core/Common/PlasmaConfig.hpp

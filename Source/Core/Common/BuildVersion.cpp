@@ -16,9 +16,6 @@ const String sEditorName = "Editor";
 const String sLauncherGuid = "7489829B-8A03-4B26-B3AC-FDDC6668BAF7";
 const String sLauncherName = "Launcher";
 
-const int gMajor = 0;
-const int gMinor = 1;
-const int gPatch = 5;
 
 String GetEditorFullName()
 {
@@ -86,47 +83,47 @@ uint GetConfigVersion()
 
 uint GetMajorVersion()
 {
-  return gMajor;
+  return PLASMA_VERSION_MAJOR;
 }
 
 uint GetMinorVersion()
 {
-  return gMinor;
+  return PLASMA_VERSION_MINOR;
 }
 
 uint GetPatchVersion()
 {
-  return gPatch;
+  return PLASMA_VERSION_PATCH;
 }
 
 uint GetRevisionNumber()
 {
-  return PlasmaRevisionId;
+  return PLASMA_REVISION_ID;
 }
 
 u64 GetShortChangeSet()
 {
-  return WrapHex(PlasmaShortChangeSet);
+  return WrapHex(PLASMA_SHORT_CHANGE_SET);
 }
 
 cstr GetMajorVersionString()
 {
-  return Stringify(gMajor);
+  return Stringify(PLASMA_VERSION_MAJOR);
 }
 
 cstr GetMinorVersionString()
 {
-  return Stringify(gMinor);
+  return Stringify(PLASMA_VERSION_MINOR);
 }
 
 cstr GetPatchVersionString()
 {
-  return Stringify(gPatch);
+  return Stringify(PLASMA_VERSION_PATCH);
 }
 
 cstr GetRevisionNumberString()
 {
-  return Stringify(PlasmaRevisionId);
+  return Stringify(PLASMA_REVISION_ID);
 }
 
 String GetBuildIdString()
@@ -145,17 +142,17 @@ String GetBuildIdString()
 
 cstr GetShortChangeSetString()
 {
-  return Stringify(PlasmaShortChangeSet);
+  return Stringify(PLASMA_SHORT_CHANGE_SET);
 }
 
 cstr GetChangeSetString()
 {
-  return Stringify(PlasmaChangeSet);
+  return Stringify(PLASMA_CHANGE_SET);
 }
 
 cstr GetChangeSetDateString()
 {
-  return Stringify(PlasmaChangeSetDate);
+  return Stringify(PLASMA_CHANGE_SET_DATE);
 }
 
 cstr GetConfigurationString()
@@ -165,7 +162,7 @@ cstr GetConfigurationString()
 
 cstr GetPlatformString()
 {
-  return PlasmaPlatform;
+  return PLASMA_PLATFORM_NAME;
 }
 
 String GetBuildVersionName()
@@ -178,13 +175,13 @@ String GetBuildVersionName()
    */
   StringBuilder builder;
   builder.AppendFormat("%s.", GetApplicationName().c_str()); // Application [PlasmaEditor]
-  builder.AppendFormat("%s.", PlasmaBranchName);             // Branch [master]
+  builder.AppendFormat("%s.", PLASMA_VERSION_ALIAS);             // Branch [master]
   builder.AppendFormat("%d.", GetMajorVersion());            // Major [1]
   builder.AppendFormat("%d.", GetMinorVersion());            // Minor [5]
   builder.AppendFormat("%d.", GetPatchVersion());            // Patch [0]
   builder.AppendFormat("%d.", GetRevisionNumber());          // Revision [1501]
   builder.AppendFormat("%s.", GetShortChangeSetString());    // ShortChangeset [fb02756c46a4]
-  builder.AppendFormat("%s.", PlasmaTargetOsName);           // TargetOs [Windows]
+  builder.AppendFormat("%s.", PLASMA_PLATFORM_NAME);           // TargetOs [Windows]
   builder.AppendFormat("%s.", PlasmaArchitectureName);       // Architecture [x86]
   builder.AppendFormat("%s.", PlasmaConfigName);             // Config [Release]
   builder.Append("plasmabuild");

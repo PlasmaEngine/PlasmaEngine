@@ -7,7 +7,7 @@
 // Include glew before OpenGl
 #include <GL/glew.h>
 
-#if defined(PlasmaPlatformWindows)
+#if defined(PLASMA_PLATFORM_WINDOWS)
 	#include <GL/wglew.h>
 #else
 	#include "SDL.h"
@@ -15,7 +15,7 @@
 
 
 // Include OpenGl
-#if defined(PlasmaPlatformMacOS)
+#if defined(PLASMA_PLATFORM_OSX)
 	#include <OpenGL/gl.h>
 #else
 	#include <GL/gl.h>

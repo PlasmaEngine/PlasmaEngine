@@ -61,13 +61,13 @@ BuildId BuildId::GetCurrentApplicationId()
   // re-install of the launcher.
 
   id.mApplication = GetOrganizationApplicationName(); // Application [PlasmaEditor]
-  id.mBranch = PlasmaBranchName;                      // Branch [master]
+  id.mBranch = PLASMA_VERSION_ALIAS;                      // Branch [master]
   id.mMajorVersion = GetMajorVersion();               // Major [1]
   id.mMinorVersion = GetMinorVersion();               // Minor [5]
   id.mPatchVersion = GetPatchVersion();               // Patch [0]
   id.mRevisionId = GetRevisionNumber();               // Revision [1501]
   id.mShortChangeSet = GetShortChangeSetString();     // ShortChangeset [fb02756c46a4]
-  id.mTargetOs = PlasmaTargetOsName;                  // TargetOs [Windows]
+  id.mTargetOs = PLASMA_PLATFORM_NAME;                  // TargetOs [Windows]
   id.mArchitecture = PlasmaArchitectureName;          // Architecture [x86]
   id.mConfig = PlasmaConfigName;                      // Config [Release]
   id.mPackageExtension = "zip";                       // Extension [zip]
@@ -235,12 +235,12 @@ bool BuildId::IsPlatformEmpty() const
 
 bool BuildId::IsForThisPlatform() const
 {
-  return mTargetOs == PlasmaTargetOsName && mArchitecture == PlasmaArchitectureName && mConfig == PlasmaConfigName;
+  return mTargetOs == PLASMA_PLATFORM_NAME && mArchitecture == PlasmaArchitectureName && mConfig == PlasmaConfigName;
 }
 
 void BuildId::SetToThisPlatform()
 {
-  mTargetOs = PlasmaTargetOsName;
+  mTargetOs = PLASMA_PLATFORM_NAME;
   mArchitecture = PlasmaArchitectureName;
   mConfig = PlasmaConfigName;
 }

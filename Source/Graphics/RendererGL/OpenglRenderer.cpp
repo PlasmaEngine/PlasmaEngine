@@ -989,7 +989,7 @@ namespace Plasma
             return;
         }
 
-#if defined (PlasmaPlatformWindows)
+#if defined (PLASMA_PLATFORM_WINDOWS)
         int attribs[] =
         {
             WGL_CONTEXT_MAJOR_VERSION_ARB, 3,

@@ -68,7 +68,7 @@ String LightningPluginBuilder::GetSharedLibraryPlatformName()
 
   // Append the operating system name (or some grouped name for all OSes that
   // support this shared library)
-  builder.Append(PlasmaTargetOsName);
+  builder.Append(PLASMA_PLATFORM_NAME);
   builder.Append('-');
 
   // Append the target machine architecture

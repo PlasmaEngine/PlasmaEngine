@@ -8,7 +8,16 @@
 #  define PlasmaDebug 1
 #endif
 
-#ifdef PlasmaCompilerMsvc
+// Work out the active compiller
+#if defined(_MSC_VER)
+#   define PLASMA_COMPILLER_MSVC
+#elif defined (__GNUC__)
+#   define PLASMA_COMPILER_GCC
+#elif defined (__clang__)
+#   define  PLASMA_COMPILLER_CLANG
+#endif
+
+#ifdef PLASMA_COMPILLER_MSVC
 
 // Enable these warnings by setting them to level 3
 // Enable warning function does not override any base class virtual member
@@ -183,7 +192,7 @@
 
 #endif
 
-#if defined(PlasmaCompilerClang)
+#if defined(PLASMA_COMPILLER_CLANG)
 // Ignore unknown pragma warnings...
 #  pragma clang diagnostic ignored "-Wunknown-pragmas"
 #  pragma clang diagnostic ignored "-Wpragmas"
@@ -211,7 +220,7 @@
 
 #endif
 
-#if defined(PlasmaCompilerGcc)
+#if defined(PLASMA_COMPILER_GCC)
 // Ignore unknown pragma warnings...
 #  pragma GCC diagnostic ignored "-Wpragmas"
 
@@ -250,7 +259,7 @@
   (((::size_t) & reinterpret_cast<char const volatile&>((((structure*)(::uintptr_t)1)op member))) - 1)
 #define PlasmaOffsetOf(structure, member) PlasmaOffsetOfHelper(structure, ->, member)
 
-#if defined(PlasmaTargetOsWindows)
+#if defined(PLASMA_PLATFORM_WINDOWS)
 #  define PlasmaThreadLocal __declspec(thread)
 #  define PlasmaImport __declspec(dllimport)
 #  define PlasmaExport __declspec(dllexport)
@@ -258,7 +267,7 @@
 #  define PlasmaDebugBreak() __debugbreak()
 #  define PlasmaTodo(text)  __pragma(message(__FILE__ "("                                                              \
                             PlasmaStringize(__LINE__) ") : Todo: " text)) 
-#  if defined(PlasmaCompilerMsvc)
+#  if defined(PLASMA_COMPILLER_MSVC)
 #    define PlasmaForceInline inline __forceinline
 #  else
 #    define PlasmaForceInline inline
@@ -270,7 +279,7 @@
 #  define PlasmaExport __attribute__((visibility("default")))
 #  define PlasmaExportC extern "C" __attribute__((visibility("default")))
 #  define PlasmaTodo(text)
-#  if defined(PlasmaTargetOsEmscripten)
+#  if defined(PLASMA_PLATFORM_WEB)
 #    define PlasmaForceInline
 #    define PlasmaDebugBreak()
 #  else
