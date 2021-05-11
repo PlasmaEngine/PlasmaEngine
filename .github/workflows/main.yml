@@ -18,14 +18,10 @@ jobs:
     - name: Configure and Build
       shell: cmd
       run: |
+        git submodule update
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         mkdir build
         cd build
-        cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX="SDK" -DCMAKE_BUILD_TYPE:STRING="Release" ..
-        cmake --build . --target install --config Release
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: 'Windows SDK ${{ matrix.build-type }}'
-        path: build/SDK
+        cmake -G "Ninja" -DCMAKE_BUILD_TYPE:STRING="Release" ..
+        cmake --build . --config Release
       
