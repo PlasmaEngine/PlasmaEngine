@@ -19,13 +19,14 @@ jobs:
           do { choco install doxygen.install } until ($?)
           do { choco install llvm --version=6.0.1 --allow-downgrade } until ($?)
           do { choco install ninja } until ($?)
+          do { choco install visualstudio2019-workload-nativedesktop } until ($?)
+          export VS160COMNTOOLS="/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools"
     - name: Configure and Build
       shell: cmd
       run: |
-        git submodule update
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         mkdir build
         cd build
-        cmake -G "Ninja" -DCMAKE_BUILD_TYPE:STRING="Release" ..
+        cmake -G "Visual Studio 16 2019" -A x64 ..
         cmake --build . --config Release
       
