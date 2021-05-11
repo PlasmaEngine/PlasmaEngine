@@ -12,7 +12,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: Build
-      run: build_vs2019_ninja.bat
+    
+    - name: Configure and Build
+      shell: cmd
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        mkdir build
+        cd build
+        cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX="SDK" -DCMAKE_BUILD_TYPE:STRING="Release" ..
+        cmake --build . --target install --config Release
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'Windows SDK ${{ matrix.build-type }}'
+        path: build/SDK
       
