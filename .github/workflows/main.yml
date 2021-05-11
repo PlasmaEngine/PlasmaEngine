@@ -14,7 +14,12 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: 'recursive'
-    
+    - name: Install dependencies
+      run: |
+          # Temporary use old version of Doxygen https://github.com/urho3d/Urho3D/issues/2757
+          do { choco install --no-progress doxygen.install } until ($?)
+          do { choco install --no-progress llvm --version=6.0.1 --allow-downgrade } until ($?)
+          do { choco install --no-progress ninja } until ($?)
     - name: Configure and Build
       shell: cmd
       run: |
