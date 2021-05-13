@@ -185,7 +185,12 @@ struct ForwardPassAlpha
     indirectColor = Utility.ApplyDither(indirectColor, &this.DitherTexture, screenUv, this.ViewportSize);
     directColor = Utility.ApplyDither(directColor, &this.DitherTexture, screenUv, this.ViewportSize);
     
-    indirectColor *= this.IndirectIntensity ;
+    // hack to get specular color working
+    var metallicIndirectColor = indirectColor * this.Albedo * this.Metallic;
+    
+    indirectColor = Math.Lerp(indirectColor, metallicIndirectColor, this.Metallic);
+    
+    indirectColor *= this.IndirectIntensity;
     directColor *= this.DirectLightIntensity ;
     
     this.Target0 = Real4(Math.Saturate(indirectColor) + directColor, this.Alpha);
