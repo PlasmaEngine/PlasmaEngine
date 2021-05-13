@@ -78,6 +78,7 @@ class PostProcessSSR : LightningComponent
         blurPass.GBuffer0 = geometryBuffer0.Texture;
         blurPass.BlurAmount = this.RoughnessBlur;
         event.AddRenderTaskPostProcess(ssrBuffer, blurPass, "SSRBlur");               
+        BlurTexture[SeparableBlurRadius25].Call(event, ssrBuffer);         
         BlurTexture[SeparableBlurRadius25].Call(event, ssrBuffer);
         
         if(this.DebugType == SSRDebugType.Reflections)

@@ -241,6 +241,10 @@ struct SSR
         if(!(foundResult as Boolean))
           ShaderIntrinsics.Kill();
         
-        this.Target0 = Real4(ssr, foundResult * reflectionMultipler);
+        foundResult = foundResult * reflectionMultipler;
+        if(foundResult > 0.4)
+          foundResult = 1.0;
+        
+        this.Target0 = Real4(ssr,foundResult);
     }
 }

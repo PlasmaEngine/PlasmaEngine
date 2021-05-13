@@ -12,7 +12,7 @@ struct ColorMaskMap
     function Main()
     {
         var colorMask = this.ColorMaskMap.Sample(this.Uv);
-        var albedo = this.Albedo;
+        var albedo = Real3.One;
         albedo = Math.Lerp(albedo, this.RedChannelColor.XYZ, colorMask.X);
         albedo = Math.Lerp(albedo, this.GreenChannelColor.XYZ, colorMask.Y);
         albedo = Math.Lerp(albedo, this.BlueChannelColor.XYZ, colorMask.Z);
