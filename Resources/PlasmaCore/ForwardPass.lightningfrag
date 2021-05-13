@@ -30,6 +30,10 @@ struct ForwardPass
   [Input] var DirectLightDirection : Real3 = Real3(0.0, -1.0, 0.0);
   [Input] var DirectLightIntensity : Real = 1.0;
   
+  [Input] var DirectLightTemperture :  Real = 6500.0;
+  [Input] var DirectLightRadius : Real = 1.0;
+  [Input] var DirectLightLength : Real = 1.0;
+  
   [Output] var Target0 : Real4;
 
   function Main()
@@ -62,8 +66,9 @@ struct ForwardPass
     directInputs.ViewNormal = this.ViewNormal;
     directInputs.ViewDirection = viewDirection;
     directInputs.LightDirection = Math.Normalize(-Math.MultiplyNormal(this.WorldToView, this.DirectLightDirection));
-    directInputs.LightColor = this.DirectLightColor / 100;
-    directInputs.LightRadius = 0.0;
+    directInputs.LightColor = (this.DirectLightColor * (Utility.KelvinToRGB(this.DirectLightTemperture) /100));
+    directInputs.LightRadius = this.DirectLightRadius;
+    directInputs.LightLength = this.DirectLightLength;
     directInputs.LightDistance = 1.0;
     directInputs.Albedo = this.Albedo;
     directInputs.Metallic = this.Metallic;
@@ -79,7 +84,7 @@ struct ForwardPass
     directColor = Utility.ApplyDither(directColor, &this.DitherTexture, screenUv, this.ViewportSize);
     
     indirectColor *= this.IndirectIntensity;
-    directColor *= this.DirectLightIntensity / 100;
+    directColor *= this.DirectLightIntensity;
     
     this.Target0 = Real4(indirectColor + directColor, 1.0);
   }
@@ -137,8 +142,14 @@ struct ForwardPassAlpha
     var viewDirection = Math.Normalize(-this.ViewPosition);
     
     if(Math.Length(this.Emissive) > 0)
+    {
       this.Albedo = this.Emissive;
-    
+      
+      // prevents artifacts
+      this.Roughness = 1;
+      this.Metallic = 0;
+    }
+  
     // Indirect lighting
     var indirectInputs = ImageBasedLightingInputs();
     indirectInputs.WorldNormal = Math.MultiplyNormal(this.ViewToWorld, -this.ViewNormal);
@@ -157,9 +168,8 @@ struct ForwardPassAlpha
     directInputs.ViewNormal = this.ViewNormal;
     directInputs.ViewDirection = viewDirection;
     directInputs.LightDirection = Math.Normalize(-Math.MultiplyNormal(this.WorldToView, this.DirectLightDirection));
-    directInputs.LightColor = this.DirectLightColor * (Utility.KelvinToRGB(this.LightTemperature) /1000);
+    directInputs.LightColor = this.DirectLightColor * (Utility.KelvinToRGB(this.LightTemperature) /100);
     directInputs.LightRadius = 0;
-    directInputs.LightLength = 0;
     directInputs.LightDistance = 1;
     directInputs.SpecularMultiplier = 1;
     directInputs.Albedo = this.Albedo;
@@ -178,7 +188,7 @@ struct ForwardPassAlpha
     indirectColor *= this.IndirectIntensity ;
     directColor *= this.DirectLightIntensity ;
     
-    this.Target0 = Real4(indirectColor + directColor, this.Alpha);
+    this.Target0 = Real4(Math.Saturate(indirectColor) + directColor, this.Alpha);
   }
 }
 
