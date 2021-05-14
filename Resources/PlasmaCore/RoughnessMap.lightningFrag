@@ -8,12 +8,24 @@ struct RoughnessMap
   [FragmentInput][StageInput] var Uv : Real2;
   [Input] var RoughnessMap : SampledImage2d;
   [Input] var Invert : Boolean;
+  [Input] var UseRed : Boolean;
+  [Input] var UseGreen : Boolean;
+  [Input] var UseBlue : Boolean;
+  [Input] var UseAlpha : Boolean;
   
   [Output] var Roughness : Real;
   
   function Main()
   {
-    this.Roughness = this.RoughnessMap.Sample(this.Uv).X;
+    if(this.UseRed)
+      this.Roughness = this.RoughnessMap.Sample(this.Uv).X;
+    if(this.UseGreen)
+      this.Roughness = this.RoughnessMap.Sample(this.Uv).Y;
+    if(this.UseBlue)
+      this.Roughness = this.RoughnessMap.Sample(this.Uv).Z;
+    if(this.UseAlpha)
+      this.Roughness = this.RoughnessMap.Sample(this.Uv).W;    
+    
     if(this.Invert)
         this.Roughness = 1.0 - this.Roughness;
   }
