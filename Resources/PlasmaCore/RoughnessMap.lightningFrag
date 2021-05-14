@@ -8,10 +8,10 @@ struct RoughnessMap
   [FragmentInput][StageInput] var Uv : Real2;
   [Input] var RoughnessMap : SampledImage2d;
   [Input] var Invert : Boolean;
-  [Input] var UseRed : Boolean;
-  [Input] var UseGreen : Boolean;
-  [Input] var UseBlue : Boolean;
-  [Input] var UseAlpha : Boolean;
+  [Input] var UseRed : Boolean = true;
+  [Input] var UseGreen : Boolean = false;
+  [Input] var UseBlue : Boolean = false;
+  [Input] var UseAlpha : Boolean = false;
   
   [Output] var Roughness : Real;
   
