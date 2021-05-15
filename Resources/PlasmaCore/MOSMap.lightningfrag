@@ -5,6 +5,7 @@ struct MOSMap
     [Input] var MOSMap : SampledImage2d;
     [Input] var ApplyAO : Boolean;
     [Input] var AOMultiplier : Real;
+    [Input] var InverAO : Boolean;
 
     [Output] var Roughness : Real;
     [Output] var Metallic : Real;
@@ -16,6 +17,11 @@ struct MOSMap
         this.Roughness = 1 - mosMap.W;
         this.Metallic = mosMap.X;
         if(this.ApplyAO)
+        {
+          if(this.InverAO)
+            mosMap.Y = 1.0 - mosMap.Y;
+          
           this.AO = mosMap.Y * this.AOMultiplier;
+        }
     }
 }
