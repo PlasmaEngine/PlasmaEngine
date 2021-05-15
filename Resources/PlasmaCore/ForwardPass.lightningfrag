@@ -143,11 +143,7 @@ struct ForwardPassAlpha
     
     if(Math.Length(this.Emissive) > 0)
     {
-      this.Albedo = this.Emissive;
-      
-      // prevents artifacts
-      this.Roughness = 1;
-      this.Metallic = 0;
+      this.Target0 = Real4(this.Emissive, this.Alpha);
     }
   
     // Indirect lighting
@@ -192,7 +188,7 @@ struct ForwardPassAlpha
     indirectColor *= this.IndirectIntensity;
     directColor *= this.DirectLightIntensity ;
     
-    this.Target0 = Real4(Math.Saturate(indirectColor) + directColor, this.Alpha);
+    this.Target0 = Real4(Math.Saturate(indirectColor) + Math.Saturate(directColor), this.Alpha);
   }
 }
 
