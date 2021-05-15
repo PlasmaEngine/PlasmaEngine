@@ -90,13 +90,21 @@ GeometryProcessorCodes::Enum GeometryImporter::ProcessModelFiles()
   // Set the flags for post process we want to run
   uint flags = SetupAssimpPostProcess();
 
-  // Load the file into Assimp. We must use memory because their
-  // file functions do not call into our File wrappers. Also
-  // when file paths contain unicode characters Assimp fails to
-  // read the file.
-  DataBlock block = ReadFileIntoDataBlock(mInputFile.c_str());
-  mScene = mAssetImporter.ReadFileFromMemory(block.Data, block.Size, flags);
-  plDeallocate(block.Data);
+  // Currently Assimp does not look to be able to load additonal data
+  // when doing ReadFileFromMemory, until this is fixed we can not depend
+  // on internal file loading for this file type.
+  if (FilePath::GetExtension(mInputFile) == "gltf")
+      mScene = mAssetImporter.ReadFile(mInputFile.c_str(), flags);
+  else
+  {
+      // Load the file into Assimp. We must use memory because their
+      // file functions do not call into our File wrappers. Also
+      // when file paths contain unicode characters Assimp fails to
+      // read the file.
+      DataBlock block = ReadFileIntoDataBlock(mInputFile.c_str());
+      mScene = mAssetImporter.ReadFileFromMemory(block.Data, block.Size, flags);
+      plDeallocate(block.Data);
+  }
   PlasmaPrint("Processing model: %s\n", FilePath::GetFileNameWithoutExtension(mInputFile).Data());
 
   // An error has occurred, no scene imported

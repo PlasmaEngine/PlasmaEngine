@@ -74,6 +74,18 @@ void RunGroupImport(ImportOptions& options)
     filename = SanitizeContentFilename(filename);
     String storedfilename = FilePath::Combine(library->SourcePath, filename);
 
+    if (FilePath::GetExtension(filename) == "gltf")
+    {
+        String directoryOnly = FilePath::GetDirectoryPath(fullPath);
+        String nameOnly = FilePath::GetFileNameWithoutExtension(fullPath);
+        String binFile = FilePath::Combine(directoryOnly, nameOnly) + ".bin";
+
+        String binFilename = StripResourceExtension(FilePath::GetFileName(binFile));
+        String outputPath = FilePath::Combine(library->SourcePath, nameOnly) + ".bin";
+
+        CopyFile(outputPath, binFile);
+    }
+
     // Add the content item
     AddContentItemInfo addContent;
     addContent.FileName = filename;
@@ -91,7 +103,10 @@ void RunGroupImport(ImportOptions& options)
       contentToBuild.PushBack(newContentItem);
     else
       DoNotifyError("Failed Import", addItem.Message);
+
+     
   }
+
 
   // Now that all the content has been added. Build and load them for use.
 
