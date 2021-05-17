@@ -938,7 +938,7 @@ void LauncherWindow::OnLauncherListing(BackgroundTaskEvent* taskEvent)
 
     // It must be the same platform as we're on.
     BuildId buildId = content->GetBuildId();
-    if (buildId.IsForThisPlatform())
+    if (!buildId.IsForThisPlatform())
       continue;
 
     // If this is a patch we need to check the minor version (and make sure it's

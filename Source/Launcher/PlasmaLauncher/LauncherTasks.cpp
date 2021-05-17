@@ -66,8 +66,6 @@ void GetVersionListingTaskJob::PopulatePackageList()
       BuildId id;
       if (!id.Parse(name))
         continue;
-     // if (mApplicationName != GetApplicationName())
-     //   continue;
 
       Cog* cog = space->Create(emptyArchetype);
       ReturnIf(cog == nullptr, , "Unable to create an empty Cog");

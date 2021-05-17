@@ -890,6 +890,8 @@ PlasmaBuild* VersionSelector::FindExactVersion(CachedProject* cachedProject)
   // launcher's platform build.
   BuildId buildId = cachedProject->GetBuildId();
   buildId.SetToThisPlatform();
+  // Allows us to push debug builds for testing and builds without configs
+  buildId.mConfig = "Release"; 
 
   // If we find a matching build then return it
   PlasmaBuild* matchingBuild = mVersionMap.FindValue(buildId, nullptr);

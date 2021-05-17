@@ -235,7 +235,7 @@ bool BuildId::IsPlatformEmpty() const
 
 bool BuildId::IsForThisPlatform() const
 {
-  return mTargetOs == PLASMA_PLATFORM_NAME && mArchitecture == PlasmaArchitectureName && mConfig == PlasmaConfigName;
+  return mTargetOs == PLASMA_PLATFORM_NAME && mArchitecture == PlasmaArchitectureName;
 }
 
 void BuildId::SetToThisPlatform()
