@@ -25,8 +25,8 @@ ContentItem* MakeBinaryContent(ContentInitializer& initializer)
   // initializer.BuilderType = "TextureHdr";
 
   // Doing this will break terrain saving and loading
-  // if (initializer.Extension == "bin")
-  //   initializer.BuilderType = "Mesh";
+   if (initializer.Extension == "bin")
+     initializer.BuilderType = "MeshData";
 
   if (initializer.BuilderType.Empty())
   {
