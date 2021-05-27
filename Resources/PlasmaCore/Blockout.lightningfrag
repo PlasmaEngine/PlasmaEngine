@@ -10,21 +10,29 @@ struct Blockout
 
   [Input] var ColorA : Real4 = Real4.One;
   [Input] var ColorB : Real4 = Real4.Zero;
+  [Input] var ColorC : Real4 = Real4(0,0.4,0.6,1.0);
   [Input][Slider(0, 1, 0.01)] var BlendValue : Real = 0.5;
 
   function Main()
   {
     var worldNormal = Math.MultiplyNormal(this.ViewToWorld, this.ViewNormal);
-    worldNormal = Math.Abs(worldNormal);
+ //   worldNormal = Math.Abs(worldNormal);
     
     var blendWeight = 0.0;
+    var blendWeight2 = 0.0;
     
     if(worldNormal.Y <= this.BlendValue)
     {
       blendWeight = 1.0;
     }
+    if(worldNormal.Y <= -this.BlendValue)
+    {
+      blendWeight2 = 1.0;
+    }
     
-    this.Albedo.XYZ *= Math.Lerp(this.ColorA.XYZ, this.ColorB.XYZ, blendWeight);
+    var blend = Math.Lerp(this.ColorA.XYZ, this.ColorB.XYZ, blendWeight);
     
+    
+    this.Albedo.XYZ *= Math.Lerp(blend, this.ColorC.XYZ, blendWeight2);
   }
 }
