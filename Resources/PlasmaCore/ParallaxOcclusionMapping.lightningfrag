@@ -1,35 +1,40 @@
 // MIT Licensed (see LICENSE.md).
-
 [Pixel]
 struct ParallaxOcclusionMapping
 {    
-	[AppBuiltInInput] var ViewToPerspective : Real4x4;
-	
-	[AppBuiltInInput] var FarPlane : Real;
-	
+    [AppBuiltInInput] var ViewToPerspective : Real4x4;
+
+    [AppBuiltInInput] var FarPlane : Real;
+
     [FragmentInput][StageInput][Output] var Uv : Real2;
     
     [FragmentInput][StageInput] var ViewNormal : Real3;
     [FragmentInput][StageInput] var ViewTangent : Real3;
-   [FragmentInput][StageInput] var ViewBitangent : Real3;
+    [FragmentInput][StageInput] var ViewBitangent : Real3;
     
     [FragmentInput][StageInput][Output] var ViewPosition : Real3;
     
     [Input] var ParallaxMap : SampledImage2d;
     [Input] var UVScale : Real2 = Real2(1,1);
-    [Input] var HeightScale : Real = 0.3;
-    [Input] var Samples : Real = 32.0;
+    [Input] var HeightScale : Real = 1;
+    [Input] var MinSampels : Real = 64.0;
+    [Input] var MaxSamples : Real = 128.0;
     [Input] var Invert : Boolean = false;
     [Input] var Silloute : Boolean = false;
+    
 
     function Main()
     {
     
         var viewDirection = Math.Normalize(-this.ViewPosition);
         
-        var samples = this.Samples;
-        var layerDepth = 1.0 / samples;
         var currentLayerDepth = 0.0;
+        
+        //var maxLayers = this.MinSampels + 32.0;
+        var numLayers = Math.Lerp(this.MaxSamples, this.MinSampels, Math.Abs(Math.Dot(Real3(0.0, 0.0, 1.0), (-viewDirection / this.FarPlane))));
+        
+        var layerDepth = 1.0 / numLayers;
+        
         
         var normal = Math.Normalize(this.ViewNormal);
         var tangent = Math.Normalize(this.ViewTangent);
@@ -45,20 +50,23 @@ struct ParallaxOcclusionMapping
         
         var uv = this.Uv;
                 
-        var height = this.ParallaxMap.Sample(this.Uv).X;
+        var height = 1.0 - this.ParallaxMap.Sample(this.Uv).X;
         if(this.Invert)
             height = 1-height;
       
-        var parallax = (viewDirection.XY / (-viewDirection.Z / this.FarPlane) ) * ((-this.HeightScale / 10) / this.FarPlane);
-        var deltaTexCoods = parallax / samples;
+        var parallax = (viewDirection.XY / (-viewDirection.Z / this.FarPlane) ) * ((-this.HeightScale / 50) / this.FarPlane);
+        var deltaTexCoods = parallax / numLayers;
         
-        while(currentLayerDepth < height)
+        var steps = 0;
+        while(currentLayerDepth < height && steps < this.MaxSamples)
         {
             uv -= deltaTexCoods;
-            height = this.ParallaxMap.Sample(uv).X;
+            height = 1.0 - this.ParallaxMap.Sample(uv).X;
             if(this.Invert)
                 height = 1-height;
             currentLayerDepth += layerDepth;
+            
+            steps += 1;
         }
         
         if(this.Silloute)
@@ -66,7 +74,7 @@ struct ParallaxOcclusionMapping
                 ShaderIntrinsics.Kill();
         
         var prevTexCoord = uv + deltaTexCoods;
-        var afterDepth = height - currentLayerDepth;
+        var afterDepth = currentLayerDepth - height;
         var beforeDepth = (-viewDirection.Z / this.FarPlane) - height + layerDepth;
                 
         var weight = afterDepth / (afterDepth - beforeDepth);
