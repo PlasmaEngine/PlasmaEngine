@@ -1,0 +1,30 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct Blockout
+{
+  [AppBuiltInInput] var ViewToWorld : Real4x4;
+  [FragmentInput][StageInput] var ViewNormal : Real3;
+
+  [FragmentInput][Output] var Albedo : Real3;
+
+  [Input] var ColorA : Real4 = Real4.One;
+  [Input] var ColorB : Real4 = Real4.Zero;
+  [Input][Slider(0, 1, 0.01)] var BlendValue : Real = 0.5;
+
+  function Main()
+  {
+    var worldNormal = Math.MultiplyNormal(this.ViewToWorld, this.ViewNormal);
+    worldNormal = Math.Abs(worldNormal);
+    
+    var blendWeight = 0.0;
+    
+    if(worldNormal.Y <= this.BlendValue)
+    {
+      blendWeight = 1.0;
+    }
+    
+    this.Albedo.XYZ *= Math.Lerp(this.ColorA.XYZ, this.ColorB.XYZ, blendWeight);
+    
+  }
+}

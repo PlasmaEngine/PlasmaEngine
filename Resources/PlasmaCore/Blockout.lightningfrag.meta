@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "Blockout"
+		var ResourceId = 0x608a13ae092a66a6
+	}
+}
