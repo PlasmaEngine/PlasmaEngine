@@ -135,7 +135,6 @@ struct SSR
     {
         // Sample Buffers
         var geometrySample0 = this.GeometryBuffer0.Sample(this.Uv);
- 
         var normal = GeometryPass.GetNormal(geometrySample0);
         var roughness = GeometryPass.GetRoughness(geometrySample0);
         var viewPosition = GeometryPass.ReconstructViewPosition(geometrySample0, this.PerspectiveToView, this.PerspectivePosition, this.FarPlane);
@@ -236,7 +235,12 @@ struct SSR
         
         coords.XY = Math.Saturate(coords.XY);
  
-        var ssr = reflectionMultipler * (this.ScreenBuffer.SampleLod(coords.XY, roughness).XYZ );
+        
+        var geometrySample1 = this.GeometryBuffer1.Sample(coords.XY);
+ 
+        var albedo = GeometryPass.GetAlbedo(geometrySample1);
+ 
+        var ssr =  (albedo );
         
         if(!(foundResult as Boolean))
           ShaderIntrinsics.Kill();
