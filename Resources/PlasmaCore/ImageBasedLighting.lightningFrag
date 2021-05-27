@@ -14,6 +14,7 @@ struct ImageBasedLightingInputs
   var RenderDiffuse : Boolean;
   var RenderSpecular : Boolean;
   var SSR : Real4;
+  var Intensity : Real;
 }
 
 // Indirect lighting using an image (skybox).
@@ -64,9 +65,10 @@ struct ImageBasedLighting
     iblInputs.RenderDiffuse = this.RenderDiffuse;
     iblInputs.RenderSpecular = this.RenderSpecular;
     iblInputs.SSR = this.SSRTexture.Sample(this.Uv);
+    iblInputs.Intensity = this.Intensity;
     
     var color = ImageBasedLighting.Compute(iblInputs, &this.Skybox, &this.EnvironmentBrdfLut);
-    color = Math.Min(color * this.Intensity, Real3(this.MaxIntensity));
+    color = Math.Min(color, Real3(this.MaxIntensity));
    
     //var ssr = this.SSRTexture.Sample(this.Uv);
     //color = Math.Lerp(color, ssr.XYZ, ssr.W);
@@ -106,8 +108,8 @@ struct ImageBasedLighting
     var metallicSpecular = envSpecular * (inputs.Albedo * brdfSpec.X + brdfSpec.YYY);
     var dialectricSpecular = envSpecular * (Real3(0.10) * brdfSpec.X + brdfSpec.YYY);
     
-    metallicSpecular = Math.Lerp(metallicSpecular, inputs.SSR.XYZ, inputs.SSR.W);
-    dialectricSpecular = Math.Lerp(dialectricSpecular, inputs.SSR.XYZ, inputs.SSR.W);
+    metallicSpecular = Math.Lerp(metallicSpecular * inputs.Intensity, inputs.SSR.XYZ, inputs.SSR.W);
+    dialectricSpecular = Math.Lerp(dialectricSpecular * inputs.Intensity, inputs.SSR.XYZ, inputs.SSR.W);
     
     // For debugging
     diffuseColor *= inputs.RenderDiffuse as Real;
@@ -115,6 +117,6 @@ struct ImageBasedLighting
     dialectricSpecular *= inputs.RenderSpecular as Real;
     
     // Linear combination between dialectric and metallic colors
-    return Math.Lerp(diffuseColor + dialectricSpecular * inputs.Specular, metallicSpecular, inputs.Metallic);
+    return Math.Lerp((diffuseColor * inputs.Intensity)  + dialectricSpecular * inputs.Specular, metallicSpecular, inputs.Metallic);
   }
 }
