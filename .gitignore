@@ -40,3 +40,5 @@ enc_temp_folder/
 External/
 
 Source/Core/Common/PlasmaConfig.hpp
+
+Installer/
