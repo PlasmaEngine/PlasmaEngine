@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT Type="Advanced Installer" CreateVersion="18.2" version="18.2" Modules="update" RootPath="." Language="en" Id="{BD76B704-87DC-4493-8AA5-6D2377F86DA8}">
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;aiu-ue.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;aiu-ue_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.UpdaterEditorComponent">
+    <ROW Section="Update" Key="Name" Value="Plasma Installer"/>
+    <ROW Section="Update" Key="ProductVersion" Value="0.1.6.0" ValueLocId="-"/>
+    <ROW Section="Update" Key="URL" Value="https://www.dropbox.com/s/rzy6ycqmwb7c63n/Plasma%20Installer.exe?dl=1" ValueLocId="-"/>
+    <ROW Section="Update" Key="Size" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update" Key="SHA256" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update" Key="MD5" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update" Key="ServerFileName" Value="Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update" Key="RegistryKey" Value="HKUD\Software\PlasmaTechnology\Plasma Installer\Version" ValueLocId="-"/>
+    <ROW Section="Update" Key="Version" Value="0.1.6.0" ValueLocId="-"/>
+    <ROW Section="Update" Key="Feature" Value="Added Physically based DOF (some settings on the camera)&#13;&#10;Added Physically based Exposure (some settings on the camera)&#13;&#10;SMAA&#13;&#10;Order Independent Transparency&#13;&#10;SSR Rework&#13;&#10;Specular multiplier for lights&#13;&#10;ACES Tonemapper&#13;&#10;Rework color mask to be more generic&#13;&#10;Change Emissive to use much less GBuffer space&#13;&#10;Toon Shading&#13;&#10;Tube lights (Experimental)&#13;&#10;Added slider support to shaders&#13;&#10;Added support for repeated names across shaders&#13;&#10;Apply AA to debug rendering&#13;&#10;Fixed rendering asset&#13;&#10;UV Scrolling&#13;&#10;Prevent light clipping on alpha materials&#13;&#10;Allow AO inversion on MOS maps&#13;&#10;Added the option to select input channel on Roughness and Metallic&#13;&#10;Renamed post effects to be consistent&#13;&#10;Enabled SPIRV optimizer &#13;&#10;Moved to GL3 for render doc support&#13;&#10;Added alpha options to ignore PostFX&#13;&#10;Selection icons now ignore PostFX&#13;&#10;Added tools onto toolbar&#13;&#10;Added Debugger into the toolbar&#13;&#10;Remove Node from build system&#13;&#10;Overhauled build system&#13;&#10;Initial Linux Support &#13;&#10;Work towards MacOS support&#13;&#10;"/>
+    <ROW Section="Update" Key="Enhancement" Value="Improve UI for Sound Node graph&#13;&#10;Better cleanup of imported assets&#13;&#10;Improve handling of resource icons&#13;&#10;Improve loading of project in editor&#13;&#10;Improve Physics 64 bit compliance "/>
+    <ROW Section="Update" Key="BugFix" Value="Fix metallic on alpha&#13;&#10;Fixed rendering asset&#13;&#10;Fix crash in audio engine due to filters&#13;&#10;Heightmap importer verified fixed&#13;&#10;Fix GLTF importer&#13;&#10;Fix UI error in history tool&#13;&#10;Fix Crash when adding UIWidget and UIRootWidget&#13;&#10;Fix for loading multiple libraries in game"/>
+    <ROW Section="Update 0.1.7" Key="Name" Value="Plasma Installer"/>
+    <ROW Section="Update 0.1.7" Key="ProductVersion" Value="0.1.7.0" ValueLocId="-"/>
+    <ROW Section="Update 0.1.7" Key="URL" Value="https://www.dropbox.com/s/9mkf4nanfjomue3/Plasma%20Installer%200.1.7.exe?dl=1" ValueLocId="-"/>
+    <ROW Section="Update 0.1.7" Key="Size" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update 0.1.7" Key="SHA256" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update 0.1.7" Key="MD5" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update 0.1.7" Key="ServerFileName" Value="Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update 0.1.7" Key="Flags" Value="Critical" ValueLocId="-"/>
+    <ROW Section="Update 0.1.7" Key="RegistryKey" Value="HKUD\Software\PlasmaTechnology\Plasma Installer\Version" ValueLocId="-"/>
+    <ROW Section="Update 0.1.7" Key="Version" Value="0.1.7.0" ValueLocId="-"/>
+    <ROW Section="Update 0.1.7" Key="NextDeprecated" Value="Update" ValueLocId="-"/>
+    <ROW Section="Update #1" Key="Name" Value="Plasma Installer"/>
+    <ROW Section="Update #1" Key="ProductVersion" Value="0.1.8.0" ValueLocId="-"/>
+    <ROW Section="Update #1" Key="URL" Value="https://www.dropbox.com/s/7q7y0ny6gzh1qxu/Plasma%20Installer%200.1.8.exe?dl=1" ValueLocId="-"/>
+    <ROW Section="Update #1" Key="Size" Value="..\Setup Files\en_GB\Plasma Installer 0.1.8.exe" ValueLocId="-"/>
+    <ROW Section="Update #1" Key="SHA256" Value="..\Setup Files\en_GB\Plasma Installer 0.1.8.exe" ValueLocId="-"/>
+    <ROW Section="Update #1" Key="MD5" Value="..\Setup Files\en_GB\Plasma Installer 0.1.8.exe" ValueLocId="-"/>
+    <ROW Section="Update #1" Key="ServerFileName" Value="Plasma Installer 0.1.8.exe" ValueLocId="-"/>
+    <ROW Section="Update #1" Key="Flags" Value="Critical" ValueLocId="-"/>
+    <ROW Section="Update #1" Key="RegistryKey" Value="HKUD\Software\PlasmaTechnology\Plasma Installer\Version" ValueLocId="-"/>
+    <ROW Section="Update #1" Key="Version" Value="0.1.8.0" ValueLocId="-"/>
+    <ROW Section="Update #1" Key="NextDeprecated" Value="Update 0.1.7" ValueLocId="-"/>
+    <ROW Section="Update #2" Key="Name" Value="Plasma Installer"/>
+    <ROW Section="Update #2" Key="ProductVersion" Value="0.1.8.1" ValueLocId="-"/>
+    <ROW Section="Update #2" Key="URL" Value="https://www.dropbox.com/s/20uggi8zm0xo40p/Plasma%20Installer%200.1.8.1.exe?dl=1" ValueLocId="-"/>
+    <ROW Section="Update #2" Key="Size" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update #2" Key="SHA256" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update #2" Key="MD5" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update #2" Key="ServerFileName" Value="Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update #2" Key="Flags" Value="Critical" ValueLocId="-"/>
+    <ROW Section="Update #2" Key="RegistryKey" Value="HKUD\Software\PlasmaTechnology\Plasma Installer\Version" ValueLocId="-"/>
+    <ROW Section="Update #2" Key="Version" Value="0.1.8.1" ValueLocId="-"/>
+    <ROW Section="Update #2" Key="NextDeprecated" Value="Update #1" ValueLocId="-"/>
+    <ROW Section="Update #3" Key="Name" Value="Plasma Installer"/>
+    <ROW Section="Update #3" Key="ProductVersion" Value="0.1.8.2" ValueLocId="-"/>
+    <ROW Section="Update #3" Key="URL" Value="https://www.dropbox.com/s/rwli0hh576mxmgh/Plasma%20Installer%200.1.8.2.exe?dl=1" ValueLocId="-"/>
+    <ROW Section="Update #3" Key="Size" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update #3" Key="SHA256" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update #3" Key="MD5" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update #3" Key="ServerFileName" Value="Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update #3" Key="Flags" Value="Critical" ValueLocId="-"/>
+    <ROW Section="Update #3" Key="RegistryKey" Value="HKUD\Software\PlasmaTechnology\Plasma Installer\Version" ValueLocId="-"/>
+    <ROW Section="Update #3" Key="Version" Value="0.1.8.2" ValueLocId="-"/>
+    <ROW Section="Update #3" Key="NextDeprecated" Value="Update #2" ValueLocId="-"/>
+    <ROW Section="Update #4" Key="Name" Value="Plasma Installer"/>
+    <ROW Section="Update #4" Key="ProductVersion" Value="0.1.9.0" ValueLocId="-"/>
+    <ROW Section="Update #4" Key="URL" Value="https://www.dropbox.com/s/y59f9ns18rmhlt5/Plasma%20Installer%200.1.9.0.exe?dl=1" ValueLocId="-"/>
+    <ROW Section="Update #4" Key="Size" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update #4" Key="SHA256" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update #4" Key="MD5" Value="..\Setup Files\en_GB\Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update #4" Key="ServerFileName" Value="Plasma Installer.exe" ValueLocId="-"/>
+    <ROW Section="Update #4" Key="Flags" Value="Critical" ValueLocId="-"/>
+    <ROW Section="Update #4" Key="RegistryKey" Value="HKUD\Software\PlasmaTechnology\Plasma Installer\Version" ValueLocId="-"/>
+    <ROW Section="Update #4" Key="Version" Value="0.1.9.0" ValueLocId="-"/>
+    <ROW Section="Update #4" Key="NextDeprecated" Value="Update #3" ValueLocId="-"/>
+    <ATTRIBUTE name="OutputFileName" value=".txt"/>
+  </COMPONENT>
+</DOCUMENT>
