@@ -1,6 +1,8 @@
 // MIT Licensed (see LICENSE.md).
 #pragma once
 
+#include "SpirvDefinitions.hpp"
+
 namespace Plasma
 {
 
@@ -367,7 +369,8 @@ public:
   Lightning::BoundType* mRenderTargetType;
 
   CallbackSettings mCallbackSettings;
-  LightningShaderErrorSettings mErrorSettings;
+  LightningShaderErrorSettings mErrorSettings; 
+  SpirVDefinitions mSpirVDefinitions;
 
 private:
   /// Validates that uniform descriptions don't have any

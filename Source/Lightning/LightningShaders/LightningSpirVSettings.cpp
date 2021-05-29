@@ -373,6 +373,7 @@ LightningShaderSpirVSettings::LightningShaderSpirVSettings()
   mAllowUniformMaterialBufferIndexOverap = false;
   InitializeBuiltIns();
   mRenderTargetType = LightningTypeId(Lightning::Real4);
+  mSpirVDefinitions.LoadSimplifiedDefaults();
 }
 
 LightningShaderSpirVSettings::LightningShaderSpirVSettings(const SpirVNameSettings& nameSettings) : mNameSettings(nameSettings)
@@ -381,6 +382,7 @@ LightningShaderSpirVSettings::LightningShaderSpirVSettings(const SpirVNameSettin
   mAllowUniformMaterialBufferIndexOverap = false;
   InitializeBuiltIns();
   mRenderTargetType = LightningTypeId(Lightning::Real4);
+  mSpirVDefinitions.LoadSimplifiedDefaults();
 }
 
 void LightningShaderSpirVSettings::AddUniformBufferDescription(UniformBufferDescription& description)
