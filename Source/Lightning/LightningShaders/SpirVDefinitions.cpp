@@ -1,6 +1,6 @@
 #include "Precompiled.hpp"
 
-#include "LightningShaders/SpirVUtils/SpirVDefinitions.hpp"
+#include "SpirVDefinitions.hpp"
 
 namespace Plasma
 {
