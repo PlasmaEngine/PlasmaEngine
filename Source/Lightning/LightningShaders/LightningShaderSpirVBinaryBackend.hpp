@@ -15,12 +15,18 @@ public:
 
   int FindId(ILightningShaderIR* instruction, bool assertOnPlasma = true);
 
+
+  bool TryDedupePrimitiveType(LightningShaderIRType* shaderType);
+  void BuildTypeIdentifierName(ILightningShaderIR* ir, StringBuilder& builder);
+
   ShaderStreamWriter* mStreamWriter;
   ShaderStageInterfaceReflection* mReflectionData;
 
   // Id mapping of an instruction
   int mId;
   HashMap<ILightningShaderIR*, int> mGeneratedId;
+  HashSet<int> mVisitedTypes;
+  HashMap<String, int> mPrimitiveTypeDedupeIdMap;
   Array<EntryPointInfo*> mEntryPoints;
   LightningShaderIRFunction* mMain;
 };
@@ -80,6 +86,7 @@ private:
 
   template <typename T>
   void GenerateListIds(OrderedHashSet<T>& input, LightningShaderToSpirVContext* context);
+  void GenerateTypeIds(OrderedHashSet<LightningShaderIRType*>& types, LightningShaderToSpirVContext* context);
   void GenerateFunctionIds(FunctionList& functions, LightningShaderToSpirVContext* context);
   void GenerateFunctionBlockIds(LightningShaderIRFunction* function, LightningShaderToSpirVContext* context);
   void GenerateBlockLineIds(BasicBlock* block, LightningShaderToSpirVContext* context);

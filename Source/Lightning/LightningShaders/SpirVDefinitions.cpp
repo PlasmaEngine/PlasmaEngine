@@ -538,6 +538,8 @@ void SpirVInstructions::LoadSimplifiedDefaults()
   AddSimpleInstruction("OpMax", 0x7fffffff);
 }
 
+#include "GLSL.std.450.h"
+
 void SpirVInstructions::LoadSimplifiedGlsl450Defaults()
 {
   AddSimpleInstruction("Bad", GLSLstd450Bad);

@@ -1,6 +1,8 @@
 // MIT Licensed (see LICENSE.md).
 #pragma once
 
+#include "AttributeResolverSortData.hpp"
+
 namespace Plasma
 {
 
@@ -31,6 +33,13 @@ public:
   LightningShaderIRFunction* mCurrentFunction;
 
   LightningShaderDebugInfo mDebugInfo;
+};
+
+class LightningSpirVPrimitiveCollectorContext
+    : public Lightning::WalkerContext<LightningSpirVFrontEnd, LightningSpirVPrimitiveCollectorContext>
+{
+public:
+    Array<AttributeResolverSortData> mAttributeResolvers;
 };
 
 class LightningSpirVFrontEnd : public BaseShaderIRTranslator
@@ -158,9 +167,13 @@ public:
                      LightningShaderIRFunction* shaderFunction,
                      StringParam functionName,
                      LightningSpirVFrontEndContext* context);
+  bool ProcessIntrinsicAttributes(Lightning::SyntaxNode* node, LightningShaderIRType* owningType, ShaderIRAttributeList& shaderAttributes);
 
   void CollectClassTypes(Lightning::ClassNode*& node, LightningSpirVFrontEndContext* context);
   void CollectEnumTypes(Lightning::EnumNode*& node, LightningSpirVFrontEndContext* context);
+
+  void CollectPrimitiveTypes(Lightning::ClassNode*& node, LightningSpirVPrimitiveCollectorContext* context);
+  void ResolvePrimitiveTypes(LightningSpirVPrimitiveCollectorContext* context);
 
   void PreWalkClassNode(Lightning::ClassNode*& node, LightningSpirVFrontEndContext* context);
   void PreWalkTemplateTypes(LightningSpirVFrontEndContext* context);

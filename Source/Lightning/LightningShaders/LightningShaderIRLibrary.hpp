@@ -11,6 +11,7 @@ typedef Lightning::Ref<LightningShaderIRModule> LightningShaderIRModuleRef;
 
 class LightningSpirVFrontEnd;
 class LightningSpirVFrontEndContext;
+class IAttributeResolver;
 
 typedef Pair<LightningShaderIRType*, Lightning::Any> ConstantOpKeyType;
 
@@ -207,6 +208,8 @@ public:
   LightningShaderIRType* FindType(const String& typeName, bool checkDependencies = true);
   LightningShaderIRType* FindType(Lightning::Type* lightningType, bool checkDependencies = true);
 
+  SpirVExtensionLibrary* FindExtensionLibrary(StringParam libraryName, bool checkDependencies = true);
+
   /// Find the global variable data associate with the given lightning field.
   GlobalVariableData* FindGlobalVariable(Lightning::Field* lightningField, bool checkDependencies = true);
   /// Find the global variable data associate with the given instance variable
@@ -257,6 +260,10 @@ public:
   /// field, but can also be special global keys (like languageId).
   LightningShaderIROp* FindSpecializationConstantOp(void* key, bool checkDependencies = true);
 
+
+  void RegisterIntrinsicAttributeResolver(StringParam attributeName, IAttributeResolver* resolverFn);
+  IAttributeResolver* FindIntrinsicAttributeResolver(StringParam attributeName, bool checkDependencies = true);
+
   Lightning::LibraryRef mLightningLibrary;
   LightningShaderIRModuleRef mDependencies;
   // An intrusive reference count for memory handling
@@ -299,6 +306,7 @@ public:
   HashMap<Lightning::Function*, SpirVExtensionInstruction*> mExtensionInstructions;
   HashMap<SpirVExtensionLibrary*, LightningShaderExtensionImport*> mExtensionLibraryImports;
   HashMap<TemplateTypeKey, TemplateTypeIRResloverFn> mTemplateResolvers;
+  HashMap<String, IAttributeResolver*> mIntrinsicAttributeResolvers;
 
   /// Stores cached information about symbols in this library that have
   /// certain stage requirements. Used to detect and emit errors.

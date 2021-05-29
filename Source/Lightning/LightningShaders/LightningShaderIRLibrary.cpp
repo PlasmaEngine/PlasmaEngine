@@ -1,6 +1,8 @@
 // MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
+#include "IAttributeResolver.hpp"
+
 namespace Plasma
 {
 
@@ -334,6 +336,7 @@ LightningShaderIRLibrary::~LightningShaderIRLibrary()
   DeleteObjectsIn(mConstantOps.Values());
   DeleteObjectsIn(mExtensionLibraryImports.Values());
   DeleteObjectsIn(mLightningFieldToGlobalVariable.Values());
+  DeleteObjectsIn(mIntrinsicAttributeResolvers.Values());
 }
 
 void LightningShaderIRLibrary::AddType(StringParam typeName, LightningShaderIRType* shaderType)
@@ -565,6 +568,32 @@ LightningShaderIRFunction* LightningShaderIRLibrary::FindFunction(Lightning::Fun
   return mDependencies->FindFunction(lightningFunction, checkDependencies);
 }
 
+SpirVExtensionLibrary* LightningShaderIRLibrary::FindExtensionLibrary(StringParam libraryName, bool checkDependencies)
+{
+    // Try to find the type in this library
+    SpirVExtensionLibrary* result = nullptr;
+    for (size_t i = 0; i < mExtensionLibraries.Size(); ++i)
+    {
+        if (mExtensionLibraries[i]->mName == libraryName)
+        {
+            result = mExtensionLibraries[i];
+            break;
+        }
+    }
+
+    if (result == nullptr && checkDependencies && mDependencies != nullptr)
+    {
+        for (size_t i = 0; i < mDependencies->Size(); ++i)
+        {
+            LightningShaderIRLibrary* library = (*mDependencies)[i];
+            result = library->FindExtensionLibrary(libraryName, checkDependencies);
+            if (result != nullptr)
+                break;
+        }
+    }
+    return result;
+}
+
 SpirVExtensionInstruction* LightningShaderIRLibrary::FindExtensionInstruction(Lightning::Function* lightningFunction,
                                                                           bool checkDependencies)
 {
@@ -672,6 +701,28 @@ LightningShaderIROp* LightningShaderIRLibrary::FindSpecializationConstantOp(void
   if (mDependencies == nullptr)
     return nullptr;
   return mDependencies->FindSpecializationConstantOp(key, checkDependencies);
+}
+
+void LightningShaderIRLibrary::RegisterIntrinsicAttributeResolver(StringParam attributeName, IAttributeResolver* resolverFn)
+{
+    mIntrinsicAttributeResolvers.InsertOrError(attributeName, resolverFn);
+}
+
+IAttributeResolver* LightningShaderIRLibrary::FindIntrinsicAttributeResolver(StringParam attributeName, bool checkDependencies)
+{
+    // Try to find the type in this library
+    IAttributeResolver* result = mIntrinsicAttributeResolvers.FindValue(attributeName, nullptr);
+    if (result == nullptr && checkDependencies && mDependencies != nullptr)
+    {
+        for (size_t i = 0; i < mDependencies->Size(); ++i)
+        {
+            LightningShaderIRLibrary* library = (*mDependencies)[i];
+            result = library->FindIntrinsicAttributeResolver(attributeName, checkDependencies);
+            if (result != nullptr)
+                break;
+        }
+    }
+    return result;
 }
 
 template <typename OpIdType, typename OpResolverType>

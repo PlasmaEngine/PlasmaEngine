@@ -120,4 +120,9 @@ ShaderIRFunctionMeta* ShaderIRTypeMeta::CreateFunction(LightningShaderIRLibrary*
   return functionMeta;
 }
 
+bool ShaderIRTypeMeta::IsIntrinsic() const
+{
+    return mIsIntrinsicType;
+}
+
 } // namespace Plasma

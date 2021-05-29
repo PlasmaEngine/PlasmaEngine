@@ -82,6 +82,8 @@ SpirVNameSettings::SpirVNameSettings()
   mSpecializationConstantAttribute = "SpecConstant";
   mSpecializationConstantInputAttribute = BuildString(mSpecializationConstantAttribute, "Input");
 
+  mIntrinsicAttribute = "Intrinsic";
+
   // Create the implied sub-attributes for [Input]
   mInputSubAttributes.PushBack(mFragmentInputAttribute);
   mInputSubAttributes.PushBack(mHardwareBuiltInInputAttribute);

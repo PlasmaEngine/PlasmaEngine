@@ -101,6 +101,11 @@ public:
   /// object.
   ShaderIRFunctionMeta* CreateFunction(LightningShaderIRLibrary* library);
 
+  /// Was this type an intrinsic type declared by the user? Intrinsic types might be
+  /// declares as a struct in the shader, but map to an underlying spirv type
+  /// so they are declared fundamentally different.
+  bool IsIntrinsic() const;
+
   /// The name of the lightning type.
   String mLightningName;
   /// The lightning type this comes from. Useful for more complicated reflection.
@@ -118,6 +123,8 @@ public:
   /// Data can be written to the buffer and will be properly destructed
   /// when this object is destroyed (must be read in the order it's written)
   mutable Lightning::DestructibleBuffer mComplexUserData;
+
+  bool mIsIntrinsicType = false;
 };
 
 } // namespace Plasma

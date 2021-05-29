@@ -307,6 +307,16 @@ bool LightningShaderIRType::IsGlobalType() const
   return false;
 }
 
+bool LightningShaderIRType::IsIntrinsicType() const
+{
+    return mMeta != nullptr && mMeta->IsIntrinsic();
+}
+
+bool LightningShaderIRType::IsAggregateType() const
+{
+    return (mBaseType == ShaderIRTypeBaseType::Struct || mBaseType == ShaderIRTypeBaseType::FixedArray || mBaseType == ShaderIRTypeBaseType::RuntimeArray);
+}
+
 LightningShaderIRType* LightningShaderIRType::GetValueType()
 {
   if (mBaseType == ShaderIRTypeBaseType::Pointer)

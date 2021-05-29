@@ -265,6 +265,10 @@ public:
   /// Does this type have to be a global? This is determined by the
   /// "StorageClass" attribute.
   bool IsGlobalType() const;
+  /// Is this type an intrinsic type declared by the user?
+  bool IsIntrinsicType() const;
+  /// An aggregate type is one that contains other types (struct/arrays). This is important with how the backend declares things.
+  bool IsAggregateType() const;
   /// If this is a pointer type then the dereference type is returned, otherwise
   /// this type itself is returned.
   LightningShaderIRType* GetValueType();

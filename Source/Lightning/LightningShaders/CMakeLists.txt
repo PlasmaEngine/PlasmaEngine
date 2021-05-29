@@ -5,6 +5,8 @@ plasma_use_precompiled_header(LightningShaders ${CMAKE_CURRENT_LIST_DIR})
 
 target_sources(LightningShaders
   PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/AttributeResolverSortData.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/IAttributeResolver.hpp
     ${CMAKE_CURRENT_LIST_DIR}/ImageEnums.hpp
     ${CMAKE_CURRENT_LIST_DIR}/SpirVDefinitions.hpp
     ${CMAKE_CURRENT_LIST_DIR}/SpirVDefinitions.cpp

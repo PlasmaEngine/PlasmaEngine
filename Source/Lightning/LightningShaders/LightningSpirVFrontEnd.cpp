@@ -1,6 +1,8 @@
 // MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
+#include "IAttributeResolver.hpp"
+
 namespace Plasma
 {
 
@@ -247,6 +249,19 @@ bool LightningSpirVFrontEnd::Translate(Lightning::SyntaxTree& syntaxTree,
   {
     mContext = nullptr;
     return !mErrorTriggered;
+  }
+
+  // Visit all primitive types that were collected earlier and fix their types and hookup any special resolution functions needed.
+  LightningSpirVPrimitiveCollectorContext primitiveCollectorContext;
+  Lightning::BranchWalker<LightningSpirVFrontEnd, LightningSpirVPrimitiveCollectorContext> primitiveTypeCollector;
+  primitiveTypeCollector.Register(&LightningSpirVFrontEnd::CollectPrimitiveTypes);
+  primitiveTypeCollector.Walk(this, syntaxTree.Root, &primitiveCollectorContext);
+  ResolvePrimitiveTypes(&primitiveCollectorContext);
+  // If this failed somehow then early return
+  if (mErrorTriggered)
+  {
+      mContext = nullptr;
+      return !mErrorTriggered;
   }
 
   // Now that we know about all types we can generate all template types
@@ -1181,6 +1196,22 @@ void LightningSpirVFrontEnd::AddImplements(Lightning::SyntaxNode* node,
   SendTranslationError(node->Location, msgBuilder.ToString());
 }
 
+bool LightningSpirVFrontEnd::ProcessIntrinsicAttributes(Lightning::SyntaxNode* node, LightningShaderIRType* owningType, ShaderIRAttributeList& shaderAttributes)
+{
+    bool visitedIntrinsic = false;
+    for (size_t i = 0; i < shaderAttributes.Size(); ++i)
+    {
+        ShaderIRAttribute& attribute = *shaderAttributes[i];
+        IAttributeResolver* resolver = mLibrary->FindIntrinsicAttributeResolver(attribute.mAttributeName);
+        if (resolver != nullptr)
+        {
+            resolver->Resolve(this, node, owningType, shaderAttributes, attribute);
+            visitedIntrinsic = true;
+        }
+    }
+    return visitedIntrinsic;
+}
+
 void LightningSpirVFrontEnd::CollectClassTypes(Lightning::ClassNode*& node, LightningSpirVFrontEndContext* context)
 {
   // Make class type's errors (only allow structs).
@@ -1257,13 +1288,52 @@ void LightningSpirVFrontEnd::PreWalkClassNode(Lightning::ClassNode*& node, Light
   walker->Walk(this, node->Variables, context);
   walker->Walk(this, node->Constructors, context);
   walker->Walk(this, node->Functions, context);
-  GeneratePreConstructor(node, context);
-  GenerateDefaultConstructor(node, context);
-  GenerateDummyMemberVariable(node, context);
+ 
+  // Only generate these implicit items on non primitive types
+  if (!context->mCurrentType->IsIntrinsicType())
+  {
+      GeneratePreConstructor(node, context);
+      GenerateDefaultConstructor(node, context);
+      GenerateDummyMemberVariable(node, context);
+  }
 
   PreWalkErrorCheck(context);
 
   context->mCurrentType = nullptr;
+}
+
+void LightningSpirVFrontEnd::CollectPrimitiveTypes(Lightning::ClassNode*& node, LightningSpirVPrimitiveCollectorContext* context)
+{
+    LightningShaderIRType* shaderType = FindType(node->Type, node);
+    ShaderIRAttributeList& shaderAttributes = shaderType->mMeta->mAttributes;
+
+    // Append all information about primitive type intrinsic attributes to the context so we can visit later
+    for (size_t i = 0; i < shaderAttributes.Size(); ++i)
+    {
+        ShaderIRAttribute& attribute = *shaderAttributes[i];
+        IAttributeResolver* resolver = mLibrary->FindIntrinsicAttributeResolver(attribute.mAttributeName);
+        if (resolver == nullptr)
+            continue;
+
+        AttributeResolverSortData& attributeData = context->mAttributeResolvers.PushBack();
+        attributeData.mAttributeIndex = i;
+        attributeData.mShaderType = shaderType;
+        attributeData.mResolver = resolver;
+        attributeData.mNode = node;
+    }
+}
+
+void LightningSpirVFrontEnd::ResolvePrimitiveTypes(LightningSpirVPrimitiveCollectorContext* context)
+{
+    Plasma::Sort(context->mAttributeResolvers.All(), AttributeResolverSortData::Sort);
+    for (auto range = context->mAttributeResolvers.All(); !range.Empty(); range.PopFront())
+    {
+        AttributeResolverSortData& attributeData = range.Front();
+        LightningShaderIRType* shaderType = attributeData.mShaderType;
+        ShaderIRAttributeList& attributes = shaderType->mMeta->mAttributes;
+        ShaderIRAttribute* shaderAttribute = attributes[attributeData.mAttributeIndex];
+        attributeData.mResolver->Resolve(this, attributeData.mNode, shaderType, attributes, *shaderAttribute);
+    }
 }
 
 void LightningSpirVFrontEnd::PreWalkTemplateTypes(LightningSpirVFrontEndContext* context)
@@ -1439,6 +1509,12 @@ void LightningSpirVFrontEnd::PreWalkClassConstructor(Lightning::ConstructorNode*
 
 void LightningSpirVFrontEnd::PreWalkClassFunction(Lightning::FunctionNode*& node, LightningSpirVFrontEndContext* context)
 {
+    ShaderIRAttributeList shaderAttributes;
+    ParseLightningAttributes(node->DefinedFunction->Attributes, &node->Attributes, shaderAttributes);
+    if (ProcessIntrinsicAttributes(node, context->mCurrentType, shaderAttributes))
+        return;
+
+
   GenerateIRFunction(node, &node->Attributes, context->mCurrentType, node->DefinedFunction, node->Name.Token, context);
 
   // Try and parse the correct "Main" function for the current fragment type
@@ -1736,6 +1812,12 @@ void LightningSpirVFrontEnd::WalkClassConstructor(Lightning::ConstructorNode*& n
 
 void LightningSpirVFrontEnd::WalkClassFunction(Lightning::FunctionNode*& node, LightningSpirVFrontEndContext* context)
 {
+    // If this function is actually an intrinsic then don't generate a real function or walk the body
+    if (node->DefinedFunction->HasAttribute(mSettings->mNameSettings.mIntrinsicAttribute))
+        return;
+
+    LightningShaderIRFunction* function = context->mCurrentFunction;
+
   GenerateFunctionParameters(node, context);
   GenerateFunctionBody(node, context);
 }
