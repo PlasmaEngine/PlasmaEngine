@@ -30,7 +30,8 @@ Syntaxer::Syntaxer(CompilationErrors& errors) :
     MemberWalker(&errors),
     FunctionWalker(&errors),
     TypingWalker(&errors),
-    ExpressionWalker(&errors)
+    ExpressionWalker(&errors),
+    AttributeWalker(&errors)
 {
   LightningErrorIfNotStarted(Syntaxer);
 
@@ -117,6 +118,9 @@ Syntaxer::Syntaxer(CompilationErrors& errors) :
   this->TypingWalker.Register(&Syntaxer::CheckContinue);
   this->TypingWalker.Register(&Syntaxer::ResolveLocalVariableReference);
   this->TypingWalker.Register(&Syntaxer::ResolveMember);
+
+  this->AttributeWalker.Register(&Syntaxer::ResolveClassAttributes);
+  this->AttributeWalker.Register(&Syntaxer::ResolveFunctionAttributes);
 
   // The last thing we do is walk all expressions and verify that r-values and
   // l-values get treated properly
@@ -441,6 +445,16 @@ void Syntaxer::ApplyToTree(SyntaxTree& syntaxTree,
 
   // Clear the typing context after every use (not necessary, except in tolerant
   // mode)
+  typingContext.Clear(this->Errors.TolerantMode);
+
+  // Finally, walk attributes again to try and resolve enums
+  this->AttributeWalker.Walk(this, syntaxTree.Root, &typingContext);
+
+  // If an error occurred, exit out
+  if (this->Errors.WasError)
+      return;
+
+  // Clear the typing context after every use (not necessary, except in tolerant mode)
   typingContext.Clear(this->Errors.TolerantMode);
 }
 
@@ -808,10 +822,6 @@ void Syntaxer::ReadAttributes(SyntaxNode* parentNode, NodeList<AttributeNode>& n
         ValueNode* literalArgument = Type::DynamicCast<ValueNode*>(argument);
         TypeIdNode* typeId = Type::DynamicCast<TypeIdNode*>(argument);
 
-        // If this isn't a literal argument, give an error
-        if (literalArgument == nullptr && typeId == nullptr)
-          return this->ErrorAt(argument, ErrorCode::AttributeArgumentMustBeLiteral);
-
         // We also only accept type ids that directly take a type (not an
         // expression)
         if (typeId != nullptr && typeId->CompileTimeSyntaxType == nullptr)
@@ -839,7 +849,7 @@ void Syntaxer::ReadAttributes(SyntaxNode* parentNode, NodeList<AttributeNode>& n
             return;
         }
         // It must be a typeid...
-        else
+        else if (typeId != nullptr)
         {
           ErrorIf(typeId == nullptr,
                   "The attribute argument wasn't a literal value or a typeid, "
@@ -847,8 +857,26 @@ void Syntaxer::ReadAttributes(SyntaxNode* parentNode, NodeList<AttributeNode>& n
 
           // Store the original token text, just in case the user wants it
           parameter.Type = ConstantType::Type;
-          parameter.TypeValue =
-              this->RetrieveType(typeId->CompileTimeSyntaxType, typeId->CompileTimeSyntaxType->Location);
+         
+          // Try to parse the type. This can fail as there's an ordering issue with type attributes on other types.
+          // To get around this in a quick and dirty way for now, temporarily turn on tolerant mode which will resolve
+          // the type as ErrorType if it fails. If it does we'll try to fix this later.
+          bool tolerantMode = this->Errors.TolerantMode;
+          this->Errors.TolerantMode = true;
+          parameter.TypeValue = this->RetrieveType(typeId->CompileTimeSyntaxType, typeId->CompileTimeSyntaxType->Location);
+          this->Errors.TolerantMode = tolerantMode;
+        }
+        else
+        {
+            MemberAccessNode* memberAccessArgument = Type::DynamicCast<MemberAccessNode*>(argument);
+            if (memberAccessArgument != nullptr)
+            {
+                // Just so we don't get any errors complaining later, give this things an io mode
+                memberAccessArgument->LeftOperand->Io = IoMode::ReadRValue;
+                memberAccessArgument->LeftOperand->IoUsage = IoMode::Ignore;
+            }
+            // Defer to later, this might be an enum
+            parameter.Type = ConstantType::Unknown;
         }
       }
     }
@@ -1995,6 +2023,10 @@ void Syntaxer::PushFunctionHelper(FunctionNodeType* node,
     return ErrorAt(node, ErrorCode::NotAllPathsReturn);
   }
 
+  // Generically walk the attributes
+  for (size_t i = 0; i < node->Attributes.Size(); ++i)
+      context->Walker->GenericWalkChildren(this, node->Attributes[i], context);
+
   // We are exiting this function, so pop it off
   context->FunctionStack.PopBack();
 }
@@ -2030,6 +2062,10 @@ void Syntaxer::CheckAndPushFunction(FunctionNode*& node, TypingContext* context)
       return ErrorAt(node, ErrorCode::MustOverrideBaseClassFunction);
     }
   }
+
+  // Generically walk the attributes
+  for (size_t i = 0; i < node->Attributes.Size(); ++i)
+      context->Walker->GenericWalkChildren(this, node->Attributes[i], context);
 
   if (this->Errors.WasError)
     return;
@@ -4288,6 +4324,64 @@ void Syntaxer::ResolveMember(MemberAccessNode*& node, TypingContext* context)
     // Any types are handled above and use a special dynamic access
     this->ErrorAt(node, ErrorCode::MemberNotFound, node->Name.c_str(), leftType->ToString().c_str());
   }
+}
+
+void Syntaxer::ResolveClassAttributes(ClassNode*& node, TypingContext* context)
+{
+    ResolveAttributes(node->Attributes, node->Type->Attributes);
+    // Generically walk the children
+    context->Walker->GenericWalkChildren(this, node, context);
+}
+
+void Syntaxer::ResolveFunctionAttributes(FunctionNode*& node, TypingContext* context)
+{
+    ResolveAttributes(node->Attributes, node->DefinedFunction->Attributes);
+}
+
+void Syntaxer::ResolveAttributes(NodeList<AttributeNode>& nodes, Array<Attribute>& attributes)
+{
+    Core& core = Core::GetInstance();
+    for (size_t attributeIndex = 0; attributeIndex < attributes.Size(); ++attributeIndex)
+    {
+        AttributeNode* attributeNode = nodes[attributeIndex];
+        Attribute& attribute = attributes[attributeIndex];
+
+        for (size_t paramIndex = 0; paramIndex < attribute.Parameters.Size(); ++paramIndex)
+        {
+            Lightning::ExpressionNode* argument = attributeNode->AttributeCall->Arguments[paramIndex];
+            AttributeParameter& param = attribute.Parameters[paramIndex];
+
+            // If the parameter type was Unknown, it could've been an enum that we weren't able to resolver earlier
+            if (param.Type == ConstantType::Unknown)
+            {
+                if (argument->ResultType->IsEnumOrFlags())
+                {
+                    MemberAccessNode* memberAccessNode = Type::DynamicCast<MemberAccessNode*>(argument);
+                    if (memberAccessNode != nullptr)
+                    {
+                        Lightning::Any value = memberAccessNode->AccessedGetterSetter->GetValue(nullptr);
+                        param.Type = ConstantType::Enumeration;
+                        param.TypeValue = argument->ResultType;
+                        param.IntegerValue = value.Get<int>();
+                    }
+                }
+            }
+            // If the param type was a Lightning::Type, but the actual type is the error type then maybe
+            // it's one that couldn't be resolved earlier (this happens with types in the attributes on other types)
+            else if (param.Type == ConstantType::Type && param.TypeValue == core.ErrorType)
+            {
+                TypeIdNode* typeId = Type::DynamicCast<TypeIdNode*>(argument);
+                param.TypeValue = this->RetrieveType(typeId->CompileTimeSyntaxType, typeId->CompileTimeSyntaxType->Location);
+            }
+
+            // If for some reason the attribute still didn't get resolved then report an error
+            if (param.Type == ConstantType::Unknown || param.TypeValue == core.ErrorType)
+            {
+                // If this isn't a literal argument, give an error
+                return this->ErrorAt(argument, ErrorCode::AttributeArgumentMustBeLiteral);
+            }
+        }
+    }
 }
 
 void Syntaxer::PrecomputeValueNode(ValueNode*& node, TypingContext* context)

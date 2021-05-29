@@ -18,7 +18,9 @@ enum Enum
   Real,
   DoubleReal,
   Boolean,
-  Type
+  Type,
+  Enumeration,
+  Unknown
 };
 static const cstr Names[] = {
     "Null", "String", "Integer", "DoubleInteger", "Real", "DoubleReal", "Boolean", "Type", nullptr};
