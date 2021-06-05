@@ -19,11 +19,9 @@ class PlasmaNoImportExport GraphicsLibrary : public Lightning::StaticLibrary
 public:
   LightningDeclareStaticLibraryInternals(GraphicsLibrary, "PlasmaEngine");
 
-  void Initialize() override;
-  void Shutdown() override;
-  void DestroyInstance() override;
+  static void Initialize();
+  static void Shutdown();
 };
-
 
 } // namespace Plasma
 

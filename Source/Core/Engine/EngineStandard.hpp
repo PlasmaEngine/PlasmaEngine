@@ -146,7 +146,6 @@ private:
 #include "HierarchySpline.hpp"
 #include "AsyncProcess.hpp"
 #include "CopyOnWrite.hpp"
-#include "LibraryManager.hpp"
 
 // Co-dependent libraries
 #include "Core/Content/ContentStandard.hpp"

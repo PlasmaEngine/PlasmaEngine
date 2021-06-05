@@ -21,9 +21,8 @@ class PlasmaNoImportExport GameplayLibrary : public Lightning::StaticLibrary
 public:
   LightningDeclareStaticLibraryInternals(GameplayLibrary, "PlasmaEngine");
 
-  void Initialize() override;
-  void Shutdown() override;
-  void DestroyInstance() override;
+  static void Initialize();
+  static void Shutdown();
 };
 } // namespace Plasma
 

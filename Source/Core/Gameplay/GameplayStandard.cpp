@@ -19,93 +19,86 @@ LightningDefineRange(IndexedHalfEdgeMeshFaceArray::RangeType);
 
 LightningDefineStaticLibrary(GameplayLibrary)
 {
-    builder.CreatableInScriptDefault = false;
+  builder.CreatableInScriptDefault = false;
 
-    // Enums
-    LightningInitializeEnum(OrientationBases);
-    LightningInitializeEnum(SplineAnimatorMode);
-    LightningInitializeEnum(PathFinderStatus);
+  // Enums
+  LightningInitializeEnum(OrientationBases);
+  LightningInitializeEnum(SplineAnimatorMode);
+  LightningInitializeEnum(PathFinderStatus);
 
-    // Ranges
-    LightningInitializeRangeAs(IndexedHalfEdgeMeshVertexArray::RangeType, "IndexedHalfEdgeMeshVertexArrayRange");
-    LightningInitializeRangeAs(IndexedHalfEdgeMeshEdgeArray::RangeType, "IndexedHalfEdgeMeshEdgeArrayRange");
-    LightningInitializeRangeAs(IndexedHalfEdgeFaceEdgeIndexArray::RangeType, "IndexedHalfEdgeFaceEdgeIndexArrayRange");
-    LightningInitializeRangeAs(IndexedHalfEdgeMeshFaceArray::RangeType, "IndexedHalfEdgeMeshFaceArrayRange");
+  // Ranges
+  LightningInitializeRangeAs(IndexedHalfEdgeMeshVertexArray::RangeType, "IndexedHalfEdgeMeshVertexArrayRange");
+  LightningInitializeRangeAs(IndexedHalfEdgeMeshEdgeArray::RangeType, "IndexedHalfEdgeMeshEdgeArrayRange");
+  LightningInitializeRangeAs(IndexedHalfEdgeFaceEdgeIndexArray::RangeType, "IndexedHalfEdgeFaceEdgeIndexArrayRange");
+  LightningInitializeRangeAs(IndexedHalfEdgeMeshFaceArray::RangeType, "IndexedHalfEdgeMeshFaceArrayRange");
 
-    // Events
-    LightningInitializeType(MouseEvent);
-    LightningInitializeType(MouseFileDropEvent);
-    LightningInitializeType(ViewportMouseEvent);
+  // Events
+  LightningInitializeType(MouseEvent);
+  LightningInitializeType(MouseFileDropEvent);
+  LightningInitializeType(ViewportMouseEvent);
 
-    LightningInitializeType(Viewport);
-    LightningInitializeType(ReactiveViewport);
-    LightningInitializeType(GameWidget);
+  LightningInitializeType(Viewport);
+  LightningInitializeType(ReactiveViewport);
+  LightningInitializeType(GameWidget);
 
-    LightningInitializeType(TileMapSource);
-    LightningInitializeType(Reactive);
-    LightningInitializeType(ReactiveSpace);
-    LightningInitializeType(MouseCapture);
-    LightningInitializeType(Orientation);
-    LightningInitializeType(TileMap);
-    LightningInitializeType(RandomContext);
-    LightningInitializeType(CameraViewport);
-    LightningInitializeType(DefaultGameSetup);
-    LightningInitializeType(PathFinderBaseEvent);
-    LightningInitializeTypeAs(PathFinderEvent<Vec3>, "PathFinderEvent");
-    LightningInitializeTypeAs(PathFinderEvent<IntVec3>, "PathFinderGridEvent");
-    LightningInitializeType(PathFinder);
-    LightningInitializeType(PathFinderRequest);
-    LightningInitializeType(PathFinderGrid);
-    LightningInitializeType(PathFinderMesh);
+  LightningInitializeType(TileMapSource);
+  LightningInitializeType(Reactive);
+  LightningInitializeType(ReactiveSpace);
+  LightningInitializeType(MouseCapture);
+  LightningInitializeType(Orientation);
+  LightningInitializeType(TileMap);
+  LightningInitializeType(RandomContext);
+  LightningInitializeType(CameraViewport);
+  LightningInitializeType(DefaultGameSetup);
+  LightningInitializeType(PathFinderBaseEvent);
+  LightningInitializeTypeAs(PathFinderEvent<Vec3>, "PathFinderEvent");
+  LightningInitializeTypeAs(PathFinderEvent<IntVec3>, "PathFinderGridEvent");
+  LightningInitializeType(PathFinder);
+  LightningInitializeType(PathFinderRequest);
+  LightningInitializeType(PathFinderGrid);
+  LightningInitializeType(PathFinderMesh);
 
-    LightningInitializeType(SplineParticleEmitter);
-    LightningInitializeType(SplineParticleAnimator);
+  LightningInitializeType(SplineParticleEmitter);
+  LightningInitializeType(SplineParticleAnimator);
 
-    LightningInitializeType(UnitTestSystem);
-    LightningInitializeType(UnitTestEvent);
-    LightningInitializeType(UnitTestEndFrameEvent);
-    LightningInitializeType(UnitTestBaseMouseEvent);
-    LightningInitializeType(UnitTestMouseEvent);
-    LightningInitializeType(UnitTestMouseDropEvent);
-    LightningInitializeType(UnitTestKeyboardEvent);
-    LightningInitializeType(UnitTestKeyboardTextEvent);
-    LightningInitializeType(UnitTestWindowEvent);
+  LightningInitializeType(UnitTestSystem);
+  LightningInitializeType(UnitTestEvent);
+  LightningInitializeType(UnitTestEndFrameEvent);
+  LightningInitializeType(UnitTestBaseMouseEvent);
+  LightningInitializeType(UnitTestMouseEvent);
+  LightningInitializeType(UnitTestMouseDropEvent);
+  LightningInitializeType(UnitTestKeyboardEvent);
+  LightningInitializeType(UnitTestKeyboardTextEvent);
+  LightningInitializeType(UnitTestWindowEvent);
 
-    LightningInitializeType(IndexedHalfEdgeMeshVertexArray);
-    LightningInitializeType(IndexedHalfEdgeMeshEdgeArray);
-    LightningInitializeType(IndexedHalfEdgeFaceEdgeIndexArray);
-    LightningInitializeType(IndexedHalfEdgeMeshFaceArray);
-    LightningInitializeType(IndexedHalfEdge);
-    LightningInitializeType(IndexedHalfEdgeFace);
-    LightningInitializeType(IndexedHalfEdgeMesh);
-    LightningInitializeTypeAs(QuickHull3DInterface, "QuickHull3D");
+  LightningInitializeType(IndexedHalfEdgeMeshVertexArray);
+  LightningInitializeType(IndexedHalfEdgeMeshEdgeArray);
+  LightningInitializeType(IndexedHalfEdgeFaceEdgeIndexArray);
+  LightningInitializeType(IndexedHalfEdgeMeshFaceArray);
+  LightningInitializeType(IndexedHalfEdge);
+  LightningInitializeType(IndexedHalfEdgeFace);
+  LightningInitializeType(IndexedHalfEdgeMesh);
+  LightningInitializeTypeAs(QuickHull3DInterface, "QuickHull3D");
 
-    LightningInitializeTypeAs(PlasmaStatic, "Plasma");
+  LightningInitializeTypeAs(PlasmaStatic, "Plasma");
 
-    // @trevor.sundberg: The Gameplay and Editor libraries are co-dependent
-    LightningTypeId(Editor)->AssertOnInvalidBinding = &IgnoreOnInvalidBinding;
+  // @trevor.sundberg: The Gameplay and Editor libraries are co-dependent
+  LightningTypeId(Editor)->AssertOnInvalidBinding = &IgnoreOnInvalidBinding;
 
-    EngineLibraryExtensions::AddNativeExtensions(builder);
-
-    LibraryManager::RegisterStatic(this);
+  EngineLibraryExtensions::AddNativeExtensions(builder);
 }
 
 void GameplayLibrary::Initialize()
 {
-    BuildStaticLibrary();
-    MetaDatabase::GetInstance()->AddNativeLibrary(GetLibrary());
+  BuildStaticLibrary();
+  MetaDatabase::GetInstance()->AddNativeLibrary(GetLibrary());
 
-    InitializeResourceManager(TileMapSourceManager);
+  InitializeResourceManager(TileMapSourceManager);
 }
 
 void GameplayLibrary::Shutdown()
 {
-    GetLibrary()->ClearComponents();
-}
-
-void GameplayLibrary::DestroyInstance()
-{
-    GameplayLibrary::Destroy();
+  GetLibrary()->ClearComponents();
 }
 
 } // namespace Plasma

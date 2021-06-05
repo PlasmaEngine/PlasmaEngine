@@ -20,9 +20,8 @@ class PlasmaNoImportExport NetworkingLibrary : public Lightning::StaticLibrary
 public:
   LightningDeclareStaticLibraryInternals(NetworkingLibrary, "PlasmaEngine");
 
-  void Initialize() override;
-  void Shutdown() override;
-  void DestroyInstance() override;
+  static void Initialize();
+  static void Shutdown();
 };
 
 } // namespace Plasma

@@ -208,8 +208,6 @@ target_sources(Engine
     ${CMAKE_CURRENT_LIST_DIR}/LightningManager.hpp
     ${CMAKE_CURRENT_LIST_DIR}/LightningResource.cpp
     ${CMAKE_CURRENT_LIST_DIR}/LightningResource.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/LibraryManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/LibraryManager.hpp
 )
 
 plasma_target_includes(Engine

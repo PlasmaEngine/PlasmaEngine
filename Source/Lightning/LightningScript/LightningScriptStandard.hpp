@@ -20,9 +20,8 @@ class PlasmaNoImportExport LightningScriptLibrary : public Lightning::StaticLibr
 public:
   LightningDeclareStaticLibraryInternals(LightningScriptLibrary, "PlasmaEngine");
 
-  void Initialize() override;
-  void Shutdown() override;
-  void DestroyInstance() override;
+  static void Initialize();
+  static void Shutdown();
 };
 
 } // namespace Plasma
