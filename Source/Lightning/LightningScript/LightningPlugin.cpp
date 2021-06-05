@@ -296,7 +296,7 @@ void LightningPluginSource::CopyPluginDependenciesOnce()
   ForceCopyPluginDependencies();
 }
 
-void LightningPluginSource::WriteCurrentVersionFile()
+void LightningPluginSource:: WriteCurrentVersionFile()
 {
   // Only do this code when we have content loaded
   if (mContentItem == nullptr)
@@ -308,6 +308,12 @@ void LightningPluginSource::WriteCurrentVersionFile()
                                  "<Project ToolsVersion=\"4.0\" "
                                  "xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">\r\n"
                                  "  <PropertyGroup>\r\n"
+                                 "    <OS>",
+                                 PlasmaTargetOsName,
+                                 "</OS>\r\n"
+                                 "    <PlatformShortName>",
+                                 PlasmaArchitectureName,
+                                 "</PlatformShortName>\r\n"
                                  "    <PlasmaVersion>",
                                  revisionNumber,
                                  "</PlasmaVersion>\r\n"
@@ -331,7 +337,7 @@ void LightningPluginSource::OpenDirectory()
 
 bool LightningPluginSource::IsIdeInstalled()
 {
-  return Os::GetEnvironmentalVariable("VCToolsInstallDir").SizeInBytes() != 0;
+  return true;
 }
 
 void LightningPluginSource::OpenIde()
