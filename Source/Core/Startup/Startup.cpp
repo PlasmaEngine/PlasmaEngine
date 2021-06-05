@@ -190,6 +190,8 @@ void PlasmaStartup::Initialize()
   // Add the core library to the meta database
   MetaDatabase::GetInstance()->AddNativeLibrary(Core::GetInstance().GetLibrary());
 
+  // Core Libraries
+
   // Initialize Plasma Libraries
   PlatformLibrary::Initialize();
   GeometryLibrary::Initialize();
@@ -200,19 +202,29 @@ void PlasmaStartup::Initialize()
   SerializationLibrary::Initialize();
   ContentMetaLibrary::Initialize();
   SpatialPartitionLibrary::Initialize();
-
   EngineLibrary::Initialize();
-  GraphicsLibrary::Initialize();
-  PhysicsLibrary::Initialize();
-  NetworkingLibrary::Initialize();
-  SoundLibrary::Initialize();
 
-  WidgetLibrary::Initialize();
-  GameplayLibrary::Initialize();
-  EditorLibrary::Initialize();
-  UiWidgetLibrary::Initialize();
+  // ~ Core Libraries
 
-  LightningScriptLibrary::Initialize();
+  auto libraryRange = LibraryManager::StaticLibraries.All();
+  for (; !libraryRange.Empty(); libraryRange.PopFront())
+  {
+      auto library = libraryRange.Front();
+      library->Initialize();
+  }
+
+  // TODO: Make modular
+  //GraphicsLibrary::Initialize();
+  //PhysicsLibrary::Initialize();
+  //NetworkingLibrary::Initialize();
+  //SoundLibrary::Initialize();
+
+  //WidgetLibrary::Initialize();
+  //GameplayLibrary::Initialize();
+  //EditorLibrary::Initialize();
+  //UiWidgetLibrary::Initialize();
+
+  //LightningScriptLibrary::Initialize();
 
   NativeBindingList::ValidateTypes();
 
@@ -378,18 +390,13 @@ void PlasmaStartup::Shutdown()
 
     Core::GetInstance().GetLibrary()->ClearComponents();
 
-    // Shutdown in reverse order
-    LightningScriptLibrary::Shutdown();
+    auto libraryRange = LibraryManager::StaticLibraries.All();
+    for (; !libraryRange.Empty(); libraryRange.PopBack())
+    {
+        auto library = libraryRange.Back();
+        library->Shutdown();
+    }
 
-    UiWidgetLibrary::Shutdown();
-    EditorLibrary::Shutdown();
-    GameplayLibrary::Shutdown();
-    WidgetLibrary::Shutdown();
-
-    SoundLibrary::Shutdown();
-    NetworkingLibrary::Shutdown();
-    PhysicsLibrary::Shutdown();
-    GraphicsLibrary::Shutdown();
     EngineLibrary::Shutdown();
 
     SpatialPartitionLibrary::Shutdown();
@@ -400,17 +407,14 @@ void PlasmaStartup::Shutdown()
     PlatformLibrary::Shutdown();
 
     // ClearLibrary
-    LightningScriptLibrary::GetInstance().ClearLibrary();
 
-    UiWidgetLibrary::GetInstance().ClearLibrary();
-    EditorLibrary::GetInstance().ClearLibrary();
-    GameplayLibrary::GetInstance().ClearLibrary();
-    WidgetLibrary::GetInstance().ClearLibrary();
+    libraryRange = LibraryManager::StaticLibraries.All();
+    for (; !libraryRange.Empty(); libraryRange.PopBack())
+    {
+        auto library = libraryRange.Back();
+        library->ClearLibrary();
+    }
 
-    SoundLibrary::GetInstance().ClearLibrary();
-    NetworkingLibrary::GetInstance().ClearLibrary();
-    PhysicsLibrary::GetInstance().ClearLibrary();
-    GraphicsLibrary::GetInstance().ClearLibrary();
     EngineLibrary::GetInstance().ClearLibrary();
 
     SpatialPartitionLibrary::GetInstance().ClearLibrary();
@@ -420,19 +424,16 @@ void PlasmaStartup::Shutdown()
     GeometryLibrary::GetInstance().ClearLibrary();
 
     // Destroy
-    LightningScriptLibrary::Destroy();
-
-    UiWidgetLibrary::Destroy();
-    EditorLibrary::Destroy();
-    GameplayLibrary::Destroy();
-    WidgetLibrary::Destroy();
-
-    SoundLibrary::Destroy();
-    NetworkingLibrary::Destroy();
-    PhysicsLibrary::Destroy();
+    libraryRange = LibraryManager::StaticLibraries.All();
+    for (; !libraryRange.Empty(); libraryRange.PopBack())
+    {
+        auto library = libraryRange.Back();
+        library->DestroyInstance();
+    }
     GraphicsLibrary::Destroy();
-    EngineLibrary::Destroy();
 
+
+    EngineLibrary::Destroy();
     SpatialPartitionLibrary::Destroy();
     ContentMetaLibrary::Destroy();
     SerializationLibrary::Destroy();

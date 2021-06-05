@@ -56,8 +56,9 @@ class PlasmaNoImportExport WidgetLibrary : public Lightning::StaticLibrary
 public:
   LightningDeclareStaticLibraryInternals(WidgetLibrary, "PlasmaEngine");
 
-  static void Initialize();
-  static void Shutdown();
+  void Initialize() override;
+  void Shutdown() override;
+  void DestroyInstance() override;
 };
 
 DeclareEnum6(ToolTipColorScheme, Default, Gray, Red, Yellow, Green, Orange);

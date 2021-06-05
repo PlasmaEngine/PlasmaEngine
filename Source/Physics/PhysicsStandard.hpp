@@ -24,8 +24,9 @@ class PlasmaNoImportExport PhysicsLibrary : public Lightning::StaticLibrary
 public:
   LightningDeclareStaticLibraryInternals(PhysicsLibrary, "PlasmaEngine");
 
-  static void Initialize();
-  static void Shutdown();
+  void Initialize() override;
+  void Shutdown() override;
+  void DestroyInstance() override;
 };
 
 } // namespace Plasma

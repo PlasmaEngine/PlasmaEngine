@@ -17,44 +17,50 @@ LightningDefineEnum(UiStackLayoutDirection);
 
 LightningDefineStaticLibrary(UiWidgetLibrary)
 {
-  builder.CreatableInScriptDefault = false;
+    builder.CreatableInScriptDefault = false;
 
-  // Ranges
-  LightningInitializeRangeAs(UiWidgetComponentHierarchy::ChildListRange, "UiWidgetRange");
+    // Ranges
+    LightningInitializeRangeAs(UiWidgetComponentHierarchy::ChildListRange, "UiWidgetRange");
 
-  // Enums
-  LightningInitializeEnum(UiSizePolicy);
-  LightningInitializeEnum(UiVerticalAlignment);
-  LightningInitializeEnum(UiHorizontalAlignment);
-  LightningInitializeEnum(UiDockMode);
-  LightningInitializeEnum(UiFocusDirection);
-  LightningInitializeEnum(UiStackLayoutDirection);
+    // Enums
+    LightningInitializeEnum(UiSizePolicy);
+    LightningInitializeEnum(UiVerticalAlignment);
+    LightningInitializeEnum(UiHorizontalAlignment);
+    LightningInitializeEnum(UiDockMode);
+    LightningInitializeEnum(UiFocusDirection);
+    LightningInitializeEnum(UiStackLayoutDirection);
 
-  // Events
-  LightningInitializeType(UiFocusEvent);
-  LightningInitializeType(UiTransformUpdateEvent);
+    // Events
+    LightningInitializeType(UiFocusEvent);
+    LightningInitializeType(UiTransformUpdateEvent);
 
-  LightningInitializeType(UiWidgetCastResultsRange);
-  LightningInitializeType(UiWidgetComponentHierarchy);
-  LightningInitializeType(UiWidget);
-  LightningInitializeType(UiRootWidget);
-  LightningInitializeType(UiLayout);
-  LightningInitializeType(UiStackLayout);
-  LightningInitializeType(UiFillLayout);
-  LightningInitializeType(UiDockLayout);
+    LightningInitializeType(UiWidgetCastResultsRange);
+    LightningInitializeType(UiWidgetComponentHierarchy);
+    LightningInitializeType(UiWidget);
+    LightningInitializeType(UiRootWidget);
+    LightningInitializeType(UiLayout);
+    LightningInitializeType(UiStackLayout);
+    LightningInitializeType(UiFillLayout);
+    LightningInitializeType(UiDockLayout);
 
-  EngineLibraryExtensions::AddNativeExtensions(builder);
+    EngineLibraryExtensions::AddNativeExtensions(builder);
+    LibraryManager::RegisterStatic(this);
 }
 
 void UiWidgetLibrary::Initialize()
 {
-  BuildStaticLibrary();
-  MetaDatabase::GetInstance()->AddNativeLibrary(GetLibrary());
+    BuildStaticLibrary();
+    MetaDatabase::GetInstance()->AddNativeLibrary(GetLibrary());
 }
 
 void UiWidgetLibrary::Shutdown()
 {
-  GetLibrary()->ClearComponents();
+    GetLibrary()->ClearComponents();
+}
+
+void UiWidgetLibrary::DestroyInstance()
+{
+    UiWidgetLibrary::Destroy();
 }
 
 } // namespace Plasma

@@ -16,8 +16,9 @@ class PlasmaNoImportExport UiWidgetLibrary : public Lightning::StaticLibrary
 public:
   LightningDeclareStaticLibraryInternals(UiWidgetLibrary, "PlasmaEngine");
 
-  static void Initialize();
-  static void Shutdown();
+  void Initialize() override;
+  void Shutdown() override;
+  void DestroyInstance() override;
 };
 
 } // namespace Plasma

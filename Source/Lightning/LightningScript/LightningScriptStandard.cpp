@@ -19,6 +19,7 @@ LightningDefineStaticLibrary(LightningScriptLibrary)
   LightningInitializeType(LightningPluginLibrary);
 
   MetaLibraryExtensions::AddNativeExtensions(builder);
+  LibraryManager::RegisterStatic(this);
 }
 
 void LightningScriptLibrary::Initialize()
@@ -38,6 +39,11 @@ void LightningScriptLibrary::Initialize()
 void LightningScriptLibrary::Shutdown()
 {
   GetLibrary()->ClearComponents();
+}
+
+void LightningScriptLibrary::DestroyInstance()
+{
+    LightningScriptLibrary::Destroy();
 }
 
 void LightningConsolePrint(ConsoleEvent* e)

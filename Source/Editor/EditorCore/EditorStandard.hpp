@@ -21,8 +21,9 @@ class PlasmaNoImportExport EditorLibrary : public Lightning::StaticLibrary
 public:
   LightningDeclareStaticLibraryInternals(EditorLibrary, "PlasmaEngine");
 
-  static void Initialize();
-  static void Shutdown();
+  void Initialize() override;
+  void Shutdown() override;
+  void DestroyInstance() override;
 };
 
 } // namespace Plasma

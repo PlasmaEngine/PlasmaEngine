@@ -27,8 +27,9 @@ class PlasmaNoImportExport SoundLibrary : public Lightning::StaticLibrary
 public:
   LightningDeclareStaticLibraryInternals(SoundLibrary, "PlasmaEngine");
 
-  static void Initialize();
-  static void Shutdown();
+  void Initialize() override;
+  void Shutdown() override;
+  void DestroyInstance() override;
 };
 
 } // namespace Plasma

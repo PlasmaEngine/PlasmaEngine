@@ -43,6 +43,14 @@ public:
   // Builds the library once and builds all dependencies
   virtual void BuildLibrary();
 
+  virtual void DestroyInstance();
+
+  // Called during startup
+  virtual void Initialize();
+
+  // Called when the application shutdown
+  virtual void Shutdown();
+
   // Clears the library, freeing all the types
   void ClearLibrary();
 
@@ -91,6 +99,7 @@ private:
       ReturnIf(Instance != nullptr, , "Can't initialize a static library more than once");                             \
       Instance = new Name();                                                                                           \
     }                                                                                                                  \
+                                                                                                                       \
     static void Destroy()                                                                                              \
     {                                                                                                                  \
       delete Instance;                                                                                                 \
