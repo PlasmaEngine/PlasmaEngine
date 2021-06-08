@@ -236,11 +236,11 @@ struct SSR
         coords.XY = Math.Saturate(coords.XY);
  
         
-        var geometrySample1 = this.GeometryBuffer1.Sample(coords.XY);
+        var screen = this.ScreenBuffer.Sample(coords.XY);
  
-        var albedo = GeometryPass.GetAlbedo(geometrySample1);
+        //var albedo = GeometryPass.GetAlbedo(geometrySample1);
  
-        var ssr =  (albedo );
+        var ssr =  (screen.XYZ );
         
         if(!(foundResult as Boolean))
           ShaderIntrinsics.Kill();
