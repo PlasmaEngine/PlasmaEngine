@@ -533,7 +533,7 @@ void ComputeBestFitPlane(const Vec3* polyPoints, uint polyPointCount, Vec3Ptr pl
 // Calculate the volume of a triangular mesh.
 real CalculateTriMeshVolume(const Vec3* triMeshPoints,
                             const uint* triMeshTriangles,
-                            size_t triangleCount,
+                            uint triangleCount,
                             Vec3Param scale)
 {
   ErrorIf(triMeshPoints == nullptr,

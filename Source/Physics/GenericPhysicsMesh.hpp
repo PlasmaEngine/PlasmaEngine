@@ -67,11 +67,11 @@ public:
   PhysicsMeshIndexData* GetIndices();
 
   /// The number of triangles in the mesh.
-  size_t GetTriangleCount();
+  uint GetTriangleCount();
   /// Returns the triangle at an index. Note: the index is not from the index
   /// buffer, it is the triangle number index (e.g. index 4 is triangle number 3
   /// because of 0 based indexing).
-  Triangle GetTriangle(size_t index);
+  Triangle GetTriangle(uint index);
 
   /// Is the mesh currently dirty (modified without having been updated).
   bool GetModified();
@@ -108,7 +108,7 @@ public:
   /// Creates the triangle defined by the 3 indices in the index buffer starting
   /// at the provided index. This should rarely be used and is mostly a helper
   /// for GetTriangle().
-  Triangle GetTriangleFromIndexBufferIndex(size_t index);
+  Triangle GetTriangleFromIndexBufferIndex(uint index);
 
   /// Returns the info map used for correcting internal edges
   TriangleInfoMap* GetInfoMap();

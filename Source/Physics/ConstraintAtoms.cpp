@@ -12,12 +12,12 @@ AnchorAtom::AnchorAtom()
   mBodyR[0] = mBodyR[1] = Vec3::cZero;
 }
 
-Vec3Ref AnchorAtom::operator[](size_t index)
+Vec3Ref AnchorAtom::operator[](uint index)
 {
   return mBodyR[index];
 }
 
-Vec3Param AnchorAtom::operator[](size_t index) const
+Vec3Param AnchorAtom::operator[](uint index) const
 {
   return mBodyR[index];
 }

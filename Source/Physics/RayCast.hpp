@@ -128,11 +128,11 @@ public:
   }
 
   /// Returns a reference to the cast result at the given index.
-  CastResult& operator[](size_t index);
-  const CastResult& operator[](size_t index) const;
+  CastResult& operator[](uint index);
+  const CastResult& operator[](uint index) const;
 
   /// Returns the amount of objects retrieved.
-  size_t Size() const;
+  uint Size() const;
 
   /// Returns whether or not there were any objects found.
   bool Empty();
@@ -144,7 +144,7 @@ public:
   void Clear();
 
   /// Resizes the number of results
-  void Resize(size_t amount);
+  void Resize(uint amount);
 
   /// Returns the capacity (maximum amount of objects returned).
   uint Capacity() const;

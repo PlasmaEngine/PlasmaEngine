@@ -46,7 +46,7 @@ LightningDefineExternalBaseType(JointTypes::Enum, TypeCopyMode::ValueType, build
 {
   LightningFullBindEnum(builder, type, SpecialType::Enumeration);
   // Add all of the joint types
-  for (int i = 0; i < JointTypes::Size; ++i)
+  for (size_t i = 0; i < JointTypes::Size; ++i)
   {
     LightningFullBindEnumValue(builder, type, i, JointTypes::Names[i]);
   }

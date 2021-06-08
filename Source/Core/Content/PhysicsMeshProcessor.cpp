@@ -78,7 +78,7 @@ void PhysicsMeshProcessor::WriteConvexMesh(VertexPositionArray& vertices, IndexA
   saver.SerializeField("Indices", indices);
 
   // Get the triangle count
-  size_t triCount = indices.Size() / 3;
+  uint triCount = indices.Size() / 3;
 
   // Calculate the volume of the mesh
   float volume = Geometry::CalculateTriMeshVolume(&vertices.Front(), (uint*)(&indices.Front()), triCount);

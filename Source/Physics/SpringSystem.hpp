@@ -18,7 +18,7 @@ struct PointNode
     uint mJumps;
   };
 
-  void AddNeighbor(size_t adjacentPoint);
+  void AddNeighbor(uint adjacentPoint);
 
   Array<AdjacencyInfo> mAdjacentPoints;
 };
@@ -29,10 +29,10 @@ struct PointNode
 struct PointGraph
 {
   void AddPoint();
-  void SetSize(size_t pointCount);
-  void AddEdge(size_t p1, size_t p2);
-  uint& operator()(size_t x, size_t y);
-  uint& Get(size_t x, size_t y);
+  void SetSize(uint pointCount);
+  void AddEdge(uint p1, uint p2);
+  uint& operator()(uint x, uint y);
+  uint& Get(uint x, uint y);
   void Build();
 
   Array<PointNode> mNodes;

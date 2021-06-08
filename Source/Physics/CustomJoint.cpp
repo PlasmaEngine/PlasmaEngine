@@ -221,7 +221,7 @@ void CustomJoint::UpdateAtoms()
 
 uint CustomJoint::MoleculeCount() const
 {
-  uint activeCount = 0;
+  size_t activeCount = 0;
   if (!GetActive())
     return activeCount;
 
@@ -291,13 +291,13 @@ void CustomJoint::Commit(MoleculeWalker& molecules)
 
 uint CustomJoint::PositionMoleculeCount() const
 {
-  uint activeCount = 0;
+  size_t activeCount = 0;
   // If this joint isn't active then there's nothing to solve
   if (!GetActive())
     return activeCount;
 
   // Find how many constraints are active that also solve position
-  for (uint i = 0; i < static_cast<uint>(mConstraints.Size()); ++i)
+  for (size_t i = 0; i < mConstraints.Size(); ++i)
   {
     CustomConstraintInfo* constraint = mConstraints[i];
     if (constraint->mActive && constraint->mSolvePosition)

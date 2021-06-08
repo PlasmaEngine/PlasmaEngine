@@ -179,7 +179,7 @@ void GenerateInternalEdgeInfo(GenericPhysicsMesh* mesh, TriangleInfoMap* infoMap
 {
   infoMap->Clear();
 
-  uint triangleCount = static_cast<uint>(mesh->GetTriangleCount());
+  uint triangleCount = mesh->GetTriangleCount();
 
   // for now, loop n-squared through the triangles and see if any of
   // the share an edge. if so compute their voronoi regions.
@@ -224,7 +224,7 @@ void GenerateInternalEdgeInfo(PhysicsMesh* mesh, TriangleInfoMap* infoMap)
   // loop over all of the triangles in the mesh, for each triangle send it
   // through the tree to determine which triangles should be checked for the
   // more expensive internal calculation (should I fatten the aabb?)
-  uint triangleCount = static_cast<uint>(mesh->GetTriangleCount());
+  uint triangleCount = mesh->GetTriangleCount();
   for (uint indexA = 0; indexA < triangleCount; ++indexA)
   {
     Triangle triA = mesh->GetTriangle(indexA);
