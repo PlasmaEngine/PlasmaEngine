@@ -286,6 +286,7 @@ LightningDefineType(Resource, builder, type)
 
   PlasmaBindDocumented();
   LightningBindFieldGetterProperty(Name);
+  LightningBindFieldGetterProperty(mResourceId);
   LightningBindFieldGetterProperty(mResourceIconName);
   type->ToStringFunction = ResourceToString;
 
