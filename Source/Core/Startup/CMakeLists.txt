@@ -10,6 +10,7 @@ target_sources(Startup
     ${CMAKE_CURRENT_LIST_DIR}/Startup.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Startup.hpp
     ${CMAKE_CURRENT_LIST_DIR}/StartupStandard.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/LibraryInitializer.hpp
 )
 
 plasma_target_includes(Startup
