@@ -119,7 +119,7 @@ public:
   /// Creates a support shape wrapper class for this collider. This helps
   /// provide a generic interface to collision detection that works with
   /// colliders or other primitive shapes. The support delta is needed for Swept
-  /// (@JoshD: clean up later). Should almost never be overridden in a derived
+  /// (@Josh: clean up later). Should almost never be overridden in a derived
   /// collider type.
   virtual Intersection::SupportShape GetSupportShape(bool supportDelta = false);
 

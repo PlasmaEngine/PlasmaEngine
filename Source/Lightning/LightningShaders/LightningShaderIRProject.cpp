@@ -158,7 +158,7 @@ void LightningShaderIRProject::PopulateLightningModule(Lightning::Module& lightn
     LightningShaderIRLibrary* dependencyLibrary = dependencyStack[i];
     lightningDependencies.PushBack(dependencyLibrary->mLightningLibrary);
 
-    // @JoshD - Confirm this is correct
+    // @Josh - Confirm this is correct
     visitedLightningDependencies.Insert(dependencyLibrary->mLightningLibrary);
 
     // If this shader library doesn't have any dependencies then stop

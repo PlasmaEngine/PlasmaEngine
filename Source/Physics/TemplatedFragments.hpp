@@ -450,7 +450,7 @@ void CommitFragment(JointType* joint, MoleculeWalker& mols, uint molCount)
     ConstraintMolecule& mol = mols[i];
     uint atomIndex = mol.mAtomIndex;
     // right now the last impulse for the motor wins, should I do the correct
-    // thing by having an impulse value for each molecule? (JoshD questions)
+    // thing by having an impulse value for each molecule? (Josh questions)
     if (atomIndex == cMotorId)
     {
       joint->mNode->mMotor->mImpulse = mol.mImpulse;

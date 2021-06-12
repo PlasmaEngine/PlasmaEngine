@@ -331,7 +331,7 @@ void StubCode::Generate(Property* property)
 
 void StubCode::GenerateHeader(Function* function)
 {
-  // These should be moved to actual attributes in code generation (JoshD)
+  // These should be moved to actual attributes in code generation (Josh)
   Array<Attribute> attributes;
   if (function->IsStatic)
   {
@@ -345,7 +345,7 @@ void StubCode::GenerateHeader(Function* function)
 
 void StubCode::GenerateHeader(Property* property)
 {
-  // These should be moved to actual attributes in code generation (JoshD)
+  // These should be moved to actual attributes in code generation (Josh)
   Array<Attribute> attributes;
   if (property->IsStatic)
   {

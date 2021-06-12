@@ -254,19 +254,19 @@ CastResults::CastResults(const CastResults& rhs) : mResults((ProxyCastResultArra
   mResults.CurrSize = rhs.mResults.CurrSize;
 }
 
-CastResult& CastResults::operator[](uint index)
+CastResult& CastResults::operator[](size_t index)
 {
   ErrorIf(index >= mResults.CurrSize, "Index out of range.");
   return mArray[index];
 }
 
-const CastResult& CastResults::operator[](uint index) const
+const CastResult& CastResults::operator[](size_t index) const
 {
   ErrorIf(index >= mResults.CurrSize, "Index out of range.");
   return mArray[index];
 }
 
-uint CastResults::Size() const
+size_t CastResults::Size() const
 {
   return mResults.GetCurrentSize();
 }
@@ -286,14 +286,14 @@ void CastResults::Clear()
   mResults.Clear();
 }
 
-void CastResults::Resize(uint amount)
+void CastResults::Resize(size_t amount)
 {
   mArray.Resize(amount);
 }
 
 uint CastResults::Capacity() const
 {
-  return mArray.Size();
+  return static_cast<uint>(mArray.Size());
 }
 
 void CastResults::ConvertToColliders()
@@ -314,18 +314,18 @@ void CastResults::ConvertToColliders()
 
 CastResultsRange::CastResultsRange(const CastResults& castResults)
 {
-  uint count = castResults.Size();
+  size_t count = castResults.Size();
   mArray.Resize(count);
-  for (uint i = 0; i < count; ++i)
+  for (size_t    i = 0; i < count; ++i)
     mArray[i] = castResults[i];
   mRange = mArray.All();
 }
 
 CastResultsRange::CastResultsRange(const CastResultsRange& rhs)
 {
-  uint count = rhs.mArray.Size();
+  size_t count = rhs.mArray.Size();
   mArray.Resize(count);
-  for (uint i = 0; i < count; ++i)
+  for (size_t i = 0; i < count; ++i)
     mArray[i] = rhs.mArray[i];
   mRange = mArray.All();
 }
@@ -347,7 +347,7 @@ void CastResultsRange::PopFront()
 
 uint CastResultsRange::Size()
 {
-  return mRange.Size();
+  return static_cast<uint>(mRange.Size());
 }
 
 } // namespace Plasma

@@ -111,7 +111,7 @@ void Collider::Initialize(CogInitializer& initializer)
   // initialized
   InternalTransformUpdate(cInitialize);
 
-  // @JoshD needed?
+  // @Josh needed?
   mPhysicsNode->RecomputeWorldTransform();
 }
 

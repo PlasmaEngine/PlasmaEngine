@@ -117,7 +117,7 @@ void PhysicsMesh::GenerateTree()
 
     // Create the broad phase data.
     BaseBroadPhaseData<uint> data;
-    data.mClientData = triIndex;
+    data.mClientData = static_cast<uint>(triIndex);
     data.mAabb = ToAabb(tri);
 
     // Insert it into the tree

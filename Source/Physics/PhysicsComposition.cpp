@@ -298,7 +298,7 @@ struct CompleteBuildFunctor
     if (body)
     {
       QueueFullMassRecompuation(body->mPhysicsNode);
-      // wake up the body in case anything happened (JoshD questions) (needed?)
+      // wake up the body in case anything happened (Josh questions) (needed?)
       body->ForceAwake();
       body->mSpace->ComponentStateChange(body);
     }

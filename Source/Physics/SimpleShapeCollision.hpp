@@ -199,7 +199,7 @@ bool CastVsShape(const CastType& castShape, Collider* collider, ProxyResult* res
     // fill out the ProxyResult from the intersection results
     result->mObjectHit = collider;
     ManifoldToProxyResult(castShape, collider, &iManifold, result);
-    // should check the filter here...(JoshD questions)
+    // should check the filter here...(Josh questions)
     GetNormalFromPointOnShape(castShape, shape2, collider, result->mPoints[0], result->mContactNormal);
     return true;
   }

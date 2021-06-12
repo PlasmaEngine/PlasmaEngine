@@ -118,7 +118,7 @@ void MeshDebug::DrawAllTriangleVoronoiRegions()
   if (!mMesh)
     return;
 
-  uint triCount = mMesh->GetTriangleCount();
+  uint triCount = static_cast<uint>(mMesh->GetTriangleCount());
 
   for (uint i = 0; i < triCount; ++i)
     DrawTriangleVoronoiRegion(i);

@@ -326,7 +326,7 @@ namespace Lightning
   //***************************************************************************
   void StubCode::GenerateHeader(Function* function)
   {
-    // These should be moved to actual attributes in code generation (JoshD)
+    // These should be moved to actual attributes in code generation (Josh)
     Array<Attribute> attributes;
     if (function->IsStatic)
     {
@@ -341,7 +341,7 @@ namespace Lightning
   //***************************************************************************
   void StubCode::GenerateHeader(Property* property)
   {
-    // These should be moved to actual attributes in code generation (JoshD)
+    // These should be moved to actual attributes in code generation (Josh)
     Array<Attribute> attributes;
     if (property->IsStatic)
     {

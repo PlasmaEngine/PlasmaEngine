@@ -51,7 +51,7 @@ void GearAxisValue(GearJoint* joint, ConstraintAtom& atom, real constant)
       coordinates[i] = joint->mJoints[i].mPrismatic2d->GetJointTranslation();
   }
   joint->mAtoms[0].mConstraintValue = coordinates[0] + coordinates[1] * joint->mRatio;
-  // temporary until i can get correct error values (JoshD questions)
+  // temporary until i can get correct error values (Josh questions)
   joint->mAtoms[0].mConstraintValue = real(0.0);
 }
 
@@ -187,7 +187,7 @@ void AngularAxisFragment2d(WorldAngleAtom& angle, ConstraintMolecule& mol)
 void GearAxisFragment(GearJoint* joint, ConstraintMolecule& mol)
 {
   // clean up later (deal with joints being active but
-  // need values computed for other things) (JoshD Questions)
+  // need values computed for other things) (Josh Questions)
   if (!joint->GetActive() || !joint->GetValid())
     return;
 
@@ -222,7 +222,7 @@ void GearAxisFragment(GearJoint* joint, ConstraintMolecule& mol)
 void PulleyAxisFragment(PulleyJoint* joint, ConstraintMolecule& mol)
 {
   // clean up later (deal with joints being active but
-  // need values computed for other things) (JoshD Questions)
+  // need values computed for other things) (Josh Questions)
   if (!joint->GetActive() || !joint->GetValid())
     return;
 

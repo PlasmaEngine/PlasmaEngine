@@ -497,7 +497,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  // Hardcoded for reals (because I don't care to make it generic now...) (JoshD)
+  // Hardcoded for reals (because I don't care to make it generic now...) (Josh)
   void MatrixMultiplyPoint(Call& call, ExceptionReport& report)
   {
     call.DisableReturnChecks();
@@ -541,7 +541,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  // Hardcoded for reals (because I don't care to make it generic now...) (JoshD)
+  // Hardcoded for reals (because I don't care to make it generic now...) (Josh)
   void MatrixMultiplyPointNoDivide(Call& call, ExceptionReport& report)
   {
     call.DisableReturnChecks();

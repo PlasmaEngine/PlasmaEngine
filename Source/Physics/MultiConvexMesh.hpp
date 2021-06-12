@@ -74,9 +74,9 @@ public:
   /// Determines if a local-space ray hits this mesh.
   bool CastRay(const Ray& localRay, MultiConvexMesh* mesh, ProxyResult& result, BaseCastFilter& filter);
 
-  Triangle GetTriangleIndexed(VertexArrayParam verts, uint index);
-  Triangle GetTriangle(VertexArrayParam verts, uint index);
-  uint GetTriangleCount();
+  Triangle GetTriangleIndexed(VertexArrayParam verts, size_t index);
+  Triangle GetTriangle(VertexArrayParam verts, size_t index);
+  size_t GetTriangleCount();
 
   /// The vertex indices on the main mesh used to generate the convex hull.
   MultiConvexMeshIndexData* GetIndices();

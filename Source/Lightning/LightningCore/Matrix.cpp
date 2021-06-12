@@ -497,7 +497,7 @@ void MatrixMultiply(Call& call, ExceptionReport& report)
   }
 }
 
-// Hardcoded for reals (because I don't care to make it generic now...) (JoshD)
+// Hardcoded for reals (because I don't care to make it generic now...) (Josh)
 void MatrixMultiplyPoint(Call& call, ExceptionReport& report)
 {
   call.DisableReturnChecks();
@@ -549,7 +549,7 @@ void MatrixMultiplyPoint(Call& call, ExceptionReport& report)
     returnVector[i] = tempReturnVector[i] / tempReturnVector[lastElementIndex];
 }
 
-// Hardcoded for reals (because I don't care to make it generic now...) (JoshD)
+// Hardcoded for reals (because I don't care to make it generic now...) (Josh)
 void MatrixMultiplyPointNoDivide(Call& call, ExceptionReport& report)
 {
   call.DisableReturnChecks();

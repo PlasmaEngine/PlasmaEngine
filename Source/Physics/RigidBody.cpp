@@ -1003,7 +1003,7 @@ void RigidBody::QueueMassUpdate()
   // Queuing an update is fine and all, but this body might not be where we
   // actually take into account mass properties. We need to loop up and queue
   // mass updates on all parent bodies until we reach the root. (Might only
-  // have to do this on the root, look into it later JoshD questions)
+  // have to do this on the root, look into it later Josh questions)
 
   RigidBody* body = this;
   while (body)

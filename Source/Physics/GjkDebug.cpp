@@ -281,15 +281,15 @@ void GjkDebug::ComputeCSO(void)
   Vec3 top = ComputeSupport(Vec3(0, 1, 0));
   Vec3 bottom = ComputeSupport(Vec3(0, -1, 0));
 
-  unsigned collumns = subdivisions * 2;
-  for (unsigned i = 0; i < collumns; ++i)
+  size_t collumns = subdivisions * 2;
+  for (size_t i = 0; i < collumns; ++i)
   {
-    unsigned i2 = (i + 1) % (collumns);
+    size_t i2 = (i + 1) % (collumns);
     Vec3 p0 = mSupports[i];
     Vec3 p1 = mSupports[i2];
 
-    unsigned j = mSupports.Size() - (collumns - i);
-    unsigned j2 = mSupports.Size() - (collumns - i2);
+    size_t j = mSupports.Size() - (collumns - i);
+    size_t j2 = mSupports.Size() - (collumns - i2);
     Vec3 p2 = mSupports[j];
     Vec3 p3 = mSupports[j2];
 

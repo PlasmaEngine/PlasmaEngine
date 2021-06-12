@@ -57,7 +57,7 @@ public:
   ShaderCodeBuilder& WriteScopedIndent();
 
   // Old write functions.
-  //@JoshD-ToDo: Clean up later!
+  //@Josh-ToDo: Clean up later!
   void WriteIndent();
   void WriteIndentation();
   void WriteSpace();

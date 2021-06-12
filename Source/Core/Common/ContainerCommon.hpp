@@ -9,6 +9,8 @@
 #include <stddef.h>
 // For memmove, memcpy
 #include <string.h>
+// For std::initializer_list
+#include <initializer_list>
 
 namespace Plasma
 {
