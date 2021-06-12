@@ -97,7 +97,7 @@ void Orientation::SetDefaultOrientationBases(OrientationBases::Enum value)
 {
   if (OperationQueue::IsListeningForSideEffects())
   {
-    // @JoshD: Can't do this now due to cyclic side-effects
+    // Can't do this now due to cyclic side-effects
     // OperationQueue::RegisterSideEffect(this, "LocalBasis", GetLocalBasis());
   }
 

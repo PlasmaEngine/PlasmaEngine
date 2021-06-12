@@ -145,7 +145,7 @@ struct Policy<Variant>
 } // namespace Serialization
 
 #define PlasmaSerialize(DefaultValue)                                                                                    \
-  AddAttributeChainable(PropertyAttributes::cSerialize)->Add(new MetaSerializedProperty(DefaultValue))
+  AddAttributeChainable(Plasma::PropertyAttributes::cSerialize)->Add(new Plasma::MetaSerializedProperty(DefaultValue))
 
 template <typename T>
 bool PrimitiveMetaSerialization<T>::SerializePrimitiveProperty(BoundType* meta,

@@ -6,7 +6,7 @@ namespace Plasma
 
 InterfaceInfoGroup::FieldInfo* InterfaceInfoGroup::FindFieldInfo(const ShaderFieldKey& fieldKey)
 {
-  // @JoshD: Optimize later? This is typically small so it's easy enough to
+  //Optimize later? This is typically small so it's easy enough to
   // ignore for now as a structural refactor is necessary to make this work with
   // an ordered hash-map.
   for (size_t i = 0; i < mFields.Size(); ++i)
@@ -737,7 +737,7 @@ void EntryPointGeneration::DeclareComputeInterface(LightningSpirVFrontEnd* trans
 
   // Now we can generically write out all stage input/output/uniform/built-in
   // groups
-  // @JoshD: There's a chance that uniforms/interface blocks aren't supported
+  //There's a chance that uniforms/interface blocks aren't supported
   // the same way in compute shaders.
   DeclareStageBlocks(interfaceInfo, entryPointInfo, copyInputsData, copyOutputsData);
 
@@ -1007,7 +1007,7 @@ void EntryPointGeneration::WriteGeometryStageInterface(LightningShaderIRFunction
 
 void EntryPointGeneration::CollectGeometryStreamTypes(LightningShaderIRFunction* function, GeometryStageInfo& stageInfo)
 {
-  // @JoshD: This is a bit of an odd problem as the signature of a geometry
+  //This is a bit of an odd problem as the signature of a geometry
   // shader only specifies what stream it thinks it'll use, but when composited
   // the shader will use a different stream than the fragment. The only way to
   // know what streams are currently used are to iterate over all instructions
@@ -1241,7 +1241,7 @@ void EntryPointGeneration::WriteGeometryAppendFunctions(GeometryStageInfo& stage
   }
 
   // Copy all outputs for this append function.
-  // @JoshD: This will have to be updated later if there's ever more than a
+  //This will have to be updated later if there's ever more than a
   // provoking vertex append as this copy logic is specific to a provoking
   // vertex.
   for (size_t i = 0; i < appendFunctions.Size(); ++i)
@@ -1445,7 +1445,7 @@ void EntryPointGeneration::CopyGeometryOutputInterface(GeometryStageInfo& stageI
           {
             // Get the instance pointer to the member in the array at the given
             // index and copy from it.
-            // @JoshD: This doesn't seem like it would ever need to deal with
+            //This doesn't seem like it would ever need to deal with
             // attribute name overrides. Is this true?
             LightningShaderIROp* inputInstance = inputStreamType->GetPointerByIndex(
                 appendFnData.mDefaultVertexId, fieldKey, this, block, spv::StorageClassInput);
@@ -1535,7 +1535,7 @@ void EntryPointGeneration::CollectOutputInterfaceVariables(LightningShaderIRFunc
   {
     ShaderIRFieldMeta* fieldMeta = typeMeta->mFields[i];
 
-    // @JoshD: Need to update this at some point to support multiple output
+    //Need to update this at some point to support multiple output
     // names by iterating on attributes
 
     // If this is a stage output
@@ -1590,7 +1590,7 @@ void EntryPointGeneration::CollectUniformInterfaceVariables(LightningShaderIRFun
 
   // Build mappings for the given uniform block descriptions so we can
   // efficiently check each field we come across.
-  // @JoshD: Should pre-process this once per run, not per shader.
+  //Should pre-process this once per run, not per shader.
   HashMap<ShaderFieldKey, UniformBufferDescription*> mapping;
   ProcessUniformBlockSettings(shaderStage, mapping);
 
@@ -1600,7 +1600,7 @@ void EntryPointGeneration::CollectUniformInterfaceVariables(LightningShaderIRFun
     ShaderIRFieldMeta* fieldMeta = typeMeta->mFields[i];
 
     // Walk all attributes searching for a uniform attribute.
-    // @JoshD: At some point actually deal with AppBuiltIn vs. Property
+    //At some point actually deal with AppBuiltIn vs. Property
     // differently (with compositor it doesn't matter)
     for (size_t j = 0; j < fieldMeta->mAttributes.Size(); ++j)
     {
@@ -1610,7 +1610,7 @@ void EntryPointGeneration::CollectUniformInterfaceVariables(LightningShaderIRFun
       {
         // Don't include non-copyable types in the uniform buffer (these were
         // declared globally).
-        // @JoshD: This might need to be changed later if a non-copyable type
+        //This might need to be changed later if a non-copyable type
         // can be put in a uniform buffer.
         if (fieldMeta->mLightningType->HasAttribute(nameSettings.mNonCopyableAttributeName))
           continue;
@@ -2196,7 +2196,7 @@ void EntryPointGeneration::AddMemberTypeDecorations(LightningShaderIRType* membe
   if (memberType->mBaseType == ShaderIRTypeBaseType::Matrix)
   {
     // Hardcode stride to size of a vec4 for performance reasons.
-    // @JoshD: Maybe make a packing option for this later?
+    //Maybe make a packing option for this later?
     int matrixStride = 16;
     fieldInfo.mDecorations.PushBack(InterfaceInfoGroup::DecorationParam(spv::DecorationMatrixStride, matrixStride));
     fieldInfo.mDecorations.PushBack(InterfaceInfoGroup::DecorationParam(spv::DecorationColMajor));
@@ -2205,7 +2205,7 @@ void EntryPointGeneration::AddMemberTypeDecorations(LightningShaderIRType* membe
   else if (memberType->mBaseType == ShaderIRTypeBaseType::FixedArray)
   {
     LightningShaderIRType* elementType = memberType->mParameters[0]->As<LightningShaderIRType>();
-    // @JoshD: Hardcode to matrix/vector/scalar types for now.
+    //Hardcode to matrix/vector/scalar types for now.
     // Eventually could be bigger if structs are allowed to be bound as
     // uniforms.
     u32 stride = GetStride(elementType, 16.0f);
@@ -2445,7 +2445,7 @@ void EntryPointGeneration::DecorateImagesAndSamplers(TypeDependencyCollector& co
     if (resourceInfo == nullptr)
       continue;
 
-    // @JoshD: How should descriptor sets be handled?
+    //How should descriptor sets be handled?
     u32 descriptorSetId = 0;
     // Add the binding and descriptor set decorations to the instance
     BasicBlock* decorationBlock = &entryPointInfo->mDecorations;
@@ -2563,7 +2563,7 @@ void EntryPointGeneration::AddRuntimeArrayDecorations(BasicBlock* decorationBloc
     totalSize = elementType->GetByteSize();
 
     // Hardcode stride to size of a vec4 for performance reasons.
-    // @JoshD: Maybe make a packing option for this later?
+    //Maybe make a packing option for this later?
     int matrixStride = 16;
     translator->BuildMemberDecorationOp(
         decorationBlock, lightningRuntimeArrayType, 0, spv::DecorationMatrixStride, matrixStride, context);
@@ -2635,7 +2635,7 @@ void EntryPointGeneration::RecursivelyDecorateStructType(BasicBlock* decorationB
     if (memberType->mBaseType == ShaderIRTypeBaseType::Matrix)
     {
       // Hardcode stride to size of a vec4 for performance reasons.
-      // @JoshD: Maybe make a packing option for this later?
+      //Maybe make a packing option for this later?
       u32 matrixStride = 16;
       translator->BuildMemberDecorationOp(
           decorationBlock, structType, i, spv::DecorationMatrixStride, matrixStride, context);
@@ -2645,7 +2645,7 @@ void EntryPointGeneration::RecursivelyDecorateStructType(BasicBlock* decorationB
     // Structs have to be recursively decorated.
     else if (memberType->mBaseType == ShaderIRTypeBaseType::Struct)
     {
-      // @JoshD: Currently stage resources don't support nested structures.
+      //Currently stage resources don't support nested structures.
       // This will generate valid spir-v but eventually needs to be updated to
       // support proper reflection data.
       ShaderStageResource subData;
@@ -2665,7 +2665,7 @@ void EntryPointGeneration::RecursivelyDecorateStructType(BasicBlock* decorationB
 
       // Recursively decorate the contained type. If this is a
       // struct it could have further requirements about alignment, etc...
-      // @JoshD: At some point the reflection data needs to be dealt with here.
+      //At some point the reflection data needs to be dealt with here.
       ShaderStageResource subData;
       RecursivelyDecorateStructType(decorationBlock, elementType, subData);
     }
@@ -2761,7 +2761,7 @@ void EntryPointGeneration::CreateShaderInterfaceField(ShaderInterfaceField& inte
                                                       InterfaceInfoGroup& interfaceGroup,
                                                       u32 index)
 {
-  // @JoshD: Potentially make the interface group store shader interface fields
+  //Potentially make the interface group store shader interface fields
   // at some point?
 
   LightningSpirVFrontEnd* translator = mTranslator;

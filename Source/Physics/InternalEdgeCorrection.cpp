@@ -278,7 +278,7 @@ void GenerateInternalEdgeInfoDynamic(HeightMapCollider* collider, uint contactId
   heightMap->GetPatchAndCellIndex(absIndex, patchIndex, cellIndex);
 
   // Get the local position of the bottom left of the cell.
-  // @JoshD: Using local position seems problematic with non-uniform scale (the
+  //Using local position seems problematic with non-uniform scale (the
   // angles change)
   real cellSize = heightMap->mUnitsPerPatch / HeightPatch::Size;
   Vec2 patchStart =

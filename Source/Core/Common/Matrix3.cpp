@@ -358,13 +358,19 @@ Matrix3 Matrix3::GenerateScale(Vec3Param scale)
 
 Matrix3 Matrix3::GenerateRotation(real radians)
 {
-  Matrix3 result = Matrix3::cIdentity;
 
   Matrix2 rotation = Matrix2::GenerateRotation(radians);
-  result.m00 = rotation.m00;
-  result.m01 = rotation.m01;
-  result.m10 = rotation.m10;
-  result.m11 = rotation.m11;
+  return GenerateRotation(rotation);
+}
+
+Matrix3 Matrix3::GenerateRotation(Mat2Param matrix2d)
+{
+  Matrix3 result = Matrix3::cIdentity;
+
+  result.m00 = matrix2d.m00;
+  result.m01 = matrix2d.m01;
+  result.m10 = matrix2d.m10;
+  result.m11 = matrix2d.m11;
   return result;
 }
 

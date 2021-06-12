@@ -91,7 +91,7 @@ void Joint::OnAllObjectsCreated(CogInitializer& initializer)
   LinkPair();
   // Also wake up the objects we're connected to so that newly created joints
   // will work properly.
-  // @JoshD: Should this only happen when during not object startup so that
+  //Should this only happen when during not object startup so that
   // saved asleep objects stay asleep?
   Physics::JointHelpers::ForceAwakeJoint(this);
 

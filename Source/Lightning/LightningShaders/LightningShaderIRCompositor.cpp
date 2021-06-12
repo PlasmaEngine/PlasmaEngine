@@ -460,7 +460,7 @@ void LightningShaderIRCompositor::Link(StageAttachmentLinkingInfo& prevStageInfo
               attribute->mAttributeName == nameSettings.mStageOutputAttribute)
           {
             String fieldName = GetFieldInOutName(fieldMeta, attribute);
-            // @JoshD: Temporarily use the original field name. Currently
+            //Temporarily use the original field name. Currently
             // non-copyable types do not use the property variable's name
             // override. This is reasonably ok for now as this is only a name
             // generated during reflection and doesn't actually deal with
@@ -671,7 +671,7 @@ void LightningShaderIRCompositor::AddStageInput(ExpectedOutputData* previousStag
 ShaderIRFieldMeta* LightningShaderIRCompositor::FindUniform(ShaderFieldKey& fieldKey, FragmentType::Enum fragmentType)
 {
   ShaderStage::Enum shaderStage = FragmentTypeToShaderStage(fragmentType);
-  // @JoshD: Optimize later!
+  //Optimize later!
   LightningShaderSpirVSettings* settings = mSettings;
   for (size_t bufferIndex = 0; bufferIndex < settings->mUniformBufferDescriptions.Size(); ++bufferIndex)
   {
@@ -950,7 +950,7 @@ void LightningShaderIRCompositor::GenerateGeometryLightningComposite(StageLinkin
   LightningShaderPtr inputVertexType = geometryUserData->GetInputVertexType();
   StageAttachmentLinkingInfo& vertexLinkingInfo = currentStage->mVertexLinkingInfo;
 
-  // Also get the max vertices count. @JoshD: Cleanup
+  // Also get the max vertices count.Cleanup
   ShaderIRAttribute* geometryAttribute = geometryFragmentType->FindFirstAttribute(nameSettings.mGeometryAttribute);
   ShaderIRAttributeParameter* maxVerticesParam = geometryAttribute->FindFirstParameter(nameSettings.mMaxVerticesParam);
   int maxVertices = maxVerticesParam->GetIntValue();

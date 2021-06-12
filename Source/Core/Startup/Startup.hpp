@@ -1,8 +1,11 @@
 // MIT Licensed (see LICENSE.md).
 #pragma once
 
+#include "LibraryInitializer.hpp"
+
 namespace Plasma
 {
+
 
 // To allow platforms without threads / yields (such as Emscripten) to give time back to the OS/Browser
 // we perform our initialization in phases
@@ -98,6 +101,8 @@ private:
 
   ExecutableState* mState = nullptr;
   LightningSetup* mLightningSetup = nullptr;
+
+  Array<LibraryInitializer*> mLibararyInitializers;
 
   // Initialize:
   UniquePointer<DebuggerListener> mDebuggerListener;

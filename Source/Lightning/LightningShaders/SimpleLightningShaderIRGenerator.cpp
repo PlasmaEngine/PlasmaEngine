@@ -438,7 +438,7 @@ void SimplifiedShaderReflectionData::CreateSimpleOpaqueTypeReflectionData(Lightn
                                                                           ShaderStageDescription& stageDef,
                                                                           Array<PassResultRef>& passResults)
 {
-  // @JoshD: Currently hardcode this to only look at the last stage.
+  //Currently hardcode this to only look at the last stage.
   // Currently nothing renames variables between stages so this is reasonable.
   ShaderStageInterfaceReflection* lastStageData = &passResults.Back()->mReflectionData;
   Array<ShaderStageResource>& storageImages = lastStageData->mStorageImages;

@@ -341,7 +341,7 @@ void ShaderTranslationDebugHelper::OnScriptCompilationFailed(Event* event)
 //
 //        // Print out fragment and field with the error.
 //        String attributesList = attributesBuilder.ToString();
-//        // @JoshD: Need to update
+//        // Need to update
 //        //String noFallbackName =
 //        generator.mSettings->mSpirVNameSettings.mNoFallbackWarningAttributeName;
 //        //errorsBuilder.AppendFormat("\tCouldn't resolve input attributes on

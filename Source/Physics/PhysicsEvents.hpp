@@ -104,12 +104,12 @@ public:
   /// should be iterated over.
   ContactPoint GetFirstPoint();
 
-  // @JoshD: Legacy?
+  //Legacy?
   /// Used to update the values in the event for the incident point before
   /// we send the event (some values might have changed after solving).
   void UpdatePoint();
 
-  // @JoshD: Legacy?
+  //Legacy?
   /// The point that triggered the Start/End event
   Physics::ManifoldPoint mContactPoint;
   /// The index of the point. Used to update the point before

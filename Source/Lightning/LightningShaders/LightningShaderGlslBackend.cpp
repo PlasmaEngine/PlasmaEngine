@@ -288,7 +288,7 @@ namespace Plasma
 			if (!dimensionStr.Empty())
 				reflectionData.mTypeName = BuildString(reflectionData.mTypeName, dimensionStr);
 		}
-		// @JoshD: Deal with arrays later?
+		//Deal with arrays later?
 	}
 
 	void LightningShaderGlslBackend::PopulateMemberTypeInfo(GlslBackendInternalData& internalData,

@@ -60,13 +60,13 @@ struct RevoluteJoint : public Joint
   /// The angle error of the joint. Needed for GearJoint.
   real GetJointAngle() const;
 
-  // @JoshD: Remove later
+  //Remove later
   /// The axis of freedom for the joint in world space. This is the axis that
   /// rotational movement is allowed on. Which object's axis is used to compute
   /// this is determined by UseFrameA.
   Vec3 GetWorldAxis() const;
   void SetWorldAxis(Vec3Param axis);
-  // @JoshD: Remove later
+  //Remove later
   /// Legacy. Used to set the entire frame in world space for this joint. The x
   /// and y axes are used as a basis for limiting the joint. The x axis is at
   /// angle 0 and the y axis is at angle 90. The z axis is the axis of

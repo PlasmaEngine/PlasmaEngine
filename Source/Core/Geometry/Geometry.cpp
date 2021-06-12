@@ -638,7 +638,7 @@ void CalculateTriMeshCenterOfMassAndVolume(
     volume += tetraVol;
   }
 
-  // @JoshD: revist later. For now avoid a plasma division here.
+  // revist later. For now avoid a plasma division here.
   if (volume == 0)
     return;
 

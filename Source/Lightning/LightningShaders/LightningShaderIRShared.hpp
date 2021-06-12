@@ -296,7 +296,7 @@ public:
   /// Only valid on scalar/vector/matrix types
   u32 mComponents;
   LightningShaderIRType* mComponentType;
-  // @JoshD: Unify with subtypes later?
+  //Unify with subtypes later?
   Array<ILightningShaderIR*> mParameters;
   HashMap<String, u32> mMemberNamesToIndex;
   HashMap<ShaderFieldKey, u32> mMemberKeysToIndex;
@@ -310,7 +310,7 @@ public:
   spv::StorageClass mStorageClass;
   EntryPointInfo* mEntryPoint;
 
-  // @JoshD: Turn into flags later
+  //Turn into flags later
   /// Does this type have a main function necessary for compositing?
   bool mHasMainFunction;
 

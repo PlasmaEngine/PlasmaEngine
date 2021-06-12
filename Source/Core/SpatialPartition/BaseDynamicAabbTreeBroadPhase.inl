@@ -111,7 +111,6 @@ void BaseDynamicAabbTreeBroadPhase<TreeType>::SelfQuery(ClientPairArray& results
 {
   // should self query clear the pair results? means we can't do
   // multiple queries and then there is no point to having register collisions
-  //(JoshD questions)
   FillOutResults(results);
 }
 

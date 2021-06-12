@@ -133,7 +133,7 @@ public:
   const Vec3Array& GetVertexArray() const;
   const IndexArray& GetIndexArray() const;
 
-  // @JoshD: Merge into bitfield
+  //Merge into bitfield
   bool mIsValid;
   bool mModified;
 

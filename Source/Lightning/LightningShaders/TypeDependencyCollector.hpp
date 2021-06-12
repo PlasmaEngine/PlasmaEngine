@@ -36,7 +36,7 @@ public:
   OrderedHashSet<ILightningShaderIR*> mTypesConstantsAndGlobals;
 
   // Specifies if an op requires a certain capability that must be added.
-  // @JoshD: Parse from the spirv grammar file at some point?
+  //Parse from the spirv grammar file at some point?
   HashMap<OpType, spv::Capability> mRequiredCapabilities;
 
   // All global variable initializer functions that need to be called for the

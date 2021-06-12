@@ -75,7 +75,7 @@ void GenericPhysicsMesh::Upload(const Vec3Array& points, const IndexArray& indic
 
 void GenericPhysicsMesh::ForceRebuild()
 {
-  // @JoshD: This needs to be updated later to deal with plasma volume
+  //This needs to be updated later to deal with plasma volume
   // (requires re-factoring how scaled values are currently computed)
   if (GetValid() == false || mVertices.Empty())
   {

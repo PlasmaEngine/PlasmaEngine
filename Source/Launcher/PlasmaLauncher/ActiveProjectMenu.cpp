@@ -429,7 +429,7 @@ void ActiveProjectMenu::OnProjectNameTextSubmit(Event* e)
     return;
   }
 
-  // @JoshD: This should ideally check to see if the project folder is in use
+  //This should ideally check to see if the project folder is in use
   // before trying to rename, but if it is then no major problem happens as the
   // next run of the engine will fail. Properly checking for use is fairly
   // complicated because only certain files/folders will randomly be marked as

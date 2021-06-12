@@ -95,7 +95,7 @@ Vec3 ConvexMeshCollider::GetColliderLocalCenterOfMass(void) const
 {
   // We currently need true world-space as the caller of this will transform to
   // world space. To do this we must return the local space center of mass.
-  // @JoshD: Refactor later to remove this?
+  //Refactor later to remove this?
   return mConvexMesh->mLocalCenterOfMass;
 }
 

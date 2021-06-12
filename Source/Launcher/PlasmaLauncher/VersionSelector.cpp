@@ -409,7 +409,7 @@ bool VersionSelector::InstallLocalTemplateProject(StringParam filePath)
   currentProject->mLocalPath = templateInstallDirectory;
 
   // Always copy over the ".plasmatemplate" that is being installed.
-  // @JoshD: Remove misc. files like the images and meta later?
+  //Remove misc. files like the images and meta later?
   String plasmaTemplateFilePathDest = currentProject->GetInstalledTemplatePath();
   CopyFile(plasmaTemplateFilePathDest, filePath);
 
@@ -647,7 +647,7 @@ BackgroundTask* VersionSelector::DownloadTemplateIcon(TemplateProject* project)
 
 BackgroundTask* VersionSelector::DownloadTemplatePreviews(TemplateProject* project)
 {
-  // @JoshD: Update to get the remaining preview icons later...
+  //Update to get the remaining preview icons later...
   return nullptr;
 }
 

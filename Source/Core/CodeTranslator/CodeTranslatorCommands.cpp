@@ -81,7 +81,7 @@ String TranslatedShaderScriptEditor::OnTranslate()
 // TranslatedShaderScriptEditor::CompileAndTranslateFragments(SimpleLightningShaderGenerator&
 // shaderGenerator)
 //{
-//  // @JoshD: This is all kinda legacy now and should be cleaned up at some
+//  // This is all kinda legacy now and should be cleaned up at some
 //  point.
 //  // This is mainly for testing my simpler stuff instead of graphic's more
 //  complicated pipeline. EventConnect(&shaderGenerator,
@@ -91,7 +91,7 @@ String TranslatedShaderScriptEditor::OnTranslate()
 //
 //  // Remove all old code
 //  shaderGenerator.ClearFragmentsProjectAndLibrary();
-//  // @JoshD: For now load the extensions from the data directory (otherwise
+//  // For now load the extensions from the data directory (otherwise
 //  there's an issue with putting
 //  // the resources in the core library as resources don't really do anything
 //  special with resource libraries yet) MainConfig* mainConfig =

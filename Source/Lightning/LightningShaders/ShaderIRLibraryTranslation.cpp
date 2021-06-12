@@ -278,7 +278,7 @@ void TranslateMatrixDefaultConstructor(LightningSpirVFrontEnd* translator,
   TranslateCompositeDefaultConstructor(translator, componentType->mLightningType, context);
 
   ILightningShaderIR* constituent = context->PopIRStack();
-  // @JoshD: Leave this out for now since it can produce a glsl translation
+  //Leave this out for now since it can produce a glsl translation
   // error
   // constituent->mDebugResultName = "constituent";
 
@@ -366,7 +366,7 @@ LightningShaderIROp* RecursivelyTranslateCompositeSplatConstructor(LightningSpir
     // Construct each constituent
     LightningShaderIROp* constituentOp = RecursivelyTranslateCompositeSplatConstructor(
         translator, fnCallNode, staticTypeNode, componentType, splatValueOp, context);
-    // @JoshD: Leave this out for now since this produces a glsl translation
+    //Leave this out for now since this produces a glsl translation
     // error
     // constituentOp->mDebugResultName = "constituent";
     constructOp->mArguments.PushBack(constituentOp);
@@ -729,7 +729,7 @@ bool MatrixElementAccessResolver(LightningSpirVFrontEnd* translator,
   ILightningShaderIR* leftOperand = translator->WalkAndGetResult(memberAccessNode->LeftOperand, context);
   LightningShaderIROp* operandResult = translator->GetOrGeneratePointerTypeFromIR(leftOperand, context);
   // Construct the op to access the matrix element
-  // @JoshD: Revisit when looking over matrix column/row order
+  //Revisit when looking over matrix column/row order
   LightningShaderIROp* accessOp = translator->BuildCurrentBlockIROp(
       OpType::OpAccessChain, resultType->mPointerType, operandResult, indexYConstant, indexXConstant, context);
   context->PushIRStack(accessOp);
@@ -748,7 +748,7 @@ void MatrixBackupFieldResolver(LightningSpirVFrontEnd* translator,
   if (MatrixElementAccessResolver(translator, memberAccessNode, context, userData))
     return;
 
-  // @JoshD: Handle the rest of matrix translation later
+  //Handle the rest of matrix translation later
   translator->SendTranslationError(memberAccessNode->Location, "Member access cannot be translated");
   context->PushIRStack(translator->GenerateDummyIR(memberAccessNode, context));
 }

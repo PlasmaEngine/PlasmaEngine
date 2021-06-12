@@ -548,7 +548,7 @@ void RigidBody::SetRotationLocked(bool state)
 
   SetRotationLockedInternal(state);
   // If we were rotation locked and now we aren't then we need to force
-  // ourself awake (so we could start falling if we need to). @JoshD: should I
+  // ourself awake (so we could start falling if we need to).should I
   // do this even if you go to rotation locked? Does the optimization matter?
   if (!state)
     ForceAwake();

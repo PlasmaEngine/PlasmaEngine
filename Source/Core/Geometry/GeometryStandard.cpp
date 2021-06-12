@@ -131,7 +131,7 @@ LightningDefineExternalBaseType(Plane, TypeCopyMode::ValueType, builder, type)
 
 LightningDefineExternalBaseType(Frustum, TypeCopyMode::ValueType, builder, type)
 {
-  //@JoshD: Make the bound data actually useful (also fix ToString)
+  // Make the bound data actually useful (also fix ToString)
   LightningBindDefaultCopyDestructor();
   LightningBindMethod(Get);
   LightningBindOverloadedMethod(Set, LightningInstanceOverload(void, uint, const Plane&));

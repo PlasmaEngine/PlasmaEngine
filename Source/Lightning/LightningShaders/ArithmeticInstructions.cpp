@@ -267,7 +267,7 @@ void RegisterArithmeticOps(LightningSpirVFrontEnd* translator, LightningShaderIR
 
   // Register ops that are only on int vector types (no scalars). Some of these
   // are because of lightning and not spirv.
-  // @JoshD: SpirV doesn't have any actual vector operations on integers.
+  //SpirV doesn't have any actual vector operations on integers.
   // Some could be supported using more complicated instructions (e.g. vector *
   // scalar = vector * vector(scalar))
   for (size_t i = 1; i < types.mIntegerVectorTypes.Size(); ++i)

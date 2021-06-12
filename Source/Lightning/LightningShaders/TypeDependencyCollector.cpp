@@ -67,7 +67,7 @@ void TypeDependencyCollector::Collect(BasicBlock* block)
   {
     Collect(block->mLines[i]);
   }
-  // @JoshD: Flip the order of these two later when a diff is cleaner to do.
+  //Flip the order of these two later when a diff is cleaner to do.
   for (size_t i = 0; i < block->mLocalVariables.Size(); ++i)
   {
     Collect(block->mLocalVariables[i]);
@@ -95,7 +95,7 @@ void TypeDependencyCollector::Collect(LightningShaderIROp* op)
   }
 
   // Check if an op requires a capability, if so add it.
-  // @JoshD: Can an op require more than one capability? They're nested so I'm
+  //Can an op require more than one capability? They're nested so I'm
   // not sure (primarily with Kernel)
   spv::Capability* requiredCapability = mRequiredCapabilities.FindPointer(op->mOpType);
   if (requiredCapability != nullptr)

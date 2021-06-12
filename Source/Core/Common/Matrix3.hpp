@@ -116,6 +116,8 @@ public:
   static Matrix3 GenerateScale(Vec3Param scale);
   /// Generates a two dimensional rotation matrix.
   static Matrix3 GenerateRotation(real radians);
+  /// Generates a three dimensional rotation matrix from a 2d rotation matrix.
+  static Matrix3 GenerateRotation(Mat2Param matrix2d);
   /// Generates a three dimensional rotation matrix from an axis-angle.
   static Matrix3 GenerateRotation(Vec3Param axis, real radians);
   /// Generates a two dimensional translation matrix.

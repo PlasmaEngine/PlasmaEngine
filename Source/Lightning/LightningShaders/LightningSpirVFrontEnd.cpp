@@ -1401,7 +1401,7 @@ void LightningSpirVFrontEnd::PreWalkClassVariables(Lightning::MemberVariableNode
   ShaderIRAttribute* storageClassAttribute = memberType->FindFirstAttribute(SpirVNameSettings::mStorageClassAttribute);
   if (storageClassAttribute != nullptr)
   {
-    // @JoshD: Right now I'm assuming this isn't a function storage class.
+    //Right now I'm assuming this isn't a function storage class.
     // Change later?
     spv::StorageClass forcedStorageClass = (spv::StorageClass)storageClassAttribute->mParameters[0].GetIntValue();
     AddGlobalVariable(node, memberType, forcedStorageClass, context);
@@ -1901,7 +1901,7 @@ void LightningSpirVFrontEnd::GenerateFunctionParameters(Lightning::GenericFuncti
     if (parameter->ResultType->IsIndirectionType(parameter->ResultType))
       shaderParameterType = shaderParamPointerType;
 
-    // @JoshD: Fix later. We should declare variables for all non-pointer
+    //Fix later. We should declare variables for all non-pointer
     // types as the beginning statements so that the signature is actually
     // correct.
 
@@ -1982,7 +1982,7 @@ void LightningSpirVFrontEnd::GenerateEntryPoint(Lightning::GenericFunctionNode* 
   else if (fragmentType == FragmentType::Compute)
     entryPointGeneration.DeclareComputeInterface(this, node, function, context);
   // else
-  // @JoshD: Revisit
+  //Revisit
   //__debugbreak();
 }
 
@@ -2420,7 +2420,7 @@ void LightningSpirVFrontEnd::WalkCastNode(Lightning::TypeCastNode*& node, Lightn
 
 void LightningSpirVFrontEnd::WalkValueNode(Lightning::ValueNode*& node, LightningSpirVFrontEndContext* context)
 {
-  // @JoshD: This probably has to change later with templates (the type might
+  //This probably has to change later with templates (the type might
   // not exist)
 
   // Find the result type and mark this function as relying on it
@@ -2581,7 +2581,7 @@ void LightningSpirVFrontEnd::WalkMemberAccessNode(Lightning::MemberAccessNode*& 
           BuildCurrentBlockAccessChain(memberType, operandResultOp, memberIndexConstant, context);
       context->PushIRStack(memberAccessOp);
     }
-    // @JoshD: Validate (have to find op-code to generate this)
+    //Validate (have to find op-code to generate this)
     else
     {
       // Validate this is right (haven't made code to hit this yet)
@@ -2795,7 +2795,7 @@ void LightningSpirVFrontEnd::WalkReturnNode(Lightning::ReturnNode*& node, Lightn
   // value or not
   if (node->ReturnValue)
   {
-    // @JoshD: Fix
+    //Fix
     // For now, assume that all return types must be value types (deal with
     // pointers later)
     ILightningShaderIR* returnResultOp = WalkAndGetResult(node->ReturnValue, context);
@@ -3318,7 +3318,7 @@ LightningShaderIROp* LightningSpirVFrontEnd::AddSpecializationConstant(Lightning
   // If the initial value of the node is a value node then we can initialize
   // this constant to the actual value. Other types are more complicated as the
   // default value requires actually constructing the type to get value
-  // (something like var Pi : Real = Math.Pi). @JoshD: Deal with finding these
+  // (something like var Pi : Real = Math.Pi).Deal with finding these
   // constants later.
   Lightning::ValueNode* valueNode = Lightning::Type::DynamicCast<Lightning::ValueNode*>(node->InitialValue);
   if (valueNode != nullptr)

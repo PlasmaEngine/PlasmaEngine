@@ -45,7 +45,7 @@ public:
     /// The reflection information about the fragment.
     ShaderIRTypeMeta* mMeta;
     /// The fields that were resolved as inputs.
-    /// @JoshD: Currently this doesn't include non-copyable types (samplers).
+    ///Currently this doesn't include non-copyable types (samplers).
     /// Should this?
     OrderedHashMap<ShaderIRFieldMeta*, ShaderFieldDescription> mFieldDescriptions;
   };
@@ -208,7 +208,7 @@ public:
     /// The name of the field this comes from could be different than the name
     /// of the field and it's impossible to re-map due to supporting multiple
     /// attributes.
-    /// @JoshD: Potentially make a field meta for composites and link to that
+    ///Potentially make a field meta for composites and link to that
     /// instead.
     String mOutputFieldDependencyName;
   };

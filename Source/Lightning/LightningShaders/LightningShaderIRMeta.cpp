@@ -61,7 +61,7 @@ String ShaderIRFieldMeta::GetFieldAttributeName(ShaderIRAttribute* attribute) co
     return param->GetStringValue();
 
   // Check if there's an un-named parameter and count this as 'name'.
-  // @JoshD: Cleanup later!
+  //Cleanup later!
   if (attribute->mParameters.Size() == 1 && attribute->mParameters[0].GetName().Empty())
     return attribute->mParameters[0].GetStringValue();
   return mLightningName;

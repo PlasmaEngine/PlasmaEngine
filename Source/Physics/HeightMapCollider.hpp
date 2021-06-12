@@ -68,7 +68,7 @@ public:
   /// local space. This means that the passed in aabb for GetOverlapRange should
   /// be transformed to local space.
   typedef TrueType RangeInLocalSpace;
-  /// Used in the collision system. @JoshD: Maybe replace with AutoDeclare
+  /// Used in the collision system.Maybe replace with AutoDeclare
   /// later?
   typedef HeightMapRangeWrapper RangeType;
   /// Returns a range of local-space triangles that overlap the passed in

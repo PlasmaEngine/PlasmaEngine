@@ -45,7 +45,7 @@ void ShaderIntrinsicsStaticLightningLibrary::Parse(LightningSpirVFrontEnd* trans
   Lightning::Core& core = Lightning::Core::GetInstance();
   Lightning::Library* lightningLibrary = shaderLibrary->mLightningLibrary;
 
-  // Declare the unsigned int type. As this is currently a hack type, only do this for the scalar version. @JoshD: Cleanup
+  // Declare the unsigned int type. As this is currently a hack type, only do this for the scalar version.Cleanup
   LightningShaderIRType* uintType = translator->MakeCoreType(shaderLibrary, ShaderIRTypeBaseType::Uint, 1, nullptr, LightningTypeId(Lightning::UnsignedInt));
 
   // Grabbed a bunch of lightning types

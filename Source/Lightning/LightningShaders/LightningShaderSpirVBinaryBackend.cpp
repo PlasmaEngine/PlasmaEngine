@@ -132,7 +132,7 @@ void LightningShaderSpirVBinaryBackend::TranslateType(LightningShaderIRType* typ
   // Walk the global initializers and generate and apply late bound functions
   GenerateGlobalsInitializerFunction(collector, &context);
 
-  // @JoshD: Late bound functions 'potentially' require each entry point to be
+  //Late bound functions 'potentially' require each entry point to be
   // independently generated
   for (size_t i = 0; i < context.mEntryPoints.Size(); ++i)
   {
@@ -174,7 +174,7 @@ void LightningShaderSpirVBinaryBackend::TranslateLibrary(LightningShaderIRLibrar
   // Walk the global initializers and generate and apply late bound functions
   GenerateGlobalsInitializerFunction(collector, &context);
 
-  // @JoshD: Late bound functions 'potentially' require each entry point to be
+  //Late bound functions 'potentially' require each entry point to be
   // independently generated
   for (size_t i = 0; i < context.mEntryPoints.Size(); ++i)
   {
@@ -438,7 +438,7 @@ void LightningShaderSpirVBinaryBackend::AddMemberDecorationCapabilities(Lightnin
                                                                     TypeDependencyCollector& collector,
                                                                     LightningShaderToSpirVContext* context)
 {
-  // @JoshD: Figure out what to do here later
+  //Figure out what to do here later
 }
 
 template <typename T>

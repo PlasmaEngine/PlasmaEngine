@@ -32,7 +32,7 @@ class CompositorCallbackData;
     a = a & b;                                                                                                         \
   }
 
-/// @JoshD: Unify later with the FragmentType enum. This needs to be a bitfield
+///Unify later with the FragmentType enum. This needs to be a bitfield
 /// due to the buffer stage binding.
 DeclareBitField6(ShaderStage, Vertex, PreTesselation, PostTesselation, Geometry, Pixel, Compute);
 DeclareBitFieldBitwiseOperators(ShaderStage::Enum);
@@ -319,7 +319,7 @@ public:
   // Render targets are resolved via name.
   void SetRenderTargetName(StringParam varName, size_t targetIndex);
   // Override what the render target type is.
-  // @JoshD: This needs testing beyond using Real4 and how to deal with changing this per compilation.
+  //This needs testing beyond using Real4 and how to deal with changing this per compilation.
   void SetRenderTargetType(Lightning::BoundType* targetType);
 
   /// The name of the current language's specialization variable name.

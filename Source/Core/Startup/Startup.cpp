@@ -110,6 +110,16 @@ void PlasmaStartup::MainLoopFunction(void* userData)
 
 void PlasmaStartup::Initialize()
 {
+    mLibararyInitializers.PushBack(new TypedLibraryInitializer<EngineLibrary>());
+    mLibararyInitializers.PushBack(new TypedLibraryInitializer<GraphicsLibrary>());
+    mLibararyInitializers.PushBack(new TypedLibraryInitializer<PhysicsLibrary>());
+    mLibararyInitializers.PushBack(new TypedLibraryInitializer<NetworkingLibrary>());
+    mLibararyInitializers.PushBack(new TypedLibraryInitializer<SoundLibrary>());
+    mLibararyInitializers.PushBack(new TypedLibraryInitializer<WidgetLibrary>());
+    mLibararyInitializers.PushBack(new TypedLibraryInitializer<GameplayLibrary>());
+    mLibararyInitializers.PushBack(new TypedLibraryInitializer<EditorLibrary>());
+    mLibararyInitializers.PushBack(new TypedLibraryInitializer<UiWidgetLibrary>());
+
   // Set the log and error handlers so debug printing and asserts will print to
   // the any debugger output (such as the Visual Studio Output Window).
   mDebuggerListener = new DebuggerListener();
@@ -201,16 +211,10 @@ void PlasmaStartup::Initialize()
   ContentMetaLibrary::Initialize();
   SpatialPartitionLibrary::Initialize();
 
-  EngineLibrary::Initialize();
-  GraphicsLibrary::Initialize();
-  PhysicsLibrary::Initialize();
-  NetworkingLibrary::Initialize();
-  SoundLibrary::Initialize();
-
-  WidgetLibrary::Initialize();
-  GameplayLibrary::Initialize();
-  EditorLibrary::Initialize();
-  UiWidgetLibrary::Initialize();
+  for (size_t i = 0; i < mLibararyInitializers.Size(); ++i)
+  {
+      mLibararyInitializers[i]->Initialize();
+  }
 
   LightningScriptLibrary::Initialize();
 
@@ -381,16 +385,11 @@ void PlasmaStartup::Shutdown()
     // Shutdown in reverse order
     LightningScriptLibrary::Shutdown();
 
-    UiWidgetLibrary::Shutdown();
-    EditorLibrary::Shutdown();
-    GameplayLibrary::Shutdown();
-    WidgetLibrary::Shutdown();
-
-    SoundLibrary::Shutdown();
-    NetworkingLibrary::Shutdown();
-    PhysicsLibrary::Shutdown();
-    GraphicsLibrary::Shutdown();
-    EngineLibrary::Shutdown();
+    for (size_t i = 0; i < mLibararyInitializers.Size(); ++i)
+    {
+        size_t index = mLibararyInitializers.Size() - i - 1;
+        mLibararyInitializers[index]->Shutdown();
+    }
 
     SpatialPartitionLibrary::Shutdown();
     ContentMetaLibrary::Shutdown();
@@ -402,16 +401,11 @@ void PlasmaStartup::Shutdown()
     // ClearLibrary
     LightningScriptLibrary::GetInstance().ClearLibrary();
 
-    UiWidgetLibrary::GetInstance().ClearLibrary();
-    EditorLibrary::GetInstance().ClearLibrary();
-    GameplayLibrary::GetInstance().ClearLibrary();
-    WidgetLibrary::GetInstance().ClearLibrary();
-
-    SoundLibrary::GetInstance().ClearLibrary();
-    NetworkingLibrary::GetInstance().ClearLibrary();
-    PhysicsLibrary::GetInstance().ClearLibrary();
-    GraphicsLibrary::GetInstance().ClearLibrary();
-    EngineLibrary::GetInstance().ClearLibrary();
+    for (size_t i = 0; i < mLibararyInitializers.Size(); ++i)
+    {
+        size_t index = mLibararyInitializers.Size() - i - 1;
+        mLibararyInitializers[index]->ClearLibrary();
+    }
 
     SpatialPartitionLibrary::GetInstance().ClearLibrary();
     ContentMetaLibrary::GetInstance().ClearLibrary();
@@ -422,16 +416,11 @@ void PlasmaStartup::Shutdown()
     // Destroy
     LightningScriptLibrary::Destroy();
 
-    UiWidgetLibrary::Destroy();
-    EditorLibrary::Destroy();
-    GameplayLibrary::Destroy();
-    WidgetLibrary::Destroy();
-
-    SoundLibrary::Destroy();
-    NetworkingLibrary::Destroy();
-    PhysicsLibrary::Destroy();
-    GraphicsLibrary::Destroy();
-    EngineLibrary::Destroy();
+    for (size_t i = 0; i < mLibararyInitializers.Size(); ++i)
+    {
+        size_t index = mLibararyInitializers.Size() - i - 1;
+        mLibararyInitializers[index]->Destroy();
+    }
 
     SpatialPartitionLibrary::Destroy();
     ContentMetaLibrary::Destroy();

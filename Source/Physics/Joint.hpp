@@ -104,7 +104,7 @@ struct Joint : public Component
   {
     return "Joint";
   }
-  // @JoshD: Clean up the 255 to use AllAxes
+  //Clean up the 255 to use AllAxes
   virtual uint GetDefaultLimitIds() const
   {
     return 255;
@@ -251,7 +251,7 @@ struct Joint : public Component
   /// building.
   bool GetOnIsland() const;
   void SetOnIsland(bool onIsland);
-  /// @JoshD: Unused?
+  ///Unused?
   bool GetGhost() const;
   void SetGhost(bool ghost);
   // A joint is valid if it has all of the data needed to solve (typically if

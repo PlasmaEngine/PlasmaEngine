@@ -789,7 +789,7 @@ void AddImageFunctions(Lightning::LibraryBuilder& builder, Lightning::BoundType*
   AddImageQuerySizeLod(builder, type, sampler2dDepthSet, intType, int2Type);
   AddImageQuerySizeLod(builder, type, samplerCubeSet, intType, int2Type);
   // Image Query Size
-  // @JoshD: Backend fix required for these functions
+  //Backend fix required for these functions
   // AddImageQuerySize(builder, type, sampler2dSet, int2Type);
   // AddImageQuerySize(builder, type, sampler2dDepthSet, int2Type);
   // Image Query Lod

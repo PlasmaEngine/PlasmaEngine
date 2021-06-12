@@ -489,7 +489,7 @@ void DownloadAndCreateTemplateTaskJob::Execute()
   // create from the local path
   if (mTemplate->mIsDownloaded && !mTemplate->mIsOnServer)
   {
-    // @JoshD: This is currently broken because the even will be sent before the
+    //This is currently broken because the even will be sent before the
     // listener.
     UpdateProgress("CreatedTemplate", 1.0f);
     mState = BackgroundTaskState::Completed;

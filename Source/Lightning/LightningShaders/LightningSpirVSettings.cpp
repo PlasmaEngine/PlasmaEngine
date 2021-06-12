@@ -457,7 +457,7 @@ bool LightningShaderSpirVSettings::IsValidHardwareBuiltIn(FragmentType::Enum fra
 {
   ShaderFieldKey fieldKey(fieldName, fieldType);
 
-  // @JoshD: This is technically wrong as Geometry in/out streams do have
+  //This is technically wrong as Geometry in/out streams do have
   // hardware built-ins but there's no way to know if this type is used in a
   // stream or not at this point. As a fallback, if no fragment type is set then
   // check all available stage descriptions so at least typos / wrong types
@@ -683,7 +683,7 @@ void LightningShaderSpirVSettings::InitializeBuiltIns()
   vertexDescriptions.mOutputInterfaceBlock.AddField(
       realType, "PointSize", spv::BuiltInPointSize, hardwareBuiltInOutput);
   // Can't add clip distance now because of array types
-  // @JoshD: Fix with FixedArray later?
+  //Fix with FixedArray later?
   // vertexDescriptions.mOutputInterfaceBlock.AddField(real4Type,
   // "ClipDistance", spv::BuiltInClipDistance);
 
@@ -696,7 +696,7 @@ void LightningShaderSpirVSettings::InitializeBuiltIns()
   geometryDescriptions.mInputInterfaceBlock.AddField(real4Type, "Position", spv::BuiltInPosition, hardwareBuiltInInput);
   geometryDescriptions.mInputGlobals.AddField(intType, "PrimitiveId", spv::BuiltInPrimitiveId, hardwareBuiltInInput);
   geometryDescriptions.mOutputGlobals.AddField(intType, "PrimitiveId", spv::BuiltInPrimitiveId, hardwareBuiltInOutput);
-  // @JoshD: Requires glsl 400 to work. Deal with later!
+  //Requires glsl 400 to work. Deal with later!
   // geometryDescriptions.mInputGlobals.AddField(intType, "InvocationId",
   // spv::BuiltInInvocationId);
 
