@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <LightningSource>$(SolutionDir)\..\..\</LightningSource>
+    <LIGHTNING_SOURCE>$(LightningSource)</LIGHTNING_SOURCE>
+    <PlasmaStandardLibrariesSource>$(LightningSource)\..\</PlasmaStandardLibrariesSource>
+    <PLASMA_OUTPUT>$(HOMEDRIVE)\LightningBuildOutput</PLASMA_OUTPUT>
+    <LibrariesBuildPath>$(PlasmaStandardLibrariesSource)\Build</LibrariesBuildPath>
+    <BuildsPath>$(LibrariesBuildPath)</BuildsPath>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Condition="exists('$(LibrariesBuildPath)\CoreConfiguration.props')" Project="$(LibrariesBuildPath)\CoreConfiguration.props" />
+    <Import Condition="exists('LocalPaths.props')" Project="LocalPaths.props" />
+  </ImportGroup>
+</Project>
