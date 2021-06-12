@@ -291,13 +291,13 @@ LightningDefineType(PhysicsSolverConfig, builder, type)
   LightningBindGetterSetterProperty(PositionIterationCount);
   LightningBindGetterSetterProperty(VelocityRestitutionThreshold);
 
-  // @JoshD: Hide for now so these won't confuse anyone
+  // Hide for now so these won't confuse anyone
   // These properties are only for showing people how constraints handle
   // when you don't implement important features
-  // LightningBindFieldProperty(mWarmStart);
-  // LightningBindFieldProperty(mCacheContacts);
-  // LightningBindGetterSetterProperty(SubCorrectionType);
-  // LightningBindGetterSetterProperty(SolverType);
+   LightningBindFieldProperty(mWarmStart);
+   LightningBindFieldProperty(mCacheContacts);
+   LightningBindGetterSetterProperty(SubCorrectionType);
+   LightningBindGetterSetterProperty(SolverType);
 
   LightningBindGetterSetterProperty(PositionCorrectionType);
 }
