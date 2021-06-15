@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -40,7 +39,7 @@ void EllipsoidCollider::DebugDraw()
   // To help visualize, draw 6 rings around the y-axis. To do this we
   // interpolate across the x-z ellipse to get an axis and radius.
   real increment = Math::cPi / 6.0f;
-  for (real t = 0; t < Math::cPi; t += increment)
+  for(real t = 0; t < Math::cPi; t += increment)
   {
     // Compute the local space point of the ellipse on the x-z plane
     Vec3 xAxis = Math::Cos(t) * rotation.BasisX() * worldRadii.x;
@@ -99,7 +98,7 @@ Vec3 EllipsoidCollider::GetRadii(void) const
 void EllipsoidCollider::SetRadii(Vec3Param radii)
 {
   const float minScale = 0.0001f;
-  mRadii = Math::Max(radii, Vec3(minScale));
+  mRadii = Math::Max(radii, Vec3(minScale)); 
 
   // Since our internal size changed make sure to run all common update code
   InternalSizeChanged();
@@ -110,4 +109,4 @@ Vec3 EllipsoidCollider::GetWorldRadii() const
   return mRadii * GetWorldScale();
 }
 
-} // namespace Plasma
+}//namespace Plasma

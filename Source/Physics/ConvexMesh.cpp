@@ -1,10 +1,10 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
-#include "Core/Geometry/QuickHull3D.hpp"
+#include "Core\Geometry\QuickHull3D.hpp"
 
 namespace Plasma
 {
 
+//------------------------------------------------------------------ ConvexMesh
 DefinePhysicsRuntimeClone(ConvexMesh);
 
 LightningDefineType(ConvexMesh, builder, type)
@@ -50,8 +50,8 @@ bool ConvexMesh::CastRay(const Ray& localRay, ProxyResult& result, BaseCastFilte
 
 void ConvexMesh::Draw(Mat4Param transform)
 {
-  // Debug::DefaultConfig config;
-  // config.Alpha(100).Alpha(100).Border(true).OnTop(false);
+  //Debug::DefaultConfig config;
+  //config.Alpha(100).Alpha(100).Border(true).OnTop(false);
 
   DrawFaces(transform, Color::Lime);
 }
@@ -66,7 +66,7 @@ void ConvexMesh::BuildFromPointSet(const Vec3Array& points)
 
   QuickHull3D hull3D;
   bool success = hull3D.Build(points);
-  if (!success)
+  if(!success)
     return;
 
   mVertices.Clear();
@@ -78,19 +78,18 @@ void ConvexMesh::BuildFromPointSet(const Vec3Array& points)
   int currentVertexId = 0;
   HashMap<Vertex*, int> vertexIdMap;
   Array<int> faceVertexIndices;
-  for (FaceList::range faces = hull3D.GetFaces(); !faces.Empty(); faces.PopFront())
+  for(FaceList::range faces = hull3D.GetFaces(); !faces.Empty(); faces.PopFront())
   {
     // Clear the list of vertices for this face
     faceVertexIndices.Clear();
 
     Face* face = &faces.Front();
-    for (EdgeList::range edges = face->mEdges.All(); !edges.Empty(); edges.PopFront())
+    for(EdgeList::range edges = face->mEdges.All(); !edges.Empty(); edges.PopFront())
     {
       Vertex* vertex = edges.Front().mTail;
       int vertexId = 0;
-      // If we haven't seen this vertex then add it to the final list of
-      // vertices and give it a new id
-      if (!vertexIdMap.ContainsKey(vertex))
+      // If we haven't seen this vertex then add it to the final list of vertices and give it a new id
+      if(!vertexIdMap.ContainsKey(vertex))
       {
         vertexIdMap[vertex] = currentVertexId;
         mVertices[currentVertexId] = vertex->mPosition;
@@ -104,7 +103,7 @@ void ConvexMesh::BuildFromPointSet(const Vec3Array& points)
       faceVertexIndices.PushBack(vertexId);
     }
     // Create a triangle fan for the vertices in this face
-    for (size_t i = 2; i < faceVertexIndices.Size(); ++i)
+    for(size_t i = 2; i < faceVertexIndices.Size(); ++i)
     {
       mIndices.PushBack(faceVertexIndices[0]);
       mIndices.PushBack(faceVertexIndices[i - 1]);
@@ -113,9 +112,11 @@ void ConvexMesh::BuildFromPointSet(const Vec3Array& points)
   }
 }
 
+//---------------------------------------------------------- ConvexMeshManager
 ImplementResourceManager(ConvexMeshManager, ConvexMesh);
 
-ConvexMeshManager::ConvexMeshManager(BoundType* resourceType) : ResourceManager(resourceType)
+ConvexMeshManager::ConvexMeshManager(BoundType* resourceType)
+  :ResourceManager(resourceType)
 {
   AddLoader("ConvexMesh", new BinaryDataFileLoader<ConvexMeshManager>());
   mCategory = "Physics";
@@ -130,13 +131,13 @@ ConvexMeshManager::ConvexMeshManager(BoundType* resourceType) : ResourceManager(
 
 void ConvexMeshManager::UpdateAndNotifyModifiedResources()
 {
-  for (size_t i = 0; i < mModifiedMeshes.Size(); ++i)
+  for(size_t i = 0; i < mModifiedMeshes.Size(); ++i)
   {
     ConvexMesh* mesh = mModifiedMeshes[i];
-    if (mesh != nullptr)
+    if(mesh != nullptr)
       mesh->UpdateAndNotifyIfModified();
   }
   mModifiedMeshes.Clear();
 }
 
-} // namespace Plasma
+}//namespace Plasma

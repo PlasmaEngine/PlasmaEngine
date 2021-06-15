@@ -1,9 +1,9 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
 {
 
+//-------------------------------------------------------------------PhysicsMesh
 DefinePhysicsRuntimeClone(PhysicsMesh);
 
 LightningDefineType(PhysicsMesh, builder, type)
@@ -65,8 +65,7 @@ bool PhysicsMesh::CastRay(const Ray& localRay, ProxyResult& result, BaseCastFilt
   bool triangleHit = false;
   result.mTime = Math::PositiveMax();
 
-  // Query the aabb tree for possible triangles. Test all triangles whose aabbs
-  // we hit.
+  // Query the aabb tree for possible triangles. Test all triangles whose aabbs we hit.
   forRangeBroadphaseTree(StaticAabbTree<uint>, mTree, Ray, localRay)
   {
     uint triIndex = range.Front();
@@ -111,13 +110,13 @@ void PhysicsMesh::GenerateTree()
   BroadPhaseProxy proxy;
 
   size_t triangleCount = GetTriangleCount();
-  for (size_t triIndex = 0; triIndex < triangleCount; ++triIndex)
+  for(size_t triIndex = 0; triIndex < triangleCount; ++triIndex)
   {
     Triangle tri = GetTriangle(triIndex);
-
+    
     // Create the broad phase data.
     BaseBroadPhaseData<uint> data;
-    data.mClientData = static_cast<uint>(triIndex);
+    data.mClientData = (uint)triIndex;
     data.mAabb = ToAabb(tri);
 
     // Insert it into the tree
@@ -128,9 +127,11 @@ void PhysicsMesh::GenerateTree()
   mTree.Construct();
 }
 
+//-------------------------------------------------------------------PhysicsMeshManager
 ImplementResourceManager(PhysicsMeshManager, PhysicsMesh);
 
-PhysicsMeshManager::PhysicsMeshManager(BoundType* resourceType) : ResourceManager(resourceType)
+PhysicsMeshManager::PhysicsMeshManager(BoundType* resourceType) 
+  : ResourceManager(resourceType)
 {
   AddLoader("PhysicsMesh", new BinaryDataFileLoader<PhysicsMeshManager>());
   mCategory = "Physics";
@@ -145,13 +146,13 @@ PhysicsMeshManager::PhysicsMeshManager(BoundType* resourceType) : ResourceManage
 
 void PhysicsMeshManager::UpdateAndNotifyModifiedResources()
 {
-  for (size_t i = 0; i < mModifiedMeshes.Size(); ++i)
+  for(size_t i = 0; i < mModifiedMeshes.Size(); ++i)
   {
     PhysicsMesh* mesh = mModifiedMeshes[i];
-    if (mesh != nullptr)
+    if(mesh != nullptr)
       mesh->UpdateAndNotifyIfModified();
   }
   mModifiedMeshes.Clear();
 }
 
-} // namespace Plasma
+}//namespace Plasma

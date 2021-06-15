@@ -80,7 +80,7 @@ LightningDefineExternalBaseType(Aabb, TypeCopyMode::ValueType, builder, type)
   LightningBindGetter(Volume);
   LightningBindGetter(SurfaceArea);
 
-  LightningBindMethodAs(Plasma, "ZeroOut");
+  LightningBindMethodAs(Zero, "ZeroOut");
   type->ToStringFunction = Lightning::BoundTypeToGlobalToString<Aabb>;
   type->AddAttribute(ExportDocumentation);
 

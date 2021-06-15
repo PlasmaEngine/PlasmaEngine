@@ -101,18 +101,7 @@ bool SafeSqrt(real val, real& result)
 
 real Rsqrt(real val)
 {
-  //Based on the Quake 3 reverse sqrt
-  long i;
-  float x2, y;
-  const float threehalfs = 1.5;
-
-  x2 = val * 0.5;
-  y = val;
-  i = *(long*)&y;
-  i = 0x5f3759df - (i >> 1);
-  y = *(float*)&i;
-  y = y * (threehalfs - (x2 * y * y));
-  return real(y);
+    return real(1.0) / std::sqrt(val);
 }
 
 real Sq(real sqrt)

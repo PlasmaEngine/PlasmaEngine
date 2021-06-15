@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -9,18 +8,21 @@ DeclareBitField2(MultiConvexMeshFlags, NewlyCreatedInEditor, EditType2D);
 class MultiConvexMesh;
 class SubConvexMesh;
 
+//-------------------------------------------------------------------MultiConvexMeshVertexData
 class MultiConvexMeshVertexData : public BoundMeshData<MultiConvexMesh, Vec3>
 {
 public:
   LightningDeclareType(MultiConvexMeshVertexData, TypeCopyMode::ReferenceType);
 };
 
+//-------------------------------------------------------------------MultiConvexMeshIndexData
 class MultiConvexMeshIndexData : public BoundMeshData<MultiConvexMesh, uint>
 {
 public:
   LightningDeclareType(MultiConvexMeshIndexData, TypeCopyMode::ReferenceType);
 };
 
+//-------------------------------------------------------------------MultiConvexMeshSubMeshData
 class MultiConvexMeshSubMeshData : public BoundMeshData<MultiConvexMesh, SubConvexMesh*>
 {
 public:
@@ -37,11 +39,11 @@ public:
   RangeType All();
 };
 
-/// Contains the indices of a convex mesh. The triangle indices are the primary
-/// method to configure this (required for mass computations). The regular
-/// indices are used for debug drawing and to reduce intersection tests by
-/// removing duplicate points. If left empty, Indices will be auto-filled from
-/// the triangle indices.
+//-------------------------------------------------------------------SubConvexMesh
+/// Contains the indices of a convex mesh. The triangle indices are the primary method
+/// to configure this (required for mass computations). The regular indices are used
+/// for debug drawing and to reduce intersection tests by removing duplicate points. 
+/// If left empty, Indices will be auto-filled from the triangle indices.
 class SubConvexMesh : public SafeId32Object
 {
 public:
@@ -57,8 +59,7 @@ public:
   void SetOwner(MultiConvexMesh* owner);
   bool Validate(VertexArrayParam verts);
   bool ValidateInternal(VertexArrayParam verts);
-  /// Compute the mesh indices (for debug drawing in 2d and support functions)
-  /// from the triangle indices.
+  /// Compute the mesh indices (for debug drawing in 2d and support functions) from the triangle indices.
   void ComputeUniqueIndices();
 
   void ComputeCenterOfMassAndVolume(VertexArrayParam verts);
@@ -81,8 +82,8 @@ public:
   /// The vertex indices on the main mesh used to generate the convex hull.
   MultiConvexMeshIndexData* GetIndices();
   /// The vertex indices on the main mesh used to generate triangle indices
-  /// for computing mass information and debug drawing. More indices are needed
-  /// for determining triangles than for generating the convex mesh.
+  /// for computing mass information and debug drawing. More indices are needed for
+  /// determining triangles than for generating the convex mesh.
   MultiConvexMeshIndexData* GetTriangleIndices();
 
   void Draw(VertexArrayParam verts, Mat4Param transform, bool drawEdges, bool drawFaces);
@@ -91,8 +92,7 @@ public:
   void DrawEdges(VertexArrayParam verts, Mat4Param transform, ByteColor color);
   void DrawEdges2d(VertexArrayParam verts, Mat4Param transform, ByteColor color);
 
-  /// The indices into the vertices array that represent what points are in the
-  /// convex mesh.
+  /// The indices into the vertices array that represent what points are in the convex mesh.
   IndexArray mIndices;
   /// The indices for the triangles used for debug drawing.
   IndexArray mTriangleIndices;
@@ -100,9 +100,8 @@ public:
   Aabb mAabb;
   Vec3 mCenterOfMass;
   real mVolume;
-  /// Is this sub-mesh incorrectly configured. Typically means that the indices
-  /// don't point to valid vertices. Also the number of triangle indices could
-  /// be incorrect (multiple of 3).
+  /// Is this sub-mesh incorrectly configured. Typically means that the indices don't point to
+  /// valid vertices. Also the number of triangle indices could be incorrect (multiple of 3).
   bool mValid;
 
   /// The MultiConvexMesh that owns this sub-mesh.
@@ -111,6 +110,7 @@ public:
   MultiConvexMeshIndexData mTriangleIndexData;
 };
 
+//-------------------------------------------------------------------MultiConvexMesh
 /// Represents a collection of convex meshes that was decomposed from a mesh.
 class MultiConvexMesh : public Resource
 {
@@ -145,18 +145,15 @@ public:
 
   /// Is the resource currently modified?
   bool GetModified();
-  /// Is the resource correctly setup? Typically involves a mis-match in indices
-  /// and vertices.
+  /// Is the resource correctly setup? Typically involves a mis-match in indices and vertices.
   bool GetValid();
-  /// If the user only specifies triangle indices (the regular indices are
-  /// empty) on a sub-mesh then extract unique indices from the triangle
-  /// indices. This needs to be updated later to merge the two index lists.
+  /// If the user only specifies triangle indices (the regular indices are empty) on a sub-mesh then
+  /// extract unique indices from the triangle indices. This needs to be updated later to merge the two index lists.
   void FillEmptyIndices();
-  /// Check if the mesh is valid. Optionally throw a script exception if it is
-  /// invalid.
+  /// Check if the mesh is valid. Optionally throw a script exception if it is invalid.
   bool Validate(bool throwExceptionIfInvalid);
-  /// Rebuild all extra mesh information if it is currently modified. This
-  /// includes things like the center of mass, volume, aabb, edge info and more.
+  /// Rebuild all extra mesh information if it is currently modified. This includes
+  /// things like the center of mass, volume, aabb, edge info and more.
   void UpdateAndNotifyIfModified();
 
   /// Returns the volume of the entire multi-convex mesh.
@@ -169,15 +166,13 @@ public:
   Vec3 GetCenterOfMass();
   /// Scales the cached center of mass into a world-space scaled center of mass.
   Vec3 GetWorldCenterOfMass(Vec3Param worldScale);
-  /// The inertia tensor cannot be scaled later so it must be recomputed each
-  /// time.
+  /// The inertia tensor cannot be scaled later so it must be recomputed each time.
   Mat3 ComputeInvInertiaTensor(Vec3Param worldScale, real totalMass);
 
   /// Determines if a local-space ray hits any of the sub-meshes.
   bool CastRay(const Ray& localRay, ProxyResult& result, BaseCastFilter& filter);
 
-  /// Rebuild all cached information for when the mesh has changed (center of
-  /// mass, volume, aabb).
+  /// Rebuild all cached information for when the mesh has changed (center of mass, volume, aabb).
   void RebuildCachedInfo();
 
 private:
@@ -185,6 +180,7 @@ private:
   Aabb ComputeAabb();
 
 public:
+
   typedef Array<Vec3> VertexArray;
   VertexArray mVertices;
 
@@ -196,24 +192,22 @@ public:
   Vec3 mCenterOfMass;
   real mVolume;
 
-  /// This resource is not specific to 2d, but it does need to know what kind of
-  /// resource it was for editing purposes (so we only edit a 2d mesh with the
-  /// 2d mesh editor). Not currently used but more of an idea right now.
+  /// This resource is not specific to 2d, but it does need to know what kind of resource
+  /// it was for editing purposes (so we only edit a 2d mesh with the 2d mesh editor).
+  /// Not currently used but more of an idea right now.
   BitField<MultiConvexMeshFlags::Enum> mFlags;
   bool mIs2D;
   bool mModified;
   bool mIsValid;
 
-  /// The bound vertex data. This is a safe object that behaves like an array to
-  /// the users.
+  /// The bound vertex data. This is a safe object that behaves like an array to the users.
   MultiConvexMeshVertexData mVertexData;
-  /// The bound sub-mesh data. This is a safe object that behaves like an array
-  /// to the users (slightly different interface as they can add/get/clear but
-  /// not set).
+  /// The bound sub-mesh data. This is a safe object that behaves like an array to the
+  /// users (slightly different interface as they can add/get/clear but not set).
   MultiConvexMeshSubMeshData mSubMeshData;
 };
 
-// MultiConvexMeshManager
+//---------------------------------------------------------- MultiConvexMeshManager
 class MultiConvexMeshManager : public ResourceManager
 {
 public:
@@ -228,4 +222,4 @@ public:
   Array<MeshReference> mModifiedMeshes;
 };
 
-} // namespace Plasma
+}//namespace Plasma

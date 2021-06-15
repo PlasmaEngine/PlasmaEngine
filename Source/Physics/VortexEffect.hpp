@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -26,8 +25,7 @@ public:
 
   // Update the cached vortex information
   void ComputeVortexInformation();
-  /// Computes the strength of both forces based upon the t-value distance from
-  /// the vortex center.
+  /// Computes the strength of both forces based upon the t-value distance from the vortex center.
   void GetStrengthValues(real t, real& twistForce, real& inwardForce);
 
   // Properties
@@ -42,8 +40,7 @@ public:
   void SetMinDistance(real distance);
   /// The max distance that attenuation will happen at. If an object is
   /// between min and max distance, the value will be attenuated. If the
-  /// object is further away, the effect strength will be determined by
-  /// EndCondition.
+  /// object is further away, the effect strength will be determined by EndCondition.
   real GetMaxDistance();
   void SetMaxDistance(real maxDistance);
   /// The perpendicular strength (twist) of the vortex at min distance.
@@ -73,6 +70,7 @@ public:
   void SetInterpolationType(PhysicsEffectInterpolationType::Enum type);
 
 private:
+
   real mMinDistance;
   real mMaxDistance;
   real mTwistStrengthAtMinDistance;
@@ -80,7 +78,7 @@ private:
   real mInwardStrengthAtMinDistance;
   real mInwardStrengthAtMaxDistance;
   Vec3 mVortexAxis;
-
+  
   BitField<VortexFlags::Enum> mVortexStates;
   PhysicsEffectInterpolationType::Enum mInterpolationType;
 
@@ -88,4 +86,4 @@ private:
   Vec3 mWorldVortexCenter;
 };
 
-} // namespace Plasma
+}//namespace Plasma

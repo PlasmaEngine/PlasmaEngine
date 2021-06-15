@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -38,14 +37,14 @@ void IgnoreSpaceEffects::Serialize(Serializer& stream)
 void IgnoreSpaceEffects::Initialize(CogInitializer& initializer)
 {
   RigidBody* body = GetOwner()->has(RigidBody);
-  if (body != nullptr)
+  if(body != nullptr)
     body->mSpaceEffectsToIgnore = this;
 }
 
 void IgnoreSpaceEffects::OnDestroy(uint flags)
 {
   RigidBody* body = GetOwner()->has(RigidBody);
-  if (body != nullptr)
+  if(body != nullptr)
     body->mSpaceEffectsToIgnore = nullptr;
 }
 
@@ -184,4 +183,4 @@ void IgnoreSpaceEffects::SetIgnoreState(PhysicsEffectType::Enum effectType, bool
   mFlags.SetState(effectType, ignore);
 }
 
-} // namespace Plasma
+}//namespace Plasma

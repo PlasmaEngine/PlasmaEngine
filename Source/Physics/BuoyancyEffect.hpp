@@ -1,9 +1,9 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
 {
 
+//-------------------------------------------------------------------BuoyancyEffect
 /// Applies a buoyancy force to an object in a given direction.
 class BuoyancyEffect : public PhysicsEffect
 {
@@ -43,5 +43,5 @@ private:
   /// The direction of gravity in world-space.
   Vec3 mGravity;
 };
-
-} // namespace Plasma
+  
+}// namespace Plasma

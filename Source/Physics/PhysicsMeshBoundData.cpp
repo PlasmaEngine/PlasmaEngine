@@ -1,11 +1,10 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
 {
 
-// Defines
+//-------------------------------------------------------------------Array Defines
 PhysicsDefineArrayType(PhysicsMeshVertexData);
 PhysicsDefineArrayType(PhysicsMeshIndexData);
 
-} // namespace Plasma
+}//namespace Plasma

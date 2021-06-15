@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -17,16 +16,23 @@ Vec3 Solve33(Mat3Param J, Vec3Param f)
 // I * (w_2 - w_1) + dt * Cross(w_2, I2 * w_2)
 // J = I_body + dt [skew(w_body) * I_body - skew(I_body * w_body)]
 
-// Solve gyroscopic adds in commonly ignored rotational terms using a implicit
-// integration of a portion of angular velocity. See Erin Catto's 2015 GDC
-// presentation for details on the topic.
+// Solve gyroscopic adds in commonly ignored rotational terms using a implicit integration of a
+// portion of angular velocity. See Erin Catto's 2015 GDC presentation for details on the topic.
 Vec3 SolveGyroscopic(RigidBody* body, float dt)
 {
+  // Solve for gyroscopic torque if we are not in 2d. Gyroscopic torque is ignored in 2d because
+  // this takes into account the Cross(w, I*w) term in Euler's equations of motion.
+  // This term is non-zero when angular velocity and angular momentum point in different directions.
+  // When in 2d mode, these will always point in the exact same direction (along the z-axis)
+  // so this term should mathematically be zero.
+  if(body->mState.IsSet(RigidBodyStates::Mode2D))
+    return Vec3::cZero;
+
   Quat rotation = body->mRotationQuat;
   Mat3 invInertia = body->mInvInertia.GetInvModelTensor();
   real invInertiaDeterminant = invInertia.Determinant();
   // If the body can't be rotated then don't we can't do anything so return
-  if (invInertiaDeterminant == 0)
+  if(invInertiaDeterminant == 0)
     return Vec3::cZero;
 
   Mat3 inertiaBody = invInertia.Inverted();
@@ -58,38 +64,36 @@ void Integration::Integrate(RigidBody* body, real dt)
 
 void Integration::IntegrateVelocity(RigidBody* body, real dt)
 {
-  // deal with the case of applying velocity outside of 2d mode that isn't
-  // handled by the mass being plasmaed. The one issue with this is that if
-  // any hook is ever provided to alter velocity during physic's frame, then
-  // this will not catch it and might cause issues. As this is not allowed
-  // at the moment, this solution is more elegant and easier to deal with.
-  if (body->mState.IsSet(RigidBodyStates::Mode2D))
+  //deal with the case of applying velocity outside of 2d mode that isn't
+  //handled by the mass being zeroed. The one issue with this is that if
+  //any hook is ever provided to alter velocity during physic's frame, then
+  //this will not catch it and might cause issues. As this is not allowed
+  //at the moment, this solution is more elegant and easier to deal with.
+  if(body->mState.IsSet(RigidBodyStates::Mode2D))
   {
     body->mVelocity.z = real(0.0);
     body->mAngularVelocity.x = real(0.0);
     body->mAngularVelocity.y = real(0.0);
   }
 
-  // IntegrateEulerVelocity(body, dt);
+  //IntegrateEulerVelocity(body, dt);
   IntegrateRk2Velocity(body, dt);
 
-  // ErrorIf(body->mAngularVelocity.Length() > real(2000.0), "Spinning too
-  // fast"); ErrorIf(!body->mVelocity.Valid(), "Velocity vector is invalid.");
-  // ErrorIf(!body->mAngularVelocity.Valid(), "Angular velocity vector is
-  // invalid.");
+  //ErrorIf(body->mAngularVelocity.Length() > real(2000.0), "Spinning too fast");
+  //ErrorIf(!body->mVelocity.Valid(), "Velocity vector is invalid.");
+  //ErrorIf(!body->mAngularVelocity.Valid(), "Angular velocity vector is invalid.");
 }
 
 void Integration::IntegrateEulerVelocity(RigidBody* body, real dt)
 {
-  // Set old values
+  //Set old values
   body->mVelocityOld = body->mVelocity;
   body->mAngularVelocityOld = body->mAngularVelocity;
 
-  // Integrate velocity and position
+  //Integrate velocity and position
   body->mVelocity += body->mInvMass.Apply(body->mForceAccumulator * dt);
-
-  // Use superposition rule to split integration into an explicit and implicit
-  // step
+  
+  // Use superposition rule to split integration into an explicit and implicit step
   Vec3 explicitW = body->mInvInertia.Apply(body->mTorqueAccumulator) * dt;
   Vec3 implicitW = SolveGyroscopic(body, dt);
   body->mAngularVelocity += explicitW + implicitW;
@@ -97,32 +101,33 @@ void Integration::IntegrateEulerVelocity(RigidBody* body, real dt)
 
 void Integration::IntegratePosition(RigidBody* body, real dt)
 {
-  // IntegrateEulerPosition(body,dt);
+  //IntegrateEulerPosition(body,dt);
   IntegrateRk2Position(body, dt);
 
-  //  ErrorIf(!body->mPosition.Valid(), "Position vector is invalid.");
-  //  ErrorIf(!body->mOrientation.Valid(), "Orientation matrix is invalid.");
+//  ErrorIf(!body->mPosition.Valid(), "Position vector is invalid.");
+//  ErrorIf(!body->mOrientation.Valid(), "Orientation matrix is invalid.");
 
   body->GenerateIntegrationUpdate();
 }
 
 void Integration::IntegrateEulerPosition(RigidBody* body, real dt)
 {
-  // Set old values
-  // body->mPositionOld = body->mPosition;
+  //Set old values
+  //body->mPositionOld = body->mPosition;
 
-  // Integrate velocity and position
+  //Integrate velocity and position
   body->UpdateCenterMass(body->mVelocity * dt);
 
-  // Integrate orientation
+  //Integrate orientation
   Vec3Ref AngVel = body->mAngularVelocity;
 
   /*Collider* collider = body->GetCollider();
   Mat3 OrientationMat = body->mOrientationMat;
 
   Mat3 angVelMatrix = SkewSymmetric(AngVel);
-  OrientationMat = OrientationMat + Math::Concat(angVelMatrix, OrientationMat) *
-  dt; OrientationMat.Orthonormalize(); body->mOrientationMat = OrientationMat;
+  OrientationMat = OrientationMat + Math::Concat(angVelMatrix, OrientationMat) * dt;
+  OrientationMat.Orthonormalize();
+  body->mOrientationMat = OrientationMat;
   collider->mOrientationMtx = OrientationMat;*/
 
   Quat Orientation = body->GetWorldRotationQuat();
@@ -139,28 +144,28 @@ void Integration::IntegrateEuler(RigidBody* body, real dt)
 
 void Integration::IntegrateVerlet(RigidBody* body, real dt)
 {
+
 }
 
 void Integration::IntegrateRk2(RigidBody* body, real dt)
 {
+
 }
 
 void Integration::IntegrateRk2Velocity(RigidBody* body, real dt)
 {
-  // Set old values
+  //Set old values
   body->mVelocityOld = body->mVelocity;
   body->mAngularVelocityOld = body->mAngularVelocity;
 
-  // Integrate velocity and position
+  //Integrate velocity and position
   body->mVelocity = Math::MultiplyAdd(body->mVelocity, body->mInvMass.Apply(body->mForceAccumulator), dt);
-  // Use superposition rule to split integration into an explicit and implicit
-  // step
+  // Use superposition rule to split integration into an explicit and implicit step
   Vec3 explicitW = body->mInvInertia.Apply(body->mTorqueAccumulator) * dt;
   Vec3 implicitW = SolveGyroscopic(body, dt);
   body->mAngularVelocity += explicitW + implicitW;
 
-  // clamp to max velocity values to avoid bad floating point values (exceptions
-  // in particular)
+  //clamp to max velocity values to avoid bad floating point values (exceptions in particular)
   real maxVel = body->mSpace->mMaxVelocity;
   body->mVelocity = Math::Clamped(body->mVelocity, -maxVel, maxVel);
   body->mAngularVelocity = Math::Clamped(body->mAngularVelocity, -maxVel, maxVel);
@@ -169,8 +174,8 @@ void Integration::IntegrateRk2Velocity(RigidBody* body, real dt)
 void Integration::IntegrateRk2Position(RigidBody* body, real dt)
 {
   Vec3 newVelocity = body->mVelocity;
-  newVelocity = Math::MultiplyAdd(newVelocity, body->mInvMass.Apply(body->mForceAccumulator), dt * real(.5));
-  newVelocity *= dt;
+       newVelocity = Math::MultiplyAdd(newVelocity, body->mInvMass.Apply(body->mForceAccumulator), dt * real(.5));
+       newVelocity *= dt;
   Vec3 newRotation = body->mAngularVelocity;
 
   body->UpdateCenterMass(newVelocity);
@@ -192,7 +197,7 @@ void Integration::IntegrateRk2Position(RigidBody* body, real dt)
 
 Vec3 Integration::VelocityApproximation(Vec3Param startPosition, Vec3Param endPosition, real dt)
 {
-  if (dt == real(0.0))
+  if(dt == real(0.0))
     return Vec3::cZero;
 
   real framerate = real(1.0) / dt;
@@ -201,7 +206,7 @@ Vec3 Integration::VelocityApproximation(Vec3Param startPosition, Vec3Param endPo
 
 Vec3 Integration::AngularVelocityApproximation(QuatParam startRotation, QuatParam endRotation, real dt)
 {
-  if (dt == real(0.0))
+  if(dt == real(0.0))
     return Vec3::cZero;
 
   real framerate = real(1.0) / dt;
@@ -212,7 +217,7 @@ Vec3 Integration::AngularVelocityApproximation(QuatParam startRotation, QuatPara
 
 Vec3 Integration::AngularVelocityApproximation(Mat3Param startRotation, Mat3Param endRotation, real dt)
 {
-  if (dt == real(0.0))
+  if(dt == real(0.0))
     return Vec3::cZero;
 
   real framerate = real(1.0) / dt;
@@ -223,6 +228,6 @@ Vec3 Integration::AngularVelocityApproximation(Mat3Param startRotation, Mat3Para
   return Vec3(skew.m21, skew.m02, skew.m10) * framerate;
 }
 
-} // namespace Physics
+}//namespace Physics
 
-} // namespace Plasma
+}//namespace Plasma

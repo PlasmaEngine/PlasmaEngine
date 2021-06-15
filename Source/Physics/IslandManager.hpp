@@ -1,11 +1,9 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
 {
 
-/// What kind of a constraint solver should be used. A few pre-defined types
-/// meant for comparing performance.
+/// What kind of a constraint solver should be used. A few pre-defined types meant for comparing performance.
 DeclareEnum4(PhysicsSolverType, Basic, Normal, GenericBasic, Threaded);
 /// How should islands be built. Internal for testing (mostly legacy).
 DeclareEnum3(PhysicsIslandType, Composites, Kinematics, ForcedOne);
@@ -17,7 +15,8 @@ namespace Physics
 
 class Island;
 
-/// Builds, solves and debug draws islands.
+
+///Builds, solves and debug draws islands.
 class IslandManager
 {
 public:
@@ -36,21 +35,19 @@ public:
   void RemoveCollider(Collider* collider);
   void Clear();
 
-  /// Returns the Island that Contains the given collider. null if none exists.
+  ///Returns the Island that Contains the given collider. null if none exists.
   Island* GetObjectsIsland(const Collider* collider);
 
-  template <typename Policy>
-  void CreateCompactIslands(Policy policy, ColliderList& colliders);
-  template <typename Policy, typename PreProcessing>
-  void CreateCompactIslands(Policy policy, PreProcessing prePolicy, ColliderList& colliders);
-  template <typename Policy>
-  void CreateSingleIsland(Policy policy, ColliderList& colliders);
+
+  template <typename Policy> void CreateCompactIslands(Policy policy, ColliderList& colliders);
+  template <typename Policy, typename PreProcessing> void CreateCompactIslands(Policy policy, PreProcessing prePolicy, ColliderList& colliders);
+  template <typename Policy> void CreateSingleIsland(Policy policy, ColliderList& colliders);
 
   IConstraintSolver* GetNewSolver();
   Island* CreateNewIsland();
 
   uint mIslandCount;
-  typedef InList<Island, &Island::ManagerLink> IslandList;
+  typedef InList<Island,&Island::ManagerLink> IslandList;
   IslandList mIslands;
   bool mPostProcess;
 
@@ -66,6 +63,6 @@ public:
   IConstraintSolver* mSharedSolver;
 };
 
-} // namespace Physics
+}//namespace Physics
 
-} // namespace Plasma
+}//namespace Plasma

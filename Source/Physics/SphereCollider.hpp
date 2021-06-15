@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -32,6 +31,7 @@ public:
   real GetWorldRadius() const;
 
 private:
+
   static const real mMinAllowedRadius;
   static const real mMaxAllowedRadius;
 
@@ -41,4 +41,4 @@ private:
   real mWorldRadius;
 };
 
-} // namespace Plasma
+}//namespace Plasma

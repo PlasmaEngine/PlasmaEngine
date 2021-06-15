@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -6,15 +5,13 @@ namespace Plasma
 
 /// What kind of events this collision block should out.
 DeclareBitField3(CollisionBlockStates, SendEventsToA, SendEventsToB, SendEventsToSpace);
-/// What kind of filter block this is. These blocks are used to send
-/// out/override collision group events of certain types (collision started,
-/// etc...)
-DeclareEnum4(
-    CollisionFilterBlockType, CollisionStartedBlock, CollisionPersistedBlock, CollisionEndedBlock, PreSolveBlock);
+/// What kind of filter block this is. These blocks are used to send out/override
+/// collision group events of certain types (collision started, etc...)
+DeclareEnum4(CollisionFilterBlockType, CollisionStartedBlock, CollisionPersistedBlock, CollisionEndedBlock, PreSolveBlock);
 
-/// Used to specify which collision group events should be sent out for a
-/// CollisionFilter. Allows customizing who gets events (in the filter pair) and
-/// what event name is sent out.
+//-------------------------------------------------------------------CollisionFilterBlock
+/// Used to specify which collision group events should be sent out for a CollisionFilter.
+/// Allows customizing who gets events (in the filter pair) and what event name is sent out.
 struct CollisionFilterBlock : public SafeId32Object
 {
   LightningDeclareType(CollisionFilterBlock, TypeCopyMode::ReferenceType);
@@ -45,6 +42,7 @@ struct CollisionFilterBlock : public SafeId32Object
   FilterFlags::Enum mBlockType;
 };
 
+//-------------------------------------------------------------------CollisionStartBlock
 /// CollisionFilterBlock for CollisionStarted events.
 struct CollisionStartBlock : public CollisionFilterBlock
 {
@@ -53,6 +51,7 @@ struct CollisionStartBlock : public CollisionFilterBlock
   CollisionStartBlock();
 };
 
+//-------------------------------------------------------------------CollisionPersistedBlock
 /// CollisionFilterBlock for CollisionPersisted events.
 struct CollisionPersistedBlock : public CollisionFilterBlock
 {
@@ -61,6 +60,7 @@ struct CollisionPersistedBlock : public CollisionFilterBlock
   CollisionPersistedBlock();
 };
 
+//-------------------------------------------------------------------CollisionEndBlock
 /// CollisionFilterBlock for CollisionEnded events.
 struct CollisionEndBlock : public CollisionFilterBlock
 {
@@ -69,9 +69,9 @@ struct CollisionEndBlock : public CollisionFilterBlock
   CollisionEndBlock();
 };
 
+//-------------------------------------------------------------------PreSolveBlock
 /// CollisionFilterBlock for sending out an event before collision is solved.
-/// Allows modifying object state before collision responses have been
-/// calculated.
+/// Allows modifying object state before collision responses have been calculated.
 struct PreSolveBlock : public CollisionFilterBlock
 {
   LightningDeclareType(PreSolveBlock, TypeCopyMode::ReferenceType);
@@ -81,4 +81,4 @@ struct PreSolveBlock : public CollisionFilterBlock
 
 typedef SimpleResourceFactory<CollisionFilter, CollisionFilterBlock> CollisionFilterMetaComposition;
 
-} // namespace Plasma
+}//namespace Plasma

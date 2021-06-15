@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -38,13 +37,13 @@ void MassOverride::Serialize(Serializer& stream)
 {
   MetaSerializeProperties(this, stream);
 }
-
+ 
 void MassOverride::Initialize(CogInitializer& initializer)
 {
   // Mark that we've now been serialized so setters can properly update
   mFlags.SetFlag(MassOverrideStates::Serialized);
 
-  if (initializer.Flags & CreationFlags::DynamicallyAdded)
+  if(initializer.Flags & CreationFlags::DynamicallyAdded)
     RecomputeMass();
 }
 
@@ -72,7 +71,7 @@ real MassOverride::GetInverseMass()
 void MassOverride::SetInverseMass(real invMass)
 {
   // Just always mark the inertia and center of mass as being changed for now
-  if (OperationQueue::IsListeningForSideEffects())
+  if(OperationQueue::IsListeningForSideEffects())
   {
     OperationQueue::RegisterSideEffect(this, "LocalInverseInertiaTensor", GetLocalInverseInertiaTensor());
     OperationQueue::RegisterSideEffect(this, "LocalCenterOfMass", GetLocalCenterOfMass());
@@ -80,11 +79,11 @@ void MassOverride::SetInverseMass(real invMass)
 
   // If we auto compute inertia and this is a run-time set (not serialization)
   // then update the inertia as well as the mass.
-  if (GetAutoComputeInertia() && IsSerialized())
+  if(GetAutoComputeInertia() && IsSerialized())
     UpdateMassAndInertia(invMass);
   else
     SetInverseMassInternal(invMass);
-
+  
   QueueUpdate();
 }
 
@@ -96,7 +95,7 @@ void MassOverride::SetInverseMassInternal(real invMass)
 real MassOverride::GetMass()
 {
   real invMass = GetInverseMass();
-  if (invMass != 0)
+  if(invMass != 0)
     invMass = real(1.0) / invMass;
   return invMass;
 }
@@ -104,14 +103,14 @@ real MassOverride::GetMass()
 void MassOverride::SetMass(real mass)
 {
   // Mark all side effects
-  if (OperationQueue::IsListeningForSideEffects())
+  if(OperationQueue::IsListeningForSideEffects())
   {
     OperationQueue::RegisterSideEffect(this, "LocalInverseInertiaTensor", GetLocalInverseInertiaTensor());
     OperationQueue::RegisterSideEffect(this, "LocalCenterOfMass", GetLocalCenterOfMass());
     OperationQueue::RegisterSideEffect(this, "InverseMass", GetInverseMass());
   }
 
-  // Clamp the mass (ensures this isn't plasma)
+  // Clamp the mass (ensures this isn't zero)
   mass = ClampMassTerm(mass);
   real invMass = real(1.0) / mass;
   SetInverseMass(invMass);
@@ -169,7 +168,7 @@ void MassOverride::SetAutoComputeInertia(bool autoCompute)
 void MassOverride::RecomputeMass()
 {
   // Mark all side effects
-  if (OperationQueue::IsListeningForSideEffects())
+  if(OperationQueue::IsListeningForSideEffects())
   {
     OperationQueue::RegisterSideEffect(this, "Mass", GetMass());
     OperationQueue::RegisterSideEffect(this, "LocalInverseInertiaTensor", GetLocalInverseInertiaTensor());
@@ -178,14 +177,11 @@ void MassOverride::RecomputeMass()
   }
 
   RigidBody* body = GetOwner()->has(RigidBody);
-  // Avoid recomputing the mass computing a plasma mass because the object is
-  // static or kinematic
-  if (body->GetStatic() || body->GetKinematic())
+  // Avoid recomputing the mass computing a zero mass because the object is static or kinematic
+  if(body->GetStatic() || body->GetKinematic())
   {
-    DoNotifyWarning("Can't update mass",
-                    "The rigid body is either kinematic or static. "
-                    "Please make the body dynamic in order recompute the "
-                    "current overridden mass.");
+    DoNotifyWarning("Can't update mass", "The rigid body is either kinematic or static. "
+      "Please make the body dynamic in order recompute the current overridden mass.");
     return;
   }
 
@@ -207,12 +203,12 @@ real MassOverride::ClampMassTerm(real value)
 {
   // Check for too large of values, without this we can get #INF which
   // will cause several issues during serialization
-  if (value > 9e10f)
+  if(value > 9e10f)
   {
     DoNotifyWarning("Invalid mass", "Mass is too large");
     value = 9e10;
   }
-  else if (value < 9e-10f)
+  else if(value < 9e-10f)
   {
     DoNotifyWarning("Invalid mass", "Mass is too small");
     value = 1e-10;
@@ -227,7 +223,7 @@ void MassOverride::UpdateMassAndInertia(real invMass)
 
   real oldInvMass = GetInverseMass();
   real ratio = invMass;
-  if (oldInvMass != real(0.0))
+  if(oldInvMass != real(0.0))
     ratio /= oldInvMass;
 
   Mat3 oldInvInertiaTensor = GetLocalInverseInertiaTensor();
@@ -239,11 +235,11 @@ void MassOverride::UpdateMassAndInertia(real invMass)
 void MassOverride::QueueUpdate()
 {
   // Deal with meta serialization being called as opposed to run-time setters
-  if (!IsSerialized())
+  if(!IsSerialized())
     return;
 
   RigidBody* body = GetOwner()->has(RigidBody);
   body->QueueMassUpdate();
 }
 
-} // namespace Plasma
+}//namespace Plasma

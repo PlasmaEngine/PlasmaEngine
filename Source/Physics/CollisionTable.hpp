@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -6,10 +5,10 @@ namespace Plasma
 
 DeclareEnum2(RegisteredGroupInstanceAccessMode, UseDefault, ReturnNull);
 
-/// Defines filter pairs between CollisionGroups. These filters are used to
-/// control if collision detection and resolution happens between Colliders.
-/// Additionally, CollisionFilterBlocks can be defined on filters to send out
-/// extra events.
+//-------------------------------------------------------------------CollisionTable
+/// Defines filter pairs between CollisionGroups. These filters are used to control
+/// if collision detection and resolution happens between Colliders. Additionally,
+/// CollisionFilterBlocks can be defined on filters to send out extra events.
 class CollisionTable : public DataResource
 {
 public:
@@ -34,8 +33,7 @@ public:
 
   void Initialize();
   void SetDefaults();
-  /// Registers all groups in existence. Used to auto-populate newly created
-  /// filters.
+  /// Registers all groups in existence. Used to auto-populate newly created filters.
   void LoadExistingGroups();
 
   void ValidateFilters();
@@ -49,9 +47,8 @@ public:
   void UnRegisterGroup(CollisionGroup* group);
   /// Finds the instance of a collision group. The user can specify what they
   /// want to have happen when the instance is not found via the access mode.
-  CollisionGroupInstance*
-  GetGroupInstance(ResourceId groupId,
-                   RegisteredGroupInstanceAccessMode::Enum accessMode = RegisteredGroupInstanceAccessMode::UseDefault);
+  CollisionGroupInstance* GetGroupInstance(ResourceId groupId,
+    RegisteredGroupInstanceAccessMode::Enum accessMode = RegisteredGroupInstanceAccessMode::UseDefault);
   /// Finds the filter between the pair of collision groups.
   CollisionFilter* FindFilter(CollisionFilter& pair);
   /// Finds the filter between the pair of collision groups.
@@ -72,14 +69,14 @@ public:
   typedef HashSet<CollisionFilter*, CollisionFilterHashPolicy> HashedFilters;
   typedef Array<CollisionFilter*> CollisionFilters;
 
-  /// The filters between the registered groups in a linear format for
-  /// serialization.
+  /// The filters between the registered groups in a linear format for serialization.
   CollisionFilters mCollisionFilters;
   /// Quick lookup of filters by group pairs (the filter itself)
   HashedFilters mHashedFilters;
   bool mAutoRegister;
 };
 
+//-------------------------------------------------------------------CollisionTableManager
 class CollisionTableManager : public ResourceManager
 {
 public:
@@ -92,9 +89,8 @@ public:
   void OnTableCreated(ResourceEvent* event);
   /// Manage a new CollisionGroup being created (to add to all existing tables)
   void OnCollisionGroupAdded(ResourceEvent* event);
-  /// Manage a new CollisionGroup being removed (to remove from all existing
-  /// tables)
+  /// Manage a new CollisionGroup being removed (to remove from all existing tables)
   void OnCollisionGroupRemoved(ResourceEvent* event);
 };
 
-} // namespace Plasma
+}//namespace Plasma

@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -8,7 +7,7 @@ LightningDefineType(WindEffect, builder, type)
   PlasmaBindComponent();
   PlasmaBindSetup(SetupMode::DefaultSerialization);
   PlasmaBindDocumented();
-
+  
   LightningBindMemberProperty(mLocalSpaceDirection)->PlasmaSerialize(true);
   LightningBindGetterSetterProperty(WindSpeed)->PlasmaSerialize(real(10));
   LightningBindGetterSetterProperty(WindDirection)->PlasmaSerialize(Vec3(1, 0, 0));
@@ -28,7 +27,7 @@ void WindEffect::Serialize(Serializer& stream)
 
 void WindEffect::DebugDraw()
 {
-  if (!GetDebugDrawEffect())
+  if(!GetDebugDrawEffect())
     return;
 
   PreCalculate(0);
@@ -39,7 +38,7 @@ void WindEffect::DebugDraw()
 
 void WindEffect::PreCalculate(real dt)
 {
-  if (!GetActive())
+  if(!GetActive())
     return;
 
   mWorldWindDirection = GetWorldWindDirection();
@@ -47,15 +46,15 @@ void WindEffect::PreCalculate(real dt)
 
 void WindEffect::ApplyEffect(RigidBody* obj, real dt)
 {
-  if (!GetActive())
+  if(!GetActive())
     return;
 
-  if (obj->GetKinematic())
+  if(obj->GetKinematic())
     return;
 
   // Compute a wind force for each collider on this rigid body
   RigidBody::CompositeColliderList::range colliders = obj->GetColliders();
-  for (; !colliders.Empty(); colliders.PopFront())
+  for(; !colliders.Empty(); colliders.PopFront())
   {
     Collider& collider = colliders.Front();
     ApplyEffect(collider, obj, dt);
@@ -64,7 +63,7 @@ void WindEffect::ApplyEffect(RigidBody* obj, real dt)
 
 void WindEffect::ApplyEffect(SpringSystem* obj, real dt)
 {
-  if (!GetActive())
+  if(!GetActive())
     return;
 
   // Wind force is based upon v^2
@@ -74,15 +73,14 @@ void WindEffect::ApplyEffect(SpringSystem* obj, real dt)
   real windSpeedSq = windSpeed * windSpeed;
 
   // Apply the wind force to each face in the spring system
-  for (size_t i = 0; i < obj->mFaces.Size(); ++i)
+  for(size_t i = 0; i < obj->mFaces.Size(); ++i)
   {
     SpringSystem::Face& face = obj->mFaces[i];
     Vec3 p0 = obj->mPointMasses[face.mIndex0].mPosition;
     Vec3 p1 = obj->mPointMasses[face.mIndex1].mPosition;
     Vec3 p2 = obj->mPointMasses[face.mIndex2].mPosition;
 
-    // The cross product gives a vector who's length is twice the area of the
-    // triangle
+    // The cross product gives a vector who's length is twice the area of the triangle
     Vec3 normal = Math::Cross(p0 - p1, p2 - p1);
     real area = normal.AttemptNormalize() * real(0.5f);
 
@@ -112,11 +110,11 @@ void WindEffect::ApplyEffect(Collider& collider, RigidBody* obj, real dt)
   real forceZ = Math::Abs(Math::Dot(mWorldWindDirection, basisZ)) * scale.x * scale.y;
 
   // Make sure each basis vector is in the same hemisphere as the wind direction
-  if (Math::Dot(mWorldWindDirection, basisX) < real(0))
+  if(Math::Dot(mWorldWindDirection, basisX) < real(0))
     basisX *= real(-1);
-  if (Math::Dot(mWorldWindDirection, basisY) < real(0))
+  if(Math::Dot(mWorldWindDirection, basisY) < real(0))
     basisY *= real(-1);
-  if (Math::Dot(mWorldWindDirection, basisZ) < real(0))
+  if(Math::Dot(mWorldWindDirection, basisZ) < real(0))
     basisZ *= real(-1);
 
   Vec3 force = mWorldWindDirection;
@@ -156,7 +154,7 @@ void WindEffect::SetWindDirection(Vec3Param direction)
 Vec3 WindEffect::GetWorldWindDirection() const
 {
   Vec3 worldWindDirection = mWindDirection;
-  if (mLocalSpaceDirection)
+  if(mLocalSpaceDirection)
     worldWindDirection = TransformLocalDirectionToWorld(worldWindDirection);
   // Always re-normalize the world axis
   return worldWindDirection.AttemptNormalized();
@@ -167,4 +165,4 @@ Vec3 WindEffect::GetWindVelocity()
   return mWorldWindDirection * mWindSpeed;
 }
 
-} // namespace Plasma
+}//namespace Plasma

@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -40,18 +39,18 @@ LightningDefineEnum(SpringDebugDrawMode);
 LightningDefineEnum(SpringDebugDrawType);
 LightningDefineEnum(SpringSortOrder);
 
-// Bind the joint types special because they're generated using the #define
-// #include trick
+// Bind the joint types special because they're generated using the #define #include trick
 LightningDefineExternalBaseType(JointTypes::Enum, TypeCopyMode::ValueType, builder, type)
 {
-  LightningFullBindEnum(builder, type, SpecialType::Enumeration);
+  LightningFullBindEnum(builder, type, SpecialType::Enumeration); 
   // Add all of the joint types
-  for (int i = 0; i < JointTypes::Size; ++i)
+  for(int i = 0; i < JointTypes::Size; ++i)
   {
     LightningFullBindEnumValue(builder, type, i, JointTypes::Names[i]);
   }
 }
 
+//**************************************************************************************************
 LightningDefineStaticLibrary(PhysicsLibrary)
 {
   builder.CreatableInScriptDefault = false;
@@ -89,9 +88,6 @@ LightningDefineStaticLibrary(PhysicsLibrary)
   LightningInitializeEnum(SpringDebugDrawType);
   LightningInitializeEnum(SpringSortOrder);
   LightningInitializeEnum(JointTypes);
-  LightningInitializeEnum(SpringDebugDrawMode);
-  LightningInitializeEnum(SpringDebugDrawType);
-  LightningInitializeEnum(SpringSortOrder);
 
   // Meta Components
   LightningInitializeType(CollisionFilterMetaComposition);
@@ -106,12 +102,10 @@ LightningDefineStaticLibrary(PhysicsLibrary)
   LightningInitializeType(CastFilterEvent);
   LightningInitializeType(PreSolveEvent);
 
+
   LightningInitializeType(PhysicsEngine);
   LightningInitializeType(PhysicsSpace);
   LightningInitializeType(RigidBody);
-  LightningInitializeType(SpringSystem);
-  LightningInitializeType(DecorativeCloth);
-  LightningInitializeType(DecorativeRope);
   LightningInitializeType(Region);
   LightningInitializeType(MassOverride);
 
@@ -156,10 +150,10 @@ LightningDefineStaticLibrary(PhysicsLibrary)
   LightningInitializeType(CustomJoint);
   LightningInitializeType(ConstraintConfigBlock);
   // Joints and JointBlocks
-#define JointType(jointType)                                                                                           \
-  LightningInitializeType(jointType);                                                                                      \
+#define JointType(jointType)              \
+  LightningInitializeType(jointType);         \
   LightningInitializeType(jointType##Block);
-#include "JointList.hpp"
+#include "Physics/Joints/JointList.hpp"
 #undef JointType
   LightningInitializeType(ContactBlock);
 
@@ -190,7 +184,7 @@ LightningDefineStaticLibrary(PhysicsLibrary)
   LightningInitializeRangeAs(MultiConvexMeshVertexData::RangeType, "MultiConvexMeshVertexRange");
   LightningInitializeRangeAs(MultiConvexMeshIndexData::RangeType, "MultiConvexMeshIndexRange");
   LightningInitializeRangeAs(MultiConvexMeshSubMeshData::RangeType, "MultiConvexMeshSubMeshRange");
-
+  
   // Casting
   LightningInitializeType(BaseCastFilter);
   LightningInitializeType(CastFilter);
@@ -212,26 +206,25 @@ LightningDefineStaticLibrary(PhysicsLibrary)
   LightningInitializeType(ContactGraphEdge);
   LightningInitializeType(JointGraphEdge);
 
-  // Not ready for consumption yet, but I want to test it with dev config
-  // METAREFACTOR they should always be initialized, but hidden with an
-  // attribute
-  // LightningInitializeType(SpringSystem);
-  // LightningInitializeType(DecorativeCloth);
-  // LightningInitializeType(DecorativeRope);
-  // LightningInitializeType(GjkDebug);
-  // LightningInitializeType(MeshDebug);
-  // LightningInitializeType(TimeOfImpactDebug);
-  // LightningInitializeType(ColliderInspector);
+LightningInitializeType(SpringSystem);
+LightningInitializeType(DecorativeCloth);
+LightningInitializeType(DecorativeRope);
+LightningInitializeType(GjkDebug);
+LightningInitializeType(MeshDebug);
+LightningInitializeType(TimeOfImpactDebug);
+LightningInitializeType(ColliderInspector);
+  
 
   EngineLibraryExtensions::AddNativeExtensions(builder);
 }
 
+//**************************************************************************************************
 void PhysicsLibrary::Initialize()
 {
   BuildStaticLibrary();
   MetaDatabase::GetInstance()->AddNativeLibrary(GetLibrary());
 
-  // Create the material manager.
+  //Create the material manager.
   InitializeResourceManager(PhysicsMaterialManager);
   InitializeResourceManager(PhysicsSolverConfigManager);
   InitializeResourceManager(PhysicsMeshManager);
@@ -241,9 +234,10 @@ void PhysicsLibrary::Initialize()
   InitializeResourceManager(MultiConvexMeshManager);
 }
 
+//**************************************************************************************************
 void PhysicsLibrary::Shutdown()
 {
   GetLibrary()->ClearComponents();
 }
 
-} // namespace Plasma
+}//namespace Plasma

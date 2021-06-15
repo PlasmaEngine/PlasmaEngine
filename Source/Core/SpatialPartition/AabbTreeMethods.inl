@@ -59,7 +59,7 @@ template <typename NodeType>
 Aabb CalculateAabbNodes(Array<NodeType*>& leafNodes)
 {
   Aabb total;
-  total.Plasma();
+  total.Zero();
 
   for (uint i = 0; i < leafNodes.Size(); ++i)
     total.Combine(leafNodes[i]->mAabb);
@@ -95,8 +95,8 @@ uint MinimizeVolumeSumNodes(Array<NodeType*>& leafNodes)
   {
     // Holds the current volume of each side.
     Aabb leftAabb, rightAabb;
-    leftAabb.Plasma();
-    rightAabb.Plasma();
+    leftAabb.Zero();
+    rightAabb.Zero();
 
     // determine which axis to sort on
     if (currAxis == 1)
@@ -174,8 +174,8 @@ uint MinimizeSurfaceAreaSumNodes(Array<NodeType*>& leafNodes)
   {
     // Holds the current volume of each side.
     Aabb leftAabb, rightAabb;
-    leftAabb.Plasma();
-    rightAabb.Plasma();
+    leftAabb.Zero();
+    rightAabb.Zero();
 
     // determine which axis to sort on
     if (currAxis == 1)
@@ -289,7 +289,7 @@ template <typename ObjectType>
 Aabb CalculateAabb(Array<ObjectType>& proxies)
 {
   Aabb total;
-  total.Plasma();
+  total.Zero();
 
   for (uint i = 0; i < proxies.Size(); ++i)
     total = total.Combined(proxies[i].mAabb);
@@ -343,8 +343,8 @@ uint MinimizeVolumeSum(Array<ObjectType>& proxies)
   {
     // Holds the current volume of each side.
     Aabb leftAabb, rightAabb;
-    leftAabb.Plasma();
-    rightAabb.Plasma();
+    leftAabb.Zero();
+    rightAabb.Zero();
 
     // determine which axis to sort on
     if (currAxis == 1)
@@ -422,8 +422,8 @@ uint MinimizeSurfaceAreaSum(Array<ObjectType>& proxies)
   {
     // Holds the current volume of each side.
     Aabb leftAabb, rightAabb;
-    leftAabb.Plasma();
-    rightAabb.Plasma();
+    leftAabb.Zero();
+    rightAabb.Zero();
 
     // determine which axis to sort on
     if (currAxis == 1)

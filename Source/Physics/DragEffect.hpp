@@ -1,13 +1,12 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
 {
 
-/// Applies drag or damping forces to slow down an object's linear and angular
-/// velocity. Drag is computed as a simple linear approximation of the drag
-/// force. Damping is a linear approximation of a drag acceleration. This means
-/// that damping affects all objects the same (mass independent).
+/// Applies drag or damping forces to slow down an object's linear and angular velocity.
+/// Drag is computed as a simple linear approximation of the drag force. Damping is a linear
+/// approximation of a drag acceleration. This means that damping affects all
+/// objects the same (mass independent).
 class DragEffect : public PhysicsEffect
 {
 public:
@@ -21,15 +20,15 @@ public:
   // Physics Effect Interface
   void ApplyEffect(RigidBody* obj, real dt) override;
 
-  // Properties
+  //Properties
 
-  /// Linear damping coefficient for applying a linear drag acceleration (accel
-  /// = -bv). Note: this affects objects the same regardless of mass.
+  /// Linear damping coefficient for applying a linear drag acceleration (accel = -bv).
+  /// Note: this affects objects the same regardless of mass.
   real GetLinearDamping() const;
   void SetLinearDamping(real linearDamping);
 
-  /// Angular damping coefficient for applying an angular drag acceleration
-  /// (accel = -kw). Note: this affects objects the same regardless of mass.
+  /// Angular damping coefficient for applying an angular drag acceleration (accel = -kw).
+  /// Note: this affects objects the same regardless of mass.
   real GetAngularDamping() const;
   void SetAngularDamping(real angularDamping);
 
@@ -42,10 +41,11 @@ public:
   void SetAngularDrag(real angularDrag);
 
 private:
+
   real mLinearDamping;
   real mAngularDamping;
   real mLinearDrag;
   real mAngularDrag;
 };
 
-} // namespace Plasma
+}//namespace Plasma

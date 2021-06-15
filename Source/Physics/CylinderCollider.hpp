@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -22,9 +21,9 @@ public:
   void ComputeWorldBoundingSphereInternal() override;
   real ComputeWorldVolumeInternal() override;
   void ComputeLocalInverseInertiaTensor(real mass, Mat3Ref localInvInertia) override;
-
+  
   void Support(Vec3Param direction, Vec3Ptr support) const override;
-
+  
   /// The local space radius of the cylinder.
   real GetRadius() const;
   void SetRadius(real radius);
@@ -35,7 +34,7 @@ public:
   /// change whether the cylinder's height is along the x, y, or z axis.
   AxisDirection::Enum GetDirection() const;
   void SetDirection(AxisDirection::Enum direction);
-
+  
   /// The index of both radius axes.
   void GetRadiiIndices(uint& rIndex0, uint& rIndex1) const;
   /// The index of the height axis.
@@ -61,4 +60,4 @@ private:
   AxisDirection::Enum mDirection;
 };
 
-} // namespace Plasma
+}//namespace Plasma

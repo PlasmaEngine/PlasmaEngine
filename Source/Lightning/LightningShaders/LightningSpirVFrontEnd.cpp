@@ -3258,8 +3258,8 @@ LightningShaderIROp* LightningSpirVFrontEnd::GetIntegerConstant(int value, Light
   LightningShaderIROp* LightningSpirVFrontEnd::GetIntegerConstant(u32 value, LightningSpirVFrontEndContext* context)
 {
   int intValue = static_cast<int>(value);
-  Lightning::BoundType* zilchIntType = LightningTypeId(int);
-  LightningShaderIRType* shaderIntType = mLibrary->FindType(zilchIntType);
+  Lightning::BoundType* lightningIntType = LightningTypeId(int);
+  LightningShaderIRType* shaderIntType = mLibrary->FindType(lightningIntType);
   LightningShaderIROp* constantIntOp = GetConstant(shaderIntType, intValue, context);
   return constantIntOp;
 }

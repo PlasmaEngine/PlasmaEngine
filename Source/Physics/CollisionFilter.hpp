@@ -1,18 +1,15 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
 {
 
-DeclareBitField6(
-    FilterFlags, SkipResolution, SkipDetectingCollision, StartEvent, EndEvent, PersistedEvent, PreSolveEvent);
+DeclareBitField6(FilterFlags, SkipResolution, SkipDetectingCollision,
+                 StartEvent, EndEvent, PersistedEvent, PreSolveEvent);
 
-/// Controls what parts of collision detection/resolution are run for a
-/// CollisionGroup pair. <param name="SkipDetection">Don't run collision
-/// detection. No events will be sent.</param> <param
-/// name="SkipResolution">Don't run collision resolution. Detection will still
-/// be run so events might be sent out.</param> <param name="Resolve">Run both
-/// collision detection and resolution as normal.</param>
+/// Controls what parts of collision detection/resolution are run for a CollisionGroup pair.
+/// <param name="SkipDetection">Don't run collision detection. No events will be sent.</param>
+/// <param name="SkipResolution">Don't run collision resolution. Detection will still be run so events might be sent out.</param>
+/// <param name="Resolve">Run both collision detection and resolution as normal.</param>
 DeclareEnum3(CollisionFilterCollisionFlags, SkipDetection, SkipResolution, Resolve);
 
 /// Returns a display string for the filter
@@ -25,9 +22,7 @@ struct CollisionFilter : public SafeId32EventObject
 {
   LightningDeclareType(CollisionFilter, TypeCopyMode::ReferenceType);
 
-  CollisionFilter()
-  {
-  }
+  CollisionFilter() {}
   CollisionFilter(ResourceId first, ResourceId second);
   ~CollisionFilter();
 
@@ -67,7 +62,7 @@ struct CollisionFilter : public SafeId32EventObject
   size_t Hash() const;
   bool operator==(const CollisionFilter& rhs) const;
 
-  typedef Pair<ResourceId, ResourceId> ResourcePair;
+  typedef Pair<ResourceId,ResourceId> ResourcePair;
   /// The pair use for hashing.
   ResourcePair mPair;
   /// The flags for determining different behavior.
@@ -79,8 +74,7 @@ struct CollisionFilter : public SafeId32EventObject
   /// The CollisionFilterBlocks that we have. These are used to choose which
   /// collision group events we send. Note: this list is not sorted currently
   /// so a linear search is needed to find an item. However, mFilterFlags will
-  /// have to corresponding bit set if the block type exists so a quick
-  /// rejection can be done.
+  /// have to corresponding bit set if the block type exists so a quick rejection can be done.
   BlockArray mBlocks;
 
 public:
@@ -88,7 +82,7 @@ public:
 };
 
 // Hash policy for a pointer to collision filter
-template <>
+template<>
 struct HashPolicy<CollisionFilter*>
 {
   typedef CollisionFilter* type;
@@ -99,10 +93,10 @@ struct HashPolicy<CollisionFilter*>
 
   inline bool Equal(const type& left, const type& right) const
   {
-    return (*left) == (*right);
+    return (*left) == (*right); 
   }
 };
 
 typedef struct HashPolicy<CollisionFilter*> CollisionFilterHashPolicy;
 
-} // namespace Plasma
+}//namespace Plasma

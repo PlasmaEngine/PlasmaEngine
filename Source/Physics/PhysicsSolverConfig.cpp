@@ -1,9 +1,9 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
 {
 
+//-------------------------------------------------------------------ConstraintConfigBlock
 LightningDefineType(ConstraintConfigBlock, builder, type)
 {
   PlasmaBindDocumented();
@@ -39,7 +39,7 @@ real ConstraintConfigBlock::GetSlop()
 
 void ConstraintConfigBlock::SetSlop(real slop)
 {
-  if (slop < 0)
+  if(slop < 0)
   {
     DoNotifyWarning("Invalid value", "The slop value cannot be negative. Clamping value to be positive.");
     slop = 0;
@@ -56,20 +56,15 @@ void ConstraintConfigBlock::SetLinearBaumgarte(real linearBaumgarte)
 {
   real minValue = 0;
   real maxValue = 100;
-  if (linearBaumgarte < minValue)
+  if(linearBaumgarte < minValue)
   {
-    String msg =
-        String::Format("LinearBaumgarte must be positive. Clamping to the range of [%g, %g]", minValue, maxValue);
+    String msg = String::Format("LinearBaumgarte must be positive. Clamping to the range of [%g, %g]", minValue, maxValue);
     DoNotifyWarning("Invalid value", msg);
     linearBaumgarte = minValue;
   }
-  else if (linearBaumgarte > maxValue)
+  else if(linearBaumgarte > maxValue)
   {
-    String msg = String::Format("To prevent instabilities, LinearBaumgarte must be "
-                                "below %g. Clamping to the range of [%g, %g]",
-                                maxValue,
-                                minValue,
-                                maxValue);
+    String msg = String::Format("To prevent instabilities, LinearBaumgarte must be below %g. Clamping to the range of [%g, %g]", maxValue, minValue, maxValue);
     DoNotifyWarning("Invalid value", msg);
     linearBaumgarte = maxValue;
   }
@@ -85,20 +80,15 @@ void ConstraintConfigBlock::SetAngularBaumgarte(real angularBaumgarte)
 {
   real minValue = 0;
   real maxValue = 100;
-  if (angularBaumgarte < minValue)
+  if(angularBaumgarte < minValue)
   {
-    String msg =
-        String::Format("AngularBaumgarte must be positive. Clamping to the range of [%g, %g]", minValue, maxValue);
+    String msg = String::Format("AngularBaumgarte must be positive. Clamping to the range of [%g, %g]", minValue, maxValue);
     DoNotifyWarning("Invalid value", msg);
     angularBaumgarte = minValue;
   }
-  else if (angularBaumgarte > maxValue)
+  else if(angularBaumgarte > maxValue)
   {
-    String msg = String::Format("To prevent instabilities, AngularBaumgarte must be "
-                                "below %g. Clamping to the range of [%g, %g]",
-                                maxValue,
-                                minValue,
-                                maxValue);
+    String msg = String::Format("To prevent instabilities, AngularBaumgarte must be below %g. Clamping to the range of [%g, %g]", maxValue, minValue, maxValue);
     DoNotifyWarning("Invalid value", msg);
     angularBaumgarte = maxValue;
   }
@@ -112,7 +102,7 @@ real ConstraintConfigBlock::GetLinearErrorCorrection()
 
 void ConstraintConfigBlock::SetLinearErrorCorrection(real maxError)
 {
-  if (maxError < 0)
+  if(maxError < 0)
   {
     DoNotifyWarning("Invalid Value", "LinearErrorCorrection must be positive. Clamping value to 0.");
     maxError = 0;
@@ -128,7 +118,7 @@ real ConstraintConfigBlock::GetAngularErrorCorrection()
 
 void ConstraintConfigBlock::SetAngularErrorCorrection(real maxError)
 {
-  if (maxError < 0)
+  if(maxError < 0)
   {
     DoNotifyWarning("Invalid Value", "AngularErrorCorrection must be positive. Clamping value to 0.");
     maxError = 0;
@@ -145,20 +135,16 @@ ConstraintPositionCorrection::Enum ConstraintConfigBlock::GetPositionCorrectionT
 void ConstraintConfigBlock::SetPositionCorrectionType(ConstraintPositionCorrection::Enum correctionType)
 {
   // Deal with special joint types that can't be position corrected
-  if (mJointId == JointEnums::RelativeVelocityJointType)
+  if(mJointId == JointEnums::RelativeVelocityJointType)
   {
-    DoNotifyWarning("Cannot change correction type",
-                    "RelativeVelocityJoint is a velocity constraint hence it "
-                    "must use baumgarte correction");
+    DoNotifyWarning("Cannot change correction type", "RelativeVelocityJoint is a velocity constraint hence it must use baumgarte correction");
     return;
   }
 
   // Validate a correct enum value
-  if (correctionType >= ConstraintPositionCorrection::Size)
+  if(correctionType >= ConstraintPositionCorrection::Size)
   {
-    DoNotifyException("Invalid value",
-                      "CorrectionType must be set to a valid value from the "
-                      "ConstraintPositionCorrection enum");
+    DoNotifyException("Invalid value", "CorrectionType must be set to a valid value from the ConstraintPositionCorrection enum");
     return;
   }
   mPositionCorrectionType = correctionType;
@@ -175,87 +161,88 @@ void ConstraintConfigBlock::ResetDefaultValues()
   mPositionCorrectionType = ConstraintPositionCorrection::Inherit;
 
   // Set joint specific values
-  switch (mJointId)
+  switch(mJointId)
   {
-  case JointEnums::PositionJointType:
-  {
-    mLinearBaumgarte = real(15.3f);
-    break;
-  }
-  case JointEnums::PrismaticJointType:
-  {
-    mLinearBaumgarte = real(1.0f);
-    mSlop = real(0.1f);
-    break;
-  }
-  case JointEnums::RelativeVelocityJointType:
-  {
-    mPositionCorrectionType = ConstraintPositionCorrection::Baumgarte;
-    mLinearBaumgarte = real(1.0f);
-    mSlop = real(0);
-    break;
-  }
-  case JointEnums::StickJointType:
-  {
-    mLinearBaumgarte = real(0.4f);
-    break;
-  }
-  case JointEnums::ManipulatorJointType:
-  {
-    mPositionCorrectionType = ConstraintPositionCorrection::Baumgarte;
-    break;
-  }
-  case JointEnums::PhyGunJointType:
-  {
-    mPositionCorrectionType = ConstraintPositionCorrection::Baumgarte;
-    break;
-  }
-  case JointEnums::RevoluteJointType:
-  {
-    mLinearBaumgarte = real(15.3f);
-    mAngularBaumgarte = real(0.8f);
-    break;
-  }
-  case JointEnums::FixedAngleJointType:
-  {
-    mSlop = real(0);
-    break;
-  }
-  case JointEnums::UprightJointType:
-  {
-    mSlop = real(0);
-    break;
-  }
-  case JointEnums::WeldJointType:
-  {
-    mSlop = real(0);
-    break;
-  }
-  case JointEnums::WheelJointType:
-  {
-    mSlop = real(0);
-    break;
-  }
-  case JointEnums::WheelJoint2dType:
-  {
-    mSlop = real(0);
-    break;
-  }
-  case JointEnums::LinearAxisJointType:
-  {
-    mSlop = real(0);
-    break;
-  }
-  // Currently this denotes a contact constraint
-  case JointEnums::JointCount:
-  {
-    mSlop = real(.02f);
-    mLinearBaumgarte = real(2.0f);
-    break;
-  }
+    case JointEnums::PositionJointType:
+    {
+      mLinearBaumgarte = real(15.3f);
+      break;
+    }
+    case JointEnums::PrismaticJointType:
+    {
+      mLinearBaumgarte = real(1.0f);
+      mSlop = real(0.1f);
+      break;
+    }
+    case JointEnums::RelativeVelocityJointType:
+    {
+      mPositionCorrectionType = ConstraintPositionCorrection::Baumgarte;
+      mLinearBaumgarte = real(1.0f);
+      mSlop = real(0);
+      break;
+    }
+    case JointEnums::StickJointType:
+    {
+      mLinearBaumgarte = real(0.4f);
+      break;
+    }
+    case JointEnums::ManipulatorJointType:
+    {
+      mPositionCorrectionType = ConstraintPositionCorrection::Baumgarte;
+      break;
+    }
+    case JointEnums::PhyGunJointType:
+    {
+      mPositionCorrectionType = ConstraintPositionCorrection::Baumgarte;
+      break;
+    }
+    case JointEnums::RevoluteJointType:
+    {
+      mLinearBaumgarte = real(15.3f);
+      mAngularBaumgarte = real(0.8f);
+      break;
+    }
+    case JointEnums::FixedAngleJointType:
+    {
+      mSlop = real(0);
+      break;
+    }
+    case JointEnums::UprightJointType:
+    {
+      mSlop = real(0);
+      break;
+    }
+    case JointEnums::WeldJointType:
+    {
+      mSlop = real(0);
+      break;
+    }
+    case JointEnums::WheelJointType:
+    {
+      mSlop = real(0);
+      break;
+    }
+    case JointEnums::WheelJoint2dType:
+    {
+      mSlop = real(0);
+      break;
+    }
+    case JointEnums::LinearAxisJointType:
+    {
+      mSlop = real(0);
+      break;
+    }
+    // Currently this denotes a contact constraint
+    case JointEnums::JointCount:
+    {
+      mSlop = real(.02f);
+      mLinearBaumgarte = real(2.0f);
+      break;
+    }
   }
 }
 
+//-------------------------------------------------------------------ContactBlock
 LightningDefineType(ContactBlock, builder, type)
 {
   PlasmaBindComponent();
@@ -264,47 +251,57 @@ LightningDefineType(ContactBlock, builder, type)
   PlasmaBindSetup(SetupMode::DefaultSerialization);
 }
 
-// joint block type
-#define JointType(jointType)                                                                                           \
-  LightningDefineType(jointType##Block, builder, type)                                                                     \
-  {                                                                                                                    \
-    PlasmaBindComponent();                                                                                               \
-    type->HasOrAdd<::Plasma::CogComponentMeta>(type);                                                                    \
-    type->Add(new MetaSerialization());                                                                                \
-    PlasmaBindSetup(SetupMode::DefaultSerialization);                                                                    \
+//-------------------------------------------------------------------Define each joint block type
+#define JointType(jointType)                        \
+  LightningDefineType(jointType##Block, builder, type)  \
+  {                                                 \
+    PlasmaBindComponent();                            \
+    type->HasOrAdd<::Plasma::CogComponentMeta>(type);    \
+    type->Add(new MetaSerialization());             \
+    PlasmaBindSetup(SetupMode::DefaultSerialization); \
   }
-#include "JointList.hpp"
+#include "Physics/Joints/JointList.hpp"
 #undef JointType
 
-// Config Factory
+//-------------------------------------------------------------------Solver Config Factory
 LightningDefineTemplateType(PhysicsSolverConfigMetaComposition, builder, type)
 {
 }
 
+//-------------------------------------------------------------------PhysicsSolverConfig
 LightningDefineType(PhysicsSolverConfig, builder, type)
 {
   PlasmaBindDocumented();
   LightningBindDefaultDestructor();
   type->Add(new PhysicsSolverConfigMetaComposition(true));
-
+  
   LightningBindGetterSetterProperty(SolverIterationCount);
   LightningBindGetterSetterProperty(PositionIterationCount);
   LightningBindGetterSetterProperty(VelocityRestitutionThreshold);
 
+  //bool inDevConfig = PL::gEngine->GetConfigCog()->has(Plasma::DeveloperConfig) != nullptr;
   // Hide for now so these won't confuse anyone
   // These properties are only for showing people how constraints handle
   // when you don't implement important features
-   LightningBindFieldProperty(mWarmStart);
-   LightningBindFieldProperty(mCacheContacts);
-   LightningBindGetterSetterProperty(SubCorrectionType);
-   LightningBindGetterSetterProperty(SolverType);
+  //if (inDevConfig)
+  //{
+  //  LightningBindFieldProperty(mWarmStart);
+  //  LightningBindFieldProperty(mCacheContacts);
+  //  LightningBindGetterSetterProperty(SubCorrectionType);
+  //}
+  //else
+  //{
+  //  LightningBindField(mWarmStart);
+  //  LightningBindField(mCacheContacts);
+  //  LightningBindGetterSetter(SubCorrectionType);
+  //}
+  //LightningBindGetterSetterProperty(SolverType);
 
   LightningBindGetterSetterProperty(PositionCorrectionType);
 }
 
 PhysicsSolverConfig::PhysicsSolverConfig()
 {
-  mResourceIconName = cPhysicsSmallIcon;
   mTangentType = PhysicsContactTangentTypes::OrthonormalTangents;
   mPositionCorrectionType = PhysicsSolverPositionCorrection::Baumgarte;
   mSolverType = PhysicsSolverType::Basic;
@@ -325,8 +322,7 @@ void PhysicsSolverConfig::Serialize(Serializer& stream)
   SerializeNameDefault(mCacheContacts, true);
 
   SerializeEnumNameDefault(PhysicsContactTangentTypes, mTangentType, PhysicsContactTangentTypes::OrthonormalTangents);
-  SerializeEnumNameDefault(
-      PhysicsSolverPositionCorrection, mPositionCorrectionType, PhysicsSolverPositionCorrection::PostStabilization);
+  SerializeEnumNameDefault(PhysicsSolverPositionCorrection, mPositionCorrectionType, PhysicsSolverPositionCorrection::PostStabilization);
   SerializeEnumNameDefault(PhysicsSolverType, mSolverType, PhysicsSolverType::Basic);
   SerializeEnumNameDefault(PhysicsSolverSubType, mSubType, PhysicsSolverSubType::BlockSolving);
 
@@ -335,8 +331,7 @@ void PhysicsSolverConfig::Serialize(Serializer& stream)
   PhysicsSolverConfigMetaComposition* factory = selfBoundType->Has<PhysicsSolverConfigMetaComposition>();
   factory->SerializeArray(stream, mBlocks);
 
-  // Now that we've serialized all blocks we can cache the necessary run-time
-  // values
+  // Now that we've serialized all blocks we can cache the necessary run-time values
   RebuildConstraintBlockValues();
 }
 
@@ -360,7 +355,7 @@ void PhysicsSolverConfig::SetSolverIterationCount(uint count)
   bool wasClamped;
   mSolverIterationCount = Math::DebugClamp(count, 0u, 100u, wasClamped);
 
-  if (wasClamped)
+  if(wasClamped)
     DoNotifyWarning("Invalid Value", "Iteration count must be in the range [0, 100]");
 }
 
@@ -374,7 +369,7 @@ void PhysicsSolverConfig::SetPositionIterationCount(uint count)
   bool wasClamped;
   mPositionIterationCount = Math::DebugClamp(count, 0u, 100u, wasClamped);
 
-  if (wasClamped)
+  if(wasClamped)
     DoNotifyWarning("Invalid Value", "Iteration count must be in the range [0, 100]");
 }
 
@@ -385,7 +380,7 @@ real PhysicsSolverConfig::GetVelocityRestitutionThreshold()
 
 void PhysicsSolverConfig::SetVelocityRestitutionThreshold(real threshold)
 {
-  if (threshold < 0)
+  if(threshold < 0)
   {
     DoNotifyWarning("Invalid Value", "VelocityResolutionThreshold must be positive");
     threshold = 0;
@@ -401,7 +396,7 @@ PhysicsSolverType::Enum PhysicsSolverConfig::GetSolverType() const
 
 void PhysicsSolverConfig::SetSolverType(PhysicsSolverType::Enum solverType)
 {
-  if ((u32)solverType >= (u32)PhysicsSolverType::Size)
+  if((u32)solverType >= (u32)PhysicsSolverType::Size)
   {
     DoNotifyWarning("Invalid value", "SolverType must be set to a valid value from the SolverType enum");
     return;
@@ -416,11 +411,9 @@ PhysicsSolverPositionCorrection::Enum PhysicsSolverConfig::GetPositionCorrection
 
 void PhysicsSolverConfig::SetPositionCorrectionType(PhysicsSolverPositionCorrection::Enum correctionType)
 {
-  if ((u32)correctionType >= (u32)PhysicsSolverPositionCorrection::Size)
+  if((u32)correctionType >= (u32)PhysicsSolverPositionCorrection::Size)
   {
-    DoNotifyWarning("Invalid value",
-                    "PositionCorrectionType must be set to a valid value from "
-                    "the PositionCorrection enum");
+    DoNotifyWarning("Invalid value", "PositionCorrectionType must be set to a valid value from the PositionCorrection enum");
     return;
   }
   mPositionCorrectionType = correctionType;
@@ -445,21 +438,20 @@ void PhysicsSolverConfig::RebuildConstraintBlockValues()
 {
   // Reset all cached joint/contact blocks to their default values
   mJointBlocks.Resize(JointEnums::JointCount);
-  for (size_t i = 0; i < mJointBlocks.Size(); ++i)
+  for(size_t i = 0; i < mJointBlocks.Size(); ++i)
   {
-    mJointBlocks[i].mJointId = static_cast<uint>(i);
+    mJointBlocks[i].mJointId = (uint)i;
     mJointBlocks[i].ResetDefaultValues();
   }
   mContactBlock.mJointId = JointEnums::JointCount;
   mContactBlock.ResetDefaultValues();
 
-  // For each user-defined block that we have, copy the block's values over the
-  // cached block's values. We do this because we need configuration blocks for
-  // all constraint types even if the user doesn't define them (and some have
-  // different default values).
-  for (size_t i = 0; i < mBlocks.Size(); ++i)
+  // For each user-defined block that we have, copy the block's values over the cached block's values.
+  // We do this because we need configuration blocks for all constraint types even if the user doesn't
+  // define them (and some have different default values).
+  for(size_t i = 0; i < mBlocks.Size(); ++i)
   {
-    if (mBlocks[i]->mJointId >= JointEnums::JointCount)
+    if(mBlocks[i]->mJointId >= JointEnums::JointCount)
       mContactBlock = *mBlocks[i];
     else
       mJointBlocks[mBlocks[i]->mJointId] = *mBlocks[i];
@@ -484,7 +476,7 @@ void PhysicsSolverConfig::CopyTo(PhysicsSolverConfig* destination)
   // Clone all of our blocks into the destination
   BoundType* selfBoundType = this->LightningGetDerivedType();
   PhysicsSolverConfigMetaComposition* factory = selfBoundType->Has<PhysicsSolverConfigMetaComposition>();
-  for (size_t i = 0; i < mBlocks.Size(); ++i)
+  for(size_t i = 0; i < mBlocks.Size(); ++i)
   {
     BoundType* blockMeta = LightningVirtualTypeId(mBlocks[i]);
     ConstraintConfigBlock* newBlock = factory->MakeObject(blockMeta).Get<ConstraintConfigBlock*>();
@@ -499,7 +491,7 @@ void PhysicsSolverConfig::CopyTo(PhysicsSolverConfig* destination)
 
 uint PhysicsSolverConfig::GetSize() const
 {
-  return static_cast<uint>(mBlocks.Size());
+  return (uint)mBlocks.Size();
 }
 
 HandleOf<ConstraintConfigBlock> PhysicsSolverConfig::GetBlockAt(uint index)
@@ -510,10 +502,10 @@ HandleOf<ConstraintConfigBlock> PhysicsSolverConfig::GetBlockAt(uint index)
 HandleOf<ConstraintConfigBlock> PhysicsSolverConfig::GetById(BoundType* typeId)
 {
   // Find a block with the given typeId if it exists
-  for (size_t i = 0; i < mBlocks.Size(); ++i)
+  for(size_t i = 0; i < mBlocks.Size(); ++i)
   {
     ConstraintConfigBlock* block = mBlocks[i];
-    if (LightningVirtualTypeId(block) == typeId)
+    if(LightningVirtualTypeId(block) == typeId)
       return block;
   }
 
@@ -533,7 +525,7 @@ bool PhysicsSolverConfig::Remove(const HandleOf<ConstraintConfigBlock>& block)
 {
   // Try to find the index of this block
   size_t index = mBlocks.FindIndex(block);
-  if (index >= mBlocks.Size())
+  if(index >= mBlocks.Size())
     return false;
 
   // If we found the block then remove it. Also rebuild all cached values
@@ -542,11 +534,13 @@ bool PhysicsSolverConfig::Remove(const HandleOf<ConstraintConfigBlock>& block)
   return true;
 }
 
+//-------------------------------------------------------------------PhysicsSolverConfigManager
 ImplementResourceManager(PhysicsSolverConfigManager, PhysicsSolverConfig);
 
 DefinePhysicsRuntimeClone(PhysicsSolverConfig);
 
-PhysicsSolverConfigManager::PhysicsSolverConfigManager(BoundType* resourceType) : ResourceManager(resourceType)
+PhysicsSolverConfigManager::PhysicsSolverConfigManager(BoundType* resourceType)
+  : ResourceManager(resourceType)
 {
   AddLoader("PhysicsSolverConfig", new TextDataFileLoader<PhysicsSolverConfigManager>());
   mCategory = "Physics";
@@ -559,4 +553,4 @@ PhysicsSolverConfigManager::PhysicsSolverConfigManager(BoundType* resourceType) 
   mExtension = DataResourceExtension;
 }
 
-} // namespace Plasma
+}//namespace Plasma

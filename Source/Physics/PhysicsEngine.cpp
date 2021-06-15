@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -9,6 +8,7 @@ System* CreatePhysicsSystem()
   return new PhysicsEngine();
 }
 
+//-------------------------------------------------------------------PhysicsEngine
 LightningDefineType(PhysicsEngine, builder, type)
 {
 }
@@ -47,11 +47,11 @@ void PhysicsEngine::Update(bool debugger)
     return;
 
   ZoneScoped;
-  ProfileScopeTree("Physics", "Engine", Color::Yellow);
+  ProfileScopeTree("PhysicsEngineUpdate", "Engine", Color::Yellow);
 
   // Update each physics space
   SpaceList::range r = mSpaces.All();
-  while (!r.Empty())
+  while(!r.Empty())
   {
     PhysicsSpace& physicsSpace = r.Front();
     physicsSpace.FrameUpdate();
@@ -67,7 +67,7 @@ PhysicsEngine::SpaceList::range PhysicsEngine::GetSpaces()
 void PhysicsEngine::Publish()
 {
   SpaceList::iterator it = mSpaces.Begin();
-  for (; it != mSpaces.End(); ++it)
+  for(; it != mSpaces.End(); ++it)
     it->Publish();
 }
 
@@ -81,4 +81,4 @@ void PhysicsEngine::RemoveSpace(PhysicsSpace* space)
   mSpaces.Erase(space);
 }
 
-} // namespace Plasma
+}//namespace Plasma

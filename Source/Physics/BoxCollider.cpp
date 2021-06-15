@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -28,7 +27,7 @@ BoxCollider::BoxCollider()
 void BoxCollider::Serialize(Serializer& stream)
 {
   Collider::Serialize(stream);
-
+  
   stream.SerializeFieldDefault("HalfSize", mLocalHalfSize, Vec3(real(0.5f)));
   // To deal with bad serialized values (most before the setter was fixed)
   mLocalHalfSize = Math::Clamp(mLocalHalfSize, mMinAllowedSize, mMaxAllowedSize);
@@ -37,8 +36,7 @@ void BoxCollider::Serialize(Serializer& stream)
 void BoxCollider::DebugDraw()
 {
   Collider::DebugDraw();
-  gDebugDraw->Add(
-      Debug::Obb(GetWorldTranslation(), mWorldHalfSize, GetWorldRotation()).Color(Color::Plum).BackShade(true));
+  gDebugDraw->Add(Debug::Obb(GetWorldTranslation(), mWorldHalfSize, GetWorldRotation()).Color(Color::Plum).BackShade(true));
 }
 
 void BoxCollider::CacheWorldValues()
@@ -95,12 +93,12 @@ Vec3 BoxCollider::GetSize() const
 void BoxCollider::SetSize(Vec3Param localSize)
 {
   // This is just a more convenient view of half-size (which is actually saved)
-  if (OperationQueue::IsListeningForSideEffects())
+  if(OperationQueue::IsListeningForSideEffects())
     OperationQueue::RegisterSideEffect(this, "HalfSize", GetHalfSize());
 
   Vec3 localHalfSize = localSize * real(0.5f);
-  mLocalHalfSize = Math::Clamp(localHalfSize, mMinAllowedSize, mMaxAllowedSize);
-
+  mLocalHalfSize = Math::Clamp(localHalfSize, mMinAllowedSize, mMaxAllowedSize); 
+  
   // Since our internal size changed make sure to run all common update code
   InternalSizeChanged();
 }
@@ -110,4 +108,4 @@ Vec3 BoxCollider::GetWorldSize() const
   return real(2) * mWorldHalfSize;
 }
 
-} // namespace Plasma
+}//namespace Plasma

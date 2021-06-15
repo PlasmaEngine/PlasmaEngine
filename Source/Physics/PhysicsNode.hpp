@@ -1,22 +1,22 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
 {
 
-/// Base class created to have a PhysicsNode InList on itself.
+///Base class created to have a PhysicsNode InList on itself.
 class BasePhysicsNode
 {
 public:
   Link<BasePhysicsNode> NodeLink;
 };
 
-/// A node that Contains the shared data between Collider and RigidBody.
-/// Keeps track of the physics queue, world transform and the hierarchy
-/// data for a physics cog.
+///A node that Contains the shared data between Collider and RigidBody.
+///Keeps track of the physics queue, world transform and the hierarchy
+///data for a physics cog.
 class PhysicsNode : public BasePhysicsNode
 {
 public:
+
   PhysicsNode();
   ~PhysicsNode();
 
@@ -26,9 +26,9 @@ public:
   RigidBody* GetActiveBody();
   Cog* GetCogOwner();
 
-  /// Add the node that is this object's parent
+  ///Add the node that is this object's parent
   void AddParent(PhysicsNode* node);
-  /// Remove the passed in parent node.
+  ///Remove the passed in parent node.
   void RemoveParent(PhysicsNode* node);
 
   void SetOwner(Collider* collider);
@@ -47,7 +47,7 @@ public:
   bool IsInDynamicBroadPhase();
   uint BroadPhaseToRemoveFrom();
 
-  /// Takes care of queuing to the manager and keeping track of queue state.
+  ///Takes care of queuing to the manager and keeping track of queue state.
   void QueueSelf();
 
   bool IsParentQueued() const;
@@ -58,7 +58,7 @@ public:
   void ReadTransform();
   void RecomputeWorldTransform();
 
-  /// When these two are nullptr, the manager should delete this.
+  ///When these two are nullptr, the manager should delete this.
   Collider* mCollider;
   RigidBody* mBody;
 
@@ -67,12 +67,12 @@ public:
   ChildrenList mChildren;
   PhysicsNode* mParent;
 
-  /// Link for the physics node queue.
+  ///Link for the physics node queue.
   IntrusiveLink(PhysicsNode, QueueLink);
-
 private:
+
   Physics::PhysicsQueue mQueue;
   WorldTransformation mTransform;
 };
 
-} // namespace Plasma
+}//namespace Plasma

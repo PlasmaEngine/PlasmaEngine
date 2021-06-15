@@ -1,9 +1,9 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
 {
 
+//-------------------------------------------------------------------ContactGraphEdge
 LightningDefineType(ContactGraphEdge, builder, type)
 {
   LightningBindDefaultCopyDestructor();
@@ -16,7 +16,7 @@ LightningDefineType(ContactGraphEdge, builder, type)
   LightningBindGetterProperty(ContactPointCount);
   LightningBindGetterProperty(ContactPoints);
 
-  // LightningBindGetterProperty(IsNew);
+  //LighntingBindGetterProperty(IsNew);
   LightningBindGetterProperty(FirstPoint);
 }
 
@@ -38,7 +38,7 @@ ContactPointRange ContactGraphEdge::GetContactPoints()
 {
   // Find out if we're object 0 or object 1 in the manifold
   uint objectIndex = 0;
-  if (mConstraint->mManifold->Objects[0] != GetCollider())
+  if(mConstraint->mManifold->Objects[0] != GetCollider())
     objectIndex = 1;
 
   ContactPointRange range;
@@ -50,7 +50,7 @@ ContactPoint ContactGraphEdge::GetFirstPoint()
 {
   // Find out if we're object 0 or object 1 in the manifold
   uint objectIndex = 0;
-  if (mConstraint->mManifold->Objects[0] != GetCollider())
+  if(mConstraint->mManifold->Objects[0] != GetCollider())
     objectIndex = 1;
 
   ContactPoint proxyPoint;
@@ -73,6 +73,7 @@ Physics::Contact& ContactGraphEdge::GetContact()
   return GetConstraint();
 }
 
+//-------------------------------------------------------------------JointGraphEdge
 LightningDefineType(JointGraphEdge, builder, type)
 {
   LightningBindDefaultCopyDestructor();
@@ -86,6 +87,7 @@ LightningDefineType(JointGraphEdge, builder, type)
   LightningBindGetterProperty(Owner);
 }
 
+//-------------------------------------------------------------------JointBodyFilter
 typedef BodyFilterPolicy<Joint> JointBodyFilter;
 
 JointBodyFilter::GraphEdgeType JointBodyFilter::CreateGraphEdge(EdgeType* edge)
@@ -95,10 +97,10 @@ JointBodyFilter::GraphEdgeType JointBodyFilter::CreateGraphEdge(EdgeType* edge)
 
 void JointBodyFilter::SkipDead(RangeType& range)
 {
-  while (!range.Empty())
+  while(!range.Empty())
   {
     RigidBody* body = range.Front().mOther->GetActiveBody();
-    if (body && mBodies.Find(body).Empty())
+    if(body && mBodies.Find(body).Empty())
     {
       mBodies.Insert(body);
       break;
@@ -107,6 +109,7 @@ void JointBodyFilter::SkipDead(RangeType& range)
   }
 }
 
+//-------------------------------------------------------------------ContactBodyFilter
 typedef BodyFilterPolicy<Physics::Contact> ContactBodyFilter;
 
 ContactBodyFilter::GraphEdgeType ContactBodyFilter::CreateGraphEdge(EdgeType* edge)
@@ -116,10 +119,10 @@ ContactBodyFilter::GraphEdgeType ContactBodyFilter::CreateGraphEdge(EdgeType* ed
 
 void ContactBodyFilter::SkipDead(RangeType& range)
 {
-  while (!range.Empty())
+  while(!range.Empty())
   {
     RigidBody* body = range.Front().mOther->GetActiveBody();
-    if (body && mBodies.Find(body).Empty())
+    if(body && mBodies.Find(body).Empty())
     {
       mBodies.Insert(body);
       break;
@@ -128,7 +131,7 @@ void ContactBodyFilter::SkipDead(RangeType& range)
   }
 }
 
-// functions
+//-------------------------------------------------------------------Helper functions
 InList<JointEdge, &JointEdge::ColliderLink>::range GetJointEdges(Collider* collider)
 {
   return collider->mJointEdges.All();
@@ -139,4 +142,4 @@ ContactRange FilterContactRange(Collider* collider)
   return ContactRange(collider->mContactEdges.All());
 }
 
-} // namespace Plasma
+}//namespace Plasma

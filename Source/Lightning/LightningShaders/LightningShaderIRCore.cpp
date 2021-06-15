@@ -47,8 +47,8 @@ LightningShaderIRCore::LightningShaderIRCore()
 	{
         Lightning::BoundType* basisType = mLightningTypes.mRealVectorTypes[x - 1];
         String matrixName = BuildString("Real", ToString(y), "x", ToString(x));
-        Lightning::BoundType* zilchMatrixType = core.GetLibrary()->BoundTypes.FindValue(matrixName, nullptr);
-        mLightningTypes.mRealMatrixTypes.PushBack(zilchMatrixType);
+        Lightning::BoundType* lightningMatrixType = core.GetLibrary()->BoundTypes.FindValue(matrixName, nullptr);
+        mLightningTypes.mRealMatrixTypes.PushBack(lightningMatrixType);
 	}
 	}
 

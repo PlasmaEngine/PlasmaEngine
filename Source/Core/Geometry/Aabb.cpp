@@ -38,7 +38,7 @@ void Aabb::AttemptToCorrectInvalid()
   // If the object is still not valid (could be nans, infs, etc) then just plasma
   // it out
   if (!Valid())
-    Plasma();
+    Zero();
 }
 
 bool Aabb::Overlap(const Aabb& rhs) const
@@ -359,7 +359,7 @@ void Aabb::DebugDraw() const
   gDebugDraw->Add(Debug::Obb(*this));
 }
 
-void Aabb::Plasma(void)
+void Aabb::Zero(void)
 {
   mMin.ZeroOut();
   mMax.ZeroOut();

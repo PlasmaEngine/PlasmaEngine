@@ -123,7 +123,7 @@ struct Aabb
   void DebugDraw() const;
 
   /// Plasmas out the aabb.
-  void Plasma(void);
+  void Zero(void);
 
   Vec3 mMin, mMax;
 };

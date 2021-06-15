@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -6,11 +5,12 @@ namespace Plasma
 
 namespace Events
 {
-DefineEvent(JointExceedImpulseLimit);
-DefineEvent(JointLowerLimitReached);
-DefineEvent(JointUpperLimitReached);
-} // namespace Events
+  DefineEvent(JointExceedImpulseLimit);
+  DefineEvent(JointLowerLimitReached);
+  DefineEvent(JointUpperLimitReached);
+}
 
+//-------------------------------------------------------------------JointEvent
 LightningDefineType(JointEvent, builder, type)
 {
   PlasmaBindDocumented();
@@ -49,4 +49,4 @@ Joint* JointEvent::GetJoint()
   return mJoint;
 }
 
-} // namespace Plasma
+}//namespace Plasma

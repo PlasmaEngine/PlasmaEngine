@@ -6,12 +6,12 @@ namespace Plasma
 
 ConvexMeshShape::ConvexMeshShape()
 {
-  mWorldAabb.Plasma();
+  mWorldAabb.Zero();
 }
 
 ConvexMeshShape::ConvexMeshShape(const Intersection::SupportShape& support) : mSupport(support)
 {
-  mWorldAabb.Plasma();
+  mWorldAabb.Zero();
 }
 
 void ConvexMeshShape::Support(Vec3Param direction, Vec3Ptr support) const

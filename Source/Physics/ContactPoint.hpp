@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -6,13 +5,13 @@ namespace Plasma
 
 namespace Physics
 {
-struct Manifold;
-struct ManifoldPoint;
-} // namespace Physics
+  struct Manifold;
+  struct ManifoldPoint;
+}//namespace Physics
 
 /// Information about one point of contact in a collision. This is useful for
-/// evaluating info about the collision after it happened such as where the
-/// objects hit. WARNING: Do not hold onto this after an event is sent out.
+/// evaluating info about the collision after it happened such as where the objects hit.
+/// WARNING: Do not hold onto this after an event is sent out.
 struct ContactPoint
 {
   LightningDeclareType(ContactPoint, TypeCopyMode::ReferenceType);
@@ -37,16 +36,15 @@ struct ContactPoint
   /// The impulse is a Vector3 of the values (normal, friction1, friction2).
   Vec3 GetComplexImpulse();
   /// The penetration of this contact point in the direction of the normal.
-  /// Note: penetration is always positive and is not flipped for object A or
-  /// object B.
+  /// Note: penetration is always positive and is not flipped for object A or object B.
   real GetPenetration();
   /// The relative velocity of this point in the direction of the normal.
   /// The relative point velocity is defined as Dot(p1 - p0, n) where p1 and p0
-  /// are the velocities of the contact points in the collision of myself and
-  /// the other object respectively. This value can be used to see how fast the
-  /// objects are now separating. Also, in pre-collision this value can be used
-  /// to approximate the impulse of the collision since the impulse values will
-  /// not have been calculated yet in pre-collision.
+  /// are the velocities of the contact points in the collision of myself and the
+  /// other object respectively. This value can be used to see how fast the objects
+  /// are now separating. Also, in pre-collision this value can be used to approximate
+  /// the impulse of the collision since the impulse values will not have
+  /// been calculated yet in pre-collision.
   real GetRelativeVelocity();
 
   /// The manifold point that this is wrapping.
@@ -83,4 +81,4 @@ struct ContactPointRange
   ContactPoint mPoint;
 };
 
-} // namespace Plasma
+}//namespace Plasma
