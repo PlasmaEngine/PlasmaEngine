@@ -1,13 +1,12 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
 {
 
-/// A bi-directional graph edge between a collider and a constraint. This is a
-/// helper class to wrap edges for traversing constraints. Provides helpers for
-/// traversing from the edge to the connected objects. Also exposes helpers to
-/// the underlying constraint.
+//-------------------------------------------------------------------BaseConstraintGraphEdge
+/// A bi-directional graph edge between a collider and a constraint. This is a helper class 
+/// to wrap edges for traversing constraints. Provides helpers for traversing from the edge
+/// to the connected objects. Also exposes helpers to the underlying constraint.
 template <typename ConstraintType, typename EdgeType>
 struct BaseConstraintGraphEdge
 {
@@ -54,7 +53,7 @@ struct BaseConstraintGraphEdge
   {
     return mEdge->mOther;
   }
-
+  
   /// Returns the other Cog in the constraint.
   Cog* GetOtherObject()
   {
@@ -68,16 +67,17 @@ struct BaseConstraintGraphEdge
   }
 
 protected:
+
   uint GetColliderIndex(Collider* collider)
   {
-    if (collider == mConstraint->GetCollider(0))
+    if(collider == mConstraint->GetCollider(0))
       return 0;
     return 1;
   }
 
   uint GetObjectIndex(Cog* cog)
   {
-    if (cog == mConstraint->GetCollider(0)->GetOwner())
+    if(cog == mConstraint->GetCollider(0)->GetOwner())
       return 0;
     return 1;
   }
@@ -86,6 +86,7 @@ protected:
   ConstraintType* mConstraint;
 };
 
+//-------------------------------------------------------------------ContactGraphEdge
 /// A bi-directional graph edge between a collider and a contact.
 /// Exposes some internals to Contact which currently can't be exposed.
 struct ContactGraphEdge : public BaseConstraintGraphEdge<Physics::Contact, Physics::ContactEdge>
@@ -95,9 +96,7 @@ struct ContactGraphEdge : public BaseConstraintGraphEdge<Physics::Contact, Physi
   typedef Physics::ContactEdge EdgeType;
   typedef BaseConstraintGraphEdge<Contact, EdgeType> BaseType;
 
-  ContactGraphEdge()
-  {
-  }
+  ContactGraphEdge() {}
   ContactGraphEdge(EdgeType* edge);
 
   /// Was this a ghost collision?
@@ -106,11 +105,10 @@ struct ContactGraphEdge : public BaseConstraintGraphEdge<Physics::Contact, Physi
   uint GetContactPointCount();
   /// Returns a range of all contact points in the collision.
   ContactPointRange GetContactPoints();
-  /// Convenience function to return the first ContactPoint. Some logic only
-  /// cares about one point of information. In a more general case all points
-  /// should be iterated over.
+  /// Convenience function to return the first ContactPoint. Some logic only cares about
+  /// one point of information. In a more general case all points should be iterated over.
   ContactPoint GetFirstPoint();
-
+  
   // Internal helpers for C++
   bool GetIsNew();
   bool GetSkipsResolution();
@@ -118,8 +116,8 @@ struct ContactGraphEdge : public BaseConstraintGraphEdge<Physics::Contact, Physi
   Contact& GetContact();
 };
 
-/// Templated base for a graph edge between a joint type. Is specialized for
-/// individual joint types.
+//-------------------------------------------------------------------BaseJointGraphEdge
+/// Templated base for a graph edge between a joint type. Is specialized for individual joint types.
 template <typename JointType>
 struct BaseJointGraphEdge : public BaseConstraintGraphEdge<JointType, JointEdge>
 {
@@ -129,15 +127,10 @@ struct BaseJointGraphEdge : public BaseConstraintGraphEdge<JointType, JointEdge>
 
   using BaseType::mConstraint;
 
-  BaseJointGraphEdge()
-  {
-  }
-  BaseJointGraphEdge(EdgeType* edge) : BaseType(edge)
-  {
-  }
+  BaseJointGraphEdge() {}
+  BaseJointGraphEdge(EdgeType* edge) : BaseType(edge) {}
 
-  /// Is this joint valid? Invalid joints are ones missing connecting objects
-  /// (or missing colliders).
+  /// Is this joint valid? Invalid joints are ones missing connecting objects (or missing colliders).
   bool GetValid()
   {
     return mConstraint->GetValid();
@@ -156,6 +149,7 @@ struct BaseJointGraphEdge : public BaseConstraintGraphEdge<JointType, JointEdge>
   }
 };
 
+//-------------------------------------------------------------------JointGraphEdge
 /// A bi-directional graph edge between a collider and a joint.
 /// Exposes convenience functions for iterating over the graph.
 struct JointGraphEdge : public BaseJointGraphEdge<Joint>
@@ -163,16 +157,13 @@ struct JointGraphEdge : public BaseJointGraphEdge<Joint>
   LightningDeclareType(JointGraphEdge, TypeCopyMode::ReferenceType);
 
   typedef BaseJointGraphEdge<Joint> BaseType;
-  JointGraphEdge()
-  {
-  }
-  JointGraphEdge(EdgeType* edge) : BaseType(edge)
-  {
-  }
+  JointGraphEdge() {}
+  JointGraphEdge(EdgeType* edge) : BaseType(edge) {}
 };
 
-/// Policy for ConstraintGraphEdges to help write generic iteration code. This
-/// will iterate over only Joints of the provided template type.
+//-------------------------------------------------------------------ConstraintGraphEdgePolicy
+/// Policy for ConstraintGraphEdges to help write generic iteration code. This will
+/// iterate over only Joints of the provided template type.
 template <typename JointType>
 struct ConstraintGraphEdgePolicy
 {
@@ -181,7 +172,7 @@ struct ConstraintGraphEdgePolicy
   typedef typename GraphEdgeType::EdgeType EdgeType;
   typedef InList<EdgeType, &EdgeType::ColliderLink> EdgeList;
   typedef typename EdgeList::range RangeType;
-
+  
   GraphEdgeType CreateGraphEdge(EdgeType* edge)
   {
     return GraphEdgeType(edge);
@@ -190,11 +181,12 @@ struct ConstraintGraphEdgePolicy
   /// Skips over all joints that are not the template type.
   void SkipDead(RangeType& range)
   {
-    while (!range.Empty() && range.Front().mJoint->GetJointType() != JointType::StaticGetJointType())
+    while(!range.Empty() && range.Front().mJoint->GetJointType() != JointType::StaticGetJointType())
       range.PopFront();
   }
 };
 
+//-------------------------------------------------------------------ConstraintGraphEdgePolicy<Contact>
 /// Specialization for contact's graph edge.
 template <>
 struct ConstraintGraphEdgePolicy<Physics::Contact>
@@ -202,7 +194,7 @@ struct ConstraintGraphEdgePolicy<Physics::Contact>
   typedef Physics::Contact JointType;
   typedef ContactGraphEdge GraphEdgeType;
   typedef GraphEdgeType::EdgeType EdgeType;
-  typedef InList<EdgeType, &EdgeType::ColliderLink> EdgeList;
+  typedef InList<EdgeType,&EdgeType::ColliderLink> EdgeList;
   typedef EdgeList::range RangeType;
 
   GraphEdgeType CreateGraphEdge(EdgeType* edge)
@@ -212,9 +204,11 @@ struct ConstraintGraphEdgePolicy<Physics::Contact>
 
   void SkipDead(RangeType& range)
   {
+
   }
 };
 
+//-------------------------------------------------------------------ConstraintGraphEdgePolicy<Joint>
 /// Specialization for the Joint's graph edges. Iterates over all joint types.
 template <>
 struct ConstraintGraphEdgePolicy<Joint>
@@ -232,9 +226,11 @@ struct ConstraintGraphEdgePolicy<Joint>
 
   void SkipDead(RangeType& range)
   {
+
   }
 };
 
+//-------------------------------------------------------------------BodyFilterPolicy
 /// A policy for filtering constraints and returning only unique rigid bodies.
 template <typename JointType>
 struct BodyFilterPolicy
@@ -246,9 +242,7 @@ struct BodyFilterPolicy
   typedef InList<EdgeType, &EdgeType::ColliderLink> EdgeList;
   typedef typename EdgeList::range RangeType;
 
-  BodyFilterPolicy()
-  {
-  }
+  BodyFilterPolicy() {}
 
   GraphEdgeType CreateGraphEdge(EdgeType* edge)
   {
@@ -257,14 +251,14 @@ struct BodyFilterPolicy
 
   void SkipDead(RangeType& range)
   {
-    while (!range.Empty())
+    while(!range.Empty())
     {
       JointType* joint = range.Front().mJoint;
-      if (joint->GetJointType() == JointType::StaticGetJointType())
+      if(joint->GetJointType() == JointType::StaticGetJointType())
       {
         // Uniquely map rigid bodies
         RigidBody* body = range.Front().mOther->GetActiveBody();
-        if (body && mBodies.Find(body).Empty())
+        if(body && mBodies.Find(body).Empty())
         {
           mBodies.Insert(body);
           break;
@@ -273,14 +267,14 @@ struct BodyFilterPolicy
       range.PopFront();
     }
   }
-
 private:
   BodyFilterPolicy(const SelfType& other);
   void operator=(const SelfType& other);
-
+  
   HashSet<RigidBody*> mBodies;
 };
 
+//-------------------------------------------------------------------BodyFilterPolicy<Contact>
 /// Specialization for contact constraints.
 template <>
 struct BodyFilterPolicy<Physics::Contact>
@@ -292,7 +286,7 @@ struct BodyFilterPolicy<Physics::Contact>
   typedef InList<EdgeType, &EdgeType::ColliderLink> EdgeList;
   typedef EdgeList::range RangeType;
 
-  BodyFilterPolicy(){};
+  BodyFilterPolicy() {};
 
   GraphEdgeType CreateGraphEdge(EdgeType* edge);
   void SkipDead(RangeType& range);
@@ -304,6 +298,7 @@ private:
   HashSet<RigidBody*> mBodies;
 };
 
+//-------------------------------------------------------------------BodyFilterPolicy<Joint>
 /// Specialization for Joint.
 template <>
 struct BodyFilterPolicy<Joint>
@@ -315,7 +310,7 @@ struct BodyFilterPolicy<Joint>
   typedef InList<EdgeType, &EdgeType::ColliderLink> EdgeList;
   typedef EdgeList::range RangeType;
 
-  BodyFilterPolicy(){};
+  BodyFilterPolicy() {};
 
   GraphEdgeType CreateGraphEdge(EdgeType* edge);
   void SkipDead(RangeType& range);
@@ -327,29 +322,27 @@ private:
   HashSet<RigidBody*> mBodies;
 };
 
+//-------------------------------------------------------------------BaseConstraintRange
 /// A base constraint range. Works for Joints and Contacts. Used
 /// to make cleaner and easier looping over constraints on a collider.
-template <typename BaseConstraintType,
-          typename FilterConstraintType,
-          typename PolicyType = ConstraintGraphEdgePolicy<FilterConstraintType>>
+template <typename BaseConstraintType, typename FilterConstraintType, typename PolicyType = ConstraintGraphEdgePolicy<FilterConstraintType> >
 struct BaseConstraintRange
 {
   typedef BaseConstraintRange<BaseConstraintType, FilterConstraintType, PolicyType> self_type;
 
-  typedef BaseConstraintType BaseConstraintTypeDef;
-  typedef FilterConstraintType ConstraintType;
-  typedef PolicyType PolicyTypeDef;
+  typedef BaseConstraintType    BaseConstraintTypeDef;
+  typedef FilterConstraintType  ConstraintType;
+  typedef PolicyType            PolicyTypeDef;
 
-  typedef typename PolicyType::GraphEdgeType GraphEdgeType;
-  typedef typename BaseConstraintRange::GraphEdgeType& FrontResult;
-  typedef typename PolicyType::EdgeType EdgeType;
-  typedef InList<EdgeType, &EdgeType::ColliderLink> EdgeList;
-  typedef typename EdgeList::range JointRangeType;
-  typedef GraphEdgeType value_type;
+  typedef typename PolicyType::GraphEdgeType            GraphEdgeType;
+  typedef typename BaseConstraintRange::GraphEdgeType&  FrontResult;
+  typedef typename PolicyType::EdgeType                 EdgeType;
+  typedef InList<EdgeType, &EdgeType::ColliderLink>     EdgeList;
+  typedef typename EdgeList::range                      JointRangeType;
+  typedef GraphEdgeType                                 value_type;
 
-  BaseConstraintRange()
-  {
-  }
+
+  BaseConstraintRange(){}
   BaseConstraintRange(const BaseConstraintRange& rhs)
   {
     mConstraintRange = rhs.mConstraintRange;
@@ -363,7 +356,8 @@ struct BaseConstraintRange
     mPolicy.SkipDead(mConstraintRange);
   }
 
-  BaseConstraintRange(const JointRangeType& range, PolicyType& policy) : mPolicy(policy)
+  BaseConstraintRange(const JointRangeType& range, PolicyType& policy)
+    : mPolicy(policy)
   {
     mConstraintRange = range;
     mPolicy.SkipDead(mConstraintRange);
@@ -395,26 +389,28 @@ struct BaseConstraintRange
   }
 
 protected:
+
   JointRangeType mConstraintRange;
   PolicyType mPolicy;
   GraphEdgeType mGraphEdge;
 };
 
-typedef BaseConstraintRange<Physics::Contact, Physics::Contact> ContactRange;
+typedef BaseConstraintRange<Physics::Contact,Physics::Contact> ContactRange;
 typedef BaseConstraintRange<Joint, Joint> JointRange;
 
-typedef BaseConstraintRange<Physics::Contact, Physics::Contact, BodyFilterPolicy<Physics::Contact>> ContactBodyRange;
-typedef BaseConstraintRange<Joint, Joint, BodyFilterPolicy<Joint>> JointBodyRange;
+typedef BaseConstraintRange<Physics::Contact, Physics::Contact, BodyFilterPolicy<Physics::Contact> > ContactBodyRange;
+typedef BaseConstraintRange<Joint, Joint, BodyFilterPolicy<Joint> > JointBodyRange;
 
-/// Define a range for iterating over specific range types (filters out the
-/// other types). This macro automatically declares the range for all joint
-/// types. This does however, assume that you include what joints are needed.
-#define JointType(type)                                                                                                \
-  typedef BaseConstraintRange<Joint, type> type##Range;                                                                \
-  typedef BaseConstraintRange<Joint, type, BodyFilterPolicy<type>> type##BodyRange;                                    \
+
+/// Define a range for iterating over specific range types (filters out the other types).
+/// This macro automatically declares the range for all joint types. This does
+/// however, assume that you include what joints are needed.
+#define JointType(type)                                                              \
+  typedef BaseConstraintRange<Joint,type> type##Range;                               \
+  typedef BaseConstraintRange<Joint, type, BodyFilterPolicy<type> > type##BodyRange; \
   typedef BaseJointGraphEdge<type> type##GraphEdge;
 
-#include "JointList.hpp"
+#include "Physics/Joints/JointList.hpp"
 
 #undef JointType
 
@@ -431,9 +427,9 @@ ContactRange FilterContactRange(Collider* collider);
 template <typename JointType>
 inline BaseConstraintRange<Joint, JointType> FilterJointBodyRange(Collider* collider)
 {
-  return BaseConstraintRange<Joint, JointType, BodyFilterPolicy<JointType>>(GetJointEdges(collider));
+  return BaseConstraintRange<Joint, JointType, BodyFilterPolicy<JointType> >(GetJointEdges(collider));
 }
 
 ContactBodyRange FilterContactBodyRange(Collider* collider);
 
-} // namespace Plasma
+}//namespace Plasma

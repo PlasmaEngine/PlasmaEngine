@@ -879,7 +879,7 @@ namespace Plasma
         // Id used to lookup all shader input data for the RenderPass fragment and all
         // Materials that will be used in this render task.
         uint mShaderInputsId;
-        // If not plasma, this is the number of contiguous RenderTaskRenderPass objects
+        // If not zero, this is the number of contiguous RenderTaskRenderPass objects
         // in memory after this one. The renderer must account for this.
         uint mSubRenderGroupCount;
         // Allows sub RenderGroups to be set as excluded from rendering.
@@ -894,6 +894,16 @@ namespace Plasma
         String mPostProcessName;
     	String mDisplayName;
         MaterialRenderData* mMaterialRenderData;
+        uint mShaderInputsId;
+    };
+
+    class RenderTaskCompute : public RenderTask
+    {
+    public:
+        String mComputePassName;
+        String mComputeDisplayName;
+        MaterialRenderData* mMaterialRenderData;
+        IntVec3 mDispatchSize;
         uint mShaderInputsId;
     };
 

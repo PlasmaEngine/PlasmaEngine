@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -6,10 +5,11 @@ namespace Plasma
 
 namespace Events
 {
-DefineEvent(CustomPhysicsEffectPrecalculatePhase);
-DefineEvent(ApplyCustomPhysicsEffect);
-} // namespace Events
+  DefineEvent(CustomPhysicsEffectPrecalculatePhase);
+  DefineEvent(ApplyCustomPhysicsEffect);
+}//namespace Events
 
+//-------------------------------------------------------------------CustomPhysicsEffectEvent
 LightningDefineType(CustomPhysicsEffectEvent, builder, type)
 {
   PlasmaBindComponent();
@@ -28,6 +28,7 @@ CustomPhysicsEffectEvent::CustomPhysicsEffectEvent()
   mDt = 0;
 }
 
+//-------------------------------------------------------------------CustomPhysicsEffect
 LightningDefineType(CustomPhysicsEffect, builder, type)
 {
   PlasmaBindComponent();
@@ -51,7 +52,7 @@ void CustomPhysicsEffect::Serialize(Serializer& stream)
 
 void CustomPhysicsEffect::PreCalculate(real dt)
 {
-  if (!GetActive())
+  if(!GetActive())
     return;
 
   CustomPhysicsEffectEvent toSend;
@@ -63,7 +64,7 @@ void CustomPhysicsEffect::PreCalculate(real dt)
 
 void CustomPhysicsEffect::ApplyEffect(RigidBody* obj, real dt)
 {
-  if (!GetActive())
+  if(!GetActive())
     return;
 
   CustomPhysicsEffectEvent toSend;
@@ -73,4 +74,4 @@ void CustomPhysicsEffect::ApplyEffect(RigidBody* obj, real dt)
   GetOwner()->DispatchEvent(Events::ApplyCustomPhysicsEffect, &toSend);
 }
 
-} // namespace Plasma
+}//namespace Plasma

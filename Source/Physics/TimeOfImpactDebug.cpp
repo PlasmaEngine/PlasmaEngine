@@ -1,5 +1,3 @@
-// MIT Licensed (see LICENSE.md).
-
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -21,7 +19,9 @@ LightningDefineType(TimeOfImpactDebug, builder, type)
   LightningBindMethodProperty(Step);
 }
 
-TimeOfImpactDebug::TimeOfImpactDebug() : mSimulatedDt(0.0167), mSteps(0)
+TimeOfImpactDebug::TimeOfImpactDebug()
+  : mSimulatedDt(0.0167)
+  , mSteps(0)
 {
 }
 
@@ -42,20 +42,19 @@ void TimeOfImpactDebug::DebugDraw()
   data.Steps = mSteps;
   TimeOfImpact(&data);
 
-  // find the first impact time
-  for (uint i = 0; i < data.ImpactTimes.Size(); ++i)
+  //find the first impact time
+  for(uint i = 0; i < data.ImpactTimes.Size(); ++i)
   {
-    if (data.ImpactTimes[i] < impact)
+    if(data.ImpactTimes[i] < impact)
       impact = data.ImpactTimes[i];
   }
 
   DrawColliderAtTime(GetOwner(), impact);
   DrawColliderAtTime(mOtherObject, impact);
-  // if (GetOwner()->has(Collider)->mType == Collider::cBox)
+  //if (GetOwner()->has(Collider)->mType == Collider::cBox)
   //  DrawBoxAtTime(GetOwner(), impact);
   //
-  // if (mOtherObject.has(Collider)->mType == Collider::cBox &&
-  // mOtherObject.has(RigidBody))
+  //if (mOtherObject.has(Collider)->mType == Collider::cBox && mOtherObject.has(RigidBody))
   //  DrawBoxAtTime(mOtherObject, impact);
 }
 
@@ -74,13 +73,13 @@ void TimeOfImpactDebug::DrawBoxAtTime(Cog* cog, real dt)
 
   Vec3 p[8];
 
-  p[0] = transform->TransformPoint(Vec3(0.5f, 0.5f, 0.5f)) - pos;
-  p[1] = transform->TransformPoint(Vec3(0.5f, 0.5f, -0.5f)) - pos;
-  p[2] = transform->TransformPoint(Vec3(0.5f, -0.5f, 0.5f)) - pos;
-  p[3] = transform->TransformPoint(Vec3(0.5f, -0.5f, -0.5f)) - pos;
-  p[4] = transform->TransformPoint(Vec3(-0.5f, 0.5f, 0.5f)) - pos;
-  p[5] = transform->TransformPoint(Vec3(-0.5f, 0.5f, -0.5f)) - pos;
-  p[6] = transform->TransformPoint(Vec3(-0.5f, -0.5f, 0.5f)) - pos;
+  p[0] = transform->TransformPoint(Vec3( 0.5f,  0.5f,  0.5f)) - pos;
+  p[1] = transform->TransformPoint(Vec3( 0.5f,  0.5f, -0.5f)) - pos;
+  p[2] = transform->TransformPoint(Vec3( 0.5f, -0.5f,  0.5f)) - pos;
+  p[3] = transform->TransformPoint(Vec3( 0.5f, -0.5f, -0.5f)) - pos;
+  p[4] = transform->TransformPoint(Vec3(-0.5f,  0.5f,  0.5f)) - pos;
+  p[5] = transform->TransformPoint(Vec3(-0.5f,  0.5f, -0.5f)) - pos;
+  p[6] = transform->TransformPoint(Vec3(-0.5f, -0.5f,  0.5f)) - pos;
   p[7] = transform->TransformPoint(Vec3(-0.5f, -0.5f, -0.5f)) - pos;
 
   for (uint i = 0; i < 8; ++i)
@@ -113,12 +112,12 @@ void TimeOfImpactDebug::DrawColliderAtTime(Cog* cog, real dt)
   Collider* collider = cog->has(Collider);
   RigidBody* body = cog->has(RigidBody);
 
-  if (collider == nullptr)
+  if(collider == nullptr)
     return;
 
   Vec3 vel = Vec3::cZero;
   Vec3 angularVel = Vec3::cZero;
-  if (body != nullptr)
+  if(body != nullptr)
   {
     vel = body->mVelocity;
     angularVel = body->GetAngularVelocity();
@@ -126,27 +125,28 @@ void TimeOfImpactDebug::DrawColliderAtTime(Cog* cog, real dt)
 
   real rotationAngle = angularVel.AttemptNormalize();
 
+
   WorldTransformation* transform = collider->GetWorldTransform();
   Vec3 oldPosition = transform->GetWorldTranslation();
   Quat oldRotation = Math::ToQuaternion(transform->GetWorldRotation());
-  // integrate the position and orientation forward in time
+  //integrate the position and orientation forward in time
   transform->SetTranslation(oldPosition + vel * dt);
   Quat newRotation = Math::ToQuaternion(angularVel, rotationAngle * dt) * oldRotation;
   transform->SetRotation(Math::ToMatrix3(newRotation));
-
+  
   collider->DebugDraw();
 
-  // reset the collider's position back to where it was
+  //reset the collider's position back to where it was
   transform->SetTranslation(oldPosition);
   transform->SetRotation(Math::ToMatrix3(oldRotation));
 }
 
-Cog* TimeOfImpactDebug::GetOtherObject()
+Cog * TimeOfImpactDebug::GetOtherObject()
 {
   return mOtherObject;
 }
 
-void TimeOfImpactDebug::SetOtherObject(Cog* cog)
+void TimeOfImpactDebug::SetOtherObject(Cog *cog)
 {
   if (cog == nullptr)
     mOtherObject = CogId();

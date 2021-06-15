@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -21,4 +20,4 @@ void ColliderOnDestroy(Collider* collider, bool dynamicallyDestroyed);
 void PhysicsAttachTo(PhysicsNode* node, AttachmentInfo& info);
 void PhysicsDetach(PhysicsNode* node, AttachmentInfo& info);
 
-} // namespace Plasma
+}//namespace Plasma

@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -47,15 +46,15 @@ void MeshCollider::DebugDraw()
 
   // Draw the mesh in world-space
   Mat4 worldTransform = GetWorldTransform()->GetWorldMatrix();
-
+  
   ByteColor color = Color::LightSteelBlue;
   SetAlphaByte(color, 80);
 
-  if (mDrawEdges)
+  if(mDrawEdges)
     mPhysicsMesh->DrawEdges(worldTransform, color);
-  if (mDrawFaceNormals)
+  if(mDrawFaceNormals)
     mPhysicsMesh->DrawFaceNormals(worldTransform, Color::White);
-  if (mDrawFaces)
+  if(mDrawFaces)
     mPhysicsMesh->DrawFaces(worldTransform, color);
 }
 
@@ -87,8 +86,7 @@ void MeshCollider::ComputeLocalInverseInertiaTensor(real mass, Mat3Ref localInvI
 void MeshCollider::Support(Vec3Param direction, Vec3Ptr support) const
 {
   // Bring the support direction into local space (normalize for safety),
-  // call the local-space support function then transform the result back into
-  // world space
+  // call the local-space support function then transform the result back into world space
   Vec3 localSpaceDir = TransformSupportDirectionToLocal(direction);
   localSpaceDir.Normalize();
   mPhysicsMesh->Support(localSpaceDir, support);
@@ -108,17 +106,16 @@ PhysicsMesh* MeshCollider::GetPhysicsMesh()
 
 void MeshCollider::SetPhysicsMesh(PhysicsMesh* physicsMesh)
 {
-  if (physicsMesh == nullptr)
+  if(physicsMesh == nullptr)
     return;
 
-  // Disconnect from events on the old mesh and connect on the new mesh (if
-  // they're different)
+  // Disconnect from events on the old mesh and connect on the new mesh (if they're different)
   PhysicsMesh* oldMesh = mPhysicsMesh;
-  if (oldMesh != physicsMesh)
+  if(oldMesh != physicsMesh)
   {
-    if (oldMesh != nullptr)
+    if(oldMesh != nullptr)
       DisconnectAll(oldMesh, this);
-    if (physicsMesh != nullptr)
+    if(physicsMesh != nullptr)
       ConnectThisTo(physicsMesh, Events::ResourceModified, OnMeshModified);
   }
 
@@ -146,4 +143,4 @@ bool MeshCollider::Cast(const Ray& localRay, ProxyResult& result, BaseCastFilter
   return mesh->CastRay(localRay, result, filter);
 }
 
-} // namespace Plasma
+}//namespace Plasma

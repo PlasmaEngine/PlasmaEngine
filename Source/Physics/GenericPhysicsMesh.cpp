@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -16,11 +15,10 @@ LightningDefineType(GenericPhysicsMesh, builder, type)
 
 GenericPhysicsMesh::GenericPhysicsMesh()
 {
-  mResourceIconName = cPhysicsSmallIcon;
   mModified = false;
   mIsValid = true;
 
-  mLocalAabb.Plasma();
+  mLocalAabb.Zero();
   mLocalCenterOfMass.ZeroOut();
   mLocalVolume = real(0.0);
 
@@ -58,7 +56,7 @@ void GenericPhysicsMesh::Unload()
 void GenericPhysicsMesh::ResourceModified()
 {
   // If we're already modified we don't need to do any extra logic
-  if (GetModified())
+  if(GetModified())
     return;
 
   mModified = true;
@@ -75,9 +73,9 @@ void GenericPhysicsMesh::Upload(const Vec3Array& points, const IndexArray& indic
 
 void GenericPhysicsMesh::ForceRebuild()
 {
-  //This needs to be updated later to deal with plasma volume
+  //  This needs to be updated later to deal with zero volume
   // (requires re-factoring how scaled values are currently computed)
-  if (GetValid() == false || mVertices.Empty())
+  if(GetValid() == false || mVertices.Empty())
   {
     mLocalVolume = 0;
     mLocalCenterOfMass = Vec3::cZero;
@@ -132,17 +130,17 @@ bool GenericPhysicsMesh::Validate(bool throwExceptionIfInvalid)
 {
   mIsValid = true;
   // If we find an index outside the range of our vertices then we're invalid
-  for (size_t i = 0; i < mIndices.Size(); ++i)
+  for(size_t i = 0; i < mIndices.Size(); ++i)
   {
     uint index = mIndices[i];
-    if (index >= mVertices.Size())
+    if(index >= mVertices.Size())
     {
       mIsValid = false;
       break;
     }
   }
 
-  if (!mIsValid && throwExceptionIfInvalid)
+  if(!mIsValid && throwExceptionIfInvalid)
   {
     DoNotifyException("Invalid Mesh", "Physics Mesh contains invalid indices");
     mLocalAabb.SetInvalid();
@@ -153,16 +151,15 @@ bool GenericPhysicsMesh::Validate(bool throwExceptionIfInvalid)
 
 void GenericPhysicsMesh::UpdateAndNotifyIfModified()
 {
-  if (!GetModified())
+  if(!GetModified())
     return;
 
   mModified = false;
   Validate(false);
   ForceRebuild();
 
-  // As we have just changed values like center of mass and aabb, we need to
-  // notify any collider who used this mesh that we've changed so they can
-  // update world-space values.
+  // As we have just changed values like center of mass and aabb, we need to notify any collider
+  // who used this mesh that we've changed so they can update world-space values.
   ResourceEvent toSend;
   toSend.EventResource = this;
   DispatchEvent(Events::ResourceModified, &toSend);
@@ -171,7 +168,7 @@ void GenericPhysicsMesh::UpdateAndNotifyIfModified()
 void GenericPhysicsMesh::DrawEdges(Mat4Param transform, ByteColor color)
 {
   size_t triCount = GetTriangleCount();
-  for (size_t i = 0; i < triCount; ++i)
+  for(size_t i = 0; i < triCount; ++i)
   {
     Triangle tri = GetTriangle(i);
     tri.p0 = Math::TransformPoint(transform, tri.p0);
@@ -187,7 +184,7 @@ void GenericPhysicsMesh::DrawEdges(Mat4Param transform, ByteColor color)
 void GenericPhysicsMesh::DrawFaces(Mat4Param transform, ByteColor color)
 {
   size_t triCount = GetTriangleCount();
-  for (size_t i = 0; i < triCount; ++i)
+  for(size_t i = 0; i < triCount; ++i)
   {
     Triangle tri = GetTriangle(i);
     tri.p0 = Math::TransformPoint(transform, tri.p0);
@@ -203,7 +200,7 @@ void GenericPhysicsMesh::DrawFaces(Mat4Param transform, ByteColor color)
 void GenericPhysicsMesh::DrawFaceNormals(Mat4Param transform, ByteColor color)
 {
   size_t triCount = GetTriangleCount();
-  for (size_t i = 0; i < triCount; ++i)
+  for(size_t i = 0; i < triCount; ++i)
   {
     Triangle tri = GetTriangle(i);
     Triangle worldTri = tri.Transform(transform);
@@ -220,20 +217,18 @@ void GenericPhysicsMesh::DrawFaceNormals(Mat4Param transform, ByteColor color)
   }
 }
 
-bool GenericPhysicsMesh::CastRayTriangle(
-    const Ray& localRay, const Triangle& tri, int triIndex, ProxyResult& result, BaseCastFilter& filter)
+bool GenericPhysicsMesh::CastRayTriangle(const Ray& localRay, const Triangle& tri, int triIndex, ProxyResult& result, BaseCastFilter& filter)
 {
   // Check the ray for intersection with the triangle
   Intersection::IntersectionPoint pointData;
   Intersection::IntersectionType tResult;
   tResult = Intersection::RayTriangle(localRay.Start, localRay.Direction, tri[0], tri[1], tri[2], &pointData);
   // If there is a collision (clean up intersection library's wonkyness later)
-  if (tResult >= (Intersection::Type)0)
+  if(tResult >= (Intersection::Type)0)
   {
-    // If this collision is after our current best result then skip this
-    // triangle
+    // If this collision is after our current best result then skip this triangle
     real distance = pointData.T;
-    if (distance > result.mDistance)
+    if(distance > result.mDistance)
       return false;
 
     // Copy over the new best result (closest result)
@@ -243,13 +238,13 @@ bool GenericPhysicsMesh::CastRayTriangle(
     result.ShapeIndex = triIndex;
 
     // If the filter is set to retrieve the normal of the surface
-    if (filter.IsSet(BaseCastFilterFlags::GetContactNormal))
+    if(filter.IsSet(BaseCastFilterFlags::GetContactNormal))
     {
       Vec3 normal = Geometry::NormalFromPointOnTriangle(result.mPoints[0], tri[0], tri[1], tri[2]);
 
-      // The normal returned should always be positive in the y (local space),
-      // but if the ray was cast from below the triangle, we want to negate it.
-      if (Dot(normal, tri[0] - localRay.Start) > 0)
+      // The normal returned should always be positive in the y (local space), but if the ray
+      // was cast from below the triangle, we want to negate it.
+      if(Dot(normal, tri[0] - localRay.Start) > 0)
         normal *= real(-1.0f);
 
       result.mContactNormal = normal;
@@ -266,10 +261,10 @@ bool GenericPhysicsMesh::CastRayGeneric(const Ray& localRay, ProxyResult& result
 
   // Check all triangles for collision
   size_t triangleCount = GetTriangleCount();
-  for (size_t triIndex = 0; triIndex < triangleCount; ++triIndex)
+  for(size_t triIndex = 0; triIndex < triangleCount; ++triIndex)
   {
     Triangle tri = GetTriangle(triIndex);
-    triangleHit |= CastRayTriangle(localRay, tri, triIndex, result, filter);
+    triangleHit |= CastRayTriangle(localRay, tri, (int)triIndex, result, filter);
   }
   return triangleHit;
 }
@@ -277,16 +272,15 @@ bool GenericPhysicsMesh::CastRayGeneric(const Ray& localRay, ProxyResult& result
 void GenericPhysicsMesh::Support(const Vec3Array points, Vec3Param localDirection, Vec3Ptr support) const
 {
   real longestDistance = -Math::PositiveMax();
-  // Initialize the support point to a large, unlikely to be hit value in case
-  // there are no points (the aabb will currently be around this point and gjk
-  // will treat this like a single point collision)
+  // Initialize the support point to a large, unlikely to be hit value in case there are no points
+  // (the aabb will currently be around this point and gjk will treat this like a single point collision)
   *support = Vec3(Math::PositiveMax() * 0.5f);
 
-  for (size_t i = 0; i < points.Size(); ++i)
+  for(size_t i = 0; i < points.Size(); ++i)
   {
     Vec3Param curr = points[i];
     real dist = Math::Dot(localDirection, curr);
-    if (dist > longestDistance)
+    if(dist > longestDistance)
     {
       longestDistance = dist;
       *support = curr;
@@ -314,7 +308,7 @@ TriangleInfoMap* GenericPhysicsMesh::GetInfoMap()
 
 void GenericPhysicsMesh::ComputeLocalVolume()
 {
-  if (mVertices.Empty() || mIndices.Empty() || !GetValid())
+  if(mVertices.Empty() || mIndices.Empty() || !GetValid())
     return;
 
   size_t triCount = GetTriangleCount();
@@ -325,7 +319,7 @@ void GenericPhysicsMesh::ComputeLocalVolume()
 
 void GenericPhysicsMesh::ComputeLocalCenterOfMass()
 {
-  if (mVertices.Empty() || mIndices.Empty() || !GetValid())
+  if(mVertices.Empty() || mIndices.Empty() || !GetValid())
     return;
 
   size_t triCount = GetTriangleCount();
@@ -347,7 +341,7 @@ real GenericPhysicsMesh::ComputeScaledVolume(Vec3Param worldScale)
 
 Mat3 GenericPhysicsMesh::ComputeScaledInvInertiaTensor(Vec3Param worldScale, real worldMass)
 {
-  if (mVertices.Empty() || mIndices.Empty() || !GetValid())
+  if(mVertices.Empty() || mIndices.Empty() || !GetValid())
     return Mat3::cIdentity;
 
   size_t triCount = GetTriangleCount();
@@ -384,4 +378,4 @@ const IndexArray& GenericPhysicsMesh::GetIndexArray() const
   return mIndices;
 }
 
-} // namespace Plasma
+}//namespace Plasma

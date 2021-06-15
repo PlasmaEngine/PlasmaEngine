@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -11,7 +10,7 @@ namespace Physics
 
 DeclareEnum4(IntegrationMethods, Euler, Verlet, Rk2, Rk4);
 
-// Integration is put in a struct so that it is easier to friend these functions
+//Integration is put in a struct so that it is easier to friend these functions
 struct Integration
 {
   static void IntegrateVelocity(RigidBody* body, real dt);
@@ -32,6 +31,6 @@ struct Integration
   static Vec3 AngularVelocityApproximation(Mat3Param startRotation, Mat3Param endRotation, real dt);
 };
 
-} // namespace Physics
+}//namespace Physics
 
-} // namespace Plasma
+}//namespace Plasma

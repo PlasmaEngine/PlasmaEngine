@@ -1,14 +1,14 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
 {
-
+  
 namespace Physics
 {
 
 PhysicsQueue::PhysicsQueue()
 {
+
 }
 
 void PhysicsQueue::Queue(TransformAction& action)
@@ -47,10 +47,10 @@ void PhysicsQueue::ProcessQueue(BroadPhaseBatch& staticBatch, BroadPhaseBatch& d
 
   byte& state = mBroadPhaseAction.mState;
 
-  // deal with dynamic states
-  if (action.IsSet(BPAction::DynamicRemoval))
+  //deal with dynamic states
+  if(action.IsSet(BPAction::DynamicRemoval))
     dynamicBatch.removals.PushBack(&mProxy);
-  else if (action.IsSet(BPAction::DynamicInsert))
+  else if(action.IsSet(BPAction::DynamicInsert))
   {
     BroadPhaseData bpData;
     ColliderToBroadPhaseData(collider, bpData);
@@ -58,10 +58,10 @@ void PhysicsQueue::ProcessQueue(BroadPhaseBatch& staticBatch, BroadPhaseBatch& d
     dynamicBatch.inserts.PushBack(bpObject);
   }
 
-  // deal with static states
-  if (action.IsSet(BPAction::StaticRemoval))
+  //deal with static states
+  if(action.IsSet(BPAction::StaticRemoval))
     staticBatch.removals.PushBack(&mProxy);
-  else if (action.IsSet(BPAction::StaticInsert))
+  else if(action.IsSet(BPAction::StaticInsert))
   {
     BroadPhaseData bpData;
     ColliderToBroadPhaseData(collider, bpData);
@@ -69,16 +69,17 @@ void PhysicsQueue::ProcessQueue(BroadPhaseBatch& staticBatch, BroadPhaseBatch& d
     staticBatch.inserts.PushBack(bpObject);
   }
 
-  // deal with updates
-  if (!action.IsSet(BPAction::Static | BPAction::Dynamic) && action.IsSet(BPAction::Update))
+  //deal with updates
+  if(!action.IsSet(BPAction::Static | BPAction::Dynamic) && 
+     action.IsSet(BPAction::Update))
   {
     BroadPhaseData bpData;
     ColliderToBroadPhaseData(collider, bpData);
     BroadPhaseObject bpObject(&mProxy, bpData);
 
-    if (action.IsSet(BPAction::CurrStateStatic))
+    if(action.IsSet(BPAction::CurrStateStatic))
       staticBatch.updates.PushBack(bpObject);
-    else if (action.IsSet(BPAction::CurrStateDynamic))
+    else if(action.IsSet(BPAction::CurrStateDynamic))
       dynamicBatch.updates.PushBack(bpObject);
     else
       ErrorIf(true, "No states were set for this object's broadphase queue.");
@@ -102,6 +103,6 @@ bool PhysicsQueue::IsQueued() const
   return mBroadPhaseAction.IsSet(BroadPhaseAction::CurrStateQueued);
 }
 
-} // namespace Physics
+}//namespace Physics
 
-} // namespace Plasma
+}//namespace Plasma

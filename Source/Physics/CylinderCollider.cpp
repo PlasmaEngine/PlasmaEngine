@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -10,7 +9,7 @@ LightningDefineType(CylinderCollider, builder, type)
   PlasmaBindSetup(SetupMode::DefaultSerialization);
   PlasmaBindInterface(Collider);
   PlasmaBindDocumented();
-
+  
   LightningBindGetterSetterProperty(Radius);
   LightningBindGetterSetterProperty(Height);
   LightningBindGetterSetterProperty(Direction);
@@ -103,12 +102,11 @@ void CylinderCollider::ComputeLocalInverseInertiaTensor(real mass, Mat3Ref local
   real heightInvInertia = real(1) / (real(0.5f) * mass * rSquared);
   real radiusInvInertia = real(1) / (oneTwelthMass * (real(3.0f) * rSquared + hSquared));
 
-  // Get what local axes define the radius and height so we can set the correct
-  // local inertia
+  // Get what local axes define the radius and height so we can set the correct local inertia
   uint rIndex0, rIndex1;
   GetRadiiIndices(rIndex0, rIndex1);
   uint heightIndex = GetHeightIndex();
-
+  
   localInvInertia.SetIdentity();
   localInvInertia[rIndex0][rIndex0] = radiusInvInertia;
   localInvInertia[heightIndex][heightIndex] = heightInvInertia;
@@ -144,7 +142,7 @@ real CylinderCollider::GetHeight() const
 void CylinderCollider::SetHeight(real height)
 {
   const float minScale = 0.01f;
-  mHeight = Math::Max(height, minScale);
+  mHeight = Math::Max(height, minScale); 
 
   // Since our internal size changed make sure to run all common update code
   InternalSizeChanged();
@@ -158,7 +156,7 @@ AxisDirection::Enum CylinderCollider::GetDirection() const
 void CylinderCollider::SetDirection(AxisDirection::Enum direction)
 {
   // Safeguard against bad values
-  if (direction >= AxisDirection::Size)
+  if(direction >= AxisDirection::Size)
     direction = AxisDirection::Z;
 
   mDirection = direction;
@@ -166,6 +164,7 @@ void CylinderCollider::SetDirection(AxisDirection::Enum direction)
   // Since our internal size changed make sure to run all common update code
   InternalSizeChanged();
 }
+
 
 void CylinderCollider::GetRadiiIndices(uint& rIndex0, uint& rIndex1) const
 {
@@ -195,9 +194,9 @@ real CylinderCollider::GetWorldHeight() const
 
 void CylinderCollider::ComputeWorldPoints(Vec3Ref pointA, Vec3Ref pointB) const
 {
-  // The world-space vector that defines our height axis can be retrieved
-  // from the rotation matrix's basis vectors. This axis can then be scaled by
-  // the half height so we can easily get the cylinder's two points.
+  // The world-space vector that defines our height axis can be retrieved 
+  // from the rotation matrix's basis vectors. This axis can then be scaled by the
+  // half height so we can easily get the cylinder's two points.
   Mat3 rotation = GetWorldRotation();
   Vec3 worldPos = GetWorldTranslation();
   real cylinderHalfHeight = GetWorldHalfHeight();
@@ -208,4 +207,4 @@ void CylinderCollider::ComputeWorldPoints(Vec3Ref pointA, Vec3Ref pointB) const
   pointB = worldPos - worldHalfHeight;
 }
 
-} // namespace Plasma
+}//namespace Plasma

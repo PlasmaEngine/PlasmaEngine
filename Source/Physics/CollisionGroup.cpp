@@ -1,9 +1,9 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
 {
 
+//-------------------------------------------------------------------CollisionGroup
 LightningDefineType(CollisionGroup, builder, type)
 {
   PlasmaBindDocumented();
@@ -16,11 +16,12 @@ LightningDefineType(CollisionGroup, builder, type)
 
 CollisionGroup::CollisionGroup()
 {
-  mResourceIconName = cPhysicsSmallIcon;
+
 }
 
 CollisionGroup::~CollisionGroup()
 {
+
 }
 
 HandleOf<CollisionGroup> CollisionGroup::CreateRuntime()
@@ -49,6 +50,7 @@ CollisionGroupInstance* CollisionGroup::GetNewInstance()
   return instance;
 }
 
+//-------------------------------------------------------------------CollisionGroupInstance
 CollisionGroupInstance::CollisionGroupInstance()
 {
   mGroupId = 0;
@@ -72,9 +74,11 @@ String CollisionGroupInstance::GetGroupName() const
   return mResource->Name;
 }
 
+//-------------------------------------------------------------------CollisionGroupManager
 ImplementResourceManager(CollisionGroupManager, CollisionGroup);
 
-CollisionGroupManager::CollisionGroupManager(BoundType* resourceType) : ResourceManager(resourceType)
+CollisionGroupManager::CollisionGroupManager(BoundType* resourceType)
+  : ResourceManager(resourceType)
 {
   AddLoader("CollisionGroup", new TextDataFileLoader<CollisionGroupManager>());
   mCategory = "Physics";
@@ -86,4 +90,4 @@ CollisionGroupManager::CollisionGroupManager(BoundType* resourceType) : Resource
   mExtension = DataResourceExtension;
 }
 
-} // namespace Plasma
+}//namespace Plasma

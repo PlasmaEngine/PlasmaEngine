@@ -1,8 +1,9 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
 {
+
+//-------------------------------------------------------------------CollisionFilterBlock
 
 LightningDefineType(CollisionFilterBlock, builder, type)
 {
@@ -59,17 +60,18 @@ void CollisionFilterBlock::SetSendEventsToSpace(bool state)
 
 CollisionFilterBlockType::Enum CollisionFilterBlock::GetBlockType() const
 {
-  if (mBlockType & FilterFlags::StartEvent)
+  if(mBlockType & FilterFlags::StartEvent)
     return CollisionFilterBlockType::CollisionStartedBlock;
-  if (mBlockType & FilterFlags::PersistedEvent)
+  if(mBlockType & FilterFlags::PersistedEvent)
     return CollisionFilterBlockType::CollisionPersistedBlock;
-  if (mBlockType & FilterFlags::EndEvent)
+  if(mBlockType & FilterFlags::EndEvent)
     return CollisionFilterBlockType::CollisionEndedBlock;
-  if (mBlockType & FilterFlags::PreSolveEvent)
+  if(mBlockType & FilterFlags::PreSolveEvent)
     return CollisionFilterBlockType::PreSolveBlock;
   return CollisionFilterBlockType::CollisionStartedBlock;
 }
 
+//-------------------------------------------------------------------CollisionStartBlock
 LightningDefineType(CollisionStartBlock, builder, type)
 {
   PlasmaBindComponent();
@@ -84,6 +86,7 @@ CollisionStartBlock::CollisionStartBlock()
   mBlockType = FilterFlags::StartEvent;
 }
 
+//-------------------------------------------------------------------CollisionPersistedBlock
 LightningDefineType(CollisionPersistedBlock, builder, type)
 {
   PlasmaBindComponent();
@@ -98,6 +101,7 @@ CollisionPersistedBlock::CollisionPersistedBlock()
   mBlockType = FilterFlags::PersistedEvent;
 }
 
+//-------------------------------------------------------------------CollisionEndBlock
 LightningDefineType(CollisionEndBlock, builder, type)
 {
   PlasmaBindComponent();
@@ -112,6 +116,7 @@ CollisionEndBlock::CollisionEndBlock()
   mBlockType = FilterFlags::EndEvent;
 }
 
+//-------------------------------------------------------------------PreSolveBlock
 LightningDefineType(PreSolveBlock, builder, type)
 {
   PlasmaBindComponent();
@@ -126,8 +131,9 @@ PreSolveBlock::PreSolveBlock()
   mBlockType = FilterFlags::PreSolveEvent;
 }
 
+//-------------------------------------------------------------------CollisionFilterFactory
 LightningDefineTemplateType(CollisionFilterMetaComposition, builder, type)
 {
 }
 
-} // namespace Plasma
+}//namespace Plasma

@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -27,7 +26,7 @@ Statistics::Statistics()
   CollisionsMissed = 0;
 }
 
-/// Adds the frame results to the total results.
+///Adds the frame results to the total results.
 void Statistics::Update(const BroadPhaseFrameData& result)
 {
   PossibleCollisionsReturned += result.PossibleCollisionsReturned;
@@ -36,23 +35,20 @@ void Statistics::Update(const BroadPhaseFrameData& result)
   ++Iterations;
 }
 
-/// Prints the results out to a file.
+///Prints the results out to a file.
 void Statistics::PrintResults()
 {
   DebugPrintFilter(Filter::PhysicsFilter, "%s Results:", Name.c_str());
 
-  DebugPrintFilter(Filter::PhysicsFilter,
-                   "| Accuracy:  %.2f%%",
-                   (real(ActualCollisions) / real(PossibleCollisionsReturned)) / real(100.0));
-  DebugPrintFilter(Filter::PhysicsFilter,
-                   "| Collision Time Taken:  %.2fms",
-                   Profile::ProfileSystem::Instance->GetTimeInSeconds(UpdateTime.GetTotalTime()));
+
+  DebugPrintFilter(Filter::PhysicsFilter, "| Accuracy:  %.2f%%", (real(ActualCollisions) / real(PossibleCollisionsReturned)) / real(100.0));
+  DebugPrintFilter(Filter::PhysicsFilter, "| Collision Time Taken:  %.2fms", Profile::ProfileSystem::Instance->GetTimeInSeconds(UpdateTime.GetTotalTime()));
   DebugPrintFilter(Filter::PhysicsFilter, "| Update Time Taken:  %.2fms", UpdateTime.GetTotalTime());
   DebugPrintFilter(Filter::PhysicsFilter, "| Ray Cast Time Taken:  %.2fms", RayCastTime.GetTotalTime());
   DebugPrintFilter(Filter::PhysicsFilter, "| Insertion Time Taken:  %.2fms", InsertionTime.GetTotalTime());
   DebugPrintFilter(Filter::PhysicsFilter, "| Removal Time Taken:  %.2fms", RemovalTime.GetTotalTime());
   DebugPrintFilter(Filter::PhysicsFilter, "| Construction Time Taken:  %.2fms", ConstructionTime.GetTotalTime());
-  if (CollisionsMissed)
+  if(CollisionsMissed)
   {
     DebugPrintFilter(Filter::PhysicsFilter, "|");
     DebugPrintFilter(Filter::PhysicsFilter, "| !--COLLISIONS MISSED--!");
@@ -63,11 +59,11 @@ void Statistics::PrintResults()
 
 void Analyzer::AnalyzePerformance(uint type, StatisticsVec& statistics)
 {
-  // Return if there is nothing to analyze
-  if (statistics.Empty())
+  //Return if there is nothing to analyze
+  if(statistics.Empty())
     return;
 
-  switch (type)
+  switch(type)
   {
   case BroadPhase::Dynamic:
     AnalyzeDynamic(statistics);
@@ -77,32 +73,35 @@ void Analyzer::AnalyzePerformance(uint type, StatisticsVec& statistics)
     break;
   };
 
-  // Clean up after this analysis.
-  // Spikes.Clear();
+  //Clean up after this analysis.
+  //Spikes.Clear();
 }
 
 void Analyzer::AnalyzeDynamic(StatisticsVec& statistics)
 {
-  // Set the default best
+  //Set the default best
   Statistics* bestInerstionTime = statistics[0];
   Statistics* bestRemovalTime = statistics[0];
   Statistics* bestUpdateTime = statistics[0];
   Statistics* bestCollisionTestTime = statistics[0];
   Statistics* bestRayCastTime = statistics[0];
 
-  // Check for better
-  for (uint i = 0; i < statistics.Size(); ++i)
+  //Check for better 
+  for(uint i = 0; i < statistics.Size(); ++i)
   {
-    // Insertion
+    //Insertion
+
   }
 }
 
 void Analyzer::AnalyzeStatic(StatisticsVec& statistics)
 {
+
 }
 
 void Analyzer::ReportSpike(const char* type, real ms)
 {
+
 }
 
 real Analyzer::CalculateScore(Statistics& stats)
@@ -112,8 +111,9 @@ real Analyzer::CalculateScore(Statistics& stats)
 
 void Analyzer::PrintResults()
 {
+
 }
 
-} // namespace Physics
+}//namespace Physics
 
-} // namespace Plasma
+}//namespace Plasma

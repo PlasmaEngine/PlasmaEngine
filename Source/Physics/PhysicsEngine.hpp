@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -9,7 +8,7 @@ namespace Physics
 
 class CollisionManager;
 
-} // namespace Physics
+}//namespace Physics
 
 class PhysicsSpace;
 System* CreatePhysicsSystem();
@@ -45,7 +44,7 @@ private:
   void RemoveSpace(PhysicsSpace* space);
 
   Physics::CollisionManager* mCollisionManager;
-
+  
   /// All active spaces
   SpaceList mSpaces;
 
@@ -53,4 +52,4 @@ public:
   Memory::Heap* mHeap;
 };
 
-} // namespace Plasma
+}//namespace Plasma

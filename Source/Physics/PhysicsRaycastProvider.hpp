@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -27,4 +26,4 @@ public:
   bool mMultiSelectKinematic;
 };
 
-} // namespace Plasma
+}//namespace Plasma

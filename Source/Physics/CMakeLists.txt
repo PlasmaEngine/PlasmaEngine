@@ -5,7 +5,7 @@ plasma_use_precompiled_header(Physics ${CMAKE_CURRENT_LIST_DIR})
 
 target_sources(Physics
   PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/Analyzer.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/Analyzer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Analyzer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/BasicActions.cpp
     ${CMAKE_CURRENT_LIST_DIR}/BasicActions.hpp
@@ -13,8 +13,6 @@ target_sources(Physics
     ${CMAKE_CURRENT_LIST_DIR}/BasicDirectionEffects.hpp
     ${CMAKE_CURRENT_LIST_DIR}/BasicPointEffects.cpp
     ${CMAKE_CURRENT_LIST_DIR}/BasicPointEffects.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/BasicSolver.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/BasicSolver.hpp
     ${CMAKE_CURRENT_LIST_DIR}/BodyMassCalculations.cpp
     ${CMAKE_CURRENT_LIST_DIR}/BodyMassCalculations.hpp
     ${CMAKE_CURRENT_LIST_DIR}/BoxCollider.cpp
@@ -38,20 +36,8 @@ target_sources(Physics
     ${CMAKE_CURRENT_LIST_DIR}/ComplexShapeCollision.hpp
     ${CMAKE_CURRENT_LIST_DIR}/ComponentInspectors.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ComponentInspectors.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/ConstraintAtomDefines.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/ConstraintAtoms.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ConstraintAtoms.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/ConstraintFragments.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ConstraintFragments.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/ConstraintFragmentsSse.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/ConstraintHelpers.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ConstraintHelpers.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/ConstraintMolecules.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ConstraintMolecules.hpp
     ${CMAKE_CURRENT_LIST_DIR}/ConstraintRanges.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ConstraintRanges.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/Contact.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Contact.hpp
     ${CMAKE_CURRENT_LIST_DIR}/ContactManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ContactManager.hpp
     ${CMAKE_CURRENT_LIST_DIR}/ContactPoint.cpp
@@ -64,14 +50,10 @@ target_sources(Physics
     ${CMAKE_CURRENT_LIST_DIR}/CoreActions.hpp
     ${CMAKE_CURRENT_LIST_DIR}/CustomCollisionEventTracker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/CustomCollisionEventTracker.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/CustomJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/CustomJoint.hpp
     ${CMAKE_CURRENT_LIST_DIR}/CustomPhysicsEffect.cpp
     ${CMAKE_CURRENT_LIST_DIR}/CustomPhysicsEffect.hpp
     ${CMAKE_CURRENT_LIST_DIR}/CylinderCollider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/CylinderCollider.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/DebugDrawFragments.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/DebugDrawFragments.hpp
     ${CMAKE_CURRENT_LIST_DIR}/DebugDrawHelpers.cpp
     ${CMAKE_CURRENT_LIST_DIR}/DebugDrawHelpers.hpp
     ${CMAKE_CURRENT_LIST_DIR}/DebugFlags.hpp
@@ -81,23 +63,15 @@ target_sources(Physics
     ${CMAKE_CURRENT_LIST_DIR}/DynamicMotor.hpp
     ${CMAKE_CURRENT_LIST_DIR}/EllipsoidCollider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/EllipsoidCollider.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/FixedAngleJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/FixedAngleJoint.hpp
     ${CMAKE_CURRENT_LIST_DIR}/FlowEffect.cpp
     ${CMAKE_CURRENT_LIST_DIR}/FlowEffect.hpp
     ${CMAKE_CURRENT_LIST_DIR}/ForwardDeclarations.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/GearJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/GearJoint.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/GenericBasicSolver.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/GenericBasicSolver.hpp
     ${CMAKE_CURRENT_LIST_DIR}/GenericPhysicsMesh.cpp
     ${CMAKE_CURRENT_LIST_DIR}/GenericPhysicsMesh.hpp
     ${CMAKE_CURRENT_LIST_DIR}/GjkDebug.cpp
     ${CMAKE_CURRENT_LIST_DIR}/GjkDebug.hpp
     ${CMAKE_CURRENT_LIST_DIR}/HeightMapCollider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/HeightMapCollider.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/IConstraintSolver.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/IConstraintSolver.hpp
     ${CMAKE_CURRENT_LIST_DIR}/IgnoreSpaceEffects.cpp
     ${CMAKE_CURRENT_LIST_DIR}/IgnoreSpaceEffects.hpp
     ${CMAKE_CURRENT_LIST_DIR}/Integrators.cpp
@@ -108,37 +82,15 @@ target_sources(Physics
     ${CMAKE_CURRENT_LIST_DIR}/Island.hpp
     ${CMAKE_CURRENT_LIST_DIR}/IslandManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/IslandManager.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/Joint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Joint.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointConfigOverride.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointConfigOverride.hpp
     ${CMAKE_CURRENT_LIST_DIR}/JointCreator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/JointCreator.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointData.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointData.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointDebugDrawConfig.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointDebugDrawConfig.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointEnums.hpp
     ${CMAKE_CURRENT_LIST_DIR}/JointEvents.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointEvents.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointIncludes.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointLimit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointLimit.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointList.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointMotor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointMotor.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointSpring.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/JointSpring.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/LinearAxisJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/LinearAxisJoint.hpp
     ${CMAKE_CURRENT_LIST_DIR}/Manifold.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Manifold.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/ManipulatorJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ManipulatorJoint.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/MassOverride.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MassOverride.hpp
     ${CMAKE_CURRENT_LIST_DIR}/Masses.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Masses.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/MassOverride.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MassOverride.hpp
     ${CMAKE_CURRENT_LIST_DIR}/MeshCollider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MeshCollider.hpp
     ${CMAKE_CURRENT_LIST_DIR}/MeshDebug.cpp
@@ -149,10 +101,6 @@ target_sources(Physics
     ${CMAKE_CURRENT_LIST_DIR}/MultiConvexMesh.hpp
     ${CMAKE_CURRENT_LIST_DIR}/MultiConvexMeshCollider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MultiConvexMeshCollider.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/NormalSolver.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/NormalSolver.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/PhyGunJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/PhyGunJoint.hpp
     ${CMAKE_CURRENT_LIST_DIR}/PhysicsCar.cpp
     ${CMAKE_CURRENT_LIST_DIR}/PhysicsCar.hpp
     ${CMAKE_CURRENT_LIST_DIR}/PhysicsCarWheel.cpp
@@ -189,47 +137,22 @@ target_sources(Physics
     ${CMAKE_CURRENT_LIST_DIR}/PhysicsSpace.hpp
     ${CMAKE_CURRENT_LIST_DIR}/PhysicsStandard.cpp
     ${CMAKE_CURRENT_LIST_DIR}/PhysicsStandard.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/PositionCorrectionFragments.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/PositionCorrectionFragments.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/PositionJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/PositionJoint.hpp
     ${CMAKE_CURRENT_LIST_DIR}/Precompiled.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Precompiled.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/Precompiled.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/PrismaticJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/PrismaticJoint.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/PrismaticJoint2d.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/PrismaticJoint2d.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/PulleyJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/PulleyJoint.hpp
     ${CMAKE_CURRENT_LIST_DIR}/RayCast.cpp
     ${CMAKE_CURRENT_LIST_DIR}/RayCast.hpp
     ${CMAKE_CURRENT_LIST_DIR}/Region.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Region.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/RelativeVelocityJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/RelativeVelocityJoint.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/RevoluteJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/RevoluteJoint.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/RevoluteJoint2d.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/RevoluteJoint2d.hpp
     ${CMAKE_CURRENT_LIST_DIR}/RigidBody.cpp
     ${CMAKE_CURRENT_LIST_DIR}/RigidBody.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/SerializationFragments.hpp
     ${CMAKE_CURRENT_LIST_DIR}/ShapeCollision.hpp
     ${CMAKE_CURRENT_LIST_DIR}/ShapeCollisionHelpers.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ShapeCollisionHelpers.hpp
     ${CMAKE_CURRENT_LIST_DIR}/SimpleShapeCollision.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/SolverFragments.hpp
     ${CMAKE_CURRENT_LIST_DIR}/SphereCollider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/SphereCollider.hpp
     ${CMAKE_CURRENT_LIST_DIR}/SpringSystem.cpp
     ${CMAKE_CURRENT_LIST_DIR}/SpringSystem.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/StickJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/StickJoint.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/TemplatedFragments.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/ThreadedFragments.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/ThreadedSolver.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ThreadedSolver.hpp
     ${CMAKE_CURRENT_LIST_DIR}/ThrustEffect.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ThrustEffect.hpp
     ${CMAKE_CURRENT_LIST_DIR}/TimeOfImpact.cpp
@@ -238,22 +161,99 @@ target_sources(Physics
     ${CMAKE_CURRENT_LIST_DIR}/TimeOfImpactDebug.hpp
     ${CMAKE_CURRENT_LIST_DIR}/TorqueEffect.cpp
     ${CMAKE_CURRENT_LIST_DIR}/TorqueEffect.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/UniversalJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/UniversalJoint.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/UprightJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/UprightJoint.hpp
     ${CMAKE_CURRENT_LIST_DIR}/VortexEffect.cpp
     ${CMAKE_CURRENT_LIST_DIR}/VortexEffect.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/WeldJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/WeldJoint.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/WheelJoint.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/WheelJoint.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/WheelJoint2d.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/WheelJoint2d.hpp
     ${CMAKE_CURRENT_LIST_DIR}/WindEffect.cpp
     ${CMAKE_CURRENT_LIST_DIR}/WindEffect.hpp
     ${CMAKE_CURRENT_LIST_DIR}/WorldTransformation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/WorldTransformation.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/BasicSolver.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/BasicSolver.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ConstraintAtomDefines.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ConstraintAtoms.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ConstraintAtoms.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ConstraintFragments.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ConstraintFragments.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ConstraintFragmentsSse.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ConstraintHelpers.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ConstraintHelpers.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ConstraintMolecules.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ConstraintMolecules.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/Contact.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/Contact.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/CustomJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/CustomJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/DebugDrawFragments.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/DebugDrawFragments.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/FixedAngleJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/FixedAngleJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/GearJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/GearJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/GenericBasicSolver.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/GenericBasicSolver.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/IConstraintSolver.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/IConstraintSolver.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/Joint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/Joint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointConfigOverride.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointConfigOverride.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointData.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointData.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointDebugDrawConfig.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointDebugDrawConfig.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointEnums.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointEvents.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointIncludes.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointLimit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointLimit.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointList.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointMotor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointMotor.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointSpring.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/JointSpring.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/LinearAxisJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/LinearAxisJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ManipulatorJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ManipulatorJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/NormalSolver.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/NormalSolver.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/PhyGunJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/PhyGunJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/PositionCorrectionFragments.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/PositionCorrectionFragments.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/PositionJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/PositionJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/Precompiled.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/PrismaticJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/PrismaticJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/PrismaticJoint2d.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/PrismaticJoint2d.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/PulleyJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/PulleyJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/RelativeVelocityJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/RelativeVelocityJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/RevoluteJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/RevoluteJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/RevoluteJoint2d.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/RevoluteJoint2d.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/SerializationFragments.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/SolverFragments.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/StickJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/StickJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/TemplatedFragments.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ThreadedFragments.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ThreadedSolver.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/ThreadedSolver.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/UniversalJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/UniversalJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/UprightJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/UprightJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/WeldJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/WeldJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/WheelJoint.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/WheelJoint.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/WheelJoint2d.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Joints/WheelJoint2d.hpp
 )
 
 plasma_target_includes(Physics

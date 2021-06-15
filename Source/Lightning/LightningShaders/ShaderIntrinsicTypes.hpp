@@ -66,7 +66,7 @@ struct ComputeFragmentUserData
 };
 
 /// This is a hack type used for binding instructions that require a unsigned int
-/// while dealing with zilch not actually having any unsigned types.
+/// while dealing with lightning not actually having any unsigned types.
 class UnsignedInt
 {
   LightningDeclareType(UnsignedInt, TypeCopyMode::ValueType);

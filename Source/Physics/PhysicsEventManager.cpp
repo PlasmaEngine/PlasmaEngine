@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -9,6 +8,7 @@ namespace Physics
 
 PhysicsEventManager::PhysicsEventManager()
 {
+
 }
 
 PhysicsEventManager::~PhysicsEventManager()
@@ -17,7 +17,7 @@ PhysicsEventManager::~PhysicsEventManager()
   // leak when they kill a space
 
   CollisionEvents::range range = mCollisionEvents.All();
-  while (!range.Empty())
+  while(!range.Empty())
   {
     CollisionEvent* e = range.Front();
     range.PopFront();
@@ -26,7 +26,7 @@ PhysicsEventManager::~PhysicsEventManager()
   mCollisionEvents.Clear();
 
   JointEventList::range jointRange = mJointEvents.All();
-  while (!jointRange.Empty())
+  while(!jointRange.Empty())
   {
     JointEvent* event = &(jointRange.Front());
     jointRange.PopFront();
@@ -35,7 +35,7 @@ PhysicsEventManager::~PhysicsEventManager()
   mJointEvents.Clear();
 
   CollisionGroupEvents::range groupRange = mCollisionGroupEvents.All();
-  while (!groupRange.Empty())
+  while(!groupRange.Empty())
   {
     CollisionGroupEvent* e = groupRange.Front();
     groupRange.PopFront();
@@ -69,26 +69,25 @@ void PhysicsEventManager::BatchPreSolveEvent(Manifold* manifold, PhysicsSpace* s
 {
   // If the filter doesn't exist, there's nothing to do
   CollisionFilter* f = GetFilter(manifold, space);
-  if (f == nullptr)
+  if(f == nullptr)
     return;
 
   // If the flag is not set, don't bother searching
-  if (!f->mFilterFlags.IsSet(FilterFlags::PreSolveEvent))
+  if(!f->mFilterFlags.IsSet(FilterFlags::PreSolveEvent))
     return;
 
-  // Find the appropriate block (n search of 4 items..., could pre-sort if I
-  // care later)
+  // Find the appropriate block (n search of 4 items..., could pre-sort if I care later)
   CollisionFilterBlock* block = nullptr;
-  for (uint i = 0; i < f->mBlocks.Size(); ++i)
+  for(uint i = 0; i < f->mBlocks.Size(); ++i)
   {
-    if (f->mBlocks[i]->mBlockType == FilterFlags::PreSolveEvent)
+    if(f->mBlocks[i]->mBlockType == FilterFlags::PreSolveEvent)
     {
       block = f->mBlocks[i];
       break;
     }
   }
   // If we didn't find it bail
-  if (block == nullptr)
+  if(block == nullptr)
     return;
 
   // Now batch the event to be sent
@@ -113,7 +112,7 @@ JointEvent* PhysicsEventManager::BatchJointEvent(Joint* joint, StringParam event
 void PhysicsEventManager::DispatchEvents(PhysicsSpace* space)
 {
   CollisionEvents::range range = mCollisionEvents.All();
-  for (; !range.Empty(); range.PopFront())
+  for(; !range.Empty(); range.PopFront())
   {
     CollisionEvent* eventObj = range.Front();
     DispatchEvent(eventObj);
@@ -121,7 +120,7 @@ void PhysicsEventManager::DispatchEvents(PhysicsSpace* space)
   mCollisionEvents.Clear();
 
   // Safe as long as we still have events
-  while (!mJointEvents.Empty())
+  while(!mJointEvents.Empty())
   {
     JointEvent* eventObj = &(mJointEvents.Front());
     mJointEvents.PopFront();
@@ -133,7 +132,7 @@ void PhysicsEventManager::DispatchEvents(PhysicsSpace* space)
 
   // Send the group events to objectA, B or the space if they want it
   CollisionGroupEvents::range groupRange = mCollisionGroupEvents.All();
-  for (; !groupRange.Empty(); groupRange.PopFront())
+  for(; !groupRange.Empty(); groupRange.PopFront())
   {
     CollisionGroupEvent* eventObj = groupRange.Front();
     DispatchEvent(space, eventObj);
@@ -143,28 +142,26 @@ void PhysicsEventManager::DispatchEvents(PhysicsSpace* space)
 
 void PhysicsEventManager::DispatchPreSolveEvents(PhysicsSpace* space)
 {
-  while (!mPreSolveEvents.Empty())
+  while(!mPreSolveEvents.Empty())
   {
     PreSolveEvent* e = &mPreSolveEvents.Front();
     mPreSolveEvents.PopFront();
 
-    // Cache the cogs we might send events to (cleans up the object index
-    // swapping)
+    // Cache the cogs we might send events to (cleans up the object index swapping)
     Cog* objA = e->GetObject();
     Cog* objB = e->GetOtherObject();
 
     // Send to A if the block allows us to
-    if (e->mBlock->mStates.IsSet(CollisionBlockStates::SendEventsToA))
+    if(e->mBlock->mStates.IsSet(CollisionBlockStates::SendEventsToA))
       objA->GetDispatcher()->Dispatch(e->EventId, e);
     // Send to B (make sure to swap the index first)
-    if (e->mBlock->mStates.IsSet(CollisionBlockStates::SendEventsToB))
+    if(e->mBlock->mStates.IsSet(CollisionBlockStates::SendEventsToB))
     {
       e->mObjectIndex = !e->mObjectIndex;
       objB->GetDispatcher()->Dispatch(e->EventId, e);
     }
-    // send to the space (it gets B's ordering, but that shouldn't really
-    // matter)
-    if (e->mBlock->mStates.IsSet(CollisionBlockStates::SendEventsToSpace))
+    //send to the space (it gets B's ordering, but that shouldn't really matter)
+    if(e->mBlock->mStates.IsSet(CollisionBlockStates::SendEventsToSpace))
       space->GetOwner()->GetDispatcher()->Dispatch(e->EventId, e);
 
     delete e;
@@ -181,34 +178,33 @@ CollisionFilter* PhysicsEventManager::GetFilter(Manifold* manifold, PhysicsSpace
   return space->mCollisionTable->FindFilter(pair);
 }
 
-void PhysicsEventManager::CreateEvent(
-    Physics::Manifold* manifold, PhysicsSpace* space, uint collisionType, uint blockType, bool immediateSend)
+void PhysicsEventManager::CreateEvent(Physics::Manifold* manifold, PhysicsSpace* space,
+                                      uint collisionType, uint blockType, bool immediateSend)
 {
   // Always send the normal collision event (whether or not this is
-  // correct behavior I'll worry about later, right now it should never be
-  // blocked though)
+  // correct behavior I'll worry about later, right now it should never be blocked though)
   BaseCollisionEvent::CollisionType typedCollision = (BaseCollisionEvent::CollisionType)collisionType;
   this->CreateCollisionEvent(manifold, 0, collisionType, CollisionEvent::GetEventName(typedCollision), immediateSend);
 
   // Grab the filter for the two objects in the manifold
   CollisionFilter* f = GetFilter(manifold, space);
-
+  
   // If there was no filter, we can't do anything
-  if (f == nullptr)
+  if(f == nullptr)
     return;
 
   // Otherwise, first check to see if the filter has the block type we're
   // looking for, if it doesn't there's no point in continuing
   CollisionFilter& filter = *f;
-  if (!filter.mFilterFlags.IsSet(blockType))
+  if(!filter.mFilterFlags.IsSet(blockType))
     return;
-
+  
   // Now find the appropriate block by searching for it
   // (n search of 4 items..., could pre-sort if I care later)
   CollisionFilterBlock* block = nullptr;
-  for (uint i = 0; i < filter.mBlocks.Size(); ++i)
+  for(uint i = 0; i < filter.mBlocks.Size(); ++i)
   {
-    if (filter.mBlocks[i]->mBlockType == blockType)
+    if(filter.mBlocks[i]->mBlockType == blockType)
     {
       block = filter.mBlocks[i];
       break;
@@ -216,13 +212,13 @@ void PhysicsEventManager::CreateEvent(
   }
 
   // If we didn't find the block then there's no events to send
-  if (block == nullptr)
+  if(block == nullptr)
     return;
 
   // See if the block sends out the normal event name or
   // if it has a custom event name being sent
   String eventName;
-  if (!block->mEventOverride.Empty())
+  if(!block->mEventOverride.Empty())
     eventName = block->mEventOverride;
   else
     eventName = CollisionGroupEvent::GetEventName(typedCollision);
@@ -236,38 +232,33 @@ void PhysicsEventManager::CreateEvent(
 
   // If we need to send the even right away (object destruction) then do so,
   // otherwise queue up the event to be batch sent with all the others
-  if (immediateSend)
+  if(immediateSend)
     DispatchEvent(space, eventObj);
   else
     AddEvent(eventObj);
 }
 
-void PhysicsEventManager::CreateCollisionEvent(
-    Manifold* manifold, uint contactId, uint eventType, StringParam collisionType, bool immediateSend)
+void PhysicsEventManager::CreateCollisionEvent(Manifold* manifold, uint contactId, uint eventType, StringParam collisionType, bool immediateSend)
 {
   ManifoldPoint& point = manifold->Contacts[contactId];
   CollisionEvent* eventObj;
   eventObj = CreateCollisionEventInternal(manifold, point, eventType, collisionType);
-  if (eventObj)
+  if(eventObj)
   {
     eventObj->mContactIndex = contactId;
 
-    // If we immediate send then dispatch now (object destruction) otherwise
-    // batch it up
-    if (immediateSend)
+    // If we immediate send then dispatch now (object destruction) otherwise batch it up
+    if(immediateSend)
       DispatchEvent(eventObj);
     else
       AddEvent(eventObj);
   }
 }
 
-CollisionEvent* PhysicsEventManager::CreateCollisionEventInternal(Manifold* manifold,
-                                                                  ManifoldPoint& point,
-                                                                  uint eventType,
-                                                                  StringParam collisionType)
+CollisionEvent* PhysicsEventManager::CreateCollisionEventInternal(Manifold* manifold, ManifoldPoint& point, uint eventType, StringParam collisionType)
 {
   // Make sure that the objects send events (optimization) and events of type
-  if (!manifold->GetSendsMessages())
+  if(!manifold->GetSendsMessages())
     return nullptr;
 
   CollisionEvent* eventObj = new CollisionEvent();
@@ -293,8 +284,7 @@ void PhysicsEventManager::AddEvent(JointEvent* eventObj)
 
 void PhysicsEventManager::DispatchEvent(CollisionEvent* toSend)
 {
-  // Update the cached point that triggered the event (to grab impulse info
-  // mainly)
+  // Update the cached point that triggered the event (to grab impulse info mainly)
   toSend->UpdatePoint();
 
   // Cache the two objects we might send events to
@@ -303,11 +293,11 @@ void PhysicsEventManager::DispatchEvent(CollisionEvent* toSend)
   Collider* objB = toSend->GetOtherCollider();
 
   // Dispatch to A if it sends events
-  if (objA->mState.IsSet(ColliderFlags::SendsEvents))
+  if(objA->mState.IsSet(ColliderFlags::SendsEvents))
     objA->GetDispatcher()->Dispatch(toSend->mEventType, toSend);
   // Same for B, however first swap the object index
   // (effectively swaps the internal data such that A is now B and B is now A)
-  if (objB->mState.IsSet(ColliderFlags::SendsEvents))
+  if(objB->mState.IsSet(ColliderFlags::SendsEvents))
   {
     toSend->mObjectIndex = !toSend->mObjectIndex;
     objB->GetDispatcher()->Dispatch(toSend->mEventType, toSend);
@@ -318,8 +308,7 @@ void PhysicsEventManager::DispatchEvent(CollisionEvent* toSend)
 
 void PhysicsEventManager::DispatchEvent(PhysicsSpace* space, CollisionGroupEvent* toSend)
 {
-  // Cache the cogs we might send events to (cleans up the object index
-  // swapping)
+  // Cache the cogs we might send events to (cleans up the object index swapping)
   Cog* objA = toSend->GetObject();
   Cog* objB = toSend->GetOtherObject();
 
@@ -337,13 +326,13 @@ void PhysicsEventManager::DispatchEvent(PhysicsSpace* space, CollisionGroupEvent
 
 void PhysicsEventManager::DispatchGroupEvent(Cog* obj, CollisionGroupEvent* eventObj, uint filterFlag)
 {
-  if (!eventObj->mBlock->mStates.IsSet(filterFlag))
+  if(!eventObj->mBlock->mStates.IsSet(filterFlag))
     return;
 
   EventDispatcher* dispatcher = obj->GetDispatcher();
   dispatcher->Dispatch(eventObj->mEventType, eventObj);
 }
 
-} // namespace Physics
+}//namespace Physics
 
-} // namespace Plasma
+}//namespace Plasma

@@ -87,11 +87,11 @@ void RESOURCE_NAME_::SetHealth(float value)
 }
 
 //***************************************************************************
-ZilchDefineType(RESOURCE_NAME_Event, builder, type)
+LightninghDefineType(RESOURCE_NAME_Event, builder, type)
 {
   // This is required for event binding
-  ZilchBindDestructor();
-  ZilchBindConstructor();
+  LightningBindDestructor();
+  LightningBindConstructor();
   
-  ZilchBindFieldProperty(mLives);
+  LightningBindFieldProperty(mLives);
 }

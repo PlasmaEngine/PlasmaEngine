@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -6,9 +5,10 @@ namespace Plasma
 
 namespace Tags
 {
-DefineTag(Physics);
+  DefineTag(Physics);
 }
 
+//-------------------------------------------------------------------SweepResult
 LightningDefineType(SweepResult, builder, type)
 {
   LightningBindDefaultCopyDestructor();
@@ -58,18 +58,22 @@ Vec3 SweepResult::GetWorldNormalTowardsOther()
   return -mWorldNormalTowardsSelf;
 }
 
-SweepResultRange::SweepResultRange(const SweepResultArray& array) : mArray(array)
+//-------------------------------------------------------------------SweepResultRange
+SweepResultRange::SweepResultRange(const SweepResultArray& array)
+  : mArray(array)
 {
   mRange = mArray.All();
 }
 
-SweepResultRange::SweepResultRange(const SweepResultRange& other) : mArray(other.mArray)
+SweepResultRange::SweepResultRange(const SweepResultRange& other)
+  : mArray(other.mArray)
 {
   mRange = mArray.All();
 }
 
-SweepResultRange::~SweepResultRange()
+SweepResultRange:: ~SweepResultRange()
 {
+
 }
 
 bool SweepResultRange::Empty()
@@ -89,9 +93,10 @@ void SweepResultRange::PopFront()
 
 uint SweepResultRange::Size()
 {
-  return static_cast<uint>(mRange.Size());
+  return (uint)mRange.Size();
 }
 
+//-------------------------------------------------------------------ClientPairSorter
 bool ClientPairSorter(ClientPair& a, ClientPair& b)
 {
   // Get the client data
@@ -107,6 +112,7 @@ bool ClientPairSorter(ClientPair& a, ClientPair& b)
   return pairA > pairB;
 }
 
+//-------------------------------------------------------------------PhysicsSpace
 LightningDefineType(PhysicsSpace, builder, type)
 {
   PlasmaBindSetup(SetupMode::DefaultSerialization);
@@ -131,7 +137,7 @@ LightningDefineType(PhysicsSpace, builder, type)
   // Broad-phase types
   LightningBindFieldProperty(mDynamicBroadphaseType)->Add(new DynamicBroadphasePropertyExtension());
   LightningBindFieldProperty(mStaticBroadphaseType)->Add(new StaticBroadphasePropertyExtension());
-
+  
   LightningBindMethod(AddPairFilter);
   LightningBindMethod(AddHierarchyPairFilter);
   LightningBindMethod(RemovePairFilter);
@@ -154,11 +160,9 @@ LightningDefineType(PhysicsSpace, builder, type)
   LightningBindOverloadedMethod(CastCollider, LightningInstanceOverload(CastResultsRange, Vec3Param, Collider*, CastFilter&));
   // Event Dispatching in Region
   LightningBindOverloadedMethod(DispatchWithinSphere, LightningInstanceOverload(void, const Sphere&, StringParam, Event*));
-  LightningBindOverloadedMethod(DispatchWithinSphere,
-                            LightningInstanceOverload(void, const Sphere&, CastFilter&, StringParam, Event*));
+  LightningBindOverloadedMethod(DispatchWithinSphere, LightningInstanceOverload(void, const Sphere&, CastFilter&, StringParam, Event*));
   LightningBindOverloadedMethod(DispatchWithinAabb, LightningInstanceOverload(void, const Aabb&, StringParam, Event*));
-  LightningBindOverloadedMethod(DispatchWithinAabb,
-                            LightningInstanceOverload(void, const Aabb&, CastFilter&, StringParam, Event*));
+  LightningBindOverloadedMethod(DispatchWithinAabb, LightningInstanceOverload(void, const Aabb&, CastFilter&, StringParam, Event*));
 
   // Extra collider detection methods
   LightningBindMethod(SweepCollider);
@@ -167,12 +171,24 @@ LightningDefineType(PhysicsSpace, builder, type)
   LightningBindMethod(CreateJoint);
   LightningBindMethod(WhyAreTheyNotColliding);
 
-  // Debugging features for Josh. Disabled for all users for now
-  // LightningBindGetterSetterProperty(IslandingType);
-  // LightningBindGetterSetterProperty(IslandPreProcessType);
-  // LightningBindGetterSetterProperty(PostProcessIslands);
-  // LightningBindGetterSetterProperty(IsSolverShared);
-  // LightningBindGetter(IslandCount);
+  // Debugging features. Disabled for all users for now
+  //bool inDevConfig = PL::gEngine->GetConfigCog()->has(Zero::DeveloperConfig) != nullptr;
+  //if(inDevConfig)
+  //{
+  //  LightningBindGetterSetterProperty(IslandingType);
+  //  LightningBindGetterSetterProperty(IslandPreProcessType);
+  //  LightningBindGetterSetterProperty(PostProcessIslands);
+  //  LightningBindGetterSetterProperty(IsSolverShared);
+  //  LightningBindGetter(IslandCount);
+  //}
+  //else
+  //{
+  //  LightningBindGetterSetter(IslandingType);
+  //  LightningBindGetterSetter(IslandPreProcessType);
+  //  LightningBindGetterSetter(PostProcessIslands);
+  //  LightningBindGetterSetter(IsSolverShared);
+  //  LightningBindGetter(IslandCount);
+  //}
 }
 
 PhysicsSpace::PhysicsSpace()
@@ -197,7 +213,7 @@ PhysicsSpace::PhysicsSpace()
 PhysicsSpace::~PhysicsSpace()
 {
   PhysicsEffectList::range range = mGlobalEffects.All();
-  while (!range.Empty())
+  while(!range.Empty())
   {
     PhysicsEffect& effect = range.Front();
     range.PopFront();
@@ -250,7 +266,7 @@ void PhysicsSpace::Initialize(CogInitializer& initializer)
   // Switch the static broadphase to the DynamicAabbTree if in
   // editor mode (so moving static objects isn't slow)
   String staticBroadPhaseType = mStaticBroadphaseType;
-  if (GetOwner()->GetSpace()->IsEditorMode())
+  if(GetOwner()->GetSpace()->IsEditorMode())
     staticBroadPhaseType = LightningTypeId(DynamicAabbTreeBroadPhase)->Name;
 
   BroadPhaseLibrary* library = PL::gBroadPhaseLibrary;
@@ -328,7 +344,7 @@ void PhysicsSpace::SetIsSolverShared(bool shared)
 
 void PhysicsSpace::AddPairFilter(Cog* cog1, Cog* cog2)
 {
-  if (cog1 == nullptr || cog2 == nullptr)
+  if(cog1 == nullptr || cog2 == nullptr)
   {
     DoNotifyException("Invalid parameters", "Invalid cogs passed in to AddPairFilter. One of them is null");
     return;
@@ -336,7 +352,7 @@ void PhysicsSpace::AddPairFilter(Cog* cog1, Cog* cog2)
 
   Collider* collider0 = cog1->has(Collider);
   Collider* collider1 = cog2->has(Collider);
-  if (collider0 == nullptr || collider1 == nullptr)
+  if(collider0 == nullptr || collider1 == nullptr)
     return;
 
   AddPairFilterInternal(collider0, collider1);
@@ -344,17 +360,15 @@ void PhysicsSpace::AddPairFilter(Cog* cog1, Cog* cog2)
 
 void PhysicsSpace::AddHierarchyPairFilter(Cog* cog1, Cog* cog2)
 {
-  if (cog1 == nullptr || cog2 == nullptr)
+  if(cog1 == nullptr || cog2 == nullptr)
   {
-    DoNotifyException("Invalid parameters",
-                      "Invalid cogs passed in to AddHierarchyPairFilter. One "
-                      "of them is null");
+    DoNotifyException("Invalid parameters", "Invalid cogs passed in to AddHierarchyPairFilter. One of them is null");
     return;
   }
 
   AddHierarchyPairFilterInternal(cog1, cog2);
   HierarchyRange range = HierarchyRange::SubTree(cog2);
-  for (; !range.Empty(); range.PopFront())
+  for(; !range.Empty(); range.PopFront())
   {
     AddHierarchyPairFilterInternal(cog1, &range.Front());
   }
@@ -363,20 +377,20 @@ void PhysicsSpace::AddHierarchyPairFilter(Cog* cog1, Cog* cog2)
 void PhysicsSpace::AddHierarchyPairFilterInternal(Cog* hierarchyCog, Cog* normalCog)
 {
   Collider* normalCollider = normalCog->has(Collider);
-  if (normalCollider == nullptr)
+  if(normalCollider == nullptr)
     return;
 
   // HierarchyRange::SubTree doesn't include the cog itself,
   // so add a pair filter for the root manually
   Collider* hierarchyCollider = hierarchyCog->has(Collider);
-  if (hierarchyCollider != nullptr)
+  if(hierarchyCollider != nullptr)
     AddPairFilterInternal(hierarchyCollider, normalCollider);
 
   HierarchyRange range = HierarchyRange::SubTree(hierarchyCog);
-  for (; !range.Empty(); range.PopFront())
+  for(; !range.Empty(); range.PopFront())
   {
     Collider* collider1 = range.Front().has(Collider);
-    if (collider1 != nullptr)
+    if(collider1 != nullptr)
       AddPairFilterInternal(collider1, normalCollider);
   }
 }
@@ -394,7 +408,7 @@ void PhysicsSpace::AddPairFilterInternal(Collider* collider1, Collider* collider
 
 void PhysicsSpace::RemovePairFilter(Cog* cog1, Cog* cog2)
 {
-  if (cog1 == nullptr || cog2 == nullptr)
+  if(cog1 == nullptr || cog2 == nullptr)
   {
     DoNotifyException("Invalid parameters", "Invalid cogs passed in to RemovePairFilter. One of them are null");
     return;
@@ -402,7 +416,7 @@ void PhysicsSpace::RemovePairFilter(Cog* cog1, Cog* cog2)
 
   Collider* collider1 = cog1->has(Collider);
   Collider* collider2 = cog2->has(Collider);
-  if (collider1 == nullptr || collider2 == nullptr)
+  if(collider1 == nullptr || collider2 == nullptr)
     return;
 
   RemovePairFilterInternal(collider1, collider2);
@@ -410,17 +424,15 @@ void PhysicsSpace::RemovePairFilter(Cog* cog1, Cog* cog2)
 
 void PhysicsSpace::RemoveHierarchyPairFilter(Cog* cog1, Cog* cog2)
 {
-  if (cog1 == nullptr || cog2 == nullptr)
+  if(cog1 == nullptr || cog2 == nullptr)
   {
-    DoNotifyException("Invalid parameters",
-                      "Invalid cogs passed in to RemoveHierarchyPairFilter. "
-                      "One of them are null");
+    DoNotifyException("Invalid parameters", "Invalid cogs passed in to RemoveHierarchyPairFilter. One of them are null");
     return;
   }
 
   RemoveHierarchyPairFilterInternal(cog1, cog2);
   HierarchyRange range = HierarchyRange::SubTree(cog2);
-  for (; !range.Empty(); range.PopFront())
+  for(; !range.Empty(); range.PopFront())
   {
     RemoveHierarchyPairFilterInternal(cog1, &range.Front());
   }
@@ -429,27 +441,27 @@ void PhysicsSpace::RemoveHierarchyPairFilter(Cog* cog1, Cog* cog2)
 void PhysicsSpace::RemoveHierarchyPairFilterInternal(Cog* hierarchyCog, Cog* normalCog)
 {
   Collider* normalCollider = normalCog->has(Collider);
-  if (normalCollider == nullptr)
+  if(normalCollider == nullptr)
     return;
 
   // HierarchyRange::SubTree doesn't include the cog itself,
   // so remove a pair filter for the root manually
   Collider* hierarchyCollider = hierarchyCog->has(Collider);
-  if (hierarchyCollider != nullptr)
+  if(hierarchyCollider != nullptr)
     RemovePairFilterInternal(hierarchyCollider, normalCollider);
 
   HierarchyRange range = HierarchyRange::SubTree(hierarchyCog);
-  for (; !range.Empty(); range.PopFront())
+  for(; !range.Empty(); range.PopFront())
   {
     Collider* collider1 = range.Front().has(Collider);
-    if (collider1 != nullptr)
+    if(collider1 != nullptr)
       RemovePairFilterInternal(collider1, normalCollider);
   }
 }
 
 void PhysicsSpace::RemovePairFilterInternal(Collider* collider1, Collider* collider2)
 {
-  if (!collider1->GetHasPairFilter() || !collider2->GetHasPairFilter())
+  if(!collider1->GetHasPairFilter() || !collider2->GetHasPairFilter())
     return;
 
   u32 id1 = CogId(collider1->GetOwner()).GetId();
@@ -459,9 +471,10 @@ void PhysicsSpace::RemovePairFilterInternal(Collider* collider1, Collider* colli
   mFilteredPairs.Erase(packedId);
 }
 
-Cog* PhysicsSpace::CreateJoint(Cog* cog0, Cog* cog1, StringParam jointName, Vec3Param worldPoint)
+Cog* PhysicsSpace::CreateJoint(Cog* cog0, Cog* cog1, StringParam jointName,
+                               Vec3Param worldPoint)
 {
-  if (cog0 == nullptr || cog1 == nullptr)
+  if(cog0 == nullptr || cog1 == nullptr)
   {
     String msg = String::Format("Either Cog0 (%p) or Cog1 (%p) is null.", cog0, cog1);
     DoNotifyException("Invalid object(s) in joint connection", msg);
@@ -479,24 +492,24 @@ bool PhysicsSpace::GetMode2D() const
 
 void PhysicsSpace::SetMode2D(bool state)
 {
-  mStateFlags.SetState(PhysicsSpaceFlags::Mode2D, state);
+  mStateFlags.SetState(PhysicsSpaceFlags::Mode2D,state);
 
   // Since we changed our default state we need to iterate over all
   // rigid bodies and force update any that were set to InheritFromSpace
   RigidBodyList::range r = mRigidBodies.All();
-  for (; !r.Empty(); r.PopFront())
+  for(; !r.Empty(); r.PopFront())
     r.Front().UpdateMode2D();
   r = mInactiveRigidBodies.All();
-  for (; !r.Empty(); r.PopFront())
+  for(; !r.Empty(); r.PopFront())
     r.Front().UpdateMode2D();
   r = mMovingKinematicBodies.All();
-  for (; !r.Empty(); r.PopFront())
+  for(; !r.Empty(); r.PopFront())
     r.Front().UpdateMode2D();
   r = mStoppedKinematicBodies.All();
-  for (; !r.Empty(); r.PopFront())
+  for(; !r.Empty(); r.PopFront())
     r.Front().UpdateMode2D();
   r = mInactiveKinematicBodies.All();
-  for (; !r.Empty(); r.PopFront())
+  for(; !r.Empty(); r.PopFront())
     r.Front().UpdateMode2D();
 }
 
@@ -521,7 +534,7 @@ void PhysicsSpace::FixColliderCollisionGroups(ColliderList& colliders)
   // If it's group doesn't exist anymore it'll get the default group.
   CollisionGroupInstance* instance;
   ColliderList::range range = colliders.All();
-  for (; !range.Empty(); range.PopFront())
+  for(; !range.Empty(); range.PopFront())
   {
     Collider& collider = range.Front();
     ResourceId resourceId = collider.mCollisionGroupInstance->mResource->mResourceId;
@@ -540,7 +553,7 @@ void PhysicsSpace::SetCollisionTable(CollisionTable* collisionTable)
 {
   // Needs to be fixed to re-establish all collider's instances as well as make
   // sure all of their instance types are registered with the filter.
-  if (collisionTable == nullptr)
+  if(collisionTable == nullptr)
     return;
 
   mCollisionTable = collisionTable;
@@ -583,38 +596,35 @@ void PhysicsSpace::FrameUpdate()
 
 void PhysicsSpace::SystemLogicUpdate(UpdateEvent* updateEvent)
 {
-  ZoneScoped;
   ProfileScopeTree("Physics", "Engine", ByteColorRGBA(232, 0, 34, 255));
 
   {
     FpuExceptionsEnabler();
 
-    // If any resources are modified then make sure to update them now (probably
-    // modified in script)
+    // If any resources are modified then make sure to update them now (probably modified in script)
     UpdateModifiedResources();
 
-    // This push is necessary to put physics into a valid state after the rest
-    // of the engine may have done things to physics
+    // This push is necessary to put physics into a valid state after the rest of the
+    // engine may have done things to physics
     PushBroadPhaseQueueProfiled();
 
     ReturnIf(mSubStepCount == 0, , "Physics is set to have no iteration steps.");
 
     // If this is a preview space, don't run the timestep. This will prevent
     // previews from integrating forces, solving joints, etc...
-    if (!GetSpace()->IsPreviewMode())
+    if(!GetSpace()->IsPreviewMode())
     {
       real frameTime = updateEvent->Dt;
       real dt = frameTime / real(mSubStepCount);
-      for (uint i = 0; i < mSubStepCount; ++i)
+      for(uint i = 0; i < mSubStepCount; ++i)
         IterateTimestep(dt);
     }
   }
 
-  // Now that we've updated our objects, tell the rest of the world what we've
-  // done.
+  // Now that we've updated our objects, tell the rest of the world what we've done.
   Publish();
 
-  SolveSprings(updateEvent->Dt);
+  SolveSprings(0.016f);
 
   Cog* owner = GetOwner();
   ObjectEvent e(owner);
@@ -645,11 +655,9 @@ void PhysicsSpace::IterateTimestep(real dt)
 {
   mIterationDt = dt;
 
-  ZoneScopedN("Iteration");
   ProfileScopeTree("Iteration", "Physics", Color::SaddleBrown);
 
   {
-    ZoneScopedN("Velocity Integration");
     ProfileScopeTree("Velocity Integration", "Iteration", Color::Goldenrod);
     PreCalculateEffects(dt);
     ApplyHierarchyEffects(dt);
@@ -657,9 +665,9 @@ void PhysicsSpace::IterateTimestep(real dt)
     IntegrateBodiesVelocity(dt);
   }
 
-  // Update the queues so that broadphase and transform are correct. It is also
-  // the appropriate time to update the kinematic states so that we can avoid
-  // calculating velocity (sometimes incorrectly) more than once a frame.
+  // Update the queues so that broadphase and transform are correct. It is also the
+  // appropriate time to update the kinematic states so that we can avoid calculating
+  // velocity (sometimes incorrectly) more than once a frame.
   PushBroadPhaseQueue();
   UpdateKinematicVelocities();
 
@@ -679,7 +687,6 @@ void PhysicsSpace::IterateTimestep(real dt)
   UpdateKinematicState();
 
   {
-    ZoneScopedN("Position Integration");
     ProfileScopeTree("Position Integration", "Iteration", Color::Goldenrod);
     IntegrateBodiesPosition(dt);
   }
@@ -688,8 +695,7 @@ void PhysicsSpace::IterateTimestep(real dt)
 
   // This needs to be done after position integration, otherwise the wheels
   // will not be at the correct spot after they change their translation
-  // from raycasting since they are positioned based upon their parent's
-  // position.
+  // from raycasting since they are positioned based upon their parent's position.
   UpdatePhysicsCarsTransforms(dt);
 
   PushBroadPhaseQueue();
@@ -699,19 +705,19 @@ void PhysicsSpace::IntegrateBodiesVelocity(real dt)
 {
   RigidBodyList::range range = mRigidBodies.All();
 
-  while (!range.Empty())
+  while(!range.Empty())
   {
     RigidBody& body = range.Front();
     range.PopFront();
 
     bool isKinematic = body.GetKinematic();
     ErrorIf(isKinematic, "Kinematic object should not be in the rigid body list.");
-
+    
     ApplyGlobalEffects(&body, dt);
     body.UpdateBodyEffects(dt);
 
     // Check for asleep bodies
-    if (body.mState.IsSet(RigidBodyStates::Asleep))
+    if(body.mState.IsSet(RigidBodyStates::Asleep))
     {
       // Change to the inactive list
       mRigidBodies.Erase(&body);
@@ -719,7 +725,7 @@ void PhysicsSpace::IntegrateBodiesVelocity(real dt)
       continue;
     }
 
-    if (!body.GetStatic())
+    if(!body.GetStatic())
       Physics::Integration::IntegrateVelocity(&body, dt);
 
     body.mForceAccumulator.ZeroOut();
@@ -731,11 +737,11 @@ void PhysicsSpace::IntegrateBodiesPosition(real dt)
 {
   RigidBodyList::range range = mRigidBodies.All();
 
-  while (!range.Empty())
+  while(!range.Empty())
   {
     RigidBody& body = range.Front();
 
-    if (!body.GetStatic())
+    if(!body.GetStatic())
     {
       Physics::Integration::IntegratePosition(&body, dt);
       // Attempt to sleep the body.
@@ -748,7 +754,6 @@ void PhysicsSpace::IntegrateBodiesPosition(real dt)
 
 void PhysicsSpace::BroadPhase()
 {
-  ZoneScopedN("BroadPhase");
   ProfileScopeTree("BroadPhase", "Iteration", Color::SaddleBrown);
   mPossiblePairs.Clear();
 
@@ -758,13 +763,14 @@ void PhysicsSpace::BroadPhase()
 
   ColliderList::range range = mDynamicColliders.All();
 
-  while (!range.Empty())
+  while(!range.Empty())
   {
     Collider& collider = range.Front();
 
-    // If the object is asleep or flagged as static, there's no reason to test
-    // it for collision.
-    if ((collider.IsAsleep() && !collider.mState.IsSet(ColliderFlags::Uninitialized)) || collider.IsStatic())
+    // If the object is asleep or flagged as static, there's no reason to test it for collision.
+    if((collider.IsAsleep()
+        && !collider.mState.IsSet(ColliderFlags::Uninitialized))
+        || collider.IsStatic())
     {
       range.PopFront();
       continue;
@@ -782,13 +788,12 @@ void PhysicsSpace::BroadPhase()
   mBroadPhase->BatchQuery(dataArray, mPossiblePairs);
 
   // Sort the pairs for determinism!
-  if (GetDeterministic())
+  if(GetDeterministic())
     Sort(mPossiblePairs.All(), &ClientPairSorter);
 }
 
 void PhysicsSpace::NarrowPhase()
 {
-  ZoneScopedN("NarrowPhase");
   ProfileScopeTree("NarrowPhase", "Iteration", Color::Salmon);
 
   HeapAllocator allocator(mHeap);
@@ -799,7 +804,7 @@ void PhysicsSpace::NarrowPhase()
   Collisions.SetAllocator(allocator);
 
   size_t size = mPossiblePairs.Size();
-  for (size_t pairIndex = 0; pairIndex < size; ++pairIndex)
+  for(size_t pairIndex = 0; pairIndex < size; ++pairIndex)
   {
     ClientPair* clientPair = &mPossiblePairs[pairIndex];
     Collider* collider1 = static_cast<Collider*>(clientPair->mClientData[0]);
@@ -808,21 +813,22 @@ void PhysicsSpace::NarrowPhase()
     ColliderPair pair(collider1, collider2);
 
     // Test for collision
-    if (!mCollisionManager->TestCollision(pair, tempManifolds))
+    if(!mCollisionManager->TestCollision(pair, tempManifolds))
     {
       tempManifolds.Clear();
       continue;
     }
 
     // If tracking is enabled, we need to record the collision
-    if (mBroadPhase->IsTracking())
+    if(mBroadPhase->IsTracking())
     {
-      NodePointerPair nodePair(clientPair->mClientData[0], clientPair->mClientData[1]);
+      NodePointerPair nodePair(clientPair->mClientData[0],
+                               clientPair->mClientData[1]);
       Collisions.PushBack(nodePair);
     }
 
     // Add all manifolds to the contact manager
-    for (size_t i = 0; i < tempManifolds.Size(); ++i)
+    for(size_t i = 0; i < tempManifolds.Size(); ++i)
     {
       Physics::Manifold& manifold = tempManifolds[i];
       mContactManager->AddManifold(tempManifolds[i]);
@@ -841,7 +847,6 @@ void PhysicsSpace::NarrowPhase()
 void PhysicsSpace::PreSolve(real dt)
 {
   // Send out pre-solve events
-  ZoneScopedN("PreSolveEvents");
   ProfileScopeTree("PreSolveEvents", "Iteration", Color::Peru);
   mEventManager->DispatchPreSolveEvents(this);
   PushBroadPhaseQueue();
@@ -850,7 +855,6 @@ void PhysicsSpace::PreSolve(real dt)
 void PhysicsSpace::ResolutionPhase(real dt)
 {
   // Solve all velocity constraints
-  ZoneScopedN("ResolutionPhase");
   ProfileScopeTree("ResolutionPhase", "Iteration", Color::OrangeRed);
   mIslandManager->Solve(dt, GetAllowSleep(), mDebugDrawFlags.Field);
 }
@@ -858,7 +862,6 @@ void PhysicsSpace::ResolutionPhase(real dt)
 void PhysicsSpace::SolvePositions(real dt)
 {
   // Solve all position constraints
-  ZoneScopedN("SolvePositions");
   ProfileScopeTree("SolvePositions", "Iteration", Color::PaleTurquoise);
   mIslandManager->SolvePositions(dt);
 }
@@ -870,7 +873,7 @@ void PhysicsSpace::SolveSprings(real dt)
   SpringGroup group;
 
   SpringSystems::range range = mSprings.All();
-  for (; !range.Empty(); range.PopFront())
+  for(; !range.Empty(); range.PopFront())
   {
     group.mSystems.Clear();
 
@@ -880,13 +883,13 @@ void PhysicsSpace::SolveSprings(real dt)
     stack.PushBack(system);
 
     // Start a new grouping (until our stack is empty)
-    while (!stack.Empty())
+    while(!stack.Empty())
     {
       system = stack.Back();
       stack.PopBack();
 
       // We've already added this system
-      if (systems.Contains(system))
+      if(systems.Contains(system))
         continue;
 
       systems.Insert(system);
@@ -894,20 +897,20 @@ void PhysicsSpace::SolveSprings(real dt)
 
       // Add all connected systems of edges this system owns
       SpringSystem::OwnedEdgeList::range ownedRange = system->mOwnedEdges.All();
-      for (; !ownedRange.Empty(); ownedRange.PopFront())
+      for(; !ownedRange.Empty(); ownedRange.PopFront())
       {
         SpringSystem::SystemConnection& connection = ownedRange.Front();
-
-        if (systems.Contains(connection.mOtherSystem) == false)
+        
+        if(systems.Contains(connection.mOtherSystem) == false)
           stack.PushBack(connection.mOtherSystem);
       }
       // Add all connected systems of edges this system doesn't own
       SpringSystem::ConnectedEdgeList::range otherRange = system->mConnectedEdges.All();
-      for (; !otherRange.Empty(); otherRange.PopFront())
+      for(; !otherRange.Empty(); otherRange.PopFront())
       {
         SpringSystem::SystemConnection& connection = otherRange.Front();
 
-        if (systems.Contains(connection.mOwningSystem) == false)
+        if(systems.Contains(connection.mOwningSystem) == false)
           stack.PushBack(connection.mOwningSystem);
       }
     }
@@ -918,6 +921,7 @@ void PhysicsSpace::SolveSprings(real dt)
   group.mSystems.Clear();
 }
 
+//---------------------------------------------------------------- Ray Casting
 void PhysicsSpace::CastRay(const Ray& worldRay, CastResults& results)
 {
   // Have to always push here because otherwise an object that has already been
@@ -939,11 +943,11 @@ CastResult PhysicsSpace::CastRayFirst(const Ray& worldRay, CastFilter& filter)
   PushBroadPhaseQueue();
 
   CastResults results(1, filter);
-  mBroadPhase->CastRay(worldRay.Start, worldRay.Direction.AttemptNormalized(), results.mResults);
+  mBroadPhase->CastRay(worldRay.Start, worldRay.Direction.AttemptNormalized(), results.mResults);  
   results.ConvertToColliders();
 
   // Deal with an empty range
-  if (results.All().Empty())
+  if(results.All().Empty())
     return CastResult();
 
   // Otherwise, return the object hit
@@ -1038,17 +1042,14 @@ CastResultsRange PhysicsSpace::CastFrustum(const Frustum& frustum, uint maxCount
   return CastResultsRange(results);
 }
 
-void PhysicsSpace::CastCollider(Vec3Param offset,
-                                Collider* testCollider,
-                                Physics::ManifoldArray& results,
-                                CastFilter& filter)
+void PhysicsSpace::CastCollider(Vec3Param offset, Collider* testCollider, Physics::ManifoldArray& results, CastFilter& filter)
 {
   // Set the offset variable on the collider (total hack variable!!)
   testCollider->mCollisionOffset = offset;
   // Make sure broadphase is up to date
   PushBroadPhaseQueue();
 
-  // Make the broadphase data for the test collider
+  //Make the broadphase data for the test collider
   BroadPhaseData data;
   ColliderToBroadPhaseData(testCollider, data);
   Vec3 worldPos = testCollider->GetWorldTranslation() + offset;
@@ -1060,22 +1061,21 @@ void PhysicsSpace::CastCollider(Vec3Param offset,
   mBroadPhase->QueryBoth(data, possiblePairs);
 
   // Run narrow phase
-  for (uint i = 0; i < possiblePairs.Size(); ++i)
+  for(uint i = 0; i < possiblePairs.Size(); ++i)
   {
     ClientPair* clientPair = &possiblePairs[i];
     Collider* collider1 = static_cast<Collider*>(clientPair->mClientData[0]);
     Collider* collider2 = static_cast<Collider*>(clientPair->mClientData[1]);
 
-    // Isn't really necessary, but figure out which collider is the cast
-    // collider
+    // Isn't really necessary, but figure out which collider is the cast collider
     Collider* otherCollider = collider1;
-    if (collider1 == testCollider)
+    if(collider1 == testCollider)
       otherCollider = collider2;
-    if (testCollider == otherCollider)
+    if(testCollider == otherCollider)
       continue;
 
     // If the other collider isn't valid according to the filter then skip it
-    if (!filter.IsValid(otherCollider))
+    if(!filter.IsValid(otherCollider))
       continue;
 
     // Set the pair's order so that the test collider is always ColliderA.
@@ -1087,14 +1087,14 @@ void PhysicsSpace::CastCollider(Vec3Param offset,
     mCollisionManager->ForceTestCollision(pair, results);
   }
 
-  // Set the collision offset back to plasma
+  // Set the collision offset back to zero
   testCollider->mCollisionOffset.ZeroOut();
 }
 
 CastResultsRange PhysicsSpace::CastCollider(Vec3Param offset, Collider* testCollider, CastFilter& filter)
 {
   // Safeguard against bad input
-  if (testCollider == nullptr)
+  if(testCollider == nullptr)
   {
     DoNotifyException("Invalid Collider Cast", "Cannot cast a null Collider");
     return CastResultsRange(CastResults());
@@ -1103,7 +1103,7 @@ CastResultsRange PhysicsSpace::CastCollider(Vec3Param offset, Collider* testColl
   // Call the internal cast function
   Physics::ManifoldArray manifoldResults;
   CastCollider(offset, testCollider, manifoldResults, filter);
-  CastResults results(Math::Max(static_cast<uint>(manifoldResults.Size()) * cMaxContacts, 1u), filter);
+  CastResults results(Math::Max((uint)manifoldResults.Size() * cMaxContacts, 1u), filter);
 
   uint count = 0;
   for (size_t i = 0; i < manifoldResults.Size(); ++i)
@@ -1154,9 +1154,8 @@ SweepResultRange PhysicsSpace::SweepCollider(Collider* collider, Vec3Param veloc
   if (!collider)
     return SweepResultRange(SweepResultArray());
 
-  // Flush the physics queue here. This is necessary if any operations have
-  // happened that have removed an object (e.g. destroying an object in a
-  // collision event).
+  // Flush the physics queue here. This is necessary if any operations have happened
+  // that have removed an object (e.g. destroying an object in a collision event).
   FlushPhysicsQueue();
 
   // Update position changes due to game logic
@@ -1170,8 +1169,7 @@ SweepResultRange PhysicsSpace::SweepCollider(Collider* collider, Vec3Param veloc
   Capsule sweptBoundingSphere(pos, pos + vel * dt, collider->mBoundingSphere.mRadius);
   Aabb sweptVolume = ToAabb(sweptBoundingSphere);
 
-  // Cleared for the broadphase query, otherwise it will ignore some results
-  // that are needed
+  // Cleared for the broadphase query, otherwise it will ignore some results that are needed
   filter.ClearFlag(BaseCastFilterFlags::IgnoreInternalCasts);
 
   CastResults castResults(128, filter);
@@ -1184,8 +1182,7 @@ SweepResultRange PhysicsSpace::SweepCollider(Collider* collider, Vec3Param veloc
     if (otherCollider == collider)
       continue;
     // Not done by the broadphase query, probably should be
-    if (filter.IsSet(BaseCastFilterFlags::IgnoreChildren) &&
-        collider->GetOwner()->IsDescendant(otherCollider->GetOwner()))
+    if (filter.IsSet(BaseCastFilterFlags::IgnoreChildren) && collider->GetOwner()->IsDescendant(otherCollider->GetOwner()))
       continue;
 
     SweepResult impact;
@@ -1223,6 +1220,7 @@ SweepResultRange PhysicsSpace::SweepCollider(Collider* collider, Vec3Param veloc
   return range;
 }
 
+
 void PhysicsSpace::DispatchWithinSphere(const Sphere& sphere, StringParam eventName, Event* toSend)
 {
   CastFilter filter;
@@ -1232,7 +1230,7 @@ void PhysicsSpace::DispatchWithinSphere(const Sphere& sphere, StringParam eventN
 void PhysicsSpace::DispatchWithinSphere(const Sphere& sphere, CastFilter& filter, StringParam eventName, Event* toSend)
 {
   CastResultsRange results = CastSphere(sphere, 100, filter);
-  while (!results.Empty())
+  while(!results.Empty())
   {
     CastResult& result = results.Front();
     results.PopFront();
@@ -1251,7 +1249,7 @@ void PhysicsSpace::DispatchWithinAabb(const Aabb& aabb, StringParam eventName, E
 void PhysicsSpace::DispatchWithinAabb(const Aabb& aabb, CastFilter& filter, StringParam eventName, Event* toSend)
 {
   CastResultsRange results = CastAabb(aabb, 100, filter);
-  while (!results.Empty())
+  while(!results.Empty())
   {
     CastResult& result = results.Front();
     results.PopFront();
@@ -1268,12 +1266,10 @@ uint PhysicsSpace::GetSubStepCount() const
 
 void PhysicsSpace::SetSubStepCount(uint substeps)
 {
-  if (substeps < 1 || 50 < substeps)
+  if(substeps < 1 || 50 < substeps)
   {
     substeps = Math::Clamp(substeps, 1u, 50u);
-    DoNotifyWarning("Invalid SubSteps",
-                    "The sub-step count of physics must be between 1 and 50. "
-                    "The value has been clamped.");
+    DoNotifyWarning("Invalid SubSteps", "The sub-step count of physics must be between 1 and 50. The value has been clamped.");
   }
   mSubStepCount = substeps;
 }
@@ -1288,7 +1284,7 @@ void PhysicsSpace::SetAllowSleep(bool allowSleep)
   mStateFlags.SetState(PhysicsSpaceFlags::AllowSleep, allowSleep);
 
   ColliderList::range range = mDynamicColliders.All();
-  while (!range.Empty())
+  while(!range.Empty())
   {
     range.Front().ForceAwake();
     range.PopFront();
@@ -1298,7 +1294,7 @@ void PhysicsSpace::SetAllowSleep(bool allowSleep)
 void PhysicsSpace::SerializeBroadPhases(Serializer& stream)
 {
   // Allocate the broad phase if we're loading
-  if (stream.GetMode() == SerializerMode::Loading)
+  if(stream.GetMode() == SerializerMode::Loading)
     mBroadPhase = new BroadPhasePackage();
 
   mBroadPhase->Serialize(stream);
@@ -1306,11 +1302,10 @@ void PhysicsSpace::SerializeBroadPhases(Serializer& stream)
 
 void PhysicsSpace::Publish()
 {
-  ZoneScoped;
   ProfileScopeTree("Publish", "Physics", Color::RosyBrown);
   // Publish rigid body transforms
   RigidBodyList::range range = mRigidBodies.All();
-  while (!range.Empty())
+  while(!range.Empty())
   {
     RigidBody& r = range.Front();
     range.PopFront();
@@ -1326,19 +1321,18 @@ void PhysicsSpace::PublishEvents()
 {
   mEventManager->DispatchEvents(this);
   // Now that we have sent all events, we can delete the contacts that we
-  // queued up for delayed destruction. The contacts are delay destructed to
-  // avoid deleting their manifold before the events are sent.
+  // queued up for delayed destruction. The contacts are delay destructed to avoid
+  // deleting their manifold before the events are sent.
   mContactManager->DestroyContacts();
 }
 
 void PhysicsSpace::PreCalculateEffects(real dt)
 {
-  // Tell all effects to cache any information that doesn't change between
-  // bodies (world vectors, etc...). Unfortunately this is called on effects
-  // that will never apply to anything (regions with no collisions) but the cost
-  // should be minimal.
+  // Tell all effects to cache any information that doesn't change between bodies
+  // (world vectors, etc...). Unfortunately this is called on effects that will
+  // never apply to anything (regions with no collisions) but the cost should be minimal.
   SpaceEffectList::range effects = mEffects.All();
-  for (; !effects.Empty(); effects.PopFront())
+  for(; !effects.Empty(); effects.PopFront())
   {
     PhysicsEffect& effect = effects.Front();
     effect.PreCalculate(dt);
@@ -1349,7 +1343,7 @@ void PhysicsSpace::UpdateRegions(real dt)
 {
   RegionList::range range = mRegions.All();
 
-  while (!range.Empty())
+  while(!range.Empty())
   {
     Region& region = range.Front();
     region.Update(dt);
@@ -1362,15 +1356,15 @@ void PhysicsSpace::ApplyHierarchyEffects(real dt)
   // If an effect is somewhere randomly in a hierarchy then
   // apply it to the nearest parent rigid body
   PhysicsEffectList::range effects = mHierarchyEffects.All();
-  for (; !effects.Empty(); effects.PopFront())
+  for(; !effects.Empty(); effects.PopFront())
   {
     PhysicsEffect& effect = effects.Front();
     // Find the nearest parent rigid body
     Cog* cog = effect.GetOwner();
-    while (cog)
+    while(cog)
     {
       RigidBody* body = cog->has(RigidBody);
-      if (body != nullptr)
+      if(body != nullptr)
       {
         effect.ApplyEffect(body, dt);
         break;
@@ -1386,14 +1380,14 @@ void PhysicsSpace::ApplyGlobalEffects(RigidBody* body, real dt)
 
   // Deal with IgnoreSpaceEffects
   IgnoreSpaceEffects* effectsToIgnore = body->mSpaceEffectsToIgnore;
-  if (effectsToIgnore)
+  if(effectsToIgnore)
   {
-    while (!range.Empty())
+    while(!range.Empty())
     {
       PhysicsEffect& effect = range.Front();
 
       // Skip if this effect type is ignored or not active
-      if (!effectsToIgnore->IsIgnored(&effect) && effect.GetActive())
+      if(!effectsToIgnore->IsIgnored(&effect) && effect.GetActive())
         effect.ApplyEffect(body, dt);
 
       range.PopFront();
@@ -1401,11 +1395,11 @@ void PhysicsSpace::ApplyGlobalEffects(RigidBody* body, real dt)
     return;
   }
 
-  while (!range.Empty())
+  while(!range.Empty())
   {
     PhysicsEffect& effect = range.Front();
 
-    if (effect.GetActive())
+    if(effect.GetActive())
       effect.ApplyEffect(body, dt);
 
     range.PopFront();
@@ -1416,15 +1410,16 @@ void PhysicsSpace::WakeInactiveMovingBodies()
 {
   RigidBodyList::range range = mInactiveRigidBodies.All();
 
-  while (!range.Empty())
+  while(!range.Empty())
   {
     RigidBody& body = range.Front();
     range.PopFront();
 
-    if (body.GetStatic())
+    if(body.GetStatic())
       continue;
 
-    if (body.mVelocity.LengthSq() != real(0.0) || body.mAngularVelocity.Length() != real(0.0))
+    if(body.mVelocity.LengthSq() != real(0.0) ||
+       body.mAngularVelocity.Length() != real(0.0))
       body.WakeUp();
   }
 }
@@ -1433,12 +1428,12 @@ void PhysicsSpace::ForceAwakeRigidBodies()
 {
   RigidBodyList::range range = mInactiveRigidBodies.All();
 
-  while (!range.Empty())
+  while(!range.Empty())
   {
     RigidBody& body = range.Front();
     range.PopFront();
 
-    if (body.GetStatic())
+    if(body.GetStatic())
       continue;
 
     body.ForceAwake();
@@ -1447,11 +1442,11 @@ void PhysicsSpace::ForceAwakeRigidBodies()
 
 String PhysicsSpace::WhyAreTheyNotColliding(Cog* cogA, Cog* cogB)
 {
-  if (cogA == nullptr)
+  if(cogA == nullptr)
     return "CogA is null...";
-  if (cogB == nullptr)
+  if(cogB == nullptr)
     return "CogB is null...";
-  if (cogA == cogB)
+  if(cogA == cogB)
     return "The same cog was passed in";
 
   Collider* colliderA = cogA->has(Collider);
@@ -1460,29 +1455,24 @@ String PhysicsSpace::WhyAreTheyNotColliding(Cog* cogA, Cog* cogB)
   String cogADescription = cogA->GetDescription();
   String cogBDescription = cogB->GetDescription();
 
-  if (colliderA == nullptr)
+  if(colliderA == nullptr)
     return String::Format("Cog A (%s) doesn't have a collider.", cogADescription.c_str());
-  if (colliderB == nullptr)
+  if(colliderB == nullptr)
     return String::Format("Cog B (%s) doesn't have a collider.", cogBDescription.c_str());
 
   String colliderADescription = colliderA->GetDescription();
   String colliderBDescription = colliderB->GetDescription();
 
-  if (colliderA->mSpace != colliderB->mSpace)
+  if(colliderA->mSpace != colliderB->mSpace)
     return "Colliders are in different spaces";
 
-  if (colliderA->IsStatic() && colliderB->IsStatic())
-    return "Both colliders are static. Static colliders don't check against "
-           "each other.";
+  if(colliderA->IsStatic() && colliderB->IsStatic())
+    return "Both colliders are static. Static colliders don't check against each other.";
 
-  if (!colliderA->mPhysicsNode->IsInBroadPhase())
-    return String::Format("Collider A (%s) is not in broadphase yet. Was it "
-                          "just created this frame?",
-                          colliderADescription.c_str());
-  if (!colliderB->mPhysicsNode->IsInBroadPhase())
-    return String::Format("Collider B (%s) is not in broadphase yet. Was it "
-                          "just created this frame?",
-                          colliderBDescription.c_str());
+  if(!colliderA->mPhysicsNode->IsInBroadPhase())
+    return String::Format("Collider A (%s) is not in broadphase yet. Was it just created this frame?", colliderADescription.c_str());
+  if(!colliderB->mPhysicsNode->IsInBroadPhase())
+    return String::Format("Collider B (%s) is not in broadphase yet. Was it just created this frame?", colliderBDescription.c_str());
 
   // Check to see if colliderA hits colliderB
   ClientPairArray results;
@@ -1492,56 +1482,53 @@ String PhysicsSpace::WhyAreTheyNotColliding(Cog* cogA, Cog* cogB)
 
   bool passed = false;
   ClientPairArray::range resultRange = results.All();
-  for (; !resultRange.Empty(); resultRange.PopFront())
+  for(; !resultRange.Empty(); resultRange.PopFront())
   {
     ClientPair pair = resultRange.Front();
 
-    if (pair.mClientData[0] == colliderB || pair.mClientData[1] == colliderB)
+    if(pair.mClientData[0] == colliderB || pair.mClientData[1] == colliderB)
     {
       passed = true;
       break;
     }
   }
 
-  if (passed == false)
-    return "Colliders did not pass broadphase, they are probably too far "
-           "apart. (Maybe separating on the z axis?).";
+  if(passed == false)
+    return "Colliders did not pass broadphase, they are probably too far apart. (Maybe separating on the z axis?).";
 
-  if (colliderA->IsAsleep() && colliderB->IsAsleep())
+  if(colliderA->IsAsleep() && colliderB->IsAsleep())
     return "Both objects are asleep.";
 
   // Check all the random reasons for not colliding such as joints
   // saying to skip collision, collision tables, etc...
   String reasonForNotColliding;
-  if (colliderA->ShouldCollide(colliderB, reasonForNotColliding) == false)
+  if(colliderA->ShouldCollide(colliderB, reasonForNotColliding) == false)
     return reasonForNotColliding;
 
   // Check narrowphase
   Physics::ManifoldArray tempManifolds;
   ColliderPair pair(colliderA, colliderB);
-  if (mCollisionManager->TestCollision(pair, tempManifolds) == false)
-    return "They didn't pass collision detection, they aren't actually "
-           "colliding.";
+  if(mCollisionManager->TestCollision(pair, tempManifolds) == false)
+    return "They didn't pass collision detection, they aren't actually colliding.";
 
-  // At this point we know they passed narrowphase, but they might have not
-  // collided for some other reason. Also, whether or not they collide is now
-  // completely independent from whether or not they send events
+  // At this point we know they passed narrowphase, but they might have not collided for some other reason.
+  // Also, whether or not they collide is now completely independent from whether or not they send events
 
   // First determine a string for what's happening with events
   String eventsString = "Both colliders send events";
-  if (colliderA->GetSendsEvents() == false && colliderB->GetSendsEvents() == false)
+  if(colliderA->GetSendsEvents() == false && colliderB->GetSendsEvents() == false)
     eventsString = "Both colliders don't send events.";
-  else if (colliderA->GetSendsEvents() == false)
+  else if(colliderA->GetSendsEvents() == false)
     eventsString = String::Format("Collider A (%s) doesn't send events.", colliderADescription.c_str());
-  else if (colliderB->GetSendsEvents() == false)
+  else if(colliderB->GetSendsEvents() == false)
     eventsString = String::Format("Collider B (%s) doesn't send events.", colliderADescription.c_str());
 
   // If either is ghost they won't resolve, but they could still send events
-  if (colliderA->GetGhost() || colliderB->GetGhost())
+  if(colliderA->GetGhost() || colliderB->GetGhost())
     return BuildString("One collider is marked ghost. ", eventsString);
 
   // If the collision group says to not check collision, then don't
-  if (colliderA->mCollisionGroupInstance->SkipResolution(*(colliderB->mCollisionGroupInstance)))
+  if(colliderA->mCollisionGroupInstance->SkipResolution(*(colliderB->mCollisionGroupInstance)))
     return BuildString("Collision table says they skip resolution. ", eventsString);
 
   return BuildString("They do collide. ", eventsString);
@@ -1551,17 +1538,17 @@ void PhysicsSpace::AddComponent(RigidBody* body)
 {
   // If the object inherits from the space the override
   // the 2d state, otherwise it's already correct
-  if (body->mState.IsSet(RigidBodyStates::Inherit2DMode))
+  if(body->mState.IsSet(RigidBodyStates::Inherit2DMode))
   {
-    if (GetMode2D() == true)
+    if(GetMode2D() == true)
       body->Set2DInternal(true);
     else
       body->Set2DInternal(false);
   }
 
-  if (body->mState.IsSet(RigidBodyStates::Kinematic))
+  if(body->mState.IsSet(RigidBodyStates::Kinematic))
     mMovingKinematicBodies.PushBack(body);
-  else if (body->mState.IsSet(RigidBodyStates::Asleep | RigidBodyStates::Static))
+  else if(body->mState.IsSet(RigidBodyStates::Asleep | RigidBodyStates::Static))
     mInactiveRigidBodies.PushBack(body);
   else
     mRigidBodies.PushBack(body);
@@ -1577,9 +1564,9 @@ void PhysicsSpace::ComponentStateChange(RigidBody* body)
 {
   RigidBodyList::Unlink(body);
 
-  if (body->GetStatic() || body->IsAsleep())
+  if(body->GetStatic() || body->IsAsleep())
     mInactiveRigidBodies.PushBack(body);
-  else if (body->GetKinematic())
+  else if(body->GetKinematic())
     mMovingKinematicBodies.PushBack(body);
   else
     mRigidBodies.PushBack(body);
@@ -1607,7 +1594,7 @@ void PhysicsSpace::RemoveComponent(Region* region)
 
 void PhysicsSpace::AddComponent(Collider* collider)
 {
-  if (collider->GetActiveBody())
+  if(collider->GetActiveBody())
     mDynamicColliders.PushBack(collider);
   else
     mStaticColliders.PushBack(collider);
@@ -1618,23 +1605,25 @@ void PhysicsSpace::RemoveComponent(Collider* collider)
   mIslandManager->RemoveCollider(collider);
   ColliderList::Unlink(collider);
 
+  //////////////////////////////////////////////////////////////////////////
   // Doesn't work now because the id we have at this point is already gone.
   // Valid code below for when the id problem is fixed
 
-  if (!collider->GetHasPairFilter())
+
+  if(!collider->GetHasPairFilter())
     return;
 
   u32 id = CogId(collider->GetOwner()).GetId();
 
   HashSet<u64>::range range = mFilteredPairs.All();
-  while (!range.Empty())
+  while(!range.Empty())
   {
     u64 packedId = range.Front();
     range.PopFront();
 
     u32 id1, id2;
     UnPackLexicographicId(id1, id2, packedId);
-    if (id1 == id || id2 == id)
+    if(id1 == id || id2 == id)
       mFilteredPairs.Erase(packedId);
   }
 }
@@ -1643,7 +1632,7 @@ void PhysicsSpace::ComponentStateChange(Collider* collider)
 {
   ColliderList::Unlink(collider);
 
-  if (!collider->GetActiveBody())
+  if(!collider->GetActiveBody())
     mStaticColliders.PushBack(collider);
   else
     mDynamicColliders.PushBack(collider);
@@ -1692,7 +1681,7 @@ void PhysicsSpace::QueuePhysicsNode(PhysicsNode* node)
 PhysicsSpace::IslandColliderList::range PhysicsSpace::GetAllInIsland(Collider* collider)
 {
   Physics::Island* island = mIslandManager->GetObjectsIsland(collider);
-  if (island)
+  if(island)
     return island->mColliders.All();
 
   return Physics::Island::Colliders::range();
@@ -1702,7 +1691,7 @@ BroadPhasePackage* PhysicsSpace::ReplaceBroadPhase(BroadPhasePackage* newBroadPh
 {
   // Remove all dynamic colliders from the broadphase
   ColliderList::range r = mDynamicColliders.All();
-  while (!r.Empty())
+  while(!r.Empty())
   {
     Collider* collider = &r.Front();
     RemovalAction action(collider);
@@ -1711,7 +1700,7 @@ BroadPhasePackage* PhysicsSpace::ReplaceBroadPhase(BroadPhasePackage* newBroadPh
 
   // Remove all static colliders from the broadphase
   r = mStaticColliders.All();
-  while (!r.Empty())
+  while(!r.Empty())
   {
     Collider* collider = &r.Front();
     RemovalAction action(collider);
@@ -1726,7 +1715,7 @@ BroadPhasePackage* PhysicsSpace::ReplaceBroadPhase(BroadPhasePackage* newBroadPh
 
   // Re-insert all colliders
   r = mDynamicColliders.All();
-  while (!r.Empty())
+  while(!r.Empty())
   {
     Collider* collider = &r.Front();
     InsertionAction action(collider);
@@ -1734,7 +1723,7 @@ BroadPhasePackage* PhysicsSpace::ReplaceBroadPhase(BroadPhasePackage* newBroadPh
   }
 
   r = mStaticColliders.All();
-  while (!r.Empty())
+  while(!r.Empty())
   {
     Collider* collider = &r.Front();
     InsertionAction action(collider);
@@ -1763,7 +1752,7 @@ void PhysicsSpace::UpdateKinematicVelocities()
   // to update the old transform values of this body and update the kinematic
   // velocity from where we were to where we ended up.
   RigidBodyList::range movingBodyRange = mMovingKinematicBodies.All();
-  for (; !movingBodyRange.Empty(); movingBodyRange.PopFront())
+  for(; !movingBodyRange.Empty(); movingBodyRange.PopFront())
   {
     RigidBody& body = movingBodyRange.Front();
     WorldTransformation* transform = body.mPhysicsNode->GetTransform();
@@ -1771,10 +1760,9 @@ void PhysicsSpace::UpdateKinematicVelocities()
     Vec3 oldTranslation = transform->GetOldTranslation();
     Mat3 oldRotation = transform->GetOldRotation();
     transform->ComputeOldValues();
-    body.ComputeVelocities(oldTranslation, oldRotation, mIterationDt);
-    // Also make sure to update the stored center of mass. This might not always
-    // be needed if there is a collider on the body but there are some cases
-    // (child kinematics) that require this.
+    body.ComputeVelocities(oldTranslation,oldRotation, mIterationDt);
+    // Also make sure to update the stored center of mass. This might not always be needed if
+    // there is a collider on the body but there are some cases (child kinematics) that require this.
     body.UpdateCenterMassFromWorldPosition();
   }
 }
@@ -1786,7 +1774,7 @@ void PhysicsSpace::UpdateKinematicState()
   // and clear out their velocity. Now they are inactive
   // (since they aren't moving).
   RigidBodyList::range range = mStoppedKinematicBodies.All();
-  for (; !range.Empty(); range.PopFront())
+  for(; !range.Empty(); range.PopFront())
   {
     RigidBody& body = range.Front();
 
@@ -1795,9 +1783,10 @@ void PhysicsSpace::UpdateKinematicState()
   }
 
   // Move all of the stopped bodies to the inactive list
-  if (!mStoppedKinematicBodies.Empty())
+  if(!mStoppedKinematicBodies.Empty())
   {
-    mInactiveKinematicBodies.Splice(mInactiveKinematicBodies.End(), mStoppedKinematicBodies.All());
+    mInactiveKinematicBodies.Splice(mInactiveKinematicBodies.End(),
+                                    mStoppedKinematicBodies.All());
   }
 
   // Take all of the moving kinematics and move them to the stopped list.
@@ -1809,7 +1798,7 @@ void PhysicsSpace::UpdateKinematicState()
 void PhysicsSpace::UpdatePhysicsCars(real dt)
 {
   CarList::range range = mCars.All();
-  while (!range.Empty())
+  while(!range.Empty())
   {
     range.Front().Update(dt);
     range.PopFront();
@@ -1819,7 +1808,7 @@ void PhysicsSpace::UpdatePhysicsCars(real dt)
 void PhysicsSpace::UpdatePhysicsCarsTransforms(real dt)
 {
   CarList::range range = mCars.All();
-  while (!range.Empty())
+  while(!range.Empty())
   {
     range.Front().UpdatePositions(dt);
     range.PopFront();
@@ -1828,42 +1817,40 @@ void PhysicsSpace::UpdatePhysicsCarsTransforms(real dt)
 
 void PhysicsSpace::DebugDraw()
 {
-  // Debug::DefaultConfig config;
-  // config.SpaceId(this->GetOwner()->GetId().Id);
+  //Debug::DefaultConfig config;
+  //config.SpaceId(this->GetOwner()->GetId().Id);
 
-  ZoneScoped;
-	
   ProfileScopeTree("DebugDraw", "Physics", Color::Yellow);
-  if (mDebugDrawFlags.IsSet(PhysicsSpaceDebugDrawFlags::DrawDebug))
+  if(mDebugDrawFlags.IsSet(PhysicsSpaceDebugDrawFlags::DrawDebug))
   {
     mIslandManager->Draw(mDebugDrawFlags.Field);
 
     DrawColliders();
     DrawRigidBodies();
 
-    if (mDebugDrawFlags.IsSet(PhysicsSpaceDebugDrawFlags::DrawBroadPhase))
+    if(mDebugDrawFlags.IsSet(PhysicsSpaceDebugDrawFlags::DrawBroadPhase))
       mBroadPhase->Draw(mDrawLevel, mDebugDrawFlags.Field);
 
-    if (mDebugDrawFlags.IsSet(PhysicsSpaceDebugDrawFlags::DrawSleeping))
+    if(mDebugDrawFlags.IsSet(PhysicsSpaceDebugDrawFlags::DrawSleeping))
       DrawInactiveObjects();
   }
 }
 
 void PhysicsSpace::DrawColliders()
 {
-  if (!mDebugDrawFlags.IsSet(PhysicsSpaceDebugDrawFlags::DrawBroadPhase))
+  if(!mDebugDrawFlags.IsSet(PhysicsSpaceDebugDrawFlags::DrawBroadPhase))
     return;
 
   bool onTop = mDebugDrawFlags.IsSet(PhysicsSpaceDebugDrawFlags::DrawOnTop);
 
   ColliderList::range range = mDynamicColliders.All();
 
-  while (!range.Empty())
+  while(!range.Empty())
   {
     gDebugDraw->Add(Debug::Obb(range.Front().mAabb).Color(Color::MintCream).OnTop(onTop));
     gDebugDraw->Add(Debug::Sphere(range.Front().mBoundingSphere).OnTop(onTop));
     ContactRange contacts = FilterContactRange(&range.Front());
-    for (; !contacts.Empty(); contacts.PopFront())
+    for(; !contacts.Empty(); contacts.PopFront())
       contacts.Front().GetConstraint().DebugDraw();
     range.PopFront();
   }
@@ -1871,11 +1858,11 @@ void PhysicsSpace::DrawColliders()
 
 void PhysicsSpace::DrawRigidBodies()
 {
-  if (!mDebugDrawFlags.IsSet(PhysicsSpaceDebugDrawFlags::DrawCenterMass))
+  if(!mDebugDrawFlags.IsSet(PhysicsSpaceDebugDrawFlags::DrawCenterMass))
     return;
 
   RigidBodyList::range range = mRigidBodies.All();
-  for (; !range.Empty(); range.PopFront())
+  for(; !range.Empty(); range.PopFront())
   {
     Vec3Param centerMass = range.Front().GetWorldCenterOfMass();
     gDebugDraw->Add(Debug::LineCross(centerMass, 2));
@@ -1886,12 +1873,12 @@ void PhysicsSpace::DrawInactiveObjects()
 {
   RigidBodyList::range range = mInactiveRigidBodies.All();
 
-  while (!range.Empty())
+  while(!range.Empty())
   {
     RigidBody& body = range.Front();
     RigidBody::CompositeColliderList::range colliders = body.GetColliders();
 
-    while (!colliders.Empty())
+    while(!colliders.Empty())
     {
       Aabb aabb = colliders.Front().mAabb;
       gDebugDraw->Add(Debug::Obb(aabb.GetCenter(), aabb.GetHalfExtents()).Color(Color::Gold));
@@ -1908,4 +1895,4 @@ void PhysicsSpace::ColliderToBroadPhaseData(Collider* collider, BroadPhaseData& 
   data.mBoundingSphere = collider->mBoundingSphere;
 }
 
-} // namespace Plasma
+}//namespace Plasma

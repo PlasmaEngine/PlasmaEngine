@@ -116,6 +116,7 @@ public:
   void DoRenderTaskPostProcess(RenderTaskPostProcess* task);
   void DoRenderTaskBackBufferBlit(RenderTaskBackBufferBlit* task);
   void DoRenderTaskTextureUpdate(RenderTaskTextureUpdate* task);
+  void DoRenderTaskCompute(RenderTaskCompute* task);
 
   void SetRenderTargets(RenderSettings& renderSettings);
 

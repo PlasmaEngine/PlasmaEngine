@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -12,8 +11,8 @@ class PhysicsSpace;
 namespace Physics
 {
 
-/// A structure to handle the creation, storing and sending of all physics
-/// events. Mainly used to centralize all logic to this file.
+/// A structure to handle the creation, storing and sending of all physics events.
+/// Mainly used to centralize all logic to this file.
 struct PhysicsEventManager
 {
   PhysicsEventManager();
@@ -27,23 +26,17 @@ struct PhysicsEventManager
   void BatchCollisionEndedEvent(Manifold* manifold, PhysicsSpace* space, bool immediateSend = false);
   void BatchPreSolveEvent(Manifold* manifold, PhysicsSpace* space);
   JointEvent* BatchJointEvent(Joint* joint, StringParam eventName);
-
+  
   void DispatchEvents(PhysicsSpace* space);
   void DispatchPreSolveEvents(PhysicsSpace* space);
 
 private:
   CollisionFilter* GetFilter(Manifold* manifold, PhysicsSpace* space);
 
-  void CreateEvent(Physics::Manifold* manifold,
-                   PhysicsSpace* space,
-                   uint collisionType,
-                   uint filterFlag,
-                   bool immediateSend = false);
-  void CreateCollisionEvent(
-      Manifold* manifold, uint contactId, uint eventType, StringParam collisionType, bool immediateSend = false);
-  CollisionEvent*
-  CreateCollisionEventInternal(Manifold* manifold, ManifoldPoint& point, uint eventType, StringParam collisionType);
-
+  void CreateEvent(Physics::Manifold* manifold, PhysicsSpace* space, uint collisionType, uint filterFlag, bool immediateSend = false);
+  void CreateCollisionEvent(Manifold* manifold, uint contactId, uint eventType, StringParam collisionType, bool immediateSend = false);
+  CollisionEvent* CreateCollisionEventInternal(Manifold* manifold, ManifoldPoint& point, uint eventType, StringParam collisionType);
+  
   void AddEvent(CollisionEvent* event);
   void AddEvent(CollisionGroupEvent* event);
   void AddEvent(JointEvent* event);
@@ -51,7 +44,7 @@ private:
   void DispatchEvent(CollisionEvent* toSend);
   void DispatchEvent(PhysicsSpace* space, CollisionGroupEvent* toSend);
   void DispatchGroupEvent(Cog* obj, CollisionGroupEvent* eventObj, uint filterFlag);
-
+  
   typedef Array<CollisionEvent*> CollisionEvents;
   typedef Array<CollisionGroupEvent*> CollisionGroupEvents;
   typedef InList<JointEvent> JointEventList;
@@ -63,6 +56,6 @@ private:
   PreSolveEventList mPreSolveEvents;
 };
 
-} // namespace Physics
+}//namespace Physics
 
-} // namespace Plasma
+}//namespace Plasma

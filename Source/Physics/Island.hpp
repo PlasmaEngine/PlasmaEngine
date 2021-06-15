@@ -1,22 +1,18 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
 {
 
 class PhysicsSpace;
-namespace Memory
-{
-class Pool;
-}
+namespace Memory{class Pool;}
 
 namespace Physics
 {
 
 class IConstraintSolver;
 
-/// A set of objects and constraints that are dependent on each other.
-/// Used to solve constraint systems independently and to check for sleeping.
+///A set of objects and constraints that are dependent on each other.
+///Used to solve constraint systems independently and to check for sleeping.
 class Island
 {
 public:
@@ -40,22 +36,23 @@ public:
   void Solve(real dt, bool allowSleeping, uint debugFlags);
   void SolvePositions(real dt);
   void UpdateSleep(real dt, bool allowSleeping, uint debugFlags);
-  /// Helper function to mark everything as not on an island.
+  ///Helper function to mark everything as not on an island.
   void ClearIslandFlags(Collider& collider);
   void Clear();
 
-  /// Returns if the provided collider is in the island.
+  ///Returns if the provided collider is in the island.
   bool ContainsCollider(const Collider* collider);
 
+
   Link<Island> ManagerLink;
-  typedef InList<Collider, &Collider::mIslandLink> Colliders;
+  typedef InList<Collider,&Collider::mIslandLink> Colliders;
   Colliders mColliders;
   IConstraintSolver* mSolver;
 
-  typedef InList<Contact, &Contact::SolverLink> ContactList;
+  typedef InList<Contact,&Contact::SolverLink> ContactList;
   ContactList mContacts;
 
-  typedef InList<Joint, &Joint::SolverLink> JointList;
+  typedef InList<Joint,&Joint::SolverLink> JointList;
   JointList mJoints;
   JointList mUnSolvableJoints;
 
@@ -66,6 +63,6 @@ public:
   uint ColliderCount;
 };
 
-} // namespace Physics
+}//namespace Physics
 
-} // namespace Plasma
+}//namespace Plasma

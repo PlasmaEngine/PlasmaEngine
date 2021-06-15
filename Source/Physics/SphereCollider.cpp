@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -47,9 +46,8 @@ void SphereCollider::CacheWorldValues()
 
 void SphereCollider::ComputeWorldAabbInternal()
 {
-  // We don't want the default world aabb logic. Since we're a sphere, the
-  // world-space aabb doesn't change, it's always the min aabb that encompasses
-  // our radius.
+  // We don't want the default world aabb logic. Since we're a sphere, the world-space
+  // aabb doesn't change, it's always the min aabb that encompasses our radius.
   real radius = GetWorldRadius();
   Vec3 worldCenter = GetWorldTranslation();
   mAabb.SetCenterAndHalfExtents(worldCenter, Vec3(radius));
@@ -90,7 +88,7 @@ real SphereCollider::GetRadius() const
 
 void SphereCollider::SetRadius(real radius)
 {
-  mRadius = Math::Clamp(radius, mMinAllowedRadius, mMaxAllowedRadius);
+  mRadius = Math::Clamp(radius, mMinAllowedRadius, mMaxAllowedRadius); 
 
   // Since our internal size changed make sure to run all common update code
   InternalSizeChanged();
@@ -101,4 +99,4 @@ real SphereCollider::GetWorldRadius() const
   return mWorldRadius;
 }
 
-} // namespace Plasma
+}//namespace Plasma

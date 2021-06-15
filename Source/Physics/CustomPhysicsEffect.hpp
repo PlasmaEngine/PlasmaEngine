@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -8,11 +7,12 @@ namespace Events
 {
 DeclareEvent(CustomPhysicsEffectPrecalculatePhase);
 DeclareEvent(ApplyCustomPhysicsEffect);
-} // namespace Events
+}//namespace Events
 
 class CustomPhysicsEffect;
 class RigidBody;
 
+//-------------------------------------------------------------------CustomPhysicsEffectEvent
 /// Event data for applying custom physics effects.
 class CustomPhysicsEffectEvent : public Event
 {
@@ -29,8 +29,8 @@ public:
   real mDt;
 };
 
-/// A physics effect that sends events out so users can apply custom logic for
-/// forces.
+//-------------------------------------------------------------------CustomPhysicsEffect
+/// A physics effect that sends events out so users can apply custom logic for forces.
 class CustomPhysicsEffect : public PhysicsEffect
 {
 public:
@@ -46,4 +46,4 @@ public:
   void ApplyEffect(RigidBody* obj, real dt) override;
 };
 
-} // namespace Plasma
+}//namespace Plasma

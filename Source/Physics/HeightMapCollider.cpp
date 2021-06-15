@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -19,7 +18,7 @@ LightningDefineType(HeightMapCollider, builder, type)
 HeightMapCollider::HeightMapCollider()
 {
   mType = cHeightMap;
-  mLocalAabb.Plasma();
+  mLocalAabb.Zero();
 }
 
 void HeightMapCollider::Serialize(Serializer& stream)
@@ -43,20 +42,19 @@ void HeightMapCollider::Initialize(CogInitializer& initializer)
 
   // If we're in a game space then generate edge info to avoid
   // edge catching (don't do this in the editor)
-  if (initializer.mSpace->IsEditorOrPreviewMode() == false)
+  if(initializer.mSpace->IsEditorOrPreviewMode() == false)
     GenerateInternalEdgeInfo(this, &mInfoMap);
 }
 
 void HeightMapCollider::DebugDraw()
 {
   // Draw all patch aabbs in world space)
-  // CacheWorldValues();
-  // PatchAabbMap::range range = mPatchAabbs.All();
-  // for(; !range.Empty(); range.PopFront())
+  //CacheWorldValues();
+  //PatchAabbMap::range range = mPatchAabbs.All();
+  //for(; !range.Empty(); range.PopFront())
   //{
   //  Aabb localAabb = range.Front().second;
-  //  Aabb worldAabb =
-  //  localAabb.TransformAabb(GetWorldTransform()->GetWorldMatrix());
+  //  Aabb worldAabb = localAabb.TransformAabb(GetWorldTransform()->GetWorldMatrix());
   //
   //  gDebugDraw->Add(Debug::Obb(worldAabb));
   //}
@@ -66,10 +64,10 @@ void HeightMapCollider::CacheWorldValues()
 {
   PatchAabbMap::range range = mPatchAabbs.All();
   // If we have patches then combine all of their aabb's together
-  if (!range.Empty())
+  if(!range.Empty())
   {
     mLocalAabb.SetInvalid();
-    for (; !range.Empty(); range.PopFront())
+    for(; !range.Empty(); range.PopFront())
       mLocalAabb.Combine(range.Front().second);
   }
   // Otherwise just set our local aabb to
@@ -112,7 +110,7 @@ void HeightMapCollider::SetThickness(real thickness)
   // To avoid numerical issues clamp the max bounds of the thickness
   mThickness = Math::Clamp(thickness, real(0.1f), real(10.0f));
 
-  // Since the thickness changed we have to reload all patches
+  // Since the thickness changed we have to reload all patches 
   // so that we can update the world bounding volumes
   ReloadAllPatches();
 }
@@ -135,11 +133,10 @@ void HeightMapCollider::HeightMapRangeWrapper::PopFront()
 HeightMapCollider::HeightMapRangeWrapper::InternalObject& HeightMapCollider::HeightMapRangeWrapper::Front()
 {
   HeightMapAabbRange::TriangleInfo item = mRange.Front();
-  AbsoluteIndex absIndex = mRange.mMap->GetAbsoluteIndex(item.mPatchIndex, item.mCellIndex);
+  AbsoluteIndex absIndex = mRange.mMap->GetAbsoluteIndex(item.mPatchIndex,item.mCellIndex);
   uint triIndex = mRange.mTriangleIndex;
 
-  // Convert the triangle's info into a unique 32-bit key (change the key later
-  // to be bigger?)
+  // Convert the triangle's info into a unique 32-bit key (change the key later to be bigger?)
   uint key;
   HeightMapCollider::TriangleIndexToKey(absIndex, triIndex, key);
   mObj.Index = key;
@@ -166,7 +163,7 @@ Triangle HeightMapCollider::GetTriangle(uint key)
   mMap->GetQuadAtIndex(absIndex, triangles, count);
 
   // Have to restructure query if we want to eliminate this garbage return
-  if (!count || (triIndex && count == 1))
+  if(!count || (triIndex && count == 1))
   {
     Error("We didn't find a cell in the height map (it's possibly too big!)");
     return Triangle();
@@ -178,19 +175,17 @@ Triangle HeightMapCollider::GetTriangle(uint key)
 HeightMapCollider::HeightMapRangeWrapper HeightMapCollider::GetOverlapRange(Aabb& localAabb)
 {
   HeightMapRangeWrapper range(mMap, localAabb, mThickness);
-  // This only needs to be set once and it will persist through all objects in
-  // the range
+  // This only needs to be set once and it will persist through all objects in the range
   range.mObj.Shape.ScaledDir = HeightMap::UpVector * -mThickness;
   return range;
 }
 
 bool HeightMapCollider::Cast(const Ray& localRay, ProxyResult& result, BaseCastFilter& filter)
 {
-  // Cast a local ray (already transformed by the collision manager) against the
-  // internal height map
+  // Cast a local ray (already transformed by the collision manager) against the internal height map
   HeightMapRayRange range = mMap->CastLocalRay(localRay);
   // If the height map didn't get any results then stop
-  if (range.Empty())
+  if(range.Empty())
     return false;
 
   // Otherwise we got a triangle that we actually hit
@@ -205,16 +200,14 @@ bool HeightMapCollider::Cast(const Ray& localRay, ProxyResult& result, BaseCastF
 
   // Unfortunately, the intersection info does not contain the normal
   // so we have to compute that ourself if it's requested
-  if (filter.IsSet(BaseCastFilterFlags::GetContactNormal))
+  if(filter.IsSet(BaseCastFilterFlags::GetContactNormal))
   {
     Vec3 normal = Geometry::NormalFromPointOnTriangle(result.mPoints[0], tri[0], tri[1], tri[2]);
 
-    // Since the normal only comes from the point on the object it will always
-    // be the positive normal of the triangle. We want the normal to be the
-    // "reflection normal" from the ray though. To deal with this simply negate
-    // the normal if it doesn't point towards the ray's start. (could replace
-    // with rayDir?)
-    if (Dot(normal, tri[0] - localRay.Start) > 0)
+    // Since the normal only comes from the point on the object it will always be the positive normal 
+    // of the triangle. We want the normal to be the "reflection normal" from the ray though. To deal
+    // with this simply negate the normal if it doesn't point towards the ray's start. (could replace with rayDir?)
+    if(Dot(normal, tri[0] - localRay.Start) > 0)
       normal *= real(-1.0f);
 
     result.mContactNormal = normal;
@@ -259,11 +252,10 @@ void HeightMapCollider::KeyToTriangleIndex(uint key, AbsoluteIndex& absolueIndex
 
 void HeightMapCollider::LoadPatch(HeightMap* map, HeightPatch* mapPatch)
 {
-  // When loading a patch we don't actually need any triangle info. We do
-  // however need to compute the local space aabb so we can properly broad and
-  // narrow-phase. Instead of finding this from triangles or vertices we can
-  // directly compute a patch's aabb from the patch size and the stored min/max
-  // value for the patch.
+  // When loading a patch we don't actually need any triangle info. We do however
+  // need to compute the local space aabb so we can properly broad and narrow-phase.
+  // Instead of finding this from triangles or vertices we can directly compute a patch's
+  // aabb from the patch size and the stored min/max value for the patch.
   Aabb& patchAabb = mPatchAabbs[mapPatch->Index];
   patchAabb = map->GetPatchLocalAabb(mapPatch);
 
@@ -279,9 +271,9 @@ void HeightMapCollider::ReloadAllPatches()
   // To reload all patches we simply walk over and call load on each
   // patch (this only updates bounding volume info)
   PatchMap::valuerange range = mMap->GetAllPatches();
-  for (; !range.Empty(); range.PopFront())
+  for(; !range.Empty(); range.PopFront())
   {
-    if (range.Front() != nullptr)
+    if(range.Front() != nullptr)
       LoadPatch(mMap, range.Front());
   }
   // Since our internal size changed make sure to run all common update code
@@ -316,4 +308,4 @@ void HeightMapCollider::OnHeightMapPatchModified(HeightMapEvent* hEvent)
   InternalSizeChanged();
 }
 
-} // namespace Plasma
+}//namespace Plasma

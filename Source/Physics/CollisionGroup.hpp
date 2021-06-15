@@ -1,9 +1,9 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
 {
 
+//-------------------------------------------------------------------CollisionGroup
 /// Represents a label for a Collider to be used with a CollisionTable.
 class CollisionGroup : public DataResource
 {
@@ -14,8 +14,8 @@ public:
   ~CollisionGroup();
 
   // Data Resource Interface
-  void Serialize(Serializer& stream) override{};
-  void Initialize(){};
+  void Serialize(Serializer& stream) override {};
+  void Initialize() {};
 
   // Runtime interface
 
@@ -28,18 +28,17 @@ public:
   CollisionGroupInstance* GetNewInstance();
 };
 
-/// An instance of a CollisionGroup group for a specific space. Stores the bit
-/// field for the filters on this space as well as the group id. Objects get
-/// references to this in order to deal with different data per space.
+//-------------------------------------------------------------------CollisionGroupInstance
+/// An instance of a CollisionGroup group for a specific space. Stores the bit field
+/// for the filters on this space as well as the group id.
+/// Objects get references to this in order to deal with different data per space.
 struct CollisionGroupInstance
 {
   CollisionGroupInstance();
 
-  /// Checks to see if collision detection should be skipped with the given
-  /// group type.
+  /// Checks to see if collision detection should be skipped with the given group type.
   bool SkipDetection(const CollisionGroupInstance& rhs) const;
-  /// Checks to see if collision resolution should be skipped with the given
-  /// group type.
+  /// Checks to see if collision resolution should be skipped with the given group type.
   bool SkipResolution(const CollisionGroupInstance& rhs) const;
   /// The name of the CollisionGroup that this is an instance of.
   String GetGroupName() const;
@@ -60,6 +59,7 @@ struct CollisionGroupInstance
   CollisionTable* mTable;
 };
 
+//-------------------------------------------------------------------CollisionGroupManager
 class CollisionGroupManager : public ResourceManager
 {
 public:
@@ -68,4 +68,4 @@ public:
   CollisionGroupManager(BoundType* resourceType);
 };
 
-} // namespace Plasma
+}//namespace Plasma

@@ -1,5 +1,3 @@
-// MIT Licensed (see LICENSE.md).
-
 #include "Precompiled.hpp"
 
 #include <cstdlib>
@@ -17,34 +15,31 @@ LightningDefineType(GjkDebug, builder, type)
   LightningBindGetterSetterProperty(OtherObject);
   LightningBindFieldProperty(mMaxExpands);
   LightningBindFieldProperty(mDt);
-  // LightningBindFieldProperty(mShowCSO);
-  // LightningBindFieldProperty(mSubdivisions)->Add(new EditorSlider(12.0f,
-  // 48.0f, 1.0f)); LightningBindFieldProperty(mOpacityCSO)->Add(new
-  // EditorSlider(0.0f, 255.0f, 1.0f));
-  // LightningBindFieldProperty(mOpacitySimplex)->Add(new EditorSlider(0.0f,
-  // 255.0f, 1.0f));
+  LightningBindFieldProperty(mShowCSO);
+  LightningBindFieldProperty(mSubdivisions)->Add(new EditorSlider(12.0f, 48.0f, 1.0f));
+  LightningBindFieldProperty(mOpacityCSO)->Add(new EditorSlider(0.0f, 255.0f, 1.0f));
+  LightningBindFieldProperty(mOpacitySimplex)->Add(new EditorSlider(0.0f, 255.0f, 1.0f));
 
-  // LightningBindMethod(InitEpa)->SetHidden(false);
-  // LightningBindMethod(AddPoint)->SetHidden(false);
+  LightningBindMethod(InitEpa)->IsHidden = true;
+  LightningBindMethod(AddPoint)->IsHidden = false;
   LightningBindMethodProperty(StepEpa);
   LightningBindMethodProperty(ToggleAnimation);
 }
 
-GjkDebug::GjkDebug(void) :
-    mShowCSO(true),
-    mSubdivisions(24.0f),
-    mOpacityCSO(50.0f),
-    mOpacitySimplex(50.0f),
-    mAnimate(false),
-    mMaxExpands(20),
-    mDt(1.0)
+GjkDebug::GjkDebug(void)
+  : mShowCSO(true)
+  , mSubdivisions(24.0f)
+  , mOpacityCSO(50.0f)
+  , mOpacitySimplex(50.0f)
+  , mAnimate(false)
+  , mMaxExpands(20)
+  , mDt(1.0)
 {
 }
 
 void GjkDebug::InitEpa(void)
 {
-  // mEpa.Init(Vec3(0.3f, 0, 0), Vec3(-0.3f, 0, 0.3), Vec3(-0.3f, 0, -0.3f),
-  // Vec3(0, 0.3f, 0));
+  // mEpa.Init(Vec3(0.3f, 0, 0), Vec3(-0.3f, 0, 0.3), Vec3(-0.3f, 0, -0.3f), Vec3(0, 0.3f, 0));
 }
 
 void GjkDebug::AddPoint(void)
@@ -97,8 +92,7 @@ void GjkDebug::DebugDraw(void)
 
   // // CSO points
   // // for (unsigned i = 0; i < mSupports.Size(); ++i)
-  // //   gDebugDraw->Add(Debug::Sphere(mSupports[i],
-  // 0.01f).Color(Color::Green));
+  // //   gDebugDraw->Add(Debug::Sphere(mSupports[i], 0.01f).Color(Color::Green));
 
   // // CSO faces
   // for (unsigned i = 0; i < mCSO.Size(); ++i)
@@ -107,8 +101,7 @@ void GjkDebug::DebugDraw(void)
   //   Vec3 p0 = face.vertices[0];
   //   Vec3 p1 = face.vertices[1];
   //   Vec3 p2 = face.vertices[2];
-  //   gDebugDraw->Add(Debug::Triangle(p0, p1,
-  //   p2).Color(Color::Orange).Border(true).Alpha((unsigned)mOpacityCSO));
+  //   gDebugDraw->Add(Debug::Triangle(p0, p1, p2).Color(Color::Orange).Border(true).Alpha((unsigned)mOpacityCSO));
   // }
 
   // Intersection test
@@ -166,9 +159,7 @@ void GjkDebug::DebugDraw(void)
     gDebugDraw->Add(Debug::Sphere(manifold.Points[0].Points[0], 0.01f).Color(Color::Red).OnTop(true));
     gDebugDraw->Add(Debug::Sphere(manifold.Points[0].Points[1], 0.01f).Color(Color::Red).OnTop(true));
 
-    gDebugDraw->Add(Debug::Line(manifold.Points[0].Points[0], manifold.Points[0].Points[0] + manifold.Normal)
-                        .Color(Color::Red)
-                        .OnTop(true));
+    gDebugDraw->Add(Debug::Line(manifold.Points[0].Points[0], manifold.Points[0].Points[0] + manifold.Normal).Color(Color::Red).OnTop(true));
   }
   else
   {
@@ -180,46 +171,32 @@ void GjkDebug::DebugDraw(void)
     // DebugPrint("%d\n", points.Size());
     switch (points.Size())
     {
-    case 1:
-      gDebugDraw->Add(Debug::Sphere(points[0].cso, 0.01f).Color(simplexColor));
+      case 1:
+        gDebugDraw->Add(Debug::Sphere(points[0].cso, 0.01f).Color(simplexColor));
       break;
-    case 2:
-      gDebugDraw->Add(Debug::Line(points[0].cso, points[1].cso).Color(simplexColor));
+      case 2:
+        gDebugDraw->Add(Debug::Line(points[0].cso, points[1].cso).Color(simplexColor));
       break;
-    case 3:
-      gDebugDraw->Add(Debug::Triangle(points[0].cso, points[1].cso, points[2].cso)
-                          .Color(simplexColor)
-                          .Border(true)
-                          .Alpha((unsigned)mOpacitySimplex));
+      case 3:
+        gDebugDraw->Add(Debug::Triangle(points[0].cso, points[1].cso, points[2].cso).Color(simplexColor).Border(true).Alpha((unsigned)mOpacitySimplex));
       break;
-    case 4:
-      gDebugDraw->Add(Debug::Triangle(points[0].cso, points[1].cso, points[2].cso)
-                          .Color(simplexColor)
-                          .Border(true)
-                          .Alpha((unsigned)mOpacitySimplex));
-      gDebugDraw->Add(Debug::Triangle(points[0].cso, points[2].cso, points[3].cso)
-                          .Color(simplexColor)
-                          .Border(true)
-                          .Alpha((unsigned)mOpacitySimplex));
-      gDebugDraw->Add(Debug::Triangle(points[0].cso, points[3].cso, points[1].cso)
-                          .Color(simplexColor)
-                          .Border(true)
-                          .Alpha((unsigned)mOpacitySimplex));
-      gDebugDraw->Add(Debug::Triangle(points[1].cso, points[2].cso, points[3].cso)
-                          .Color(simplexColor)
-                          .Border(true)
-                          .Alpha((unsigned)mOpacitySimplex));
+      case 4:
+        gDebugDraw->Add(Debug::Triangle(points[0].cso, points[1].cso, points[2].cso).Color(simplexColor).Border(true).Alpha((unsigned)mOpacitySimplex));
+        gDebugDraw->Add(Debug::Triangle(points[0].cso, points[2].cso, points[3].cso).Color(simplexColor).Border(true).Alpha((unsigned)mOpacitySimplex));
+        gDebugDraw->Add(Debug::Triangle(points[0].cso, points[3].cso, points[1].cso).Color(simplexColor).Border(true).Alpha((unsigned)mOpacitySimplex));
+        gDebugDraw->Add(Debug::Triangle(points[1].cso, points[2].cso, points[3].cso).Color(simplexColor).Border(true).Alpha((unsigned)mOpacitySimplex));
       break;
     }
   }
+
 }
 
-Cog* GjkDebug::GetOtherObject(void)
+Cog * GjkDebug::GetOtherObject(void)
 {
   return mOtherObject;
 }
 
-void GjkDebug::SetOtherObject(Cog* cog)
+void GjkDebug::SetOtherObject(Cog *cog)
 {
   if (cog == nullptr)
     mOtherObject = CogId();
@@ -233,8 +210,8 @@ void GjkDebug::ComputeCSO(void)
   mCSO.Clear();
   // if (!mOtherObject.IsValid() || !mOtherObject.has(Collider))
   // {
-  //   DoNotify("No Collider", "OtherObject is not set or OtherObject does not
-  //   own a Collider.", "Warning"); return;
+  //   DoNotify("No Collider", "OtherObject is not set or OtherObject does not own a Collider.", "Warning");
+  //   return;
   // }
 
   unsigned subdivisions = (unsigned)mSubdivisions;
@@ -284,7 +261,7 @@ void GjkDebug::ComputeCSO(void)
   size_t collumns = subdivisions * 2;
   for (size_t i = 0; i < collumns; ++i)
   {
-    size_t i2 = (i + 1) % (collumns);
+      size_t i2 = (i + 1) % (collumns);
     Vec3 p0 = mSupports[i];
     Vec3 p1 = mSupports[i2];
 
@@ -311,8 +288,8 @@ Vec3 GjkDebug::ComputeSupport(Vec3 supportVector)
 
 Vec3 GjkDebug::RandomPoint(void)
 {
-  float alpha = (float)(std::rand() * (double)Math::cPi / (double)RAND_MAX);
-  float beta = (float)(std::rand() * (double)Math::cPi / (double)RAND_MAX * 2);
+  float alpha = std::rand() * Math::cPi / RAND_MAX;
+  float beta = std::rand() * Math::cPi / RAND_MAX * 2;
   float sinAlpha1 = Math::Sin(alpha);
   float CosAlpha1 = Math::Cos(alpha);
   float sinBeta1 = Math::Sin(beta);

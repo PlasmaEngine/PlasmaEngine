@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -6,29 +5,27 @@ namespace Plasma
 
 class GenericPhysicsMesh;
 
-#define DefinePhysicsRuntimeClone(ResourceType)                                                                        \
-  HandleOf<Resource> ResourceType::Clone()                                                                             \
-  {                                                                                                                    \
-    return RuntimeClone();                                                                                             \
-  }                                                                                                                    \
-                                                                                                                       \
-  HandleOf<ResourceType> ResourceType::RuntimeClone()                                                                  \
-  {                                                                                                                    \
-    AutoDeclare(manager, GetManager());                                                                                \
-    HandleOf<ResourceType> cloneHandle(manager->CreateRuntimeInternal());                                              \
-    ResourceType* clone = *cloneHandle;                                                                                \
-    CopyTo(clone);                                                                                                     \
-    return cloneHandle;                                                                                                \
+#define DefinePhysicsRuntimeClone(ResourceType)                                               \
+  HandleOf<Resource> ResourceType::Clone()                                                    \
+  {                                                                                           \
+    return RuntimeClone();                                                                    \
+  }                                                                                           \
+                                                                                              \
+  HandleOf<ResourceType> ResourceType::RuntimeClone()                                         \
+  {                                                                                           \
+    AutoDeclare(manager, GetManager());                                                       \
+    HandleOf<ResourceType> cloneHandle(manager->CreateRuntimeInternal());                     \
+    ResourceType* clone = *cloneHandle;                                                       \
+    CopyTo(clone);                                                                            \
+    return cloneHandle;                                                                       \
   }
 
 template <typename ArrayType>
 class BoundMeshDataRange;
 
-/// Base functionality for binding a mesh array (on a resource) in physics.
-/// Currently designed as a templated base to reduce code duplication,
-/// especially while prototyping. Possibly split to individual classes (due to
-/// differences, code documentation, etc...) or make generic enough to use
-/// elsewhere later.
+/// Base functionality for binding a mesh array (on a resource) in physics. Currently designed as
+/// a templated base to reduce code duplication, especially while prototyping. Possibly split to
+/// individual classes (due to differences, code documentation, etc...) or make generic enough to use elsewhere later.
 template <typename OwningType, typename DataTypeT>
 class BoundMeshData : public SafeId32Object
 {
@@ -58,7 +55,7 @@ public:
 
   void RemoveAt(uint arrayIndex)
   {
-    if (!ValidateArrayIndex(arrayIndex))
+    if(!ValidateArrayIndex(arrayIndex))
       return;
 
     (*mBoundArray).EraseAt(arrayIndex);
@@ -72,7 +69,7 @@ public:
 
   DataTypeT Get(int arrayIndex) const
   {
-    if (!ValidateArrayIndex(arrayIndex))
+    if(!ValidateArrayIndex(arrayIndex))
       return DataTypeT();
 
     return (*mBoundArray)[arrayIndex];
@@ -80,7 +77,7 @@ public:
 
   void Set(int arrayIndex, const DataTypeT value)
   {
-    if (!ValidateArrayIndex(arrayIndex))
+    if(!ValidateArrayIndex(arrayIndex))
       return;
 
     (*mBoundArray)[arrayIndex] = value;
@@ -106,7 +103,7 @@ public:
   bool ValidateArrayIndex(int arrayIndex) const
   {
     int count = GetCount();
-    if (arrayIndex >= count)
+    if(arrayIndex >= count)
     {
       String msg = String::Format("Index %d is invalid. Array only contains %d element(s).", arrayIndex, count);
       DoNotifyException("Invalid index", msg);
@@ -115,8 +112,7 @@ public:
     return true;
   }
 
-  /// The array that this class represents. Assumes that this data cannot go
-  /// away without this class also going away.
+  /// The array that this class represents. Assumes that this data cannot go away without this class also going away.
   ArrayType* mBoundArray;
   /// The owner of the bound array. This object is notified when the resource
   /// is modified via the calling of the "ResourceModified" function.
@@ -148,7 +144,7 @@ public:
   {
     // Validate that the range hasn't been destroyed
     ArrayType* array = mArray;
-    if (array == nullptr)
+    if(array == nullptr)
     {
       DoNotifyException("Range is invalid", "The array this range is referencing has been destroyed.");
       return true;
@@ -159,14 +155,13 @@ public:
 
   FrontResult Front()
   {
-    // If the range is empty (or the range has been destroyed) then throw an
-    // exception.
-    if (Empty())
+    // If the range is empty (or the range has been destroyed) then throw an exception.
+    if(Empty())
     {
       DoNotifyException("Invalid Range Operation", "Cannot access an item in an empty range.");
       return FrontResult();
     }
-    return mArray->Get(static_cast<uint>(mIndex));
+    return mArray->Get((uint)mIndex);
   }
 
   void PopFront()
@@ -184,29 +179,31 @@ private:
   size_t mIndex;
 };
 
+//-------------------------------------------------------------------PhysicsMeshVertexData
 class PhysicsMeshVertexData : public BoundMeshData<GenericPhysicsMesh, Vec3>
 {
 public:
   LightningDeclareType(PhysicsMeshVertexData, TypeCopyMode::ReferenceType);
 };
 
+//-------------------------------------------------------------------PhysicsMeshIndexData
 class PhysicsMeshIndexData : public BoundMeshData<GenericPhysicsMesh, uint>
 {
 public:
   LightningDeclareType(PhysicsMeshIndexData, TypeCopyMode::ReferenceType);
 };
 
-#define PhysicsDefineArrayType(arrayType)                                                                              \
-  LightningDefineType(arrayType, builder, type)                                                                            \
-  {                                                                                                                    \
-    PlasmaBindDocumented();                                                                                              \
-                                                                                                                       \
-    LightningBindMethod(Get);                                                                                              \
-    LightningBindMethod(Set);                                                                                              \
-    LightningBindMethod(Add);                                                                                              \
-    LightningBindMethod(Clear);                                                                                            \
-    LightningBindGetter(All);                                                                                              \
-    LightningBindGetterProperty(Count);                                                                                    \
+#define PhysicsDefineArrayType(arrayType)   \
+  LightningDefineType(arrayType, builder, type) \
+  {                                         \
+    PlasmaBindDocumented();                   \
+                                            \
+    LightningBindMethod(Get);                   \
+    LightningBindMethod(Set);                   \
+    LightningBindMethod(Add);                   \
+    LightningBindMethod(Clear);                 \
+    LightningBindGetter(All);                   \
+    LightningBindGetterProperty(Count);         \
   }
 
-} // namespace Plasma
+}//namespace Plasma

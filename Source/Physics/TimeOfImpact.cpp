@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 using namespace Plasma;
@@ -25,10 +24,7 @@ TimeOfImpactFunc sTimeOfImpactLookup[Collider::cSize][Collider::cSize] = {{0}};
 void InitTimeOfImpactLookup();
 struct InvokeTimeOfImpactInit
 {
-  InvokeTimeOfImpactInit()
-  {
-    InitTimeOfImpactLookup();
-  }
+  InvokeTimeOfImpactInit() {InitTimeOfImpactLookup();}
 };
 
 static const real sTolerance = 0.001;
@@ -95,11 +91,10 @@ real FalsePosition(GeometryData* objA, GeometryData* objB, Vec3Param normal, rea
   return tMin + (tMax - tMin) * u;
 }
 
-real FindRoot(
-    GeometryData* objA, GeometryData* objB, Vec3Param normal, real tMin, real tMax, real lowerBound, real upperBound)
+real FindRoot(GeometryData* objA, GeometryData* objB, Vec3Param normal, real tMin, real tMax, real lowerBound, real upperBound)
 {
-  ErrorIf(Separation(objA, objB, normal, tMin) < upperBound || Separation(objA, objB, normal, tMax) > lowerBound,
-          "No valid root exists!");
+  ErrorIf(Separation(objA, objB, normal, tMin) < upperBound ||
+          Separation(objA, objB, normal, tMax) > lowerBound, "No valid root exists!");
 
   real t, separation;
 
@@ -117,7 +112,8 @@ real FindRoot(
       tMin = t;
     else
       tMax = t;
-  } while (separation <= lowerBound || upperBound <= separation);
+  }
+  while (separation <= lowerBound || upperBound <= separation);
 
   return t;
 }
@@ -130,8 +126,7 @@ void SetSupportShapeDeltas(GeometryData* objA, GeometryData* objB, real dt)
   objB->shape.SetDeltaRotation(ToQuaternion(objB->axs, objB->ang * dt));
 }
 
-bool BilateralAdvancement(
-    GeometryData* objA, GeometryData* objB, real dt, real* impact, Intersection::Manifold* manifold)
+bool BilateralAdvancement(GeometryData* objA, GeometryData* objB, real dt, real* impact, Intersection::Manifold* manifold)
 {
   Intersection::Gjk gjk;
   Intersection::Type intersection;
@@ -140,8 +135,7 @@ bool BilateralAdvancement(
   SetSupportShapeDeltas(objA, objB, 0);
   intersection = gjk.TestDebug(&objA->shape, &objB->shape, manifold);
 
-  // If objects' initial configuration is intersecting, then maybe return some
-  // other error code
+  // If objects' initial configuration is intersecting, then maybe return some other error code
   // ...
 
   *impact = dt;
@@ -179,8 +173,10 @@ bool BilateralAdvancement(
       // Current separation within threshold, advance forward for contact data
       else
       {
-        real relativeVelocity = normal.Dot(objB->vel) + objB->rel.Cross(normal).Dot(objB->axs * objB->ang) -
-                                normal.Dot(objA->vel) - objA->rel.Cross(normal).Dot(objA->axs * objA->ang);
+        real relativeVelocity = normal.Dot(objB->vel)
+                              + objB->rel.Cross(normal).Dot(objB->axs * objB->ang)
+                              - normal.Dot(objA->vel)
+                              - objA->rel.Cross(normal).Dot(objA->axs * objA->ang);
 
         // No relative velocity, objects are not getting closer on this axis
         if (relativeVelocity >= 0)
@@ -243,6 +239,7 @@ void TimeOfImpactInternal(TimeOfImpactData* data)
     manifold.SetPair(pair);
     IntersectionToPhysicsManifold<ShapeTypeA, ShapeTypeB>(&iManifold, &manifold);
 
+
     data->ImpactTimes.PushBack(impactTime);
     data->Manifolds.PushBack(manifold);
   }
@@ -256,13 +253,12 @@ void TimeOfImpactComplexInternal(TimeOfImpactData* data, bool parametersSwapped)
   GeometryData objA, objB;
   GetGeometryData(data->ColliderA, &objA, data->LinearSweep);
   GetGeometryData(data->ColliderB, &objB, data->LinearSweep);
-  if (data->LinearSweep)
+  if(data->LinearSweep)
   {
-    // when performing a linear sweep we always sweep the first collider,
-    // however the collider order might've been swapped (to make it easier to
-    // test against complex colliders). In that case swap who is doing the
-    // linear sweep.
-    if (!parametersSwapped)
+    //when performing a linear sweep we always sweep the first collider,
+    //however the collider order might've been swapped (to make it easier to test
+    //against complex colliders). In that case swap who is doing the linear sweep.
+    if(!parametersSwapped)
       objA.vel = data->Velocity;
     else
       objB.vel = data->Velocity;
@@ -272,12 +268,12 @@ void TimeOfImpactComplexInternal(TimeOfImpactData* data, bool parametersSwapped)
   Sphere sphereB = data->ColliderB->mBoundingSphere;
   Capsule sweptSphere(sphereB.mCenter, sphereB.mCenter + deltaVel * data->Dt, sphereB.mRadius);
   SpaceFunctor functor(data->ColliderA);
-  // this code only works when the complex object isn't rotating
+  //this code only works when the complex object isn't rotating
   //(you basically can't midphase when the complex object is rotating)
   Aabb localAabb = functor.ToLocalAabb(ToAabb(sweptSphere));
 
   AutoDeclare(range, complexCollider->GetOverlapRange(localAabb));
-  for (; !range.Empty(); range.PopFront())
+  for(; !range.Empty(); range.PopFront())
   {
     AutoDeclare(shapeObject, range.Front());
     AutoDeclare(worldShape, functor.ToWorldShape(shapeObject.Shape));
@@ -290,7 +286,7 @@ void TimeOfImpactComplexInternal(TimeOfImpactData* data, bool parametersSwapped)
     real impactTime;
     Intersection::Manifold iManifold;
 
-    if (!BilateralAdvancement(&objA, &objB, data->Dt, &impactTime, &iManifold))
+    if(!BilateralAdvancement(&objA, &objB, data->Dt, &impactTime, &iManifold))
       continue;
 
     ColliderPair pair;
@@ -309,13 +305,13 @@ void TimeOfImpactComplexInternal(TimeOfImpactData* data, bool parametersSwapped)
 }
 
 template <typename ComplexType, typename ShapeType>
-void TimeOfImpactComplex(TimeOfImpactData* data, bool parametersSwapped, TrueType)
+void TimeOfImpactComplex(TimeOfImpactData* data, bool parametersSwapped, true_type)
 {
   TimeOfImpactComplexInternal<ComplexType, ShapeType, LocalFunctor>(data, parametersSwapped);
 }
 
 template <typename ComplexType, typename ShapeType>
-void TimeOfImpactComplex(TimeOfImpactData* data, bool parametersSwapped, FalseType)
+void TimeOfImpactComplex(TimeOfImpactData* data, bool parametersSwapped, false_type)
 {
   TimeOfImpactComplexInternal<ComplexType, ShapeType, WorldFunctor>(data, parametersSwapped);
 }
@@ -343,7 +339,7 @@ void TimeOfImpactComplexVsComplexInternal(TimeOfImpactData* data)
   GeometryData objA, objB;
   GetGeometryData(data->ColliderA, &objA, data->LinearSweep);
   GetGeometryData(data->ColliderB, &objB, data->LinearSweep);
-  if (data->LinearSweep)
+  if(data->LinearSweep)
     objA.vel = data->Velocity;
 
   typedef typename ColliderType0::RangeType Range0Type;
@@ -352,57 +348,55 @@ void TimeOfImpactComplexVsComplexInternal(TimeOfImpactData* data)
   SpaceFunctor0 functor0(complexCollider0);
   SpaceFunctor1 functor1(complexCollider1);
 
-  // bring the swept sphere of collider1 into collider0's local space as an aabb
+  //bring the swept sphere of collider1 into collider0's local space as an aabb
   Vec3 deltaVel = objB.vel - objA.vel;
   Sphere sphereB = complexCollider1->mBoundingSphere;
   Capsule sweptSphere1(sphereB.mCenter, sphereB.mCenter + deltaVel * data->Dt, sphereB.mRadius);
-  // this code only works when the objects are not rotating
+  //this code only works when the objects are not rotating
   //(you basically can't midphase when the complex object is rotating)
   Aabb aabb1InSpace0 = functor0.ToLocalAabb(ToAabb(sweptSphere1));
 
-  // iterate over all sub-shapes in collider0 that could possibly intersect with
-  // collider1
+  //iterate over all sub-shapes in collider0 that could possibly intersect with collider1
   Range0Type r0 = complexCollider0->GetOverlapRange(aabb1InSpace0);
-  for (; !r0.Empty(); r0.PopFront())
+  for(; !r0.Empty(); r0.PopFront())
   {
     AutoDeclare(item0, r0.Front());
-    // convert the shape to world space to perform collision detection against
+    //convert the shape to world space to perform collision detection against
     //(if manifolds is nullptr, we could keep this in local
-    // space and just convert the collider shape once...)
+    //space and just convert the collider shape once...)
     AutoDeclare(worldShape0, functor0.ToWorldShape(item0.Shape));
-    // need to get the type of the world shape for IntersectionToPhysicsManifold
+    //need to get the type of the world shape for IntersectionToPhysicsManifold
     typedef decltype(worldShape0) WorldShape0Type;
 
-    // update the sub-shape for objectA
+    //update the sub-shape for objectA
     objA.shape = Intersection::MakeSupport(&worldShape0, true);
     objA.shape.SetDeltaPosition(Vec3::cZero);
     objA.shape.SetDeltaRotation(Quat::cIdentity);
     objA.shape.GetCenter(&objA.pos);
 
-    // compute the swept sphere for the sub-shape of objectA (from its aabb)
+    //compute the swept sphere for the sub-shape of objectA (from its aabb)
     Aabb shape0WorldAabb = ToAabb(worldShape0);
     Vec3 halfExtents = shape0WorldAabb.GetHalfExtents();
     real radius = Math::Max(halfExtents.x, Math::Max(halfExtents.y, halfExtents.z));
     Vec3 shape0Center = shape0WorldAabb.GetCenter();
     Capsule sweptSphere0(shape0Center, shape0Center - deltaVel * data->Dt, radius);
 
-    // now we need to take each sub-shape in collider0 and check to
-    // see what sub-shapes in collider1 they could hit
+    //now we need to take each sub-shape in collider0 and check to
+    //see what sub-shapes in collider1 they could hit
     //(note: this doesn't work if the objects were rotating)
     Aabb aabb0InSpace1 = ToAabb(functor1.ToLocalShape(ToAabb(sweptSphere0)));
     Range1Type r1 = complexCollider1->GetOverlapRange(aabb0InSpace1);
-    for (; !r1.Empty(); r1.PopFront())
+    for(; !r1.Empty(); r1.PopFront())
     {
       AutoDeclare(item1, r1.Front());
-      // convert the shape to world space to perform collision detection against
+      //convert the shape to world space to perform collision detection against
       //(if manifolds is nullptr, we could keep this in local
-      // space and just convert the collider shape once...)
+      //space and just convert the collider shape once...)
       AutoDeclare(worldShape1, functor1.ToWorldShape(item1.Shape));
-      // need to get the type of the world shape for
-      // IntersectionToPhysicsManifold
+      //need to get the type of the world shape for IntersectionToPhysicsManifold
       typedef decltype(worldShape1) WorldShape1Type;
 
-      // update the sub-shape for objectB
+      //update the sub-shape for objectB
       objB.shape = Intersection::MakeSupport(&worldShape1, true);
       objB.shape.SetDeltaPosition(Vec3::cZero);
       objB.shape.SetDeltaRotation(Quat::cIdentity);
@@ -411,7 +405,7 @@ void TimeOfImpactComplexVsComplexInternal(TimeOfImpactData* data)
       real impactTime;
       Intersection::Manifold iManifold;
 
-      if (!BilateralAdvancement(&objA, &objB, data->Dt, &impactTime, &iManifold))
+      if(!BilateralAdvancement(&objA, &objB, data->Dt, &impactTime, &iManifold))
         continue;
 
       ColliderPair pair;
@@ -421,7 +415,7 @@ void TimeOfImpactComplexVsComplexInternal(TimeOfImpactData* data)
       Physics::Manifold manifold;
       manifold.SetPair(pair);
       IntersectionToPhysicsManifold<WorldShape0Type, WorldShape1Type>(&iManifold, &manifold);
-      // set the id of this item on the manifold
+      //set the id of this item on the manifold
       //(just lexicographically pack the two indices together for now)
       manifold.ContactId = item0.Index << 16;
       manifold.ContactId |= item1.Index;
@@ -439,17 +433,16 @@ void TimeOfImpactComplexVsComplex(TimeOfImpactData* data)
 {
   bool type0Local = ColliderType0::RangeInLocalSpace::value;
   bool type1Local = ColliderType1::RangeInLocalSpace::value;
-  // determine which collider needs a local space functor and which needs a
-  // world space functor (could do some fancy template tricks to remove the if,
-  // but worry about that later)
-  if (type0Local)
+  //determine which collider needs a local space functor and which needs a world space functor
+  //(could do some fancy template tricks to remove the if, but worry about that later)
+  if(type0Local)
   {
-    if (type1Local)
+    if(type1Local)
       TimeOfImpactComplexVsComplexInternal<ColliderType0, ColliderType1, LocalFunctor, LocalFunctor>(data);
     else
       TimeOfImpactComplexVsComplexInternal<ColliderType0, ColliderType1, LocalFunctor, WorldFunctor>(data);
   }
-  else if (type1Local)
+  else if(type1Local)
     TimeOfImpactComplexVsComplexInternal<ColliderType0, ColliderType1, WorldFunctor, LocalFunctor>(data);
   else
     TimeOfImpactComplexVsComplexInternal<ColliderType0, ColliderType1, WorldFunctor, WorldFunctor>(data);
@@ -533,7 +526,7 @@ void TimeOfImpact(TimeOfImpactData* data)
 {
   TimeOfImpactFunc function = sTimeOfImpactLookup[data->ColliderA->mType][data->ColliderB->mType];
 
-  if (function == nullptr)
+  if(function == nullptr)
   {
     Error("Time of impact function not implemented. Cannot collide objects.");
     return;

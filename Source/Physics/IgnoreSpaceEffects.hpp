@@ -1,12 +1,10 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
 {
 
 /// Allows a cog to ignore certain effect types (such as gravity or drag)
-/// that are being applied to the entire space (effects on Space or
-/// LevelSettings).
+/// that are being applied to the entire space (effects on Space or LevelSettings).
 class IgnoreSpaceEffects : public Component
 {
 public:
@@ -66,4 +64,4 @@ private:
   BitField<PhysicsEffectType::Enum> mFlags;
 };
 
-} // namespace Plasma
+}//namespace Plasma

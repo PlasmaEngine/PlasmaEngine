@@ -1799,7 +1799,11 @@ namespace Plasma
                 DoRenderTaskTextureUpdate(static_cast<RenderTaskTextureUpdate*>(task));
                 taskIndex += sizeof(RenderTaskTextureUpdate);
                 break;
-
+            case RenderTaskType::ComputePass:
+                Warn("Compute: Implementation Unfinied");
+                DoRenderTaskCompute(static_cast<RenderTaskCompute*>(task));
+                taskIndex += sizeof(RenderTaskCompute);
+                break;
             default:
                 Error("Render task not implemented.");
                 break;
@@ -2024,6 +2028,27 @@ namespace Plasma
         info.mMipHeaders = nullptr;
 
         AddTexture(&info);
+    }
+
+    void OpenglRenderer::DoRenderTaskCompute(RenderTaskCompute* task)
+    {
+        GlMaterialRenderData* materialData = static_cast<GlMaterialRenderData*>(task->mMaterialRenderData);
+        if (materialData == nullptr && task->mComputePassName.Empty() == true)
+            return;
+
+        String compositeName = materialData ? materialData->mCompositeName : task->mComputePassName;
+
+        ShaderKey shaderKey(compositeName, StringPair(cPostVertex, String()));
+        GlShader* shader = GetShader(shaderKey);
+        if (shader == nullptr)
+            return;
+        {
+            ZoneScopedN("DoRenderTask");
+            ProfileScopeTree(task->mComputeDisplayName, "Plasma::DoRenderTaskCompute", Color::Cyan)
+
+
+        }
+
     }
 
     void OpenglRenderer::SetRenderTargets(RenderSettings& renderSettings)

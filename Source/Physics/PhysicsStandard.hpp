@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 #include "Core/Common/CommonStandard.hpp"
@@ -11,7 +10,7 @@
 #include "Core/Geometry/DebugDraw.hpp"
 #include "Core/Engine/Time.hpp"
 
-// Physics typedefs
+//Physics typedefs
 namespace Plasma
 {
 
@@ -28,29 +27,30 @@ public:
   static void Shutdown();
 };
 
-} // namespace Plasma
+}//namespace Plasma
+
 
 #include "ForwardDeclarations.hpp"
 
 #include "WorldTransformation.hpp"
 #include "MeshFilterRange.hpp"
 #include "Masses.hpp"
-#include "JointData.hpp"
-#include "JointEnums.hpp"
+#include "Joints/JointData.hpp"
+#include "Joints/JointEnums.hpp"
 #include "PhysicsPairs.hpp"
-#include "ConstraintAtoms.hpp"
-#include "ConstraintAtomDefines.hpp"
-#include "ConstraintMolecules.hpp"
-#include "JointIncludes.hpp"
-#include "ContactPoint.hpp"
-#include "ConstraintRanges.hpp"
+#include "Joints/ConstraintAtoms.hpp"
+#include "Joints/ConstraintAtomDefines.hpp"
+#include "Joints/ConstraintMolecules.hpp"
+#include "Physics/Joints/JointIncludes.hpp"
+#include "Physics/ContactPoint.hpp"
+#include "Physics/ConstraintRanges.hpp"
 
 // Resources
 #include "CollisionFilter.hpp"
 #include "CollisionFilterBlocks.hpp"
 #include "CollisionGroup.hpp"
 #include "CollisionTable.hpp"
-#include "PhysicsMeshBoundData.hpp"
+#include "Physics/PhysicsMeshBoundData.hpp"
 #include "GenericPhysicsMesh.hpp"
 #include "ConvexMesh.hpp"
 #include "MultiConvexMesh.hpp"
@@ -83,26 +83,26 @@ public:
 #include "MultiConvexMeshCollider.hpp"
 #include "SphereCollider.hpp"
 // Joints
-#include "Joint.hpp"
-#include "CustomJoint.hpp"
-#include "FixedAngleJoint.hpp"
-#include "GearJoint.hpp"
-#include "LinearAxisJoint.hpp"
-#include "ManipulatorJoint.hpp"
-#include "PhyGunJoint.hpp"
-#include "PositionJoint.hpp"
-#include "PrismaticJoint.hpp"
-#include "PrismaticJoint2d.hpp"
-#include "PulleyJoint.hpp"
-#include "RelativeVelocityJoint.hpp"
-#include "RevoluteJoint.hpp"
-#include "RevoluteJoint2d.hpp"
-#include "StickJoint.hpp"
-#include "UniversalJoint.hpp"
-#include "UprightJoint.hpp"
-#include "WeldJoint.hpp"
-#include "WheelJoint.hpp"
-#include "WheelJoint2d.hpp"
+#include "Joints/Joint.hpp"
+#include "Joints/CustomJoint.hpp"
+#include "Joints/FixedAngleJoint.hpp"
+#include "Joints/GearJoint.hpp"
+#include "Joints/LinearAxisJoint.hpp"
+#include "Joints/ManipulatorJoint.hpp"
+#include "Joints/PhyGunJoint.hpp"
+#include "Joints/PositionJoint.hpp"
+#include "Joints/PrismaticJoint.hpp"
+#include "Joints/PrismaticJoint2d.hpp"
+#include "Joints/PulleyJoint.hpp"
+#include "Joints/RelativeVelocityJoint.hpp"
+#include "Joints/RevoluteJoint.hpp"
+#include "Joints/RevoluteJoint2d.hpp"
+#include "Joints/StickJoint.hpp"
+#include "Joints/UniversalJoint.hpp"
+#include "Joints/UprightJoint.hpp"
+#include "Joints/WeldJoint.hpp"
+#include "Joints/WheelJoint.hpp"
+#include "Joints/WheelJoint2d.hpp"
 
 #include "Region.hpp"
 #include "RigidBody.hpp"
@@ -113,29 +113,29 @@ public:
 
 // Misc Joints Stuff
 #include "JointCreator.hpp"
-#include "DebugDrawFragments.hpp"
-#include "ConstraintFragments.hpp"
-#include "ConstraintHelpers.hpp"
-#include "Contact.hpp"
-#include "IConstraintSolver.hpp"
-#include "BasicSolver.hpp"
-#include "GenericBasicSolver.hpp"
+#include "Joints/DebugDrawFragments.hpp"
+#include "Joints/ConstraintFragments.hpp"
+#include "Joints/ConstraintHelpers.hpp"
+#include "Joints/Contact.hpp"
+#include "Joints/IConstraintSolver.hpp"
+#include "Joints/BasicSolver.hpp"
+#include "Joints/GenericBasicSolver.hpp"
 #include "Island.hpp"
 #include "IslandManager.hpp"
 #include "PhysicsSolverConfig.hpp"
-#include "PositionCorrectionFragments.hpp"
-#include "JointDebugDrawConfig.hpp"
-#include "JointConfigOverride.hpp"
-#include "JointLimit.hpp"
-#include "JointMotor.hpp"
-#include "NormalSolver.hpp"
-#include "SerializationFragments.hpp"
-#include "SolverFragments.hpp"
-#include "JointSpring.hpp"
-#include "JointEvents.hpp"
-#include "TemplatedFragments.hpp"
-#include "ThreadedFragments.hpp"
-#include "ThreadedSolver.hpp"
+#include "Joints/PositionCorrectionFragments.hpp"
+#include "Joints/JointDebugDrawConfig.hpp"
+#include "Joints/JointConfigOverride.hpp"
+#include "Joints/JointLimit.hpp"
+#include "Joints/JointMotor.hpp"
+#include "Joints/NormalSolver.hpp"
+#include "Joints/SerializationFragments.hpp"
+#include "Joints/SolverFragments.hpp"
+#include "Joints/JointSpring.hpp"
+#include "Joints/JointEvents.hpp"
+#include "Joints/TemplatedFragments.hpp"
+#include "Joints/ThreadedFragments.hpp"
+#include "Joints/ThreadedSolver.hpp"
 
 #include "RayCast.hpp"
 #include "Manifold.hpp"
@@ -148,6 +148,7 @@ public:
 #include "ContactManager.hpp"
 #include "CustomCollisionEventTracker.hpp"
 #include "TimeOfImpact.hpp"
+
 
 #include "BodyMassCalculations.hpp"
 #include "CoreActions.hpp"

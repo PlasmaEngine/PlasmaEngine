@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #pragma once
 
 namespace Plasma
@@ -8,9 +7,8 @@ class PhysicsMesh;
 struct ProxyResult;
 struct BaseCastFilter;
 
-/// Defines the collision for a generic mesh from a collection of triangles
-/// (PhysicsMesh resource). This collider type is not expected to have a dynamic
-/// or kinematic RigidBody.
+/// Defines the collision for a generic mesh from a collection of triangles (PhysicsMesh resource).
+/// This collider type is not expected to have a dynamic or kinematic RigidBody.
 class MeshCollider : public Collider
 {
 public:
@@ -22,7 +20,7 @@ public:
   void Serialize(Serializer& stream) override;
   void Initialize(CogInitializer& initializer) override;
   void DebugDraw() override;
-
+  
   // Collider Interface
   void ComputeWorldAabbInternal() override;
   real ComputeWorldVolumeInternal() override;
@@ -36,24 +34,23 @@ public:
   void SetPhysicsMesh(PhysicsMesh* physicsMesh);
   void OnMeshModified(Event* e);
 
-  /// Used to tell the collision system that this collider stores information in
-  /// local space. This means that the passed in aabb for GetOverlapRange should
-  /// be transformed to local space.
-  typedef TrueType RangeInLocalSpace;
-  /// Used in the collision system.Maybe replace with AutoDeclare
-  /// later?
+  //-------------------------------------------------------------------Internal
+
+  /// Used to tell the collision system that this collider stores information in local space.
+  /// This means that the passed in aabb for GetOverlapRange should be transformed to local space.
+  typedef true_type RangeInLocalSpace;
+  /// Used in the collision system. Maybe replace with AutoDeclare later?
   typedef Physics::MeshPreFilteredRange RangeType;
-  /// Returns a range of local-space triangles that overlap the passed in
-  /// local-space aabb.
+  /// Returns a range of local-space triangles that overlap the passed in local-space aabb.
   RangeType GetOverlapRange(Aabb& localAabb);
 
-  /// This is a specialization of Ray vs. HeightMap that goes through the
-  /// internal mid-phase with an optimized ray-casting algorithm instead of the
-  /// generic GetOverlapAabb function. Note: the ray here is expected to be in
-  /// this cog's local space.
+  /// This is a specialization of Ray vs. HeightMap that goes through the internal mid-phase with an
+  /// optimized ray-casting algorithm instead of the generic GetOverlapAabb function.
+  /// Note: the ray here is expected to be in this cog's local space.
   bool Cast(const Ray& localRay, ProxyResult& result, BaseCastFilter& filter);
 
 private:
+
   /// Whether to debug draw the edges of each triangle.
   bool mDrawEdges;
   /// Whether to debug draw the faces of each triangle.
@@ -64,4 +61,4 @@ private:
   HandleOf<PhysicsMesh> mPhysicsMesh;
 };
 
-} // namespace Plasma
+}//namespace Plasma

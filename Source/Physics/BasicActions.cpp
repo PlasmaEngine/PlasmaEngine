@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -10,9 +9,9 @@ IntegrationAction::IntegrationAction(Collider* collider)
   mMassAction.QueueState(MassAction::WorldInertiaTensor);
   mBroadPhaseAction.UpdateAction(collider);
 
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   collider->mPhysicsNode->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   collider->mPhysicsNode->Queue(mTransformAction);
   collider->mPhysicsNode->Queue(mMassAction);
   collider->mPhysicsNode->Queue(mBroadPhaseAction);
@@ -25,9 +24,9 @@ MovementAction::MovementAction(Collider* collider)
   mMassAction.QueueState(MassAction::CenterMassUpdate);
   mBroadPhaseAction.UpdateAction(collider);
 
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   collider->mPhysicsNode->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   collider->mPhysicsNode->Queue(mTransformAction);
   collider->mPhysicsNode->Queue(mMassAction);
   collider->mPhysicsNode->Queue(mBroadPhaseAction);
@@ -38,9 +37,9 @@ KinematicMovementAction::KinematicMovementAction(RigidBody* body)
   mTransformAction.QueueState(TransformAction::WorldTransform);
   mTransformAction.QueueState(TransformAction::KinematicVelocity);
 
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   body->mPhysicsNode->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   body->mPhysicsNode->Queue(mTransformAction);
 }
 
@@ -51,9 +50,9 @@ ColliderCreationAction::ColliderCreationAction(Collider* collider)
   mBroadPhaseAction.InsertAction(collider);
 
   PhysicsNode* node = collider->mPhysicsNode;
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   node->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   node->Queue(mTransformAction);
   node->Queue(mBroadPhaseAction);
 }
@@ -64,9 +63,9 @@ RigidBodyCreationAction::RigidBodyCreationAction(RigidBody* body)
   mMassAction.QueueState(MassAction::RecomputeInertiaTensor);
   mMassAction.QueueState(MassAction::WorldInertiaTensor);
 
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   body->mPhysicsNode->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   body->mPhysicsNode->Queue(mMassAction);
 }
 
@@ -75,9 +74,9 @@ FullTransformAction::FullTransformAction(Collider* collider)
   mTransformAction.QueueState(TransformAction::ReadTransform);
   mTransformAction.QueueState(TransformAction::WorldTransform);
 
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   collider->mPhysicsNode->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   collider->mPhysicsNode->Queue(mTransformAction);
 }
 
@@ -86,9 +85,9 @@ FullTransformAction::FullTransformAction(PhysicsNode* node)
   mTransformAction.QueueState(TransformAction::ReadTransform);
   mTransformAction.QueueState(TransformAction::WorldTransform);
 
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   node->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   node->Queue(mTransformAction);
 }
 
@@ -96,9 +95,9 @@ WorldTransformationAction::WorldTransformationAction(Collider* collider)
 {
   mTransformAction.QueueState(TransformAction::WorldTransform);
 
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   collider->mPhysicsNode->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   collider->mPhysicsNode->Queue(mTransformAction);
 }
 
@@ -120,9 +119,9 @@ InsertionAction::InsertionAction(Collider* collider, byte state)
 
 void InsertionAction::Queue(Collider* collider)
 {
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   collider->mPhysicsNode->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   collider->mPhysicsNode->Queue(mTransformAction);
   collider->mPhysicsNode->Queue(mBroadPhaseAction);
 }
@@ -131,9 +130,9 @@ RemovalAction::RemovalAction(Collider* collider)
 {
   mBroadPhaseAction.RemoveAction(collider);
 
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   collider->mPhysicsNode->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   collider->mPhysicsNode->Queue(mBroadPhaseAction);
 }
 
@@ -143,9 +142,9 @@ MassRecomputationAction::MassRecomputationAction(RigidBody* body)
   mMassAction.QueueState(MassAction::RecomputeInertiaTensor);
   mMassAction.QueueState(MassAction::WorldInertiaTensor);
 
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   body->mPhysicsNode->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   body->mPhysicsNode->Queue(mMassAction);
 }
 
@@ -156,9 +155,9 @@ void QueueFullMassRecompuation(PhysicsNode* node)
   massAction.QueueState(MassAction::RecomputeInertiaTensor);
   massAction.QueueState(MassAction::WorldInertiaTensor);
 
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   node->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   node->Queue(massAction);
 }
 
@@ -168,9 +167,9 @@ void QueueInertiaRecompuation(PhysicsNode* node)
   massAction.QueueState(MassAction::RecomputeInertiaTensor);
   massAction.QueueState(MassAction::WorldInertiaTensor);
 
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   node->QueueSelf();
-  // queue all of the actions
+  //queue all of the actions
   node->Queue(massAction);
 }
 
@@ -190,14 +189,14 @@ void QueueBodyIntegration(PhysicsNode* node)
   TransformAction transformAction;
   transformAction.QueueState(TransformAction::WorldTransform);
   transformAction.QueueState(TransformAction::KinematicVelocity);
-
+  
   MassAction massAction;
   massAction.QueueState(MassAction::WorldInertiaTensor);
-
-  // make sure we are in the queue for update
+  
+  //make sure we are in the queue for update
   node->QueueSelf();
 
-  // queue all of the actions
+  //queue all of the actions
   node->Queue(transformAction);
   node->Queue(massAction);
 }
@@ -208,7 +207,7 @@ void ChangeBroadPhase(Collider* collider, bool toDynamicBroadphase)
 
   BroadPhaseAction bpAction;
   bpAction.RemoveAction(collider);
-  if (toDynamicBroadphase)
+  if(toDynamicBroadphase)
     bpAction.QueueState(BroadPhaseAction::DynamicInsert);
   else
     bpAction.QueueState(BroadPhaseAction::StaticInsert);
@@ -222,8 +221,8 @@ void InsertIntoBroadPhase(Collider* collider)
   PhysicsNode* node = collider->mPhysicsNode;
 
   BroadPhaseAction bpAction;
-  // if we have a direct body then we go into dynamic
-  if (collider->mDirectRigidBody)
+  //if we have a direct body then we go into dynamic
+  if(collider->mDirectRigidBody)
     bpAction.QueueState(BroadPhaseAction::DynamicInsert);
   else
     bpAction.QueueState(BroadPhaseAction::StaticInsert);
@@ -236,7 +235,7 @@ bool RemoveFromBroadPhase(Collider* collider)
 {
   PhysicsNode* node = collider->mPhysicsNode;
   uint id = node->BroadPhaseToRemoveFrom();
-  if (id == 0)
+  if(id == 0)
     return false;
 
   BroadPhaseAction bpAction;
@@ -265,11 +264,11 @@ void QueueOverrideOldTransform(RigidBody* body)
   TransformAction transformAction;
   transformAction.QueueState(TransformAction::OverrideOldTransform);
 
-  // make sure we are in the queue for update
+  //make sure we are in the queue for update
   node->QueueSelf();
 
-  // queue all of the actions
+  //queue all of the actions
   node->Queue(transformAction);
 }
 
-} // namespace Plasma
+}//namespace Plasma

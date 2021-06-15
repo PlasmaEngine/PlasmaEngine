@@ -1,4 +1,3 @@
-// MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
 namespace Plasma
@@ -16,8 +15,10 @@ DefineEvent(GroupCollisionPersisted);
 DefineEvent(GroupCollisionEnded);
 DefineEvent(GroupCollisionPreSolve);
 DefineEvent(PhysicsUpdateFinished);
-} // namespace Events
+}//namespace Events
 
+
+//-------------------------------------------------------------------BaseCollisionEvent
 LightningDefineType(BaseCollisionEvent, builder, type)
 {
   PlasmaBindDocumented();
@@ -93,14 +94,12 @@ Collider* BaseCollisionEvent::GetOtherCollider()
 
 void BaseCollisionEvent::MatchCollisionFilterOrder(CollisionFilter* filter)
 {
-  // To help make SendToA and SendToB make more sense, flip the event's order to
-  // match the same as the filter. This means SendToA will send to the collider
-  // with the same collision group as the first one in the filter. If both
-  // collision groups are the same then no flip happens but there's no logical
-  // order then anyways.
+  // To help make SendToA and SendToB make more sense, flip the event's order to match the same as the filter.
+  // This means SendToA will send to the collider with the same collision group as the first one in the filter. 
+  // If both collision groups are the same then no flip happens but there's no logical order then anyways.
   Collider* firstCollider = GetCollider();
   ResourceId firstGroupId = firstCollider->mCollisionGroupInstance->mResource->mResourceId;
-  if (firstGroupId != filter->first())
+  if(firstGroupId != filter->first())
     mObjectIndex = !mObjectIndex;
 }
 
@@ -110,6 +109,7 @@ const Physics::ManifoldPoint& BaseCollisionEvent::GetPoint(uint index)
   return mManifold->Contacts[index];
 }
 
+//-------------------------------------------------------------------CollisionEvent
 LightningDefineType(CollisionEvent, builder, type)
 {
   PlasmaBindDocumented();
@@ -146,20 +146,21 @@ ContactPoint CollisionEvent::GetFirstPoint()
 
 void CollisionEvent::UpdatePoint()
 {
-  if (mCollisionType == CollisionStarted || mCollisionType == CollisionPersisted)
+  if(mCollisionType == CollisionStarted || mCollisionType == CollisionPersisted)
     mContactPoint = mManifold->Contacts[mContactIndex];
 }
 
 String CollisionEvent::GetEventName(BaseCollisionEvent::CollisionType type)
 {
-  if (type == BaseCollisionEvent::CollisionStarted)
+  if(type == BaseCollisionEvent::CollisionStarted)
     return Events::CollisionStarted;
-  else if (type == BaseCollisionEvent::CollisionPersisted)
+  else if(type == BaseCollisionEvent::CollisionPersisted)
     return Events::CollisionPersisted;
   else
     return Events::CollisionEnded;
 }
 
+//-------------------------------------------------------------------CollisionGroupEvent
 LightningDefineType(CollisionGroupEvent, builder, type)
 {
   PlasmaBindDocumented();
@@ -173,21 +174,19 @@ LightningDefineType(CollisionGroupEvent, builder, type)
 
 CollisionGroupEvent::CollisionGroupEvent()
 {
+  
 }
 
-void CollisionGroupEvent::Set(Physics::Manifold* manifold,
-                              const CollisionFilter& pair,
-                              CollisionFilterBlock* block,
-                              StringParam eventType)
+void CollisionGroupEvent::Set(Physics::Manifold* manifold, const CollisionFilter& pair, CollisionFilterBlock* block, StringParam eventType)
 {
-  BaseCollisionEvent::Set(manifold, eventType);
+  BaseCollisionEvent::Set(manifold,eventType);
   mBlock = block;
 
   mTypeAName = pair.GetTypeAName();
   mTypeBName = pair.GetTypeBName();
-
+  
   // Put the objects in the same ordering as the pair
-  if (manifold->Objects[0]->mCollisionGroupInstance->mResource->mResourceId != pair.TypeA)
+  if(manifold->Objects[0]->mCollisionGroupInstance->mResource->mResourceId != pair.TypeA)
     mObjectIndex = !mObjectIndex;
 }
 
@@ -203,14 +202,15 @@ String CollisionGroupEvent::GetTypeBName()
 
 String CollisionGroupEvent::GetEventName(BaseCollisionEvent::CollisionType type)
 {
-  if (type == BaseCollisionEvent::CollisionStarted)
+  if(type == BaseCollisionEvent::CollisionStarted)
     return Events::GroupCollisionStarted;
-  else if (type == BaseCollisionEvent::CollisionPersisted)
+  else if(type == BaseCollisionEvent::CollisionPersisted)
     return Events::GroupCollisionPersisted;
   else
     return Events::GroupCollisionEnded;
 }
 
+//-------------------------------------------------------------------PreSolveEvent
 LightningDefineType(PreSolveEvent, builder, type)
 {
   PlasmaBindDocumented();
@@ -231,7 +231,7 @@ void PreSolveEvent::Set(Physics::Manifold* manifold, CollisionFilterBlock* preSo
   BaseCollisionEvent::Set(manifold, String());
   mBlock = preSolveBlock;
 
-  if (!mBlock->mEventOverride.Empty())
+  if(!mBlock->mEventOverride.Empty())
     EventId = mBlock->mEventOverride;
   else
     EventId = Events::GroupCollisionPreSolve;
@@ -257,4 +257,4 @@ void PreSolveEvent::SetFriction(real friction)
   mManifold->DynamicFriction = friction;
 }
 
-} // namespace Plasma
+}//namespace Plasma
