@@ -19,6 +19,7 @@ struct DirectLightingInputs
   var Specular : Real;
   var Emissive : Real;
   var AO : Real;
+  var SpecularColor : Real3;
   
   var RenderDiffuse : Boolean;
   var RenderSpecular : Boolean;
@@ -66,7 +67,7 @@ struct DirectLighting
     var diffuseColor = inputs.LightColor * inputs.Albedo * diffuse;
     
     // Specular calculation
-    var metallicSpecular = inputs.LightColor * (inputs.Albedo * brdfSpecular.X + brdfSpecular.YYY);
+    var metallicSpecular = inputs.LightColor * (inputs.SpecularColor * brdfSpecular.X + brdfSpecular.YYY);
     var dialectricSpecular = inputs.LightColor * (Real3(0.1) * brdfSpecular.X + brdfSpecular.YYY);
     
     // For debugging

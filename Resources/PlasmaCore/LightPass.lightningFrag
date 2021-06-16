@@ -16,6 +16,7 @@ struct LightPass
   [FragmentInput] var GeoPosition : Real3;
   [FragmentInput] var GeoEmissive : Real;
   [FragmentInput] var GeoAO : Real;
+  [FragmentInput] var GeoSpecularColor : Real3;
   
   [Input] var DitherTexture : SampledImage2d;
   
@@ -58,6 +59,7 @@ struct LightPass
     directInputs.AO = this.GeoAO;
     directInputs.RenderDiffuse = this.RenderDiffuse;
     directInputs.RenderSpecular = this.RenderSpecular;
+    directInputs.SpecularColor = this.GeoSpecularColor;
     
     var color = DirectLighting.Compute(directInputs);
     

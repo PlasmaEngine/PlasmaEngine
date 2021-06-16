@@ -182,7 +182,7 @@ class DeferredRenderer : LightningComponent
       geometryDebug.GeometryBuffer2 = this.GBuffer3.Texture;
       
       if (this.GeometryDebug == GeometryValue.Normal)
-        geometryDebug.ShowNormal = true;
+        geometryDebug.ShowSpecularColor = true;
       else if (this.GeometryDebug == GeometryValue.Depth)
         geometryDebug.ShowDepth = true;
       else if (this.GeometryDebug == GeometryValue.Roughness)
@@ -197,6 +197,7 @@ class DeferredRenderer : LightningComponent
         geometryDebug.ShowEmissive = true;
       else if (this.GeometryDebug == GeometryValue.AO)
         geometryDebug.ShowAO = true;
+             
       
       var geometryDebugSettings = RenderSettings();
       geometryDebugSettings.ColorTarget = this.FinalOutput;
@@ -221,6 +222,7 @@ class DeferredRenderer : LightningComponent
       imageBasedLighting.MaxIntensity = this.MaxIntensity;
       imageBasedLighting.GeometryBuffer0 = this.GBuffer1.Texture;
       imageBasedLighting.GeometryBuffer1 = this.GBuffer2.Texture;
+      imageBasedLighting.GeometryBuffer2 = this.GBuffer3.Texture;
       imageBasedLighting.RenderDiffuse = this.RenderDiffuse;
       imageBasedLighting.RenderSpecular = this.RenderSpecular;
     
