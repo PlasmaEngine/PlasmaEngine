@@ -41,6 +41,7 @@ struct ImageBasedLighting
   [Input] var GeometryBuffer0 : SampledImage2d;
   [Input] var GeometryBuffer1 : SampledImage2d;
   [Input] var GeometryBuffer2 : SampledImage2d;
+  [Input] var GeometryBuffer3 : SampledImage2d;
   
   [Input] var RenderDiffuse : Boolean = true;
   [Input] var RenderSpecular : Boolean = true;
@@ -53,6 +54,7 @@ struct ImageBasedLighting
     var geometrySample0 = this.GeometryBuffer0.Sample(this.Uv);
     var geometrySample1 = this.GeometryBuffer1.Sample(this.Uv);
     var geometrySample2 = this.GeometryBuffer2.Sample(this.Uv);
+    var geometrySample3 = this.GeometryBuffer3.Sample(this.Uv);
     
     var viewNormal = GeometryPass.GetNormal(geometrySample0);
     var viewPosition = Math.Multiply(this.PerspectiveToView, this.PerspectivePosition);
@@ -64,7 +66,7 @@ struct ImageBasedLighting
     iblInputs.Albedo = GeometryPass.GetAlbedo(geometrySample1);
     iblInputs.Metallic = GeometryPass.GetMetallic(geometrySample1);
     iblInputs.Roughness = GeometryPass.GetRoughness(geometrySample0);
-    iblInputs.Specular = GeometryPass.GetSpecular(geometrySample1);
+    iblInputs.Specular = GeometryPass.GetSpecular(geometrySample3);
     iblInputs.SpecularColor = GeometryPass.GetSpecularColor(geometrySample2);
     iblInputs.RenderDiffuse = this.RenderDiffuse;
     iblInputs.RenderSpecular = this.RenderSpecular;

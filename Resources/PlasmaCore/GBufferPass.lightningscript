@@ -3,12 +3,13 @@
 class GBufferPass
 {
   [Static]
-  function AddGBufferRenderPass(event : RenderTasksEvent, gBuffer0 : RenderTarget, gBuffer1 : RenderTarget, gBuffer2 : RenderTarget, depth : RenderTarget)
+  function AddGBufferRenderPass(event : RenderTasksEvent, gBuffer0 : RenderTarget, gBuffer1 : RenderTarget, gBuffer2 : RenderTarget, gBuffer3 : RenderTarget, depth : RenderTarget)
   {
       var geometryPassSettings = RenderSettings();
     geometryPassSettings.MultiRenderTarget.ColorTarget0 = gBuffer0;
     geometryPassSettings.MultiRenderTarget.ColorTarget1 = gBuffer1;
     geometryPassSettings.MultiRenderTarget.ColorTarget2 = gBuffer2;
+    geometryPassSettings.MultiRenderTarget.ColorTarget3 = gBuffer3;
     geometryPassSettings.DepthTarget = depth;
     
     geometryPassSettings.DepthSettings.DepthMode = DepthMode.Write;
@@ -32,12 +33,13 @@ class GBufferPass
   }
   
   [Static]
-  function AddGBufferDebug(event : RenderTasksEvent, gBuffer0 : RenderTarget, gBuffer1 : RenderTarget, gBuffer2 : RenderTarget, finalOutput : RenderTarget, depth : RenderTarget, debugSetting : GeometryValue)
+  function AddGBufferDebug(event : RenderTasksEvent, gBuffer0 : RenderTarget, gBuffer1 : RenderTarget, gBuffer2 : RenderTarget, gBuffer3 : RenderTarget, finalOutput : RenderTarget, depth : RenderTarget, debugSetting : GeometryValue)
   {
     var geometryDebug = GeometryDebug();
     geometryDebug.GeometryBuffer0 = gBuffer0.Texture;
     geometryDebug.GeometryBuffer1 = gBuffer1.Texture;
     geometryDebug.GeometryBuffer2 = gBuffer2.Texture;
+    geometryDebug.GeometryBuffer3 = gBuffer3.Texture;
     
     if (debugSetting == GeometryValue.Normal)
       geometryDebug.ShowNormal = true;

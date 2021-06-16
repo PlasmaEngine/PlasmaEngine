@@ -67,8 +67,9 @@ class DeferredRenderer : LightningComponent
     // Path to object with DirectionalLight component to use for direct lighting.
   [Property] var DirectionalLight : CogPath = CogPath(":/DirectionalLightShadows");
   
-  var GBuffer1 : RenderTarget; // XY = Normal, Z = Depth, A = Roughness
-  var GBuffer2 : RenderTarget; // XYZ = Albedo,  A = Metallic/Specular
+  var GBuffer0 : RenderTarget; // XY = Normal, Z = Depth, A = Roughness
+  var GBuffer1 : RenderTarget; // XYZ = Albedo,  A = Metallic/Specular
+  var GBuffer2 : RenderTarget; // XY = Unused , Z = EmissivePower, A = AO
   var GBuffer3 : RenderTarget; // XY = Unused , Z = EmissivePower, A = AO
   
   var Depth : RenderTarget;
@@ -103,9 +104,10 @@ class DeferredRenderer : LightningComponent
     
     this.FinalOutput = event.GetFinalTarget(viewportSize, TextureFormat.RGBA8);
     
+    this.GBuffer0 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
     this.GBuffer1 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
-    this.GBuffer2 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
-    this.GBuffer3 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
+    this.GBuffer2 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
+    this.GBuffer3 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
     
     this.Depth = event.GetRenderTarget(viewportSize, TextureFormat.Depth24Stencil8);
     
@@ -128,7 +130,7 @@ class DeferredRenderer : LightningComponent
     
     this.ResizeBuffers(event);
         
-    GBufferPass.AddGBufferRenderPass(event, this.GBuffer1, this.GBuffer2, this.GBuffer3, this.Depth);
+    GBufferPass.AddGBufferRenderPass(event, this.GBuffer0, this.GBuffer1, this.GBuffer2, this.GBuffer3, this.Depth);
     
     // Lighting
     var lightBuffer = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
@@ -148,7 +150,7 @@ class DeferredRenderer : LightningComponent
     
     if(this.Owner.ProcedualSky != null)
     {
-      this.Owner.ProcedualSky.AddSlyRenderTasks(event, lightSettings, this.GBuffer1);
+      this.Owner.ProcedualSky.AddSlyRenderTasks(event, lightSettings, this.GBuffer0);
     }
     else if (this.RenderSkybox && this.Skybox != null && this.Skybox.Type == TextureType.TextureCube)
     {
@@ -177,12 +179,13 @@ class DeferredRenderer : LightningComponent
       this.LinearToGamma(event, lightBuffer, this.FinalOutput);
       
       var geometryDebug = GeometryDebug();
-      geometryDebug.GeometryBuffer0 = this.GBuffer1.Texture;
-      geometryDebug.GeometryBuffer1 = this.GBuffer2.Texture;
-      geometryDebug.GeometryBuffer2 = this.GBuffer3.Texture;
+      geometryDebug.GeometryBuffer0 = this.GBuffer0.Texture;
+      geometryDebug.GeometryBuffer1 = this.GBuffer1.Texture;
+      geometryDebug.GeometryBuffer2 = this.GBuffer2.Texture;
+      geometryDebug.GeometryBuffer3 = this.GBuffer3.Texture;
       
       if (this.GeometryDebug == GeometryValue.Normal)
-        geometryDebug.ShowSpecularColor = true;
+        geometryDebug.ShowNormal = true;
       else if (this.GeometryDebug == GeometryValue.Depth)
         geometryDebug.ShowDepth = true;
       else if (this.GeometryDebug == GeometryValue.Roughness)
@@ -220,9 +223,10 @@ class DeferredRenderer : LightningComponent
       imageBasedLighting.Skybox = this.Skybox;
       imageBasedLighting.Intensity = this.IndirectIntensity;
       imageBasedLighting.MaxIntensity = this.MaxIntensity;
-      imageBasedLighting.GeometryBuffer0 = this.GBuffer1.Texture;
-      imageBasedLighting.GeometryBuffer1 = this.GBuffer2.Texture;
-      imageBasedLighting.GeometryBuffer2 = this.GBuffer3.Texture;
+      imageBasedLighting.GeometryBuffer0 = this.GBuffer0.Texture;
+      imageBasedLighting.GeometryBuffer1 = this.GBuffer1.Texture;
+      imageBasedLighting.GeometryBuffer2 = this.GBuffer2.Texture;
+      imageBasedLighting.GeometryBuffer3 = this.GBuffer3.Texture;
       imageBasedLighting.RenderDiffuse = this.RenderDiffuse;
       imageBasedLighting.RenderSpecular = this.RenderSpecular;
     
@@ -232,7 +236,7 @@ class DeferredRenderer : LightningComponent
     // Ssao
     if (this.Owner.PostProcessSSAO != null)
     {
-      this.Owner.PostProcessSSAO.AddRenderTasks(event, lightBuffer, this.GBuffer1);
+      this.Owner.PostProcessSSAO.AddRenderTasks(event, lightBuffer, this.GBuffer0);
       if (this.Owner.PostProcessSSAO.DebugBuffer && this.Owner.PostProcessSSAO.Active)
       {
         // Don't do any other lighting if debugging ssao buffer
@@ -245,9 +249,10 @@ class DeferredRenderer : LightningComponent
     if (this.DirectLighting)
     {
       var geometryInputs = ShaderInputs.Create();
-      geometryInputs.Add("GeometryInput", "GeometryBuffer0", this.GBuffer1.Texture);
-      geometryInputs.Add("GeometryInput", "GeometryBuffer1", this.GBuffer2.Texture);
-      geometryInputs.Add("GeometryInput", "GeometryBuffer2", this.GBuffer3.Texture);
+      geometryInputs.Add("GeometryInput", "GeometryBuffer0", this.GBuffer0.Texture);
+      geometryInputs.Add("GeometryInput", "GeometryBuffer1", this.GBuffer1.Texture);
+      geometryInputs.Add("GeometryInput", "GeometryBuffer2", this.GBuffer2.Texture);
+      geometryInputs.Add("GeometryInput", "GeometryBuffer3", this.GBuffer3.Texture);
       
       lightSettings.GlobalShaderInputs = geometryInputs;
       lightSettings.CullMode = CullMode.FrontFace;
@@ -296,20 +301,20 @@ class DeferredRenderer : LightningComponent
     
     // Distance Fog
     if(this.Owner.PostProcessFog != null)
-      this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer1, this.GBuffer2, lightBuffer);
+      this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer0, this.GBuffer1, lightBuffer);
     
     // Toon Rendering  
     if(this.Owner.PostProcessToon != null)
-      this.Owner.PostProcessToon.OnRenderTasksUpdate(event, lightBuffer, this.GBuffer1, lightBuffer);
+      this.Owner.PostProcessToon.OnRenderTasksUpdate(event, lightBuffer, this.GBuffer0, lightBuffer);
     
     //  Depth of Field.
     if(this.Owner.PostProcessDOF != null)
-      this.Owner.PostProcessDOF.OnRenderTasksUpdate(event, this.GBuffer1, lightBuffer);   
+      this.Owner.PostProcessDOF.OnRenderTasksUpdate(event, this.GBuffer0, lightBuffer);   
       
           
     // Screen Space Reflections
     if(this.Owner.PostProcessSSR != null)
-      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer1, this.GBuffer2, lightBuffer, this.SSRBuffer);
+      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer0, this.GBuffer1, lightBuffer, this.SSRBuffer);
      
       
     // Bloom
@@ -318,7 +323,7 @@ class DeferredRenderer : LightningComponent
         
     // God Rays
     if(this.Owner.PostProcessGodRays != null)
-      this.Owner.PostProcessGodRays.OnRenderTasksUpdate(event, this.GBuffer1.Texture, lightBuffer);
+      this.Owner.PostProcessGodRays.OnRenderTasksUpdate(event, this.GBuffer0.Texture, lightBuffer);
     
     // Alpha No PostFX
     AlphaRenderPass.OnAlphaNoPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
