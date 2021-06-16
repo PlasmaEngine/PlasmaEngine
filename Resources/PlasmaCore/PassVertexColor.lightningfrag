@@ -1,0 +1,13 @@
+
+
+[Vertex]
+struct PassVertexColor
+{
+  [StageInput] var Color : Real4;
+  [Output] var VertexColor : Real4;
+
+  function Main()
+  {
+    this.VertexColor = this.Color;
+  }
+}

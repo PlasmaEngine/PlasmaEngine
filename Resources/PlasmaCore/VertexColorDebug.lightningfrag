@@ -1,0 +1,15 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct VertexColorDebug
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  [StageInput] var VertexColor : Real4;
+  [Input] var Strength : Real = 1.0;
+  [FragmentInput][Output] var Albedo : Real3;
+
+  function Main()
+  {
+    this.Albedo *= Math.Max(this.VertexColor.XYZ * this.Strength, Real3(0.1,0.1,0.1));
+  }
+}

@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "VertexColorAlbedoMap"
+		var ResourceId = 0x60e572e115759b47
+	}
+}

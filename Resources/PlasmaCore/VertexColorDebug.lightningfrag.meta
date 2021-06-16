@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "VertexColorDebug"
+		var ResourceId = 0x60e519de9c00d5ba
+	}
+}
