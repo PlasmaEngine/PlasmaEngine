@@ -26,23 +26,15 @@ struct VertexColorAlbedoMap
     var greenSample = this.AlbedoGreen.Sample(this.Uv).XYZ;
     var blueSample = this.AlbedoBlue.Sample(this.Uv).XYZ;
     
-    var redHeight = this.RedHeight.Sample(this.Uv).XYZ.X * Math.Pow(this.VertexColor.X, 1.0 - this.RedPower) * this.RedStrength;
-    var greenHeight = this.GreenHeight.Sample(this.Uv).XYZ.X * Math.Pow(this.VertexColor.Y, 1.0 - this.GreenPower) * this.GreenStrength;
-    var blueHeight = this.BlueHeight.Sample(this.Uv).XYZ.X * Math.Pow(this.VertexColor.Z, 1.0 - this.BluePower) * this.BlueStrength;
-    
-    var blendWeight : Real3 = Real3.Zero;
-    if(redHeight > greenHeight && redHeight > blueHeight)
-      blendWeight = Real3(1,0,0);
-    else if (greenHeight > redHeight && greenHeight > blueHeight)
-      blendWeight = Real3(0,1,0);
-    else
-      blendWeight = Real3(0,0,1);
+    var redHeight = this.RedHeight.Sample(this.Uv).X * Math.Pow(this.VertexColor.X, 1.0 - this.RedPower) * this.RedStrength;
+    var greenHeight = this.GreenHeight.Sample(this.Uv).X * Math.Pow(this.VertexColor.Y, 1.0 - this.GreenPower) * this.GreenStrength;
+    var blueHeight = this.BlueHeight.Sample(this.Uv).X * Math.Pow(this.VertexColor.Z, 1.0 - this.BluePower) * this.BlueStrength;
     
     var albedo = this.Albedo;
-    albedo = Math.Lerp(albedo, redSample, blendWeight.X);
-     albedo = Math.Lerp(albedo, greenSample, blendWeight.Y);
-    albedo = Math.Lerp(albedo, blueSample, blendWeight.Z);
+    albedo = Math.Lerp(albedo, redSample, redHeight);
+    albedo = Math.Lerp(albedo, greenSample, greenHeight);
+    albedo = Math.Lerp(albedo, blueSample, blueHeight);
     
-    this.Albedo = albedo;
+    this.Albedo = albedo;  
   }
 }
