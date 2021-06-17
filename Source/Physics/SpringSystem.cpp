@@ -124,16 +124,19 @@ void SpringSystem::OnAllObjectsCreated(CogInitializer& initializer)
     }
   }
 
-  //remove any invalid anchors
-  for(size_t i = mAnchors.Size() - 1; i >= 0; --i)
+  if (mAnchors.Size() > 0)
   {
-    AnchorPoint* anchor = mAnchors[i];
-    Cog* anchorCog = anchor->mAnchorObject;
-    if(anchorCog == nullptr)
-    {
-      delete anchor;
-      mAnchors.EraseAt(i);
-    }
+      //remove any invalid anchors
+      for (size_t i = mAnchors.Size() - 1; i >= 0; --i)
+      {
+          AnchorPoint* anchor = mAnchors[i];
+          Cog* anchorCog = anchor->mAnchorObject;
+          if (anchorCog == nullptr)
+          {
+              delete anchor;
+              mAnchors.EraseAt(i);
+          }
+      }
   }
 
   if(mSortOrder != SpringSortOrder::None)
