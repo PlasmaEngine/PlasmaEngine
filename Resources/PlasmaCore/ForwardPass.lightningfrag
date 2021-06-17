@@ -156,6 +156,7 @@ struct ForwardPassAlpha
     indirectInputs.Specular = this.Specular;
     indirectInputs.RenderDiffuse = this.RenderDiffuse;
     indirectInputs.RenderSpecular = this.RenderSpecular;
+    indirectInputs.Intensity = this.IndirectIntensity;
     
     var indirectColor = ImageBasedLighting.Compute(indirectInputs, &this.Skybox, &this.EnvironmentBrdfLut);
     
