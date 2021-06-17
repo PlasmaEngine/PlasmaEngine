@@ -1,0 +1,117 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct VertexColorPBR
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  [StageInput][Output] var VertexColor : Real4;
+  [Input][Slider(0, 1, 0.01)] var BlendStrength : Real;
+  
+  [Input] var RedHeight : SampledImage2d;
+  [Input] var AlbedoRed : SampledImage2d;
+  [Input] var RedNormalMap : SampledImage2d;
+  [Input] var RedRoughness : SampledImage2d;
+  [Input] var RedMetallicMap : SampledImage2d;
+  [Input] var RedInvertHeight : Boolean;
+  [Input] var RedHeightOffset : Real;
+  [Input] var RedStrength : Real = 1.0;
+  [Input] var RedPower : Real;
+  
+  [Input] var GreenHeight : SampledImage2d;
+  [Input] var AlbedoGreen : SampledImage2d;
+  [Input] var GreenNormalMap : SampledImage2d;
+  [Input] var GreenRoughness : SampledImage2d;
+  [Input] var GreenMetallicMap : SampledImage2d;
+  [Input] var GreenInvertHeight : Boolean;
+  [Input] var GreenHeightOffset : Real;
+  [Input] var GreenStrength : Real = 1.0;
+  [Input] var GreenPower : Real;
+  
+  [Input] var BlueHeight : SampledImage2d;
+  [Input] var AlbedoBlue : SampledImage2d;
+  [Input] var BlueNormalMap : SampledImage2d;
+  [Input] var BlueRoughness : SampledImage2d;
+  [Input] var BlueMetallicMap : SampledImage2d;
+  [Input] var BlueInvertHeight : Boolean;
+  [Input] var BlueHeightOffset : Real;
+  [Input] var BlueStrength : Real = 1.0;
+  [Input]var BluePower : Real;
+  
+  [FragmentInput][Output] var Albedo : Real3;
+  
+  [FragmentInput][StageInput][Output] var ViewNormal : Real3;
+  [StageInput] var ViewTangent : Real3;
+  [StageInput] var ViewBitangent : Real3;
+
+  [Input] var Bumpiness : Real = 1.0;
+
+  [Input] var RedLeft : Boolean = false;
+  [Input] var GreenDown : Boolean = false;
+  
+  [FragmentInput][Output] var Roughness : Real;
+  [FragmentInput][Output] var Metallic : Real;
+
+  function Main()
+  {
+    var redSample = this.AlbedoRed.Sample(this.Uv).XYZ;
+    var greenSample = this.AlbedoGreen.Sample(this.Uv).XYZ;
+    var blueSample = this.AlbedoBlue.Sample(this.Uv).XYZ;
+    
+    var redHeight = (this.RedHeight.Sample(this.Uv).X + this.RedHeightOffset);
+    var greenHeight = (this.GreenHeight.Sample(this.Uv).X + this.GreenHeightOffset);
+    var blueHeight = (this.BlueHeight.Sample(this.Uv).X + this.BlueHeightOffset);
+    
+    if(this.RedInvertHeight)
+      redHeight = 1.0 - redHeight;
+      
+    if(this.GreenInvertHeight)
+      greenHeight = 1.0 - greenHeight;
+      
+    if(this.BlueInvertHeight)
+      blueHeight = 1.0 - blueHeight;
+    
+    redHeight *= Math.Pow(this.VertexColor.X, 1.0 - this.RedPower) * this.RedStrength;
+    greenHeight *= Math.Pow(this.VertexColor.Y, 1.0 - this.GreenPower) * this.GreenStrength; 
+    blueHeight *= Math.Pow(this.VertexColor.Z, 1.0 - this.BluePower) * this.BlueStrength;
+    
+    this.VertexColor = Real4(redHeight, greenHeight, blueHeight, 1);
+    
+    this.Albedo = HeightBlend.HeightBlend(redSample, redHeight, greenSample, greenHeight, blueSample, blueHeight, this.BlendStrength);  
+    
+    var normal = Math.Normalize(this.ViewNormal);
+    var tangent = Math.Normalize(this.ViewTangent);
+    var bitangent = Math.Normalize(this.ViewBitangent);
+
+    var redNormal = this.RedNormalMap.Sample(this.Uv).XYZ;
+    var greenNormal = this.GreenNormalMap.Sample(this.Uv).XYZ;
+    var blueNormal = this.BlueNormalMap.Sample(this.Uv).XYZ;
+
+    var normalSample = HeightBlend.HeightBlend(redNormal, redHeight, greenNormal, greenHeight, blueNormal, blueHeight, this.BlendStrength).XY;
+    
+    normalSample = (normalSample - Real2(128.0 / 255.0)) * 2.0;
+
+    // Invert tangent directions if needed
+    var xSign = Math.Lerp(1.0, -1.0, this.RedLeft as Real);
+    var ySign = Math.Lerp(-1.0, 1.0, this.GreenDown as Real);
+
+    // Add tangent directions to perturb the surface normal
+    normal += (tangent * normalSample.X * xSign + bitangent * normalSample.Y * ySign) * this.Bumpiness;
+    this.ViewNormal = Math.Normalize(normal);
+    
+    var redRoughness = this.RedRoughness.Sample(this.Uv).X;
+    var greenRoughness = this.GreenRoughness.Sample(this.Uv).X;
+    var blueRoughness = this.BlueRoughness.Sample(this.Uv).X;
+    
+    var roughness = HeightBlend.HeightBlend(redRoughness, redHeight, greenRoughness, greenHeight, blueRoughness, blueHeight, this.BlendStrength);
+    this.Roughness = roughness;
+    
+    
+    var redMetallic = this.RedMetallicMap.Sample(this.Uv).X;
+    var greenMetallic = this.GreenMetallicMap.Sample(this.Uv).X;
+    var blueMetallic = this.BlueMetallicMap.Sample(this.Uv).X;
+    
+    var metallic = HeightBlend.HeightBlend(redMetallic, redHeight, greenMetallic, greenHeight, blueMetallic, blueHeight, this.BlendStrength);
+    this.Metallic = metallic;
+    
+  }
+}

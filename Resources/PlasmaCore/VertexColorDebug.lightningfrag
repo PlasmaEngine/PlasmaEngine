@@ -4,7 +4,7 @@
 struct VertexColorDebug
 {
   [FragmentInput][StageInput] var Uv : Real2;
-  [StageInput] var VertexColor : Real4;
+  [FragmentInput][StageInput] var VertexColor : Real4;
   [Input] var Strength : Real = 1.0;
   [FragmentInput][Output] var Albedo : Real3;
 

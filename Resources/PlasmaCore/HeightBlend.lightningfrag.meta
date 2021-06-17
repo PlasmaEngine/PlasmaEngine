@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "HeightBlend"
+		var ResourceId = 0x60e47d92ffed336b
+	}
+}

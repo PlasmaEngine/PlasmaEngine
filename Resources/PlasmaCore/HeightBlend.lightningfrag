@@ -1,0 +1,25 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct HeightBlend
+{
+  [Static]
+  function HeightBlend(input1 : Real, height1 : Real, input2  :Real, height2 : Real, input3 : Real, height3 : Real, blendStrength : Real) : Real
+  {
+    var height_start = Math.Max(Math.Max(height1, height2), height3) - Math.Max(blendStrength, 0.01);
+    var b1 = Math.Max(height1 - height_start, 0);
+    var b2 = Math.Max(height2 - height_start, 0);
+    var b3 = Math.Max(height3 - height_start, 0);
+    return ((input1 * b1) + (input2 * b2) + (input3 * b3)) / (b1 + b2 + b3);
+  }
+  
+  [Static]
+  function HeightBlend(input1 : Real3, height1 : Real, input2  :Real3, height2 : Real, input3 : Real3, height3 : Real, blendStrength : Real) : Real3
+  {
+    var height_start = Math.Max(Math.Max(height1, height2), height3) - Math.Max(blendStrength, 0.01);
+    var b1 = Math.Max(height1 - height_start, 0);
+    var b2 = Math.Max(height2 - height_start, 0);
+    var b3 = Math.Max(height3 - height_start, 0);
+    return ((input1 * b1) + (input2 * b2) + (input3 * b3)) / (b1 + b2 + b3);
+  }
+}
