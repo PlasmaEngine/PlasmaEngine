@@ -4,38 +4,25 @@
 struct VertexColorPBR
 {
   [FragmentInput][StageInput] var Uv : Real2;
-  [StageInput][Output] var VertexColor : Real4;
+  [FragmentInput][StageInput] var VertexColor : Real4;
   [Input][Slider(0, 1, 0.01)] var BlendStrength : Real;
   
-  [Input] var RedHeight : SampledImage2d;
   [Input] var AlbedoRed : SampledImage2d;
   [Input] var RedNormalMap : SampledImage2d;
   [Input] var RedRoughness : SampledImage2d;
   [Input] var RedMetallicMap : SampledImage2d;
-  [Input] var RedInvertHeight : Boolean;
-  [Input] var RedHeightOffset : Real;
-  [Input] var RedStrength : Real = 1.0;
-  [Input] var RedPower : Real;
   
   [Input] var GreenHeight : SampledImage2d;
   [Input] var AlbedoGreen : SampledImage2d;
   [Input] var GreenNormalMap : SampledImage2d;
   [Input] var GreenRoughness : SampledImage2d;
   [Input] var GreenMetallicMap : SampledImage2d;
-  [Input] var GreenInvertHeight : Boolean;
-  [Input] var GreenHeightOffset : Real;
-  [Input] var GreenStrength : Real = 1.0;
-  [Input] var GreenPower : Real;
   
   [Input] var BlueHeight : SampledImage2d;
   [Input] var AlbedoBlue : SampledImage2d;
   [Input] var BlueNormalMap : SampledImage2d;
   [Input] var BlueRoughness : SampledImage2d;
   [Input] var BlueMetallicMap : SampledImage2d;
-  [Input] var BlueInvertHeight : Boolean;
-  [Input] var BlueHeightOffset : Real;
-  [Input] var BlueStrength : Real = 1.0;
-  [Input]var BluePower : Real;
   
   [FragmentInput][Output] var Albedo : Real3;
   
@@ -57,24 +44,9 @@ struct VertexColorPBR
     var greenSample = this.AlbedoGreen.Sample(this.Uv).XYZ;
     var blueSample = this.AlbedoBlue.Sample(this.Uv).XYZ;
     
-    var redHeight = (this.RedHeight.Sample(this.Uv).X + this.RedHeightOffset);
-    var greenHeight = (this.GreenHeight.Sample(this.Uv).X + this.GreenHeightOffset);
-    var blueHeight = (this.BlueHeight.Sample(this.Uv).X + this.BlueHeightOffset);
-    
-    if(this.RedInvertHeight)
-      redHeight = 1.0 - redHeight;
-      
-    if(this.GreenInvertHeight)
-      greenHeight = 1.0 - greenHeight;
-      
-    if(this.BlueInvertHeight)
-      blueHeight = 1.0 - blueHeight;
-    
-    redHeight *= Math.Pow(this.VertexColor.X, 1.0 - this.RedPower) * this.RedStrength;
-    greenHeight *= Math.Pow(this.VertexColor.Y, 1.0 - this.GreenPower) * this.GreenStrength; 
-    blueHeight *= Math.Pow(this.VertexColor.Z, 1.0 - this.BluePower) * this.BlueStrength;
-    
-    this.VertexColor = Real4(redHeight, greenHeight, blueHeight, 1);
+    var redHeight = this.VertexColor.X;
+    var greenHeight = this.VertexColor.Y;
+    var blueHeight = this.VertexColor.Z;
     
     this.Albedo = HeightBlend.HeightBlend(redSample, redHeight, greenSample, greenHeight, blueSample, blueHeight, this.BlendStrength);  
     

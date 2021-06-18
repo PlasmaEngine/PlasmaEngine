@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "VertexColorPOM"
+		var ResourceId = 0x60e33e217307705a
+	}
+}

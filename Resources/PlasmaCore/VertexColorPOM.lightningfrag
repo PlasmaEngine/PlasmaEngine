@@ -1,0 +1,127 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct VertexColorPOM
+{
+   [AppBuiltInInput] var ViewToPerspective : Real4x4;
+
+    [AppBuiltInInput] var FarPlane : Real;
+
+    [FragmentInput][StageInput][Output] var Uv : Real2;
+    
+    [FragmentInput][StageInput] var ViewNormal : Real3;
+    [FragmentInput][StageInput] var ViewTangent : Real3;
+    [FragmentInput][StageInput] var ViewBitangent : Real3;
+    
+    [FragmentInput][StageInput][Output] var ViewPosition : Real3;
+
+    
+    [FragmentInput][StageInput] var VertexColor : Real4;
+    
+    [Input][Slider(0, 1, 0.01)] var BlendStrength : Real;
+
+    [Input] var UVScale : Real2 = Real2(1,1);
+    [Input] var HeightScale : Real = 1;
+    [Input] var MinSampels : Real = 64.0;
+    [Input] var MaxSamples : Real = 128.0;
+    [Input] var HeightRed : SampledImage2d;
+    [Input] var InvertRed : Boolean = false;
+    [Input] var HeightGreen : SampledImage2d;
+    [Input] var InvertGreen : Boolean = false;
+    [Input] var HeightBlue : SampledImage2d;
+    [Input] var InvertBlue : Boolean = false;
+    [Input] var Silloute : Boolean = false;
+    
+
+    function Main()
+    {
+    
+        var viewDirection = Math.Normalize(-this.ViewPosition);
+        
+        var currentLayerDepth = 0.0;
+        
+        //var maxLayers = this.MinSampels + 32.0;
+        var numLayers = Math.Lerp(this.MaxSamples, this.MinSampels, Math.Abs(Math.Dot(Real3(0.0, 0.0, 1.0), (-viewDirection / this.FarPlane))));
+        
+        var layerDepth = 1.0 / numLayers;
+        
+        var redVertHeight = this.VertexColor.X;
+        var greenVertHeight = this.VertexColor.Y;
+        var blueVertHeight = this.VertexColor.Z;
+        
+        var normal = Math.Normalize(this.ViewNormal);
+        var tangent = Math.Normalize(this.ViewTangent);
+        var bitangent = Math.Normalize(this.ViewBitangent);
+        
+        var tbn = Real3x3(tangent.X, tangent.Y, tangent.Z, bitangent.X, bitangent.Y, bitangent.Z, normal.X, normal.Y, normal.Z);
+        
+        var view = Math.Multiply(tbn, viewDirection);
+        viewDirection.XYZ = view.XYZ;
+        
+        this.Uv.X = this.Uv.X * this.UVScale.X;
+        this.Uv .Y = this.Uv.Y * this.UVScale.Y;
+        
+        var uv = this.Uv;
+                
+        var redHeight = 1.0 - this.HeightRed.Sample(this.Uv).X;
+        if(this.InvertRed)
+            redHeight = 1-redHeight;
+      
+        var greenHeight = 1.0 - this.HeightGreen.Sample(this.Uv).X;
+        if(this.InvertGreen)
+            greenHeight = 1-greenHeight;
+            
+        var blueHeight = 1.0 - this.HeightBlue.Sample(this.Uv).X;
+        if(this.InvertBlue)
+            blueHeight = 1-blueHeight;
+      
+      
+        var height = HeightBlend.HeightBlend(redHeight, redVertHeight, greenHeight, greenVertHeight, blueHeight, blueVertHeight, this.BlendStrength);
+      
+      
+        var parallax = (viewDirection.XY / (-viewDirection.Z / this.FarPlane) ) * ((-this.HeightScale / 50) / this.FarPlane);
+        var deltaTexCoods = parallax / numLayers;
+        
+        var steps = 0;
+        while(currentLayerDepth < height && steps < this.MaxSamples)
+        {
+            uv -= deltaTexCoods;
+            
+            redHeight = 1.0 - this.HeightRed.Sample(uv).X;
+            if(this.InvertRed)
+                redHeight = 1-redHeight;
+          
+            greenHeight = 1.0 - this.HeightGreen.Sample(uv).X;
+            if(this.InvertGreen)
+                greenHeight = 1-greenHeight;
+                
+            blueHeight = 1.0 - this.HeightBlue.Sample(uv).X;
+            if(this.InvertBlue)
+                blueHeight = 1-blueHeight;
+          
+          
+            height = HeightBlend.HeightBlend(redHeight, redVertHeight, greenHeight, greenVertHeight, blueHeight, blueVertHeight, this.BlendStrength);
+            
+            //height = 1.0 - this.ParallaxMap.Sample(uv).X;
+            if(this.InvertRed)
+                height = 1-height;
+            currentLayerDepth += layerDepth;
+            
+            steps += 1;
+        }
+        
+        if(this.Silloute)
+            if(uv.X < 0.0 || uv.X > this.UVScale.X || uv.Y < 0.0 || uv.Y > this.UVScale.Y)
+                ShaderIntrinsics.Kill();
+        
+        var prevTexCoord = uv + deltaTexCoods;
+        var afterDepth = currentLayerDepth - height;
+        var beforeDepth = (-viewDirection.Z / this.FarPlane) - height + layerDepth;
+                
+        var weight = afterDepth / (afterDepth - beforeDepth);
+        
+        var finalUv =  prevTexCoord * weight + uv * (1.0 - weight);
+        
+        this.Uv = finalUv;
+    }
+}

@@ -23,3 +23,50 @@ struct HeightBlend
     return ((input1 * b1) + (input2 * b2) + (input3 * b3)) / (b1 + b2 + b3);
   }
 }
+
+[Pixel]
+struct VertexColorHeight
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  [StageInput][Output] var VertexColor : Real4;
+  
+  [Input] var RedHeight : SampledImage2d;
+  [Input] var RedInvertHeight : Boolean;
+  [Input] var RedHeightOffset : Real;
+  [Input] var RedStrength : Real = 1.0;
+  [Input] var RedPower : Real;
+  
+  [Input] var GreenHeight : SampledImage2d;
+  [Input] var GreenInvertHeight : Boolean;
+  [Input] var GreenHeightOffset : Real;
+  [Input] var GreenStrength : Real = 1.0;
+  [Input] var GreenPower : Real;
+  
+  [Input] var BlueHeight : SampledImage2d;
+  [Input] var BlueInvertHeight : Boolean;
+  [Input] var BlueHeightOffset : Real;
+  [Input] var BlueStrength : Real = 1.0;
+  [Input] var BluePower : Real;
+  
+  function Main()
+  {
+      var redHeight = (this.RedHeight.Sample(this.Uv).X + this.RedHeightOffset);
+    var greenHeight = (this.GreenHeight.Sample(this.Uv).X + this.GreenHeightOffset);
+    var blueHeight = (this.BlueHeight.Sample(this.Uv).X + this.BlueHeightOffset);
+    
+    if(this.RedInvertHeight)
+      redHeight = 1.0 - redHeight;
+      
+    if(this.GreenInvertHeight)
+      greenHeight = 1.0 - greenHeight;
+      
+    if(this.BlueInvertHeight)
+      blueHeight = 1.0 - blueHeight;
+    
+    redHeight *= Math.Pow(this.VertexColor.X, 1.0 - this.RedPower) * this.RedStrength;
+    greenHeight *= Math.Pow(this.VertexColor.Y, 1.0 - this.GreenPower) * this.GreenStrength; 
+    blueHeight *= Math.Pow(this.VertexColor.Z, 1.0 - this.BluePower) * this.BlueStrength;
+    
+    this.VertexColor = Real4(redHeight, greenHeight, blueHeight, 1);
+  }
+}
