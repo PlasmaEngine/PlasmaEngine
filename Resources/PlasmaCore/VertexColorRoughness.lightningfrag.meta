@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "VertexColorRoughness"
+		var ResourceId = 0x60e3243fc79bc012
+	}
+}

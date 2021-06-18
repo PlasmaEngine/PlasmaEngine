@@ -1,0 +1,47 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct VertexColorAO
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  [FragmentInput][StageInput] var VertexColor : Real4;
+  [Input][Slider(0, 1, 0.01)] var BlendStrength : Real;
+
+  [Input] var AoMapRed : SampledImage2d;
+  [Input] var AoMultiplierRed : Real = 0.0;
+  [Input] var InvertRed : Boolean = false;
+  [Input] var AoMapGreen : SampledImage2d;
+  [Input] var AoMultiplierGreen : Real = 0.0;
+  [Input] var InvertGreen : Boolean = false;
+  [Input] var AoMapBlue : SampledImage2d;
+  [Input] var AoMultiplierBlue : Real = 0.0;
+  [Input] var InvertBlue : Boolean = false;
+  
+  [Output] var AO : Real;
+
+  function Main()
+  {   
+    var redHeight = this.VertexColor.X;
+    var greenHeight = this.VertexColor.Y;
+    var blueHeight = this.VertexColor.Z;
+  
+    var redAo = this.AoMapRed.Sample(this.Uv).X;
+    if(this.InvertRed)
+      redAo = 1.0 - redAo;
+    redAo *= this.AoMultiplierRed;
+    
+    var greenAo = this.AoMapGreen.Sample(this.Uv).X;
+    if(this.InvertGreen)
+      greenAo = 1.0 - greenAo;
+    greenAo *= this.AoMultiplierGreen;
+    
+    var blueAo = this.AoMapBlue.Sample(this.Uv).X;
+    if(this.InvertBlue)
+      blueAo = 1.0 - blueAo;
+    blueAo *= this.AoMultiplierBlue;
+    
+    var ao = HeightBlend.HeightBlend(redAo, redHeight, greenAo, greenHeight, blueAo, blueHeight, this.BlendStrength);
+    this.AO = ao;
+    
+  }
+}

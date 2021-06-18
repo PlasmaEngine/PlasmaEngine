@@ -1,0 +1,28 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct VertexColorAlbedo
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  [FragmentInput][StageInput] var VertexColor : Real4;
+  [Input][Slider(0, 1, 0.01)] var BlendStrength : Real;
+  
+  [Input] var AlbedoRed : SampledImage2d;
+  [Input] var AlbedoGreen : SampledImage2d;
+  [Input] var AlbedoBlue : SampledImage2d;
+  
+  [FragmentInput][Output] var Albedo : Real3;
+  
+  function Main()
+  {
+        var redSample = this.AlbedoRed.Sample(this.Uv).XYZ;
+    var greenSample = this.AlbedoGreen.Sample(this.Uv).XYZ;
+    var blueSample = this.AlbedoBlue.Sample(this.Uv).XYZ;
+    
+    var redHeight = this.VertexColor.X;
+    var greenHeight = this.VertexColor.Y;
+    var blueHeight = this.VertexColor.Z;
+    
+    this.Albedo = HeightBlend.HeightBlend(redSample, redHeight, greenSample, greenHeight, blueSample, blueHeight, this.BlendStrength);  
+  }
+}

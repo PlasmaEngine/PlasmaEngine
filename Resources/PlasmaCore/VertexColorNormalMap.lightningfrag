@@ -1,0 +1,52 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct VertexColorNormalMap
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  [FragmentInput][StageInput] var VertexColor : Real4;
+  [Input][Slider(0, 1, 0.01)] var BlendStrength : Real;
+  
+  [Input] var NormalMapRed : SampledImage2d;
+  [Input] var NormalMapGreen : SampledImage2d;
+  [Input] var NormalMapBlue : SampledImage2d;
+  
+  [FragmentInput][StageInput][Output] var ViewNormal : Real3;
+  [StageInput] var ViewTangent : Real3;
+  [StageInput] var ViewBitangent : Real3;
+
+  [Input] var Bumpiness : Real = 1.0;
+
+  [Input] var RedLeft : Boolean = false;
+  [Input] var GreenDown : Boolean = false;
+  
+  
+  
+  function Main()
+  {
+    var redHeight = this.VertexColor.X;
+    var greenHeight = this.VertexColor.Y;
+    var blueHeight = this.VertexColor.Z;
+    
+    
+    var normal = Math.Normalize(this.ViewNormal);
+    var tangent = Math.Normalize(this.ViewTangent);
+    var bitangent = Math.Normalize(this.ViewBitangent);
+
+    var redNormal = this.NormalMapRed.Sample(this.Uv).XYZ;
+    var greenNormal = this.NormalMapGreen.Sample(this.Uv).XYZ;
+    var blueNormal = this.NormalMapBlue.Sample(this.Uv).XYZ;
+
+    var normalSample = HeightBlend.HeightBlend(redNormal, redHeight, greenNormal, greenHeight, blueNormal, blueHeight, this.BlendStrength).XY;
+    
+    normalSample = (normalSample - Real2(128.0 / 255.0)) * 2.0;
+
+    // Invert tangent directions if needed
+    var xSign = Math.Lerp(1.0, -1.0, this.RedLeft as Real);
+    var ySign = Math.Lerp(-1.0, 1.0, this.GreenDown as Real);
+
+    // Add tangent directions to perturb the surface normal
+    normal += (tangent * normalSample.X * xSign + bitangent * normalSample.Y * ySign) * this.Bumpiness;
+    this.ViewNormal = Math.Normalize(normal);
+  }
+}

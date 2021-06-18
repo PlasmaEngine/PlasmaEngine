@@ -1,0 +1,33 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct VertexColorRoughness
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  [FragmentInput][StageInput] var VertexColor : Real4;
+  [Input][Slider(0, 1, 0.01)] var BlendStrength : Real;
+  
+  [Input] var RoughnessMapRed : SampledImage2d;
+  [Input] var RoughnessOffsetRed : Real = 0.0;
+  [Input] var RoughnessMapGreen : SampledImage2d;
+  [Input] var RoughnessOffsetGreen : Real = 0.0;
+  [Input] var RoughnessMapBlue : SampledImage2d;
+  [Input] var RoughnessOffsetBlue : Real = 0.0;
+  
+  [FragmentInput][Output] var Roughness : Real;
+    
+  function Main()
+  {
+    var redHeight = this.VertexColor.X;
+    var greenHeight = this.VertexColor.Y;
+    var blueHeight = this.VertexColor.Z;
+    
+    var redRoughness = this.RoughnessMapRed.Sample(this.Uv).X + this.RoughnessOffsetRed;
+    var greenRoughness = this.RoughnessMapGreen.Sample(this.Uv).X + this.RoughnessOffsetGreen;
+    var blueRoughness = this.RoughnessMapBlue.Sample(this.Uv).X + this.RoughnessOffsetBlue;
+    
+    var roughness = HeightBlend.HeightBlend(redRoughness, redHeight, greenRoughness, greenHeight, blueRoughness, blueHeight, this.BlendStrength);
+    this.Roughness = roughness;
+    
+  }
+}

@@ -1,0 +1,33 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct VertexColorMetallic
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  [FragmentInput][StageInput] var VertexColor : Real4;
+  [Input][Slider(0, 1, 0.01)] var BlendStrength : Real;
+
+  [Input] var MetallicMapRed : SampledImage2d;
+  [Input] var MetallicOffsetRed : Real = 0.0;
+  [Input] var MetallicMapGreen : SampledImage2d;
+  [Input] var MetallicOffsetGreen : Real = 0.0;
+  [Input] var MetallicMapBlue : SampledImage2d;
+  [Input] var MetallicOffsetBlue : Real = 0.0;
+  
+  [FragmentInput][Output] var Metallic : Real;
+
+  function Main()
+  {   
+    var redHeight = this.VertexColor.X;
+    var greenHeight = this.VertexColor.Y;
+    var blueHeight = this.VertexColor.Z;
+  
+    var redMetallic = this.MetallicMapRed.Sample(this.Uv).X + this.MetallicOffsetRed;
+    var greenMetallic = this.MetallicMapGreen.Sample(this.Uv).X + this.MetallicOffsetGreen;
+    var blueMetallic = this.MetallicMapBlue.Sample(this.Uv).X + this.MetallicOffsetBlue;
+    
+    var metallic = HeightBlend.HeightBlend(redMetallic, redHeight, greenMetallic, greenHeight, blueMetallic, blueHeight, this.BlendStrength);
+    this.Metallic = metallic;
+    
+  }
+}
