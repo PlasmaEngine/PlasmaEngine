@@ -513,6 +513,14 @@ void RenderTasksEvent::AddRenderTaskPostProcess(GraphicsRenderSettings& renderSe
       .AddRenderTaskPostProcess(renderSettings, postProcessName, shaderInputsId, name);
 }
 
+void RenderTasksEvent::AddRenderTaskCompute(Material& material, String& name, IntVec3 computeDispatchSize)
+{
+    uint shaderInputsId = GetUniqueShaderInputsId();
+    AddShaderInputs(&material, shaderInputsId);
+
+    RenderTaskHelper(mRenderTasks->mRenderTaskBuffer).AddRenderTaskCompute(material.mRenderData, shaderInputsId, computeDispatchSize, name);
+}
+
 void RenderTasksEvent::AddRenderTaskBackBufferBlit(RenderTarget* colorTarget, ScreenViewport viewport)
 {
   RenderTaskHelper(mRenderTasks->mRenderTaskBuffer).AddRenderTaskBackBufferBlit(colorTarget, viewport);
@@ -665,6 +673,17 @@ void RenderTaskHelper::AddRenderTaskPostProcess(RenderSettings& renderSettings,
   renderTask->mDisplayName = name;
   renderTask->mMaterialRenderData = materialRenderData;
   renderTask->mShaderInputsId = shaderInputsId;
+}
+
+void RenderTaskHelper::AddRenderTaskCompute(MaterialRenderData* materialRenderData, uint shaderInputsId, IntVec3 computeDispatchSize, StringParam name)
+{
+    RenderTaskCompute* renderTask = NewRenderTask<RenderTaskCompute>();
+    renderTask->mId = RenderTaskType::ComputePass;
+    renderTask->mComputePassName = String();
+    renderTask->mComputeDisplayName = name;
+    renderTask->mMaterialRenderData = materialRenderData;
+    renderTask->mShaderInputsId = shaderInputsId;
+    renderTask->mDispatchSize = computeDispatchSize;
 }
 
 void RenderTaskHelper::AddRenderTaskBackBufferBlit(RenderTarget* colorTarget, ScreenViewport viewport)

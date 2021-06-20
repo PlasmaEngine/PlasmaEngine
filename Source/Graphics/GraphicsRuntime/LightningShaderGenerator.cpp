@@ -67,7 +67,7 @@ namespace Plasma
         nameSettings.mAllowedClassAttributes.Insert("RenderPass", AttributeInfo());
         nameSettings.mAllowedClassAttributes.Insert("PostProcess", AttributeInfo());
         // Temporarily make compute fragments illegal (not supported in plasma yet)
-        nameSettings.mAllowedClassAttributes.Erase(nameSettings.mComputeAttribute);
+        //nameSettings.mAllowedClassAttributes.Erase(nameSettings.mComputeAttribute);
         nameSettings.mAllowedFieldAttributes.Insert("Hidden", AttributeInfo());
         nameSettings.mAllowedFieldAttributes.Insert(PropertyAttributes::cGroup, AttributeInfo());
         nameSettings.mAllowedFieldAttributes.Insert(PropertyAttributes::cRange, AttributeInfo());

@@ -211,6 +211,18 @@ void CollectShadersRenderTaskPostProcess(RenderTaskPostProcess* task, Array<Stri
   shadersOut.PushBack(name);
 }
 
+void CollectShaderRenderTaskCompute(RenderTaskCompute* task, Array<String>& shadersOut)
+{
+    MaterialRenderData* materialData = task->mMaterialRenderData;
+    if (materialData == nullptr && task->mComputePassName.Empty() == true)
+        return;
+
+    String compositeName = materialData ? materialData->mCompositeName : task->mComputePassName;
+    
+    String name = compositeName;
+    shadersOut.PushBack(name);
+}
+
 void CollectShaders(RenderTasks* renderTasks, RenderQueues* renderQueues, Array<String>& shaderNamesOut)
 {
   forRange (RenderTaskRange& taskRange, renderTasks->mRenderTaskRanges.All())
@@ -251,6 +263,11 @@ void CollectShaders(RenderTasks* renderTasks, RenderQueues* renderQueues, Array<
 
       case RenderTaskType::TextureUpdate:
         taskIndex += sizeof(RenderTaskTextureUpdate);
+        break;
+
+      case RenderTaskType::ComputePass:
+        CollectShaderRenderTaskCompute((RenderTaskCompute*)task, shaderNamesOut);
+        taskIndex += sizeof(RenderTaskCompute);
         break;
 
       default:

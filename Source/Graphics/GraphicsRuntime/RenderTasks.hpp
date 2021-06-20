@@ -166,6 +166,8 @@ public:
   /// Invokes the pixel shader for every pixel of the RenderTargets.
   void AddRenderTaskPostProcess(GraphicsRenderSettings& renderSettings, MaterialBlock& postProcess, String& name);
 
+  void AddRenderTaskCompute(Material& material, String& name, IntVec3 computeDispatchSize);
+
   // Internal for the graphics engine.
   void AddRenderTaskBackBufferBlit(RenderTarget* colorTarget, ScreenViewport viewport);
 
@@ -219,6 +221,7 @@ public:
                                 uint shaderInputsId,
 								String& name);
   void AddRenderTaskBackBufferBlit(RenderTarget* colorTarget, ScreenViewport viewport);
+  void AddRenderTaskCompute(MaterialRenderData* materialRenderData, uint shaderInputsId, IntVec3 computeDispatchSize, StringParam name);
   void AddRenderTaskTextureUpdate(Texture* texture);
 
   bool ValidateRenderTargets(RenderSettings& renderSettings);

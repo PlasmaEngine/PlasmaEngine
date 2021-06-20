@@ -2046,7 +2046,12 @@ namespace Plasma
             ZoneScopedN("DoRenderTask");
             ProfileScopeTree(task->mComputeDisplayName, "Plasma::DoRenderTaskCompute", Color::Cyan)
 
+            SetShader(shader->mId);
 
+            glDispatchCompute(task->mDispatchSize.x, task->mDispatchSize.y, task->mDispatchSize.z);
+
+            glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT);
+            SetShader(0);
         }
 
     }
