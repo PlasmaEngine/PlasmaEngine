@@ -1,7 +1,7 @@
 // MIT Licensed (see LICENSE.md).
 
 [Pixel]
-struct VertexColorRoughness
+struct VertexColorRoughnessMap
 {
   [FragmentInput][StageInput] var Uv : Real2;
   [FragmentInput][StageInput] var VertexColor : Real4;
@@ -27,7 +27,7 @@ struct VertexColorRoughness
     var blueRoughness = this.RoughnessMapBlue.Sample(this.Uv).X + this.RoughnessOffsetBlue;
     
     var roughness = HeightBlend.HeightBlend(redRoughness, redHeight, greenRoughness, greenHeight, blueRoughness, blueHeight, this.BlendStrength);
-    this.Roughness = roughness;
+    this.Roughness = Math.Saturate(roughness);
     
   }
 }

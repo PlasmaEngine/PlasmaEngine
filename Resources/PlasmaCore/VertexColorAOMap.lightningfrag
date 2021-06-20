@@ -1,20 +1,20 @@
 // MIT Licensed (see LICENSE.md).
 
 [Pixel]
-struct VertexColorAO
+struct VertexColorAOMap
 {
   [FragmentInput][StageInput] var Uv : Real2;
   [FragmentInput][StageInput] var VertexColor : Real4;
   [Input][Slider(0, 1, 0.01)] var BlendStrength : Real;
 
   [Input] var AoMapRed : SampledImage2d;
-  [Input] var AoMultiplierRed : Real = 0.0;
+  [Input] var AoMultiplierRed : Real = 1.0;
   [Input] var InvertRed : Boolean = false;
   [Input] var AoMapGreen : SampledImage2d;
-  [Input] var AoMultiplierGreen : Real = 0.0;
+  [Input] var AoMultiplierGreen : Real = 1.0;
   [Input] var InvertGreen : Boolean = false;
   [Input] var AoMapBlue : SampledImage2d;
-  [Input] var AoMultiplierBlue : Real = 0.0;
+  [Input] var AoMultiplierBlue : Real = 1.0;
   [Input] var InvertBlue : Boolean = false;
   
   [Output] var AO : Real;

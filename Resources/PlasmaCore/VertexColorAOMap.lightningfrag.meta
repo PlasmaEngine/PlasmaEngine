@@ -3,7 +3,7 @@ TextContent
 {
 	LightningFragmentBuilder 
 	{
-		var Name = "VertexColorAO"
+		var Name = "VertexColorAOMap"
 		var ResourceId = 0x60e326b9fed3087a
 	}
 }

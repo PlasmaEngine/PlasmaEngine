@@ -1,7 +1,7 @@
 // MIT Licensed (see LICENSE.md).
 
 [Pixel]
-struct VertexColorMetallic
+struct VertexColorMetallicMap
 {
   [FragmentInput][StageInput] var Uv : Real2;
   [FragmentInput][StageInput] var VertexColor : Real4;
@@ -27,7 +27,7 @@ struct VertexColorMetallic
     var blueMetallic = this.MetallicMapBlue.Sample(this.Uv).X + this.MetallicOffsetBlue;
     
     var metallic = HeightBlend.HeightBlend(redMetallic, redHeight, greenMetallic, greenHeight, blueMetallic, blueHeight, this.BlendStrength);
-    this.Metallic = metallic;
+    this.Metallic = Math.Saturate(metallic);
     
   }
 }

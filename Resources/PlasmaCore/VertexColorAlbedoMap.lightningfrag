@@ -1,7 +1,7 @@
 // MIT Licensed (see LICENSE.md).
 
 [Pixel]
-struct VertexColorAlbedo
+struct VertexColorAlbedoMap
 {
   [FragmentInput][StageInput] var Uv : Real2;
   [FragmentInput][StageInput] var VertexColor : Real4;
@@ -15,7 +15,7 @@ struct VertexColorAlbedo
   
   function Main()
   {
-        var redSample = this.AlbedoRed.Sample(this.Uv).XYZ;
+    var redSample = this.AlbedoRed.Sample(this.Uv).XYZ;
     var greenSample = this.AlbedoGreen.Sample(this.Uv).XYZ;
     var blueSample = this.AlbedoBlue.Sample(this.Uv).XYZ;
     

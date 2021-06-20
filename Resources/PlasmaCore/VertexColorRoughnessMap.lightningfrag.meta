@@ -3,7 +3,7 @@ TextContent
 {
 	LightningFragmentBuilder 
 	{
-		var Name = "VertexColorRoughness"
+		var Name = "VertexColorRoughnessMap"
 		var ResourceId = 0x60e3243fc79bc012
 	}
 }

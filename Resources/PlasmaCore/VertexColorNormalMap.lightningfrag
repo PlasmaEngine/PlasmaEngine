@@ -6,47 +6,62 @@ struct VertexColorNormalMap
   [FragmentInput][StageInput] var Uv : Real2;
   [FragmentInput][StageInput] var VertexColor : Real4;
   [Input][Slider(0, 1, 0.01)] var BlendStrength : Real;
-  
-  [Input] var NormalMapRed : SampledImage2d;
-  [Input] var NormalMapGreen : SampledImage2d;
-  [Input] var NormalMapBlue : SampledImage2d;
-  
-  [FragmentInput][StageInput][Output] var ViewNormal : Real3;
-  [StageInput] var ViewTangent : Real3;
-  [StageInput] var ViewBitangent : Real3;
-
-  [Input] var Bumpiness : Real = 1.0;
-
+ 
   [Input] var RedLeft : Boolean = false;
   [Input] var GreenDown : Boolean = false;
   
+  [Input] var NormalMapRed : SampledImage2d;
+  [Input] var BumpinessRed : Real = 1.0;
   
+  [Input] var NormalMapGreen : SampledImage2d;
+  [Input] var BumpinessGreen : Real = 1.0;
+  
+  [Input] var NormalMapBlue : SampledImage2d;
+  [Input] var BumpinessBlue : Real = 1.0;
+  
+  [FragmentInput][StageInput][Output] var ViewNormal : Real3;
+  [FragmentInput("ViewNormalMesh")][StageInput("ViewNormal")] var MeshNormal : Real3;
+  [StageInput] var ViewTangent : Real3;
+  [StageInput] var ViewBitangent : Real3;
   
   function Main()
   {
-    var redHeight = this.VertexColor.X;
-    var greenHeight = this.VertexColor.Y;
-    var blueHeight = this.VertexColor.Z;
+      // Invert tangent directions if needed
+      var xSign = Math.Lerp(1.0, -1.0, this.RedLeft as Real);
+      var ySign = Math.Lerp(-1.0, 1.0, this.GreenDown as Real);
+        
+      var redHeight = this.VertexColor.X;
+      var greenHeight = this.VertexColor.Y;
+      var blueHeight = this.VertexColor.Z;
     
-    
-    var normal = Math.Normalize(this.ViewNormal);
-    var tangent = Math.Normalize(this.ViewTangent);
-    var bitangent = Math.Normalize(this.ViewBitangent);
-
-    var redNormal = this.NormalMapRed.Sample(this.Uv).XYZ;
-    var greenNormal = this.NormalMapGreen.Sample(this.Uv).XYZ;
-    var blueNormal = this.NormalMapBlue.Sample(this.Uv).XYZ;
-
-    var normalSample = HeightBlend.HeightBlend(redNormal, redHeight, greenNormal, greenHeight, blueNormal, blueHeight, this.BlendStrength).XY;
-    
-    normalSample = (normalSample - Real2(128.0 / 255.0)) * 2.0;
-
-    // Invert tangent directions if needed
-    var xSign = Math.Lerp(1.0, -1.0, this.RedLeft as Real);
-    var ySign = Math.Lerp(-1.0, 1.0, this.GreenDown as Real);
-
-    // Add tangent directions to perturb the surface normal
-    normal += (tangent * normalSample.X * xSign + bitangent * normalSample.Y * ySign) * this.Bumpiness;
-    this.ViewNormal = Math.Normalize(normal);
+      var normal = Math.Normalize(this.ViewNormal);
+      var meshNormal = this.MeshNormal;
+      var tangent = Math.Normalize(this.ViewTangent);
+      var bitangent = Math.Normalize(this.ViewBitangent);
+      
+      var normalSampleRed = this.NormalMapRed.Sample(this.Uv).XY;
+       normalSampleRed = (normalSampleRed - Real2(128.0 / 255.0)) * 2.0;
+      
+      // Add tangent directions to perturb the surface normal
+      var normalRed = meshNormal;
+      normalRed += (tangent * normalSampleRed.X * xSign + bitangent * normalSampleRed.Y * ySign) * this.BumpinessRed;
+      
+      var normalSampleGreen = this.NormalMapGreen.Sample(this.Uv).XY;
+      normalSampleGreen = (normalSampleGreen - Real2(128.0 / 255.0)) * 2.0;
+      
+      // Add tangent directions to perturb the surface normal
+      var normalGreen = meshNormal;
+      normalGreen += (tangent * normalSampleGreen.X * xSign + bitangent * normalSampleGreen.Y * ySign) * this.BumpinessGreen;
+      
+      var normalSampleBlue = this.NormalMapBlue.Sample(this.Uv).XY;
+      normalSampleBlue = (normalSampleBlue - Real2(128.0 / 255.0)) * 2.0;
+      
+      // Add tangent directions to perturb the surface normal
+      var normalBlue = meshNormal;
+      normalBlue += (tangent * normalSampleBlue.X * xSign + bitangent * normalSampleBlue.Y * ySign) * this.BumpinessBlue;
+      
+      normal = HeightBlend.HeightBlend(normalRed, redHeight, normalGreen, greenHeight, normalBlue, blueHeight, this.BlendStrength);
+      
+      this.ViewNormal = Math.Normalize(normal);
   }
 }

@@ -3,7 +3,7 @@ TextContent
 {
 	LightningFragmentBuilder 
 	{
-		var Name = "VertexColorAlbedo"
+		var Name = "VertexColorAlbedoMap"
 		var ResourceId = 0x60e33bec011edf18
 	}
 }
