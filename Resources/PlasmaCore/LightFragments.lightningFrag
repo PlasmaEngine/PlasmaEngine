@@ -91,7 +91,8 @@ struct PointLightFragment
       var dotL0LD = Math.Dot(l0, ld);
       var distLD = Math.Length(ld);
       
-      var t = (dotRL0 * dotRLD - dotL0LD) / (Math.Pow(distLD,2) - Math.Pow(dotRLD, 2));
+      var t = (dotRL0 * dotRLD - dotL0LD) / (Math.Pow(Math.Abs(distLD),2) - Math.Pow(dotRLD, 2));
+      
       toLight = Math.Normalize(l0 + ld * Math.Saturate(t));
     }
     
@@ -101,18 +102,16 @@ struct PointLightFragment
     var centerToRay = Math.Dot(toLight, reflection) * reflection - toLight;
     closestPoint = toLight + centerToRay * Math.Saturate(this.LightRadius / Math.Length(centerToRay));
 
-    this.Energy = energy;
+    this.Energy =  energy;
 
-  
-    
     this.LightDirection = Math.Normalize(closestPoint);
     this.LightIntensity *= falloff;
     this.LightDistance = Math.Length(closestPoint);
     
     var intensityMultiplier = 100.0;
     
-    this.LightIntensity /= intensityMultiplier / this.Energy;
-    this.SpecularMultiplier /= this.Energy;
+    this.LightIntensity /= intensityMultiplier /  (  (Math.Max(this.LightRadius, 0.001) / 1000)/this.Energy);
+    this.SpecularMultiplier /= Math.Min(this.GeoRoughness, 0.009) *  this.Energy;
     
   }
 }
