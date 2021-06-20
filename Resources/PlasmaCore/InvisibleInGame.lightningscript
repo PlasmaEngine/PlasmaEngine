@@ -1,0 +1,15 @@
+// MIT Licensed (see LICENSE.md).
+
+class InvisibleInGame : LightningComponent
+{
+  [Dependency] var Model : Model;
+  [Property] var Active : Boolean = true;
+  
+  function Initialize(init : CogInitializer)
+  {
+    if(!this.Space.IsEditorMode && this.Active)
+    {
+      this.Model.Visible = false;
+    }
+  }
+}
