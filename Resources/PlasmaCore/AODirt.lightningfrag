@@ -1,0 +1,92 @@
+// MIT Licensed (see LICENSE.md).
+
+// Shader input attribute definitions
+// [AppBuiltInInput] Input comes from predefined data given by the graphics engine
+// [StageInput]      Input comes from the previous hardware stage (mesh -> vertex -> geometry -> pixel)
+// [FragmentInput]   Input comes from a previous fragment in the same stage
+// [PropertyInput]   Input comes from this fragment
+// [Input]           Input auto resolves from any of the previous in the order
+//                   [FragmentInput][StageInput][AppBuiltInInput][PropertyInput]
+//
+// Pixel fragment Example:
+// [FragmentInput][StageInput] var ViewNormal : Real3;
+// Input will come from a previous pixel fragment that outputs ViewNormal
+// otherwise, input will come from the vertex shader
+
+[Pixel]
+struct AODirt
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+    
+  [FragmentInput] var AO : Real;
+  [Input] var DirtStrength : Real = 1.0;
+  
+  
+  [Input] var DirtAlbedo : SampledImage2d;
+  [FragmentInput][Output] var Albedo : Real3;
+  [Input] var UseAlbedo : Boolean = true;
+  
+  [FragmentInput][StageInput][Output] var ViewNormal : Real3;
+  [StageInput] var ViewTangent : Real3;
+  [StageInput] var ViewBitangent : Real3;
+  
+  [Input] var NormalMap : SampledImage2d;
+  [Input] var UseNormal : Boolean = true;
+  [Input] var Bumpiness : Real = 1.0;
+  
+  // Plasma generates tangents/bitangents in the increasing u/v directions
+  // Normal maps are assumed to use increasing red/green for the right/up directions
+  // If a normal map is authored differently, these properties will invert
+  // the respective axis so that surfaces point in the correct direction
+  [Input] var RedLeft : Boolean = false;
+  [Input] var GreenDown : Boolean = false;
+  
+  [FragmentInput][Output] var Roughness : Real;
+  [Input] var RoughnessMap : SampledImage2d;
+  [Input] var UseRoughness : Boolean = true;
+  [Input] var InvertRoughness : Boolean;
+  [Input] var RoughnessOffset : Real;
+
+  function Main()
+  {
+    var dirtAlbedo = this.DirtAlbedo.Sample(this.Uv).XYZ;
+    
+    if(!this.UseAlbedo)
+      dirtAlbedo = this.Albedo;
+    
+    this.Albedo = Math.Lerp(this.Albedo, dirtAlbedo, ((this.AO) * this.DirtStrength));
+    
+    
+        // Normalize basis vectors
+    var normal = Math.Normalize(this.ViewNormal);
+    var tangent = Math.Normalize(this.ViewTangent);
+    var bitangent = Math.Normalize(this.ViewBitangent);
+    
+    // Remap sample from [0, 1] to [-1, 1]
+    var normalSample = this.NormalMap.Sample(this.Uv).XY;
+    // Does not exactly map to +/-1, but we want byte values of 128 to exactly map to 0
+    normalSample = (normalSample - Real2(128.0 / 255.0)) * 2.0;
+
+    // Invert tangent directions if needed
+    var xSign = Math.Lerp(1.0, -1.0, this.RedLeft as Real);
+    var ySign = Math.Lerp(-1.0, 1.0, this.GreenDown as Real);
+
+    // Add tangent directions to perturb the surface normal
+    normal += (tangent * normalSample.X * xSign + bitangent * normalSample.Y * ySign) * this.Bumpiness;
+    
+    if(!this.UseNormal)
+      normal = this.ViewNormal;
+    
+    this.ViewNormal = Math.Lerp(this.ViewNormal, normal, ((this.AO) * this.DirtStrength));
+    
+    var roughness = this.RoughnessMap.Sample(this.Uv).X;
+    if(this.InvertRoughness)
+      roughness = 1.0 - roughness;
+    roughness += this.RoughnessOffset;  
+    
+    if(!this.UseRoughness)
+      roughness = this.Roughness;
+      
+    this.Roughness = Math.Lerp(this.Roughness, roughness, ((this.AO) * this.DirtStrength));
+  }
+}
