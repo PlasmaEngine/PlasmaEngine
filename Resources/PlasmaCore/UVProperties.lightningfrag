@@ -4,11 +4,11 @@
 struct UVProperties
 {
   [FragmentInput][StageInput][Output] var Uv : Real2;
-  [Input] var Scale : Real2 = Real2(1,1);
+  [Input][Output] var UvScale : Real2 = Real2(1,1);
   
   function Main()
   {
-    this.Uv.X = this.Uv.X * this.Scale.X;
-    this.Uv .Y = this.Uv.Y * this.Scale.Y;
+    this.Uv.X = this.Uv.X * this.UvScale.X;
+    this.Uv .Y = this.Uv.Y * this.UvScale.Y;
   }
 }
