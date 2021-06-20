@@ -20,10 +20,13 @@ struct NormalMap
   [Input] var RedLeft : Boolean = false;
   [Input] var GreenDown : Boolean = false;
 
+  [Output] var ViewNormalMesh : Real3;
+
   function Main()
   {
     // Normalize basis vectors
     var normal = Math.Normalize(this.ViewNormal);
+    this.ViewNormalMesh = normal;
     var tangent = Math.Normalize(this.ViewTangent);
     var bitangent = Math.Normalize(this.ViewBitangent);
     
