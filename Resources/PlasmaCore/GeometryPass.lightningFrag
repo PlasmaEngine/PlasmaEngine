@@ -40,8 +40,10 @@ struct GeometryPass
     // 0 behaves poorly in lighting calculations and we need to make sure we have the sign value for the normal.
     this.Roughness = Math.Clamp(this.Roughness, 0.001, 1.0) * zSign;
     
+    this.Albedo = Math.Saturate(this.Albedo);
+    
     if(Math.Max(Math.Max(this.Emissive.X, this.Emissive.Y), this.Emissive.Z) > 0)
-      this.Albedo += this.Emissive;
+      this.Albedo += Math.Pow(this.Emissive, Real3(2.2));
       
     var emissivePower = Math.Max(Math.Max(this.Emissive.X, this.Emissive.Y), this.Emissive.Z);
     
