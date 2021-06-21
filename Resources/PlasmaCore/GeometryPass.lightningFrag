@@ -41,9 +41,9 @@ struct GeometryPass
     this.Roughness = Math.Clamp(this.Roughness, 0.001, 1.0) * zSign;
     
     if(Math.Max(Math.Max(this.Emissive.X, this.Emissive.Y), this.Emissive.Z) > 0)
-      this.Albedo = this.Emissive;
+      this.Albedo += this.Emissive;
       
-    var emissivePower = Math.Length(this.Emissive);
+    var emissivePower = Math.Max(Math.Max(this.Emissive.X, this.Emissive.Y), this.Emissive.Z);
     
     if(Math.Length(this.SpecularColor) < 0.05)
       this.SpecularColor = this.Albedo;
