@@ -1,0 +1,33 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct VertexColorEmissive
+{
+  [FragmentInput][StageInput] var Uv : Real2;
+  [FragmentInput][StageInput] var VertexColor : Real4;
+  [Input][Slider(0, 1, 0.01)] var BlendStrength : Real;
+  
+  [Input] var EmissiveMapRed : SampledImage2d;
+  [Input] var EmissivePowerRed : Real = 0.0;
+  [Input] var EmissiveMapGreen : SampledImage2d;
+  [Input] var EmissivePowerGreen : Real = 0.0;
+  [Input] var EmissiveMapBlue : SampledImage2d;
+  [Input] var EmissivePowerBlue : Real = 0.0;
+  
+  [FragmentInput][Output] var Emissive : Real3;
+    
+  function Main()
+  {
+    var redHeight = this.VertexColor.X;
+    var greenHeight = this.VertexColor.Y;
+    var blueHeight = this.VertexColor.Z;
+    
+    var redEmissive = this.EmissiveMapRed.Sample(this.Uv).XYZ * this.EmissivePowerRed;
+    var greenEmissive = this.EmissiveMapGreen.Sample(this.Uv).XYZ * this.EmissivePowerGreen;
+    var blueEmissive = this.EmissiveMapBlue.Sample(this.Uv).XYZ * this.EmissivePowerBlue;
+    
+    var emissive = HeightBlend.HeightBlend(redEmissive, redHeight, greenEmissive, greenHeight, blueEmissive, blueHeight, this.BlendStrength);
+    this.Emissive = emissive;
+    
+  }
+}

@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "VertexColorEmissive"
+		var ResourceId = 0x60ff03017fb28185
+	}
+}
