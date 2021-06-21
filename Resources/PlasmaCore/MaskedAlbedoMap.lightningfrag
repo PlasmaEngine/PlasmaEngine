@@ -1,0 +1,28 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct MaskedAlbedoMap
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [Input] var ColorMaskMap : SampledImage2d;
+    [Input] var RedChannel : SampledImage2d;
+    [Input] var GreenChannel : SampledImage2d;
+    [Input] var BlueChannel : SampledImage2d;
+    [Input] var AlphaChannel : SampledImage2d;
+    [Input] var UseAlpha : Boolean = false;
+    [FragmentInput][StageInput][Output] var Albedo : Real3 = Real3(0,0,0);
+    [FragmentInput] var UvScale : Real2 = Real2(1,1);
+
+    function Main()
+    {
+        var colorMask = this.ColorMaskMap.Sample(this.Uv / this.UvScale);
+        var albedo = this.Albedo;
+        albedo = Math.Lerp(albedo, Math.Pow(this.RedChannel.Sample(this.Uv).XYZ, Real3(2.2)), colorMask.X);
+        albedo = Math.Lerp(albedo, Math.Pow(this.BlueChannel.Sample(this.Uv).XYZ, Real3(2.2)), colorMask.Y);
+        albedo = Math.Lerp(albedo, Math.Pow(this.GreenChannel.Sample(this.Uv).XYZ, Real3(2.2)), colorMask.Z);
+        if(this.UseAlpha)
+          albedo = Math.Lerp(albedo, Math.Pow(this.AlphaChannel.Sample(this.Uv).XYZ, Real3(2.2)), colorMask.W);
+        
+        this.Albedo = albedo;
+    }
+}

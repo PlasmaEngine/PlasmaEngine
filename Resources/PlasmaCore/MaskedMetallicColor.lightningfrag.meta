@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "MaskedMetallicColor"
+		var ResourceId = 0x60ffd8c3efbfb22f
+	}
+}

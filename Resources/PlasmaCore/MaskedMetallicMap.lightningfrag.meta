@@ -3,7 +3,7 @@ TextContent
 {
 	LightningFragmentBuilder 
 	{
-		var Name = "MetallicMaskMap"
+		var Name = "MaskedMetallicMap"
 		var ResourceId = 0x5f628bff4d8edde7
 	}
 }

@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "MaskedAOMap"
+		var ResourceId = 0x60ffcfcc9b1d7f8e
+	}
+}

@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "MaskedRoughnessMap"
+		var ResourceId = 0x60e0796acae0b5ca
+	}
+}

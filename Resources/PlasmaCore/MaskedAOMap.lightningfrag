@@ -1,0 +1,25 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct MaskedAOMap
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [Input] var ColorMaskMap : SampledImage2d;
+    [Input] var RedChannel : SampledImage2d;
+    [Input] var GreenChannel : SampledImage2d;
+    [Input] var BlueChannel : SampledImage2d;
+    
+    [FragmentInput] var UvScale : Real2 = Real2(1,1);
+
+    [FragmentInput][Output] var AO : Real;
+
+    function Main()
+    {
+        var colorMask = this.ColorMaskMap.Sample(this.Uv / this.UvScale);
+        var ao = this.AO;
+        ao = Math.Lerp(ao, this.RedChannel.Sample(this.Uv).X, colorMask.X);
+        ao = Math.Lerp(ao, this.GreenChannel.Sample(this.Uv).X, colorMask.Y);
+        ao = Math.Lerp(ao, this.BlueChannel.Sample(this.Uv).X, colorMask.Z);
+        this.AO = ao;
+    }
+}

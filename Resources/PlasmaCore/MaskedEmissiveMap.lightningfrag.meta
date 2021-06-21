@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "MaskedEmissiveMap"
+		var ResourceId = 0x60ffda4a16f2187d
+	}
+}

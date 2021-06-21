@@ -1,0 +1,31 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct MaskedRoughnessMap
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [Input] var ColorMaskMap : SampledImage2d;
+    [Input] var RedChannel : SampledImage2d;
+    [Input] var RoughnessOffsetRed : Real;
+    [Input] var GreenChannel : SampledImage2d;
+    [Input] var RoughnessOffsetGreen : Real;
+    [Input] var BlueChannel : SampledImage2d;
+    [Input] var RoughnessOffsetBlue : Real;
+    [Input] var AlphaChannel : SampledImage2d;
+    [Input] var UseAlpha : Boolean = false;
+    [FragmentInput][StageInput][Output] var Roughness : Real = 1.0;
+    [FragmentInput] var UvScale : Real2 = Real2(1,1);
+
+    function Main()
+    {
+        var colorMask = this.ColorMaskMap.Sample(this.Uv / this.UvScale);
+        var roughness = this.Roughness;
+        roughness = Math.Lerp(roughness, this.RedChannel.Sample(this.Uv).X + this.RoughnessOffsetRed, colorMask.X);
+        roughness = Math.Lerp(roughness, this.GreenChannel.Sample(this.Uv).X + this.RoughnessOffsetGreen, colorMask.Y);
+        roughness = Math.Lerp(roughness, this.BlueChannel.Sample(this.Uv).X + this.RoughnessOffsetBlue, colorMask.Z);
+        if(this.UseAlpha)
+          roughness = Math.Lerp(roughness, this.AlphaChannel.Sample(this.Uv).X, colorMask.W);
+        
+        this.Roughness = roughness;
+    }
+}

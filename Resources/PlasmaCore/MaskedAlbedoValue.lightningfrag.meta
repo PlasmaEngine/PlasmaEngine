@@ -3,7 +3,7 @@ TextContent
 {
 	LightningFragmentBuilder 
 	{
-		var Name = "ColorMask"
+		var Name = "MaskedAlbedoValue"
 		var ResourceId = 0x5f62be7defc46f45
 	}
 }

@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "MaskedAlbedoMap"
+		var ResourceId = 0x60e0780a1ee5636f
+	}
+}

@@ -1,0 +1,41 @@
+// MIT Licensed (see LICENSE.md).
+
+// Shader input attribute definitions
+// [AppBuiltInInput] Input comes from predefined data given by the graphics engine
+// [StageInput]      Input comes from the previous hardware stage (mesh -> vertex -> geometry -> pixel)
+// [FragmentInput]   Input comes from a previous fragment in the same stage
+// [PropertyInput]   Input comes from this fragment
+// [Input]           Input auto resolves from any of the previous in the order
+//                   [FragmentInput][StageInput][AppBuiltInInput][PropertyInput]
+//
+// Pixel fragment Example:
+// [FragmentInput][StageInput] var ViewNormal : Real3;
+// Input will come from a previous pixel fragment that outputs ViewNormal
+// otherwise, input will come from the vertex shader
+
+[Pixel]
+struct MaskedRoughnessValue
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [Input] var ColorMaskMap : SampledImage2d;
+    [Input] var RedRoughness : Real;
+    [Input] var GreenRoughness : Real;
+    [Input] var BlueRoughness : Real;
+    [Input] var AlphaRoughness : Real;
+    [Input] var UseAlpha : Boolean = false;
+    [FragmentInput][StageInput][Output] var Roughness : Real = 1.0;
+    [FragmentInput] var UvScale : Real2 = Real2(1,1);
+
+    function Main()
+    {
+        var colorMask = this.ColorMaskMap.Sample(this.Uv / this.UvScale);
+        var roughness = this.Roughness;
+        roughness = Math.Lerp(roughness, this.RedRoughness, colorMask.X);
+        roughness = Math.Lerp(roughness, this.GreenRoughness, colorMask.Y);
+        roughness = Math.Lerp(roughness, this.BlueRoughness, colorMask.Z);
+        if(this.UseAlpha)
+          roughness = Math.Lerp(roughness, this.AlphaRoughness, colorMask.W);
+        
+        this.Roughness = roughness;
+    }
+}

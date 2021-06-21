@@ -1,0 +1,42 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct MaskedEmissiveMap
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [FragmentInput] var UvScale : Real2 = Real2(1,1);
+    [Input] var ColorMaskMap : SampledImage2d;
+    
+    [Input] var RedChannel : SampledImage2d;
+    [Input] var TintRed : Real4;
+    [Input] var PowerRed : Real;
+    
+    [Input] var GreenChannel : SampledImage2d;
+    [Input] var TintGreen : Real4;
+    [Input] var PowerGreen : Real;
+    
+    [Input] var BlueChannel : SampledImage2d;
+    [Input] var TintBlue : Real4;
+    [Input] var PowerBlue : Real;
+    
+    [Input] var AlphaChannel : SampledImage2d;
+    [Input] var TintAlpha : Real4;
+    [Input] var PowerAlpha : Real;
+    
+    [Input] var UseAlpha : Boolean = false;
+    
+    [FragmentInput][StageInput][Output] var Emissive : Real3 = Real3(0,0,0);
+
+    function Main()
+    {
+        var colorMask = this.ColorMaskMap.Sample(this.Uv / this.UvScale);
+        var emissive = this.Emissive;
+        emissive = Math.Lerp(emissive, (this.RedChannel.Sample(this.Uv).XYZ * this.TintRed.XYZ) * this.PowerRed, colorMask.X);
+        emissive = Math.Lerp(emissive, (this.BlueChannel.Sample(this.Uv).XYZ * this.TintGreen.XYZ) * this.PowerGreen, colorMask.Y);
+        emissive = Math.Lerp(emissive, (this.GreenChannel.Sample(this.Uv).XYZ * this.TintBlue.XYZ) * this.PowerBlue, colorMask.Z);
+        if(this.UseAlpha)
+          emissive = Math.Lerp(emissive, (this.AlphaChannel.Sample(this.Uv).XYZ * this.TintAlpha.XYZ) * this.PowerAlpha, colorMask.W);
+        
+        this.Emissive = emissive;
+    }
+}

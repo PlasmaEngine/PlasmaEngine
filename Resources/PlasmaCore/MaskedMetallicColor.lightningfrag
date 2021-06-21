@@ -1,0 +1,25 @@
+// MIT Licensed (see LICENSE.md).
+
+[Pixel]
+struct MaskedMetallicColor
+{
+    [FragmentInput][StageInput] var Uv : Real2;
+    [Input] var MetallicMaskMap : SampledImage2d;
+    [Input] var RedChannel : Real = 0.0;
+    [Input] var GreenChannel : Real = 0.0;
+    [Input] var BlueChannel : Real = 0.0;
+    
+    [FragmentInput] var UvScale : Real2 = Real2(1,1);
+
+    [FragmentInput][Output] var Metallic : Real;
+
+    function Main()
+    {
+        var metallicMask = this.MetallicMaskMap.Sample(this.Uv / this.UvScale);
+        var metallic = this.Metallic;
+        metallic = Math.Lerp(metallic, this.RedChannel, metallicMask.X);
+        metallic = Math.Lerp(metallic, this.GreenChannel, metallicMask.Y);
+        metallic = Math.Lerp(metallic, this.BlueChannel, metallicMask.Z);
+        this.Metallic = metallic;
+    }
+}
