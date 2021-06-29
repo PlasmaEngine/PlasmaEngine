@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "ViewPreviewCamera"
+		var ResourceId = 0x60f4f2eef1319700
+		var LoaderType = "Cog"
+		var Version = 0
+	}
+}

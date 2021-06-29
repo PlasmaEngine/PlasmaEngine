@@ -1,0 +1,148 @@
+[Version:1]
+Cog 
+{
+	var Name = "Camera"
+	Transform 
+	{
+		var Translation = Real3{0, 0, 0}
+		var Scale = Real3{1, 1, 1}
+		var Rotation = Quaternion{0, 0, 0, 0.998312414}
+	}
+	CameraViewport 
+	{
+		var RenderInEditor = true
+		var RenderInGame = false
+		var RenderOrder = 0
+		var CameraPath = CogPath
+		{
+			var Path = "."
+			var ErrorOnResolveToNull = false
+			var ErrorOnPathCantCompute = false
+			var ErrorOnDirectLinkFail = false
+			var UpdateCogOnPathChange = true
+			var UpdatePathOnCogChange = true
+			var UpdateCogOnInitialize = true
+			var ResolvedNullErrorOccurred = false
+			var Cog = 4294967293
+			var PathPreference0 = CogPathPreference.CogRelative
+			var PathPreference1 = CogPathPreference.SpaceRelative
+			var PathPreference2 = CogPathPreference.Absolute
+		}
+		var RendererPath = CogPath
+		{
+			var Path = "."
+			var ErrorOnResolveToNull = false
+			var ErrorOnPathCantCompute = false
+			var ErrorOnDirectLinkFail = false
+			var UpdateCogOnPathChange = true
+			var UpdatePathOnCogChange = true
+			var UpdateCogOnInitialize = true
+			var ResolvedNullErrorOccurred = false
+			var Cog = 4294967293
+			var PathPreference0 = CogPathPreference.CogRelative
+			var PathPreference1 = CogPathPreference.SpaceRelative
+			var PathPreference2 = CogPathPreference.Absolute
+		}
+		var ResolutionOrAspect = Integer2{1920, 1080}
+		var RenderToViewport = false
+		var ForwardViewportEvents = false
+		var ViewportScaling = ViewportScaling.Fill
+		var MarginColor = Real4{0, 0, 0, 0}
+		var NormalizedSize = Real2{1, 1}
+		var NormalizedOffset = Real2{0, 0}
+	}
+	Camera 
+	{
+		var NearPlane = 0.5
+		var FarPlane = 500
+		var PerspectiveMode = PerspectiveMode.Perspective
+		var FieldOfView = 45
+		var Size = 20
+		var Aperture = 16
+		var FocalDistance = 22
+		var ShutterSpeed = 100
+		var ISO = 100
+	}
+	ForwardRenderer 
+	{
+		var EditorDebugDraw = true
+		var GameDebugDraw = true
+		var RenderDiffuse = true
+		var RenderSpecular = true
+		var RenderSkybox = false
+		var Skybox = "5f85a31bab60c192:previewHDRI"
+		var ClearColor = Real4{0.125490203, 0.125490203, 0.125490203, 1}
+		var DirectLighting = true
+		var IndirectLighting = true
+		var IndirectIntensity = 1
+		var ToneMap = true
+		var DirectionalLight = CogPath
+		{
+			var Path = "DirectionalLight"
+			var ErrorOnResolveToNull = false
+			var ErrorOnPathCantCompute = false
+			var ErrorOnDirectLinkFail = false
+			var UpdateCogOnPathChange = true
+			var UpdatePathOnCogChange = true
+			var UpdateCogOnInitialize = true
+			var ResolvedNullErrorOccurred = false
+			var Cog = 4294967293
+			var PathPreference0 = CogPathPreference.CogRelative
+			var PathPreference1 = CogPathPreference.SpaceRelative
+			var PathPreference2 = CogPathPreference.Absolute
+		}
+	}
+	SelectionIcon 
+	{
+		var Visible = true
+		var VisibilityEvents = true
+		var Material = "564a44b7f62c1d67:DebugDraw"
+		var SpriteSource = "58f8e4be7360cf7c:CameraIcon"
+		var ViewScale = 1
+		var OverrideSelections = true
+	}
+	Hierarchy 
+	{
+		Cog [Id:0x5fa6900455aac9d7]
+		{
+			var Name = "DirectionalLight"
+			Transform 
+			{
+				var Translation = Real3{0, 0, 0}
+				var Scale = Real3{1, 1.00000012, 1.00000012}
+				var Rotation = Quaternion{-0.335742176, 0.210096627, 0.14747408, 0.906304598}
+			}
+			SelectionIcon 
+			{
+				var Visible = true
+				var VisibilityEvents = true
+				var Material = "582c50d330d372c3:AdditiveSprite"
+				var SpriteSource = "58f8e4be736f5ea2:LightIcon"
+				var ViewScale = 1
+				var OverrideSelections = true
+			}
+			Model 
+			{
+				var Visible = true
+				var ViewCulling = false
+				var VisibilityEvents = true
+				var OverrideBoundingBox = false
+				var LocalAabbCenter = Real3{0, 0, 0}
+				var LocalAabbHalfExtents = Real3{1, 1, 1}
+				var GroupSortValue = 0
+				var Material = "581a79008d1b94fe:DirectionalLight"
+				var Mesh = "4de0354322b345ae:Cube"
+			}
+			DirectionalLight 
+			{
+				var LightColor = Real4{1, 1, 1, 1}
+				var LightIntensity = 4
+				var SpecularMultiplier = 1
+				var LightTemperature = 6500
+			}
+			Hierarchy 
+			{
+			}
+		}
+	}
+}

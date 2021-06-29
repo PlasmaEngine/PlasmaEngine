@@ -32,6 +32,7 @@ const String WorldAnchor = "WorldAnchor";
 const String Camera = "Camera";
 const String EditorCamera = "EditorCamera";
 const String PreviewCamera = "PreviewCamera";
+const String ViewPreviewCamera = "ViewPreviewCamera";
 const String ObjectLink = "ObjectLink";
 const String Default = "DefaultArchetype";
 const String Sprite = "Sprite";

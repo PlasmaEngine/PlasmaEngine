@@ -13,7 +13,7 @@ OrientationGizmoViewport::OrientationGizmoViewport(EditorViewport* editorViewpor
   mViewCubeSpace = gameSession->CreateEditorSpace(spaceArchetype);
   mViewCubeSpace->SetName(CoreArchetypes::ViewCube);
 
-  mCamera = mViewCubeSpace->CreateAt(CoreArchetypes::PreviewCamera, Vec3(0, 0, 2.5));
+  mCamera = mViewCubeSpace->CreateAt(CoreArchetypes::ViewPreviewCamera, Vec3(0, 0, 2.5));
   mCamera->ClearArchetype();
 
   Component* renderer = mCamera->GetComponentByName("ForwardRenderer");

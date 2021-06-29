@@ -128,6 +128,7 @@ extern const String WorldAnchor;
 extern const String Camera;
 extern const String EditorCamera;
 extern const String PreviewCamera;
+extern const String ViewPreviewCamera;
 extern const String ObjectLink;
 extern const String Default;
 extern const String Sprite;

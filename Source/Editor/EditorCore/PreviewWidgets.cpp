@@ -146,13 +146,6 @@ SpacePreview::SpacePreview(PreviewWidgetInitializer& initializer, StringParam ob
   mCameraViewportDrawer = new CameraViewportDrawer(this, camera);
   if (GravityEffect* g = space->has(GravityEffect))
     g->SetActive(false);
-
-  Component* renderer = camera->GetComponentByName("DeferredRenderer");
-  if (renderer != nullptr)
-  {
-    Texture* skybox = TextureManager::FindOrNull("WhiteSkybox");
-    renderer->SetProperty("Skybox", skybox);
-  }
   
   // Create preview object if necessary
   if (objectToView == nullptr)
