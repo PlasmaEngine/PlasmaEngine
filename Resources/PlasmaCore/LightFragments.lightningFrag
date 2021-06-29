@@ -110,8 +110,8 @@ struct PointLightFragment
     
     var intensityMultiplier = 100.0;
     
-    this.LightIntensity /= intensityMultiplier /  (  (Math.Max(this.LightRadius, 0.001) / 1000)/this.Energy);
-    this.SpecularMultiplier /= Math.Min(this.GeoRoughness, 0.009) *  this.Energy;
+    this.LightIntensity /= intensityMultiplier /this.Energy;
+    this.SpecularMultiplier /= this.Energy;
     
   }
 }
