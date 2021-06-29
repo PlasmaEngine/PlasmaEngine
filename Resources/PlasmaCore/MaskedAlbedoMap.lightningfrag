@@ -17,9 +17,9 @@ struct MaskedAlbedoMap
     {
         var colorMask = this.ColorMaskMap.Sample(this.Uv / this.UvScale);
         var albedo = this.Albedo;
-        albedo = Math.Lerp(albedo, Math.Pow(this.RedChannel.Sample(this.Uv).XYZ, Real3(2.2)), colorMask.X);
-        albedo = Math.Lerp(albedo, Math.Pow(this.BlueChannel.Sample(this.Uv).XYZ, Real3(2.2)), colorMask.Y);
-        albedo = Math.Lerp(albedo, Math.Pow(this.GreenChannel.Sample(this.Uv).XYZ, Real3(2.2)), colorMask.Z);
+        albedo = Math.Lerp(albedo, this.RedChannel.Sample(this.Uv).XYZ, colorMask.X);
+        albedo = Math.Lerp(albedo, this.GreenChannel.Sample(this.Uv).XYZ, colorMask.Y);
+        albedo = Math.Lerp(albedo, this.BlueChannel.Sample(this.Uv).XYZ, colorMask.Z);
         if(this.UseAlpha)
           albedo = Math.Lerp(albedo, Math.Pow(this.AlphaChannel.Sample(this.Uv).XYZ, Real3(2.2)), colorMask.W);
         

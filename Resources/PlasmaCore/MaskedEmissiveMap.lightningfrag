@@ -32,8 +32,8 @@ struct MaskedEmissiveMap
         var colorMask = this.ColorMaskMap.Sample(this.Uv / this.UvScale);
         var emissive = this.Emissive;
         emissive = Math.Lerp(emissive, (this.RedChannel.Sample(this.Uv).XYZ * this.TintRed.XYZ) * this.PowerRed, colorMask.X);
-        emissive = Math.Lerp(emissive, (this.BlueChannel.Sample(this.Uv).XYZ * this.TintGreen.XYZ) * this.PowerGreen, colorMask.Y);
-        emissive = Math.Lerp(emissive, (this.GreenChannel.Sample(this.Uv).XYZ * this.TintBlue.XYZ) * this.PowerBlue, colorMask.Z);
+        emissive = Math.Lerp(emissive, (this.GreenChannel.Sample(this.Uv).XYZ * this.TintGreen.XYZ) * this.PowerGreen, colorMask.Y);
+        emissive = Math.Lerp(emissive, (this.BlueChannel.Sample(this.Uv).XYZ * this.TintBlue.XYZ) * this.PowerBlue, colorMask.Z);
         if(this.UseAlpha)
           emissive = Math.Lerp(emissive, (this.AlphaChannel.Sample(this.Uv).XYZ * this.TintAlpha.XYZ) * this.PowerAlpha, colorMask.W);
         
