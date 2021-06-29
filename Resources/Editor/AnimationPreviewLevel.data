@@ -1,10 +1,9 @@
 [Version:1]
 Level 
 {
-	Cog 
+	Cog [ContextId:1]
 	{
 		var Name = "LevelSettings"
-		var LinkId = 1
 		GravityEffect 
 		{
 			var Active = true
@@ -40,24 +39,51 @@ Level
 			var FollowEditorCamera = false
 		}
 	}
-	Cog 
+	Cog [ContextId:2]
 	{
 		var Name = "Renderer"
-		var LinkId = 2
 		DeferredRenderer 
 		{
+			var OverrideResolution = false
+			var CustomResolution = Integer2{1920, 1080}
+			var Skybox = "5822dec85e380cf1:SimpleSkybox"
+			var ClearColor = Real4{0, 0, 0, 1}
+			var DirectLighting = true
+			var IndirectLighting = true
+			var IndirectIntensity = 1
+			var MaxIntensity = 50
+			var UseACES = true
+			var ShoulderStrength = 2.50999999
+			var LinearStrength = 0.0299999993
+			var LinearAngle = 2.43000007
+			var ToeStrength = 0.589999974
+			var WhitePoint = 6
+			var DepthRangeOIT = 200
 			var GeometryDebug = GeometryValue.None
 			var EditorDebugDraw = true
 			var GameDebugDraw = true
 			var RenderDiffuse = true
 			var RenderSpecular = true
 			var RenderSkybox = true
-			var Skybox = "5822dec85e380cf1:SimpleSkybox"
-			var ClearColor = Real4{0, 0, 0, 1}
-			var DirectLighting = true
-			var IndirectLighting = true
-			var IndirectIntensity = 1
-			var ToneMap = true
+			var SSGIDebug = false
+			var RayDistance = 64
+			var StepDistance = 0.0399999991
+			var Intensity = 1
+			var DirectionalLight = CogPath
+			{
+				var Path = ":/DirectionalLightShadows"
+				var ErrorOnResolveToNull = false
+				var ErrorOnPathCantCompute = false
+				var ErrorOnDirectLinkFail = false
+				var UpdateCogOnPathChange = true
+				var UpdatePathOnCogChange = true
+				var UpdateCogOnInitialize = true
+				var ResolvedNullErrorOccurred = false
+				var Cog = 4294967293
+				var PathPreference0 = CogPathPreference.CogRelative
+				var PathPreference1 = CogPathPreference.SpaceRelative
+				var PathPreference2 = CogPathPreference.Absolute
+			}
 		}
 		Ssao 
 		{
@@ -80,15 +106,14 @@ Level
 			var DebugBuffer = false
 		}
 	}
-	Cog 
+	Cog [ContextId:3]
 	{
 		var Name = "EditorCamera"
-		var LinkId = 3
 		Transform 
 		{
-			var Translation = Real3{-16.339262, 4.99756241, -0.680369556}
+			var Translation = Real3{-9.00340271, 0.863060236, -14.5121984}
 			var Scale = Real3{1, 1, 1}
-			var Rotation = Quaternion{-0.102278031, -0.713745832, -0.106625557, 0.684643805}
+			var Rotation = Quaternion{0.00691904966, 0.961397707, 0.0242769942, -0.274002522}
 		}
 		Camera 
 		{
@@ -97,14 +122,18 @@ Level
 			var PerspectiveMode = PerspectiveMode.Perspective
 			var FieldOfView = 45
 			var Size = 20
+			var Aperture = 16
+			var FocalDistance = 22
+			var ShutterSpeed = 250
+			var ISO = 100
 		}
 		EditorCameraController 
 		{
 			var ControlMode = ControlMode.Orbit
 			var Previous3DMode = ControlMode.Orbit
 			var LookDistance = 17.1000004
-			var VerticalAngle = 0.29658404
-			var HorizontalAngle = 1.61241245
+			var VerticalAngle = 0.0504928119
+			var HorizontalAngle = 2.58630633
 			var LookTarget = Real3{0, 0, 0}
 			var MoveSensitivity = 1
 		}
@@ -112,11 +141,7 @@ Level
 		{
 			var RenderInEditor = true
 			var RenderInGame = false
-			var RenderToViewport = true
-			var ForwardViewportEvents = false
 			var RenderOrder = 0
-			var NormalizedSize = Real2{1, 1}
-			var NormalizedOffset = Real2{0, 0}
 			var CameraPath = CogPath
 			{
 				var Path = "."
@@ -127,7 +152,7 @@ Level
 				var UpdatePathOnCogChange = true
 				var UpdateCogOnInitialize = true
 				var ResolvedNullErrorOccurred = false
-				var ResolvedCog = 3
+				var Cog = 3
 				var PathPreference0 = CogPathPreference.CogRelative
 				var PathPreference1 = CogPathPreference.SpaceRelative
 				var PathPreference2 = CogPathPreference.Absolute
@@ -142,14 +167,18 @@ Level
 				var UpdatePathOnCogChange = true
 				var UpdateCogOnInitialize = true
 				var ResolvedNullErrorOccurred = false
-				var ResolvedCog = 2
+				var Cog = 2
 				var PathPreference0 = CogPathPreference.CogRelative
 				var PathPreference1 = CogPathPreference.SpaceRelative
 				var PathPreference2 = CogPathPreference.Absolute
 			}
-			var Resolution = Real2{1280, 720}
+			var ResolutionOrAspect = Integer2{1920, 1080}
+			var RenderToViewport = true
+			var ForwardViewportEvents = false
 			var ViewportScaling = ViewportScaling.Fill
 			var MarginColor = Real4{0, 0, 0, 1}
+			var NormalizedSize = Real2{1, 1}
+			var NormalizedOffset = Real2{0, 0}
 		}
 	}
 }

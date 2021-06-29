@@ -46,7 +46,7 @@ Level
 		{
 			var OverrideResolution = false
 			var CustomResolution = Integer2{1920, 1080}
-			var Skybox = "60107a5b33536153:defaultHDRI"
+			var Skybox = "5f85a31bab60c192:previewHDRI"
 			var ClearColor = Real4{0, 0, 0, 1}
 			var DirectLighting = true
 			var IndirectLighting = true
@@ -60,12 +60,15 @@ Level
 			var WhitePoint = 6
 			var DepthRangeOIT = 200
 			var GeometryDebug = GeometryValue.None
-			var VelocityBufferDebug = false
 			var EditorDebugDraw = true
 			var GameDebugDraw = true
 			var RenderDiffuse = true
 			var RenderSpecular = true
 			var RenderSkybox = true
+			var SSGIDebug = false
+			var RayDistance = 64
+			var StepDistance = 0.0399999991
+			var Intensity = 1
 			var DirectionalLight = CogPath
 			{
 				var Path = ":/DirectionalLightShadows"
@@ -117,9 +120,9 @@ Level
 		PostProcessSSAO 
 		{
 			var Active = true
-			var Radius = 1
-			var Intensity = 1
-			var BlurDepthThreshold = 0.100000001
+			var Radius = 1.77490509
+			var Intensity = 1.54643333
+			var BlurDepthThreshold = 2
 			var DebugBuffer = false
 		}
 		PostProcessBloom 
@@ -142,8 +145,16 @@ Level
 			var EnableSMAA = true
 			var EnableDiagnols = true
 			var DepthBasedEdges = false
-			var EdgeDetection = DetectionChance.Medium
+			var EdgeDetection = DetectionChance.High
 			var TargetTexture = SMAADebugTargets.Off
+		}
+		PostProcessFog 
+		{
+			var Active = true
+			var FogStart = 1
+			var FogDensity = 0.248945847
+			var FogColor = Real4{0.492000014, 0.552269995, 0.61500001, 1}
+			var Debug = false
 		}
 	}
 	Cog [ContextId:3]
@@ -249,9 +260,9 @@ Level
 		var Name = "EditorCamera"
 		Transform 
 		{
-			var Translation = Real3{-1.48416948, 7.0764513, 7.92509747}
+			var Translation = Real3{8.27405167, 4.29129887, 11.5537863}
 			var Scale = Real3{1, 1, 1}
-			var Rotation = Quaternion{-0.147993103, -0.0749021992, -0.0112609817, 0.984372139}
+			var Rotation = Quaternion{0.0248967707, 0.308889776, -0.00808883272, 0.950737536}
 		}
 		CameraViewport 
 		{
@@ -299,23 +310,23 @@ Level
 		Camera 
 		{
 			var NearPlane = 0.100000001
-			var FarPlane = 200
+			var FarPlane = 1000
 			var PerspectiveMode = PerspectiveMode.Perspective
 			var FieldOfView = 60
 			var Size = 20
 			var Aperture = 16
 			var FocalDistance = 22
-			var ShutterSpeed = 100
+			var ShutterSpeed = 250
 			var ISO = 100
 		}
 		EditorCameraController 
 		{
 			var ControlMode = ControlMode.Orbit
 			var Previous3DMode = ControlMode.Orbit
-			var LookDistance = 3.67879319
-			var VerticalAngle = 0.298450023
-			var HorizontalAngle = 12.7182608
-			var LookTarget = Real3{-0.952149689, 5.99474239, 4.4494133}
+			var LookDistance = 5.48811531
+			var VerticalAngle = -0.0523616225
+			var HorizontalAngle = 5.65491152
+			var LookTarget = Real3{5.05283785, 4.57853413, 7.11974859}
 			var MoveSensitivity = 1
 		}
 	}
@@ -383,13 +394,13 @@ Level
 		Camera 
 		{
 			var NearPlane = 0.100000001
-			var FarPlane = 200
+			var FarPlane = 1000
 			var PerspectiveMode = PerspectiveMode.Perspective
 			var FieldOfView = 60
 			var Size = 20
 			var Aperture = 16
 			var FocalDistance = 22
-			var ShutterSpeed = 100
+			var ShutterSpeed = 250
 			var ISO = 100
 		}
 		SoundListener 
@@ -434,7 +445,7 @@ Level
 		var Name = "Sphere"
 		Transform 
 		{
-			var Translation = Real3{-0.901368141, 4.98346853, 0}
+			var Translation = Real3{-0.901368141, 1.61536336, 0}
 			var Scale = Real3{1, 1, 1}
 			var Rotation = Quaternion{0, 0, 0, 1}
 		}
@@ -475,7 +486,7 @@ Level
 		var Name = "Sphere"
 		Transform 
 		{
-			var Translation = Real3{0.230389118, 4.43230391, 0.325850487}
+			var Translation = Real3{0.230389118, 3.05985451, 0.325850487}
 			var Scale = Real3{1, 1, 1}
 			var Rotation = Quaternion{0, 0, 0, 1}
 		}
@@ -516,7 +527,7 @@ Level
 		var Name = "Cube"
 		Transform 
 		{
-			var Translation = Real3{0.303530931, 5.85021925, 0.0157284141}
+			var Translation = Real3{0.303530931, 5.37536144, 0.0157284141}
 			var Scale = Real3{1, 1, 1}
 			var Rotation = Quaternion{0, 0, 0, 1}
 		}
@@ -557,7 +568,7 @@ Level
 		var Name = "Cube"
 		Transform 
 		{
-			var Translation = Real3{-1.15632868, 6.72889853, 0.0157284141}
+			var Translation = Real3{-1.15632868, 3.99758959, 0.0157284141}
 			var Scale = Real3{1, 1, 1}
 			var Rotation = Quaternion{0, 0, 0, 1}
 		}

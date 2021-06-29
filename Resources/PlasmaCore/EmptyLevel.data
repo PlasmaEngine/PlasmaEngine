@@ -44,10 +44,34 @@ Level
 		var Name = "Renderer"
 		DeferredRenderer 
 		{
+			var OverrideResolution = false
+			var CustomResolution = Integer2{1920, 1080}
 			var Skybox = "5822dec85e380cf1:SimpleSkybox"
-			var MainLight = CogPath
+			var ClearColor = Real4{0, 0, 0, 1}
+			var DirectLighting = true
+			var IndirectLighting = true
+			var IndirectIntensity = 1
+			var MaxIntensity = 50
+			var UseACES = true
+			var ShoulderStrength = 2.50999999
+			var LinearStrength = 0.0299999993
+			var LinearAngle = 2.43000007
+			var ToeStrength = 0.589999974
+			var WhitePoint = 6
+			var DepthRangeOIT = 200
+			var GeometryDebug = GeometryValue.None
+			var EditorDebugDraw = true
+			var GameDebugDraw = true
+			var RenderDiffuse = true
+			var RenderSpecular = true
+			var RenderSkybox = true
+			var SSGIDebug = false
+			var RayDistance = 64
+			var StepDistance = 0.0399999991
+			var Intensity = 1
+			var DirectionalLight = CogPath
 			{
-				var Path = ""
+				var Path = ":/DirectionalLightShadows"
 				var ErrorOnResolveToNull = false
 				var ErrorOnPathCantCompute = false
 				var ErrorOnDirectLinkFail = false
@@ -60,41 +84,14 @@ Level
 				var PathPreference1 = CogPathPreference.SpaceRelative
 				var PathPreference2 = CogPathPreference.Absolute
 			}
-			var ClearColor = Real4{0, 0, 0, 1}
-			var DirectLighting = true
-			var IndirectLighting = true
-			var IndirectIntensity = 1
-			var MaxIntensity = 50
-			var ToneMap = true
-			var GeometryDebug = GeometryValue.None
-			var EditorDebugDraw = true
-			var GameDebugDraw = true
-			var RenderDiffuse = true
-			var RenderSpecular = true
-			var RenderSkybox = true
 		}
-		Ssao 
+		PostProcessSMAA 
 		{
-			var Active = true
-			var Radius = 1
-			var Intensity = 2.20000005
-			var BlurDepthThreshold = 0.0500000007
-			var DebugBuffer = false
-		}
-		Bloom 
-		{
-			var Active = true
-			var Intensity = 0.100000001
-			var Threshold = 1
-			var LensDirt = "null"
-			var LensDirtIntensity = 0
-			var LensDirtThreshold = 1
-			var DebugBuffer = false
-			var Bloom1 = true
-			var Bloom2 = true
-			var Bloom3 = true
-			var Bloom4 = true
-			var Bloom5 = true
+			var EnableSMAA = true
+			var EnableDiagnols = true
+			var DepthBasedEdges = false
+			var EdgeDetection = DetectionChance.Medium
+			var TargetTexture = SMAADebugTargets.Off
 		}
 	}
 	Cog [ContextId:3]
@@ -162,6 +159,10 @@ Level
 			var PerspectiveMode = PerspectiveMode.Orthographic
 			var FieldOfView = 45
 			var Size = 64
+			var Aperture = 16
+			var FocalDistance = 22
+			var ShutterSpeed = 100
+			var ISO = 100
 		}
 		ShadowRenderer 
 		{
@@ -184,6 +185,7 @@ Level
 		{
 			var LightColor = Real4{1, 1, 1, 1}
 			var LightIntensity = 2000
+			var SpecularMultiplier = 1
 			var LightTemperature = 6500
 		}
 		Hierarchy 
@@ -195,9 +197,9 @@ Level
 		var Name = "EditorCamera"
 		Transform 
 		{
-			var Translation = Real3{-3.7525053, 5.58368015, 8.5484457}
+			var Translation = Real3{-4.41947603, 3.09734392, 8.90303707}
 			var Scale = Real3{1, 1, 1}
-			var Rotation = Quaternion{-0.178351879, -0.201911628, -0.0374221317, 0.96230036}
+			var Rotation = Quaternion{-0.0534983911, -0.228004575, -0.0125478636, 0.972108185}
 		}
 		CameraViewport 
 		{
@@ -249,14 +251,18 @@ Level
 			var PerspectiveMode = PerspectiveMode.Perspective
 			var FieldOfView = 60
 			var Size = 20
+			var Aperture = 16
+			var FocalDistance = 22
+			var ShutterSpeed = 250
+			var ISO = 100
 		}
 		EditorCameraController 
 		{
 			var ControlMode = ControlMode.Orbit
 			var Previous3DMode = ControlMode.Orbit
 			var LookDistance = 10
-			var VerticalAngle = 0.366519243
-			var HorizontalAngle = 0.413643003
+			var VerticalAngle = 0.109955832
+			var HorizontalAngle = -5.82242107
 			var LookTarget = Real3{0, 2, 0}
 			var MoveSensitivity = 1
 		}
@@ -320,6 +326,10 @@ Level
 			var PerspectiveMode = PerspectiveMode.Perspective
 			var FieldOfView = 60
 			var Size = 20
+			var Aperture = 16
+			var FocalDistance = 22
+			var ShutterSpeed = 250
+			var ISO = 100
 		}
 		SoundListener 
 		{

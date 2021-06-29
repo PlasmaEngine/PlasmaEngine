@@ -69,7 +69,7 @@ Cog
 		var Size = 20
 		var Aperture = 16
 		var FocalDistance = 22
-		var ShutterSpeed = 100
+		var ShutterSpeed = 250
 		var ISO = 100
 	}
 	SoundListener 
