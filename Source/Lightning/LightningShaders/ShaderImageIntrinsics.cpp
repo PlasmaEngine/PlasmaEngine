@@ -33,6 +33,24 @@ LightningDefineType(StorageImage2d, builder, type)
   storageAttribute->AddParameter(spv::StorageClassUniformConstant);
 }
 
+LightningDefineType(Image3d, builder, type)
+{
+    type->AddAttribute(SpirVNameSettings::mNonCopyableAttributeName);
+    // Mark the required storage class on this type. Used in the front end
+    // translation.
+    Attribute* storageAttribute = type->AddAttribute(SpirVNameSettings::mStorageClassAttribute);
+    storageAttribute->AddParameter(spv::StorageClassUniformConstant);
+}
+
+LightningDefineType(StorageImage3d, builder, type)
+{
+    type->AddAttribute(SpirVNameSettings::mNonCopyableAttributeName);
+    // Mark the required storage class on this type. Used in the front end
+    // translation.
+    Attribute* storageAttribute = type->AddAttribute(SpirVNameSettings::mStorageClassAttribute);
+    storageAttribute->AddParameter(spv::StorageClassUniformConstant);
+}
+
 LightningDefineType(DepthImage2d, builder, type)
 {
   type->AddAttribute(SpirVNameSettings::mNonCopyableAttributeName);
@@ -58,6 +76,15 @@ LightningDefineType(SampledImage2d, builder, type)
   // translation.
   Attribute* storageAttribute = type->AddAttribute(SpirVNameSettings::mStorageClassAttribute);
   storageAttribute->AddParameter(spv::StorageClassUniformConstant);
+}
+
+LightningDefineType(SampledImage3d, builder, type)
+{
+    type->AddAttribute(SpirVNameSettings::mNonCopyableAttributeName);
+    // Mark the required storage class on this type. Used in the front end
+    // translation.
+    Attribute* storageAttribute = type->AddAttribute(SpirVNameSettings::mStorageClassAttribute);
+    storageAttribute->AddParameter(spv::StorageClassUniformConstant);
 }
 
 LightningDefineType(SampledDepthImage2d, builder, type)
@@ -730,6 +757,7 @@ void AddImageFunctions(Lightning::LibraryBuilder& builder, Lightning::BoundType*
 {
   Lightning::BoundType* intType = types.mIntegerVectorTypes[0];
   Lightning::BoundType* int2Type = types.mIntegerVectorTypes[1];
+  Lightning::BoundType* int3Type = types.mIntegerVectorTypes[2];
   Lightning::BoundType* realType = types.mRealVectorTypes[0];
   Lightning::BoundType* real2Type = types.mRealVectorTypes[1];
   Lightning::BoundType* real3Type = types.mRealVectorTypes[2];
@@ -741,6 +769,11 @@ void AddImageFunctions(Lightning::LibraryBuilder& builder, Lightning::BoundType*
   sampler2dSet.mSamplerType = samplerType;
   sampler2dSet.mImageType = LightningTypeId(Image2d);
   sampler2dSet.mSampledImageType = LightningTypeId(SampledImage2d);
+
+  SampledImageSet sampler3dSet;
+  sampler3dSet.mSamplerType = samplerType;
+  sampler3dSet.mImageType = LightningTypeId(Image3d);
+  sampler3dSet.mSampledImageType = LightningTypeId(SampledImage3d);
 
   SampledImageSet sampler2dDepthSet;
   sampler2dDepthSet.mSamplerType = samplerType;
@@ -757,11 +790,18 @@ void AddImageFunctions(Lightning::LibraryBuilder& builder, Lightning::BoundType*
   storageImage2dSet.mImageType = LightningTypeId(StorageImage2d);
   storageImage2dSet.mSampledImageType = nullptr;
 
+  SampledImageSet storageImage3dSet;
+  storageImage3dSet.mSamplerType = nullptr;
+  storageImage3dSet.mImageType = LightningTypeId(StorageImage3d);
+  storageImage3dSet.mSampledImageType = nullptr;
+
   // Sample Implicit Lod
   AddSampleImplicitLod(builder, type, sampler2dSet, real2Type, real4Type);
+  AddSampleImplicitLod(builder, type, sampler3dSet, real3Type, real4Type);
   AddSampleImplicitLod(builder, type, samplerCubeSet, real3Type, real4Type);
   // Sample Explicit Lod
   AddSampleExplicitLod(builder, type, sampler2dSet, real2Type, realType, real4Type);
+  AddSampleExplicitLod(builder, type, sampler3dSet, real3Type, realType, real4Type);
   AddSampleExplicitLod(builder, type, samplerCubeSet, real3Type, realType, real4Type);
   // Sample Grad Explicit Lod
   // Note: Grad functions are explicit Lod even though they cannot be mixed with
@@ -783,6 +823,7 @@ void AddImageFunctions(Lightning::LibraryBuilder& builder, Lightning::BoundType*
 
   // Image Fetch
   AddImageFetch(builder, type, sampler2dSet, int2Type, real4Type);
+  AddImageFetch(builder, type, sampler3dSet, int3Type, real4Type);
   AddImageFetchLod(builder, type, sampler2dSet, int2Type, intType, real4Type);
   // Image Query Size Lod
   AddImageQuerySizeLod(builder, type, sampler2dSet, intType, int2Type);
@@ -805,6 +846,10 @@ void AddImageFunctions(Lightning::LibraryBuilder& builder, Lightning::BoundType*
   AddImageRead(builder, type, storageImage2dSet, int2Type, real4Type);
   AddImageWrite(builder, type, storageImage2dSet, int2Type, real4Type);
   AddImageQuerySize(builder, type, storageImage2dSet, int2Type);
+
+  AddImageRead(builder, type, storageImage3dSet, int3Type, real4Type);
+  AddImageWrite(builder, type, storageImage3dSet, int3Type, real4Type);
+  AddImageQuerySize(builder, type, storageImage3dSet, int3Type);
 }
 
 } // namespace Plasma
