@@ -24,6 +24,16 @@ class DepthImage2d
   LightningDeclareType(DepthImage2d, TypeCopyMode::ValueType);
 };
 
+class Image3d
+{
+    LightningDeclareType(Image3d, TypeCopyMode::ValueType);
+};
+
+class StorageImage3d
+{
+    LightningDeclareType(StorageImage3d, TypeCopyMode::ValueType);
+};
+
 class ImageCube
 {
   LightningDeclareType(ImageCube, TypeCopyMode::ValueType);
@@ -33,6 +43,11 @@ class ImageCube
 class SampledImage2d
 {
   LightningDeclareType(SampledImage2d, TypeCopyMode::ValueType);
+};
+
+class SampledImage3d
+{
+    LightningDeclareType(SampledImage3d, TypeCopyMode::ValueType);
 };
 
 class SampledDepthImage2d

@@ -1350,11 +1350,19 @@ namespace Plasma
 
                 switch(info->mType)
                 {
-                case TextureType::TextureCube:
-              
                 case TextureType::Texture3D:
+                    glTexImage3D(GL_TEXTURE_3D,
+                                0,
+                                glEnums.mInternalFormat,
+                                info->mWidth,
+                                info->mHeight,
+                                info->mDepth,
+                                0,
+                                glEnums.mFormat,
+                                glEnums.mType,
+                                nullptr);
                 break;
-                    //glTexImage3D(GL_TEXTURE_3D, 0, )
+                case TextureType::TextureCube:
                 case TextureType::Texture2D: 
                     // Intentional fall through.
                 default:
