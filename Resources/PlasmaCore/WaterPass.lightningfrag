@@ -1,0 +1,144 @@
+// MIT Licensed (see LICENSE.md).
+
+// RenderPass fragments are intended to be constructed in script
+// and passed directly to the AddRenderTaskRenderPass method.
+// RenderPass fragment code is implicitely appended to the end
+// of Materials in the compositing of the final shaders programs.
+[Pixel][RenderPass]
+struct WaterPass
+{
+  [AppBuiltInInput] var ViewToWorld : Real4x4;
+  [AppBuiltInInput] var WorldToView : Real4x4;
+  [AppBuiltInInput] var ViewportSize : Real2;
+  
+  [StageInput] var PerspectivePosition : Real4;
+  [FragmentInput][StageInput] var ViewPosition : Real3;
+  
+  [AppBuiltInInput] var FarPlane : Real;
+  [AppBuiltInInput] var PerspectiveToView : Real4x4;
+  
+  [PropertyInput] var GeometryBuffer0 : SampledImage2d;
+
+  [Input] var Albedo : Real3 = Real3(1.0, 0.0, 0.0);
+  [Input] var ViewNormal : Real3 = Real3(0.0, 0.0, 1.0);
+  [Input] var Metallic : Real = 0.0;
+  [Input] var Roughness : Real = 1.0;
+  [Input] var Specular : Real = 0.5;
+  [Input] var Alpha : Real = 0.0;
+  
+  [Input] var DitherTexture : SampledImage2d;
+  [Input] var EnvironmentBrdfLut : SampledImage2d;
+  [Input] var Skybox : SampledImageCube;
+  [Input] var IndirectIntensity : Real = 1.0;
+  [Input] var RenderDiffuse : Boolean = true;
+  [Input] var RenderSpecular : Boolean = true;
+  
+  [Input] var DirectLightColor : Real3 = Real3(1.0);
+  [Input] var DirectLightDirection : Real3 = Real3(0.0, -1.0, 0.0);
+  [Input] var DirectLightIntensity : Real = 1.0;
+  
+  [Input] var DirectLightTemperture :  Real = 6500.0;
+  [Input] var DirectLightRadius : Real = 1.0;
+  [Input] var DirectLightLength : Real = 1.0;
+  
+  
+  [Input] var LightTemperature : Real = 6500.0;
+
+  
+  [Input] var PrimaryColor : Real3;
+  [Input] var SecondaryColor : Real3;
+  [Input] var DeepColorFactor : Real;
+    
+  [Input] var AlphaFactor : Real;
+  [Input] var ShallowAlpha : Real;
+  
+  
+  [Input]  var FogColor : Real4 = Real4(1,1,1,1);
+  [Input] var FogDensity : Real;
+    
+  [Output] var Target0 : Real4;
+
+
+  function Main()
+  {
+    var screenUv = this.PerspectivePosition.XY / this.PerspectivePosition.W;
+    screenUv = (screenUv + Real2(1.0, -1.0)) * Real2(0.5, -0.5);
+    
+    var sample0 = this.GeometryBuffer0.Sample(screenUv);
+    var depth = GeometryPass.GetDepth(sample0) ;
+    var currentDepth = -this.ViewPosition.Z / this.FarPlane;
+    var waterDepth = depth - currentDepth;
+    var waterFactor = 1.0 - Math.Exp(-waterDepth * this.DeepColorFactor);
+    var color = Math.Lerp(this.PrimaryColor, this.SecondaryColor, waterFactor);
+
+    depth = Math.Max(0, waterDepth);
+    
+    var fog = Math.Exp2(-this.FogDensity * depth);
+    color = Math.Lerp(this.FogColor.XYZ, color, fog);
+    
+    this.Alpha = Math.Lerp(1.0, this.Alpha, fog);
+    
+    
+    
+    this.DirectLightIntensity /= 1000;
+    
+    this.Roughness = Math.Clamp(this.Roughness, 0.001, 1.0);
+    this.Metallic = Math.Saturate(this.Metallic);
+    this.Specular = Math.Saturate(this.Specular);
+    
+    if(this.Alpha < 0.01)
+    {
+      ShaderIntrinsics.Kill();
+      return;
+    }
+    
+  
+    var viewDirection = Math.Normalize(-this.ViewPosition);
+    
+
+    // Indirect lighting
+    var indirectInputs = ImageBasedLightingInputs();
+    indirectInputs.WorldNormal = Math.MultiplyNormal(this.ViewToWorld, -this.ViewNormal);
+    indirectInputs.WorldViewDirection = Math.MultiplyNormal(this.ViewToWorld, viewDirection);
+    indirectInputs.Albedo = color;
+    indirectInputs.Metallic = this.Metallic;
+    indirectInputs.Roughness = this.Roughness;
+    indirectInputs.Specular = this.Specular;
+    indirectInputs.RenderDiffuse = this.RenderDiffuse;
+    indirectInputs.RenderSpecular = this.RenderSpecular;
+    indirectInputs.Intensity = this.IndirectIntensity;
+    
+    var indirectColor = ImageBasedLighting.Compute(indirectInputs, &this.Skybox, &this.EnvironmentBrdfLut);
+    
+    // Direct lighting
+    var directInputs = DirectLightingInputs();
+    directInputs.ViewNormal = this.ViewNormal;
+    directInputs.ViewDirection = viewDirection;
+    directInputs.LightDirection = Math.Normalize(-Math.MultiplyNormal(this.WorldToView, this.DirectLightDirection));
+    directInputs.LightColor = this.DirectLightColor * (Utility.KelvinToRGB(this.LightTemperature) /100);
+    directInputs.LightRadius = 0;
+    directInputs.LightDistance = 1;
+    directInputs.SpecularMultiplier = 1;
+    directInputs.Albedo = color;
+    directInputs.Metallic = this.Metallic;
+    directInputs.Roughness = this.Roughness;
+    directInputs.Specular = this.Specular;
+    directInputs.RenderDiffuse = this.RenderDiffuse;
+    directInputs.RenderSpecular = this.RenderSpecular;
+    
+    var directColor = DirectLighting.Compute(directInputs);
+    
+    // Remove color banding
+    indirectColor = Utility.ApplyDither(indirectColor, &this.DitherTexture, screenUv, this.ViewportSize);
+    directColor = Utility.ApplyDither(directColor, &this.DitherTexture, screenUv, this.ViewportSize);
+    
+    // hack to get specular color working
+    var metallicIndirectColor = indirectColor * color * this.Metallic;
+    indirectColor = Math.Lerp(indirectColor, metallicIndirectColor, this.Metallic);
+    
+    indirectColor *= this.IndirectIntensity;
+    directColor *= this.DirectLightIntensity ;
+    
+    this.Target0 = Real4(Math.Saturate(indirectColor) + Math.Saturate(directColor), this.Alpha);
+  }
+}

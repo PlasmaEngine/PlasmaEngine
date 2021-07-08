@@ -1,0 +1,132 @@
+// MIT Licensed (see LICENSE.md).
+
+[Vertex]
+struct WaterVertex
+{
+  // BuiltIn utility
+  // Time incrementing every frame
+  [AppBuiltInInput] var FrameTime : Real;
+  // Time incrementing when TimeSpace is active
+  [AppBuiltInInput] var LogicTime : Real;
+  // NearPlane from the Camera (positive value)
+  [AppBuiltInInput] var NearPlane : Real;
+  // FarPlane from the Camera (positive value)
+  [AppBuiltInInput] var FarPlane : Real;
+  // Pixel size of the viewport created by CameraViewport
+  [AppBuiltInInput] var ViewportSize : Real2;
+  // 1.0 / ViewportSize
+  [AppBuiltInInput] var InverseViewportSize : Real2;
+  // World position from the object's Transform (non-streamed objects)
+  [AppBuiltInInput] var ObjectWorldPosition : Real3;
+
+  // BuiltIn transformations
+  // Position transforms
+  [AppBuiltInInput] var LocalToWorld : Real4x4;
+  [AppBuiltInInput] var WorldToLocal : Real4x4;
+  [AppBuiltInInput] var LocalToView : Real4x4;
+  [AppBuiltInInput] var ViewToLocal : Real4x4;
+  [AppBuiltInInput] var LocalToPerspective : Real4x4;
+  // Normal/tangents transforms (inverse transpose)
+  [AppBuiltInInput] var LocalToWorldNormal : Real3x3;
+  [AppBuiltInInput] var WorldToLocalNormal : Real3x3;
+  [AppBuiltInInput] var LocalToViewNormal : Real3x3;
+  [AppBuiltInInput] var ViewToLocalNormal : Real3x3;
+  // View and perspective transforms
+  [AppBuiltInInput] var WorldToView : Real4x4;
+  [AppBuiltInInput] var ViewToWorld : Real4x4;
+  [AppBuiltInInput] var ViewToPerspective : Real4x4;
+  [AppBuiltInInput] var PerspectiveToView : Real4x4;
+
+
+
+  [Input][Slider(0,1, 0.1)]  var Steepness : Real;
+  
+  [Input] var WaveADirection : Real2 = Real2(0.5, 20);
+  [Input][Slider(0.01,20, 0.1)] var WaveASpeed : Real = 1.0;
+  [Input][Slider(1,200, 0.1)]  var WaveAWaveLength : Real;
+
+  [Input] var WaveBDirection : Real2 = Real2(0.25, 20);
+  [Input][Slider(0.01,50, 0.1)] var WaveBSpeed : Real = 1.0;
+  [Input][Slider(1,50, 0.1)]  var WaveBWaveLength : Real;
+  
+  [Input] var WaveCDirection : Real2 = Real2(0.25, 20);
+  [Input][Slider(0.01,50, 0.1)] var WaveCSpeed : Real = 1.0;
+  [Input][Slider(1,20, 0.1)]  var WaveCWaveLength : Real;
+
+  // Vertex Attributes
+  // Standard mesh attributes
+  [StageInput] var LocalPosition : Real3;
+  [StageInput] var LocalNormal : Real3;
+  [StageInput] var LocalTangent : Real3;
+  [StageInput] var LocalBitangent : Real3;
+  [StageInput] var Uv : Real2;
+  // Named auxilary attributes
+  [StageInput] var Color : Real4;
+
+  [Output] var ViewPosition : Real3;
+  [Output] var ViewNormal : Real3;
+  [Output] var ViewTangent : Real3;
+  [Output] var ViewBitangent : Real3;
+
+  [Output] var PerspectivePosition : Real4;
+  
+  [Output] var SampledWaveHeight : Real4;
+  
+  
+  function GenerateWave(waveProperties : Real4, localPos : Real3, bitangent : ref Real3, tangent : ref Real3) : Real3
+  {    
+    var k = 2 * Math.Pi / waveProperties.X;
+    var c = Math.Sqrt(9.8 / k);
+    var d = Math.Normalize(waveProperties.ZW);
+    var f = k * (Math.Dot(d, localPos.XZ) - c * (this.FrameTime * (waveProperties.Y / 10)));
+    var a = this.Steepness / k;
+    
+    var newTangent : Real3 = *tangent;
+    var newBitangent : Real3 = *bitangent;
+    
+    newTangent += Real3(
+      -d.X * d.X * (this.Steepness * Math.Sin(f)),
+      d.X * (this.Steepness * Math.Cos(f)),
+      -d.X * d.Y * (this.Steepness * Math.Sin(f)));
+      
+    newBitangent += Real3(
+      -d.X * d.Y * (this.Steepness * Math.Sin(f)),
+      d.Y * (this.Steepness * Math.Cos(f)),
+      -d.Y * d.Y * (this.Steepness * Math.Sin(f)));
+      
+    tangent = &newTangent;
+    bitangent = &newBitangent;
+    
+    return Real3(
+      d.X * (a * Math.Cos(f)),
+      a * Math.Sin(f),
+      d.Y * (a * Math.Cos(f)));
+  }
+  
+
+  function Main()
+  {    
+    var tangent = Real3(1,0,0);
+    var bitangent = Real3(0,0,1);
+    
+    var waveA = Real4(this.WaveAWaveLength, this.WaveASpeed, this.WaveADirection);
+    var waveB = Real4(this.WaveBWaveLength, this.WaveBSpeed, this.WaveBDirection);
+    var waveC = Real4(this.WaveCWaveLength, this.WaveCSpeed, this.WaveCDirection);
+    
+    var localPos = this.LocalPosition;
+    this.LocalPosition += this.GenerateWave(waveA, localPos, &bitangent, &tangent);
+    this.LocalPosition += this.GenerateWave(waveB, localPos, &bitangent, &tangent);
+    this.LocalPosition += this.GenerateWave(waveC, localPos, &bitangent, &tangent);
+    
+    var normal = Math.Normalize(Math.Cross(bitangent, tangent));
+    
+    // Viewspace outputs for pixel shaders
+    this.ViewPosition = Math.MultiplyPoint(this.LocalToView, this.LocalPosition);
+    this.ViewNormal = Math.Normalize(Math.Multiply(this.LocalToViewNormal, normal));
+    this.ViewTangent = Math.Normalize(Math.Multiply(this.LocalToViewNormal, tangent));
+    this.ViewBitangent = Math.Normalize(Math.Multiply(this.LocalToViewNormal, bitangent));
+
+    // Perspective output for graphics api
+    this.PerspectivePosition = Math.Multiply(this.LocalToPerspective, Real4(this.LocalPosition, 1.0));
+  }
+}

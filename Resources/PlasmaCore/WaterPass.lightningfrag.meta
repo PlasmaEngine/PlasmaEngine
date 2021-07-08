@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "WaterPass"
+		var ResourceId = 0x60cd4684f1bfda9a
+	}
+}

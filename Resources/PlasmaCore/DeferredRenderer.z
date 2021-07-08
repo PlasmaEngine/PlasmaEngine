@@ -303,6 +303,34 @@ class DeferredRenderer : LightningComponent
     if(this.Owner.PostProcessFog != null)
       this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer0, this.GBuffer1, lightBuffer);
     
+    
+    // Water
+    var waterPass = WaterPass();
+    
+    var light = this.DirectionalLight.Cog;
+    if (light != null && light.DirectionalLight != null)
+    {
+       
+      waterPass.DirectLightColor = light.DirectionalLight.LightColor.XYZ;
+      waterPass.DirectLightDirection = light.DirectionalLight.LightDirection;
+      waterPass.DirectLightIntensity = light.DirectionalLight.LightIntensity;
+      waterPass.LightTemperature = light.DirectionalLight.LightTemperature;
+      
+    }
+ 
+    waterPass.Skybox = this.Skybox;
+    waterPass.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
+    waterPass.IndirectIntensity = this.IndirectIntensity;
+    
+    var waterShaderInputs = ShaderInputs.Create();
+    waterShaderInputs.Add("WaterPass", "GeometryBuffer0", this.GBuffer0.Texture);
+    alphaSettings.GlobalShaderInputs = waterShaderInputs;
+    
+    alphaSettings.CullMode = CullMode.BackFace;
+    alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
+
+    event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.Water, waterPass, "Water");
+    
     // Toon Rendering  
     if(this.Owner.PostProcessToon != null)
       this.Owner.PostProcessToon.OnRenderTasksUpdate(event, lightBuffer, this.GBuffer0, lightBuffer);
