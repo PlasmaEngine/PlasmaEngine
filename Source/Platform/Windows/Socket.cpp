@@ -506,8 +506,8 @@ SocketAddress ResolveSocketAddress(Status& status,
 {
   SocketAddress address;
 
-  // Choose the 'any' address?
-  bool chooseAnyAddress = (addressResolutionFlags & SocketAddressResolutionFlags::AnyAddress);
+  // Choose the 'any' address? This defaults to the loopback address
+  bool chooseLoopbackAddress = (addressResolutionFlags & SocketAddressResolutionFlags::AnyAddress);
 
   // Translate platform-specific enums as necessary
   TRANSLATE_TO_PLATFORM_ENUM_OR_RETURN_FAILURE_VALUE(addressFamily, SocketAddress());
@@ -532,15 +532,40 @@ SocketAddress ResolveSocketAddress(Status& status,
   hints.ai_socktype = type;
   hints.ai_flags = addressResolutionFlags;
 
-  // This allows us to bind to the loopback by providing an empty host and NOT
+  // This allows us to bind to the primary network adapter by providing an empty host and NOT
   // specifying AnyAddress
   const char* hostName = host.c_str();
-  if (host.Empty())
+  if (host.Empty() && !chooseLoopbackAddress)
+  {
     hostName = nullptr;
+
+    FIXED_INFO* pFixedInfo;
+    ULONG ulOutBufLen;
+
+    pFixedInfo = (FIXED_INFO*)malloc(sizeof(FIXED_INFO));
+
+    ulOutBufLen = sizeof(FIXED_INFO);
+
+    // The function "GetNetworkParams" grabs network information including this computer's primary host name so that we can
+    // grab the correct ip address for hosting a server and connecting to another socket.
+    if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW) {
+      // If there's an overflow error for pFixedInfo, reallocate memory using the modified output buffer length.
+      free(pFixedInfo);
+      pFixedInfo = (FIXED_INFO*)malloc(ulOutBufLen);
+    }
+
+    // Call the function again but this time assign the correct host name for this computer, otherwise leave hostName as a nullptr.
+    if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == NO_ERROR)
+      hostName = pFixedInfo->HostName;
+
+    if (pFixedInfo)
+      free(pFixedInfo);
+  }
+  
 
   // Resolve host list
   ADDRESS_INFO* hosts = nullptr;
-  int result = getaddrinfo(chooseAnyAddress ? nullptr : hostName, service.c_str(), &hints, &hosts);
+  int result = getaddrinfo(chooseLoopbackAddress ? nullptr : hostName, service.c_str(), &hints, &hosts);
   if (result != 0) // Unable?
   {
     FailOnError(status, result);
