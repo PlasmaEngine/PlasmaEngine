@@ -201,9 +201,12 @@ LightningDefineStaticLibrary(ShaderIntrinsicsLibrary)
   LightningInitializeType(Sampler);
   LightningInitializeType(Image2d);
   LightningInitializeType(StorageImage2d);
+  LightningInitializeType(Image3d);
+  LightningInitializeType(StorageImage3d);
   LightningInitializeType(DepthImage2d);
   LightningInitializeType(ImageCube);
   LightningInitializeType(SampledImage2d);
+  LightningInitializeType(SampledImage3d);
   LightningInitializeType(SampledDepthImage2d);
   LightningInitializeType(SampledImageCube);
 

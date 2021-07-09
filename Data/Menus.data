@@ -123,6 +123,7 @@ Menus menus =
 		  "Properties",
 		  "Library",
 		  "Console",
+		  "Animator",
 		  "Objects",
 		  "OperationHistory",
 		  "Tools",

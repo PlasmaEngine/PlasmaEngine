@@ -1,0 +1,102 @@
+// MIT Licensed (see LICENSE.md).
+
+// Shader input attribute definitions
+// [AppBuiltInInput] Input comes from predefined data given by the graphics engine
+// [StageInput]      Input comes from the previous hardware stage (mesh -> vertex -> geometry -> pixel)
+// [FragmentInput]   Input comes from a previous fragment in the same stage
+// [PropertyInput]   Input comes from this fragment
+// [Input]           Input auto resolves from any of the previous in the order
+//                   [FragmentInput][StageInput][AppBuiltInInput][PropertyInput]
+//
+// Pixel fragment Example:
+// [FragmentInput][StageInput] var ViewNormal : Real3;
+// Input will come from a previous pixel fragment that outputs ViewNormal
+// otherwise, input will come from the vertex shader
+
+[Pixel]
+struct WaterSurface
+{
+  [Input] var MainColor = Real4(0.059, 0.263, 0.451,1);
+  [Input] var SecondColor = Real4(0.008, 0.078, 0.165,1);
+  [Input] var DeepColorStrength = 1.0;
+  [Input][Output]  var FogColor : Real4 = Real4(0.008, 0.035, 0.071, 1);
+  [Input][Output] var FogDensity : Real = 100.0;
+  
+  [Input] var ShallowAlphaValue : Real = 0.68849;
+  [Input] var ShallowAlphaStrength : Real = 2;
+  
+  [Output] var PrimaryColor : Real3;
+  [Output] var SecondaryColor : Real3;
+  [Output] var DeepColorFactor : Real;
+  
+  [Output] var AlphaFactor : Real;
+  [Output] var ShallowAlpha : Real;
+  
+  //var FogColor : Real3;
+  
+  [FragmentInput][StageInput] var Uv : Real2;
+  
+  [FragmentInput][StageInput][Output] var ViewNormal : Real3;
+  [StageInput] var ViewTangent : Real3;
+  [StageInput] var ViewBitangent : Real3;
+  
+  [Input] var PrimaryNormalMap : SampledImage2d;
+  [Input] var PrimarySpeed : Real2 = Real2(1,1);
+  [Input] var PrimaryBumpiness : Real = 1.0;
+  [Input] var PrimaryFlipRed : Boolean = false;
+  [Input] var PrimaryFlipGreen : Boolean = false;
+  
+  [Input] var SecondaryNormalMap : SampledImage2d;
+  [Input] var SecondarySpeed : Real2 = Real2(1,1);
+  [Input] var SecondaryBumpiness : Real = 1.0;
+  [Input] var SecondaryFlipRed : Boolean = false;
+  [Input] var SecondaryFlipGreen : Boolean = false;
+  
+  // Time incrementing every frame
+  [AppBuiltInInput] var FrameTime : Real;
+  
+  [Output] var ViewNormalMesh : Real3;
+  
+
+  function Main()
+  {
+     var normal = Math.Normalize(this.ViewNormal);
+    this.ViewNormalMesh = normal;
+    var tangent = Math.Normalize(this.ViewTangent);
+    var bitangent = Math.Normalize(this.ViewBitangent);
+    
+    this.PrimaryColor = this.MainColor.XYZ;
+    this.SecondaryColor = this.SecondColor.XYZ;
+    this.DeepColorFactor = this.DeepColorStrength;
+    
+    this.AlphaFactor = this.ShallowAlphaStrength;
+    this.ShallowAlpha = this.ShallowAlphaValue;
+    
+     // Remap sample from [0, 1] to [-1, 1]
+    var primaryNormalSample = this.PrimaryNormalMap.Sample(this.Uv + (this.FrameTime * (this.PrimarySpeed / 10))).XY;
+    // Does not exactly map to +/-1, but we want byte values of 128 to exactly map to 0
+    primaryNormalSample = (primaryNormalSample - Real2(128.0 / 255.0)) * 2.0;
+
+    // Invert tangent directions if needed
+    var xSign = Math.Lerp(1.0, -1.0, this.PrimaryFlipRed as Real);
+    var ySign = Math.Lerp(-1.0, 1.0, this.PrimaryFlipGreen as Real);
+
+    // Add tangent directions to perturb the surface normal
+    normal += (tangent * primaryNormalSample.X * xSign + bitangent * primaryNormalSample.Y * ySign) * this.PrimaryBumpiness;
+    
+         // Remap sample from [0, 1] to [-1, 1]
+    var secondaryNormalSample = this.SecondaryNormalMap.Sample(this.Uv + (this.FrameTime * (this.SecondarySpeed / 10))).XY;
+    // Does not exactly map to +/-1, but we want byte values of 128 to exactly map to 0
+    secondaryNormalSample = (secondaryNormalSample - Real2(128.0 / 255.0)) * 2.0;
+
+    // Invert tangent directions if needed
+    xSign = Math.Lerp(1.0, -1.0, this.SecondaryFlipRed as Real);
+    ySign = Math.Lerp(-1.0, 1.0, this.SecondaryFlipGreen as Real);
+
+    // Add tangent directions to perturb the surface normal
+    normal += (tangent * secondaryNormalSample.X * xSign + bitangent * secondaryNormalSample.Y * ySign) * this.SecondaryBumpiness;
+    
+    this.ViewNormal = Math.Normalize(normal);
+    
+  }
+}

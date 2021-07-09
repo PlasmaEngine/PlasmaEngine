@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "WaterSurface"
+		var ResourceId = 0x60cd4c4df0ed9a2f
+	}
+}

@@ -1,0 +1,102 @@
+// MIT Licensed (see LICENSE.md).
+
+class WaterRenderer : LightningComponent
+{
+ 
+ // Array of three textures used for height calculates (previous, current, new)
+  var HeightTextures : Array[Texture] = new Array[Texture]();
+  
+  var FinalHeightTexture : Texture;
+  
+  // Keep track of the current index of this frame's height values.
+  // This wraps, and a new index of the HeighTextures array is used each frame to avoid copying.
+  var CurrentIndex : Integer = 0;
+  
+  // Return the index of the desired index, taking into account the wrapping of
+  // the current frame's height values.
+  // index(0) = previous
+  // index(1) = current
+  // index(2) = new
+  function GetWrapIndex(index : Integer) : Integer
+  {
+    var newIndex = this.CurrentIndex + index;
+    
+    if (newIndex >= 3)
+    {
+      newIndex -= 3;
+    }
+    
+    return newIndex;
+  }
+  
+  function GetFinalHeightResult() : Texture
+  {
+    return this.FinalHeightTexture;
+  }
+  
+  // Get the current frame's height value texture
+  function GetHeightResult() : Texture
+  {
+    return this.HeightTextures[this.GetWrapIndex(2)];
+  }
+  
+  function CreateHeightTextures()
+  {
+    // Three height map textures used (previous, current, new)
+    this.HeightTextures.Resize(3);
+    
+    // Generate initial data for height map data
+    var data = TextureData(TextureFormat.RGBA32f, 500, 500);
+    
+    for (var x : Integer = 0; x < data.Width; ++x)
+    {
+      for (var y : Integer = 0; y < data.Height; ++y)
+      {
+        var deltaX = Math.Pi * (x / (data.Width as Real));
+        var deltaY = Math.Pi * (y / (data.Height as Real));
+        var height = 3.0 * (1.0 - Math.Abs(Math.Sin(deltaX))) * (1.0 - Math.Abs(Math.Sin(2.0 * deltaY))) +
+                     2.0 * (1.0 - Math.Abs(Math.Sin(5.0 * deltaX))) * (1.0 - Math.Abs(Math.Sin(7.0 * deltaY)));
+        
+        data.Set(x, y, Real4(0.0, 1.0, 0.0, height));
+      }
+    }
+    
+    // Create the three runtime textures with the data
+    for (var i : Integer = 0; i < 3; ++i)
+    {
+      this.HeightTextures[i] = Texture.CreateRuntime();
+      this.HeightTextures[i].AddressingX = TextureAddressing.Repeat;
+      this.HeightTextures[i].AddressingY = TextureAddressing.Repeat;
+      this.HeightTextures[i].Anisotropy = TextureAnisotropy.X1;
+      this.HeightTextures[i].Filtering = TextureFiltering.Nearest;
+      this.HeightTextures[i].Upload(data);
+    }
+  }
+  
+  function Initialize(init : CogInitializer)
+  {
+    Plasma.Connect(this, "NewHeightMap", this.OnNewHeightMap);
+    
+    this.CreateHeightTextures();
+    
+    Plasma.Connect(this.Owner, Events.RenderTasksUpdate, this.OnRenderTasksUpdate);
+  }
+  
+  function OnNewHeightMap(event : Event)
+  {    
+    this.FinalHeightTexture = this.GetHeightResult();
+  }
+  
+  function OnRenderTasksUpdate(event : RenderTasksEvent)
+  {
+    this.Owner.DispatchEvent("NewHeightMap", LightningEvent());
+    
+    ++this.CurrentIndex;
+    
+    if (this.CurrentIndex >= 3)
+    {
+      this.CurrentIndex = 0;
+    }
+  }
+  
+}

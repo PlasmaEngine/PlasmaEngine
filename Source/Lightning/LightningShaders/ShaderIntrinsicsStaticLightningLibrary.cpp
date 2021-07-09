@@ -51,9 +51,11 @@ void ShaderIntrinsicsStaticLightningLibrary::Parse(LightningSpirVFrontEnd* trans
   // Grabbed a bunch of lightning types
   Lightning::BoundType* lightningSamplerType = LightningTypeId(Lightning::Sampler);
   Lightning::BoundType* lightningImage2d = LightningTypeId(Lightning::Image2d);
+  Lightning::BoundType* lightningImage3d = LightningTypeId(Lightning::Image3d);
   Lightning::BoundType* lightningDepthImage2d = LightningTypeId(Lightning::DepthImage2d);
   Lightning::BoundType* lightningImageCube = LightningTypeId(Lightning::ImageCube);
   Lightning::BoundType* lightningSampledImage2d = LightningTypeId(Lightning::SampledImage2d);
+  Lightning::BoundType* lightningSampledImage3d = LightningTypeId(Lightning::SampledImage3d);
   Lightning::BoundType* lightningSampledDepthImage2d = LightningTypeId(Lightning::SampledDepthImage2d);
   Lightning::BoundType* lightningSampledImageCube = LightningTypeId(Lightning::SampledImageCube);
   Lightning::BoundType* lightningStorageImage2d = LightningTypeId(Lightning::StorageImage2d);
@@ -70,6 +72,7 @@ void ShaderIntrinsicsStaticLightningLibrary::Parse(LightningSpirVFrontEnd* trans
   CreateImageAndSampler(translator, shaderLibrary, core.RealType, lightningImage2d, lightningSampledImage2d, spv::Dim2D, 0);
   CreateImageAndSampler(
       translator, shaderLibrary, core.RealType, lightningDepthImage2d, lightningSampledDepthImage2d, spv::Dim2D, 1);
+  CreateImageAndSampler(translator, shaderLibrary, core.RealType, lightningImage3d, lightningSampledImage3d, spv::Dim3D, 0);
   CreateImageAndSampler(
       translator, shaderLibrary, core.RealType, lightningImageCube, lightningSampledImageCube, spv::DimCube, 0);
   CreateStorageImage(
