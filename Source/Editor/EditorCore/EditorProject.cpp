@@ -50,8 +50,7 @@ void LoadProject(Editor* editor, Cog* projectCog, StringParam path, StringParam 
           PL::gContentSystem->LibraryFromDirectory(loadContentLibrary, libraryName, contentFolder);
       if (contentLibrary)
       {
-        Status status;
-        PL::gContentSystem->BuildLibrary(status, contentLibrary, true);
+          PL::gContentSystem->BuildLibraryIntoPackageJob(contentLibrary);
       }
       else
       {
@@ -72,8 +71,7 @@ void LoadProject(Editor* editor, Cog* projectCog, StringParam path, StringParam 
   /// Store the library on the project
   project->ProjectContentLibrary = projectLibrary;
 
-  Status status;
-  PL::gContentSystem->BuildLibrary(status, projectLibrary, true);
+  PL::gContentSystem->BuildLibraryIntoPackageJob(projectLibrary);
 
   //Load Extra content libraries
   project->ExtraContentLibraries = Array<ContentLibrary*>();
@@ -89,14 +87,12 @@ void LoadProject(Editor* editor, Cog* projectCog, StringParam path, StringParam 
   forRange (ContentLibrary* library, project->ExtraContentLibraries.All())
   {
     Status s;
-    PL::gContentSystem->BuildLibrary(s, library, true);
+    PL::gContentSystem->BuildLibraryIntoPackageJob(library);
   }
   
   // Always select the first tool
   if (editor->Tools)
     editor->Tools->SelectToolIndex(0);
-
-  PL::gEditor->ProjectLoaded();
 }
 
 void UnloadProject(Editor* editor, Cog* projectCog)

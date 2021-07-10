@@ -854,13 +854,16 @@ void BuildContent(ProjectSettings* project)
   Status status;
   if (project->ProjectContentLibrary)
   {
-    PL::gContentSystem->BuildLibrary(status, project->ProjectContentLibrary, false);
+
+    ResourcePackage package;
+    PL::gContentSystem->BuildLibrary(status, project->ProjectContentLibrary, package);
     DoNotifyStatus(status);
   }
 	
   forRange (ContentLibrary* library, project->ExtraContentLibraries.All())
   {
-    PL::gContentSystem->BuildLibrary(status, library, false);
+    ResourcePackage package;
+    PL::gContentSystem->BuildLibrary(status, library, package);
     DoNotifyStatus(status);
   } 
 }

@@ -144,12 +144,13 @@ void ImportContentPackageListing(ContentPackageListing& listing, ContentLibrary*
   // Build all new content items
   ResourceLibrary* resourceLibrary = PL::gResources->GetResourceLibrary(library->Name);
 
+  ResourcePackage package;
   Status status;
-  HandleOf<ResourcePackage> package = PL::gContentSystem->BuildContentItems(status, newContent, library, false);
+  PL::gContentSystem->BuildContentItems(status, newContent, package);
   DoNotifyStatus(status);
 
   // Load all resource generated into the active resource library
-  PL::gResources->ReloadPackage(resourceLibrary, package);
+  PL::gResources->ReloadPackage(resourceLibrary, &package);
 }
 
 } // namespace Plasma

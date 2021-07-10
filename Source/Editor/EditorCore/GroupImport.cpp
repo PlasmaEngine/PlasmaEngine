@@ -422,7 +422,8 @@ HandleOf<ResourcePackage> ImportJob::BuildContentItems(Status& status, ContentIt
   package->Location = library->GetOutputPath();
   CreateDirectoryAndParents(package->Location);
 
-  BuildOptions buildOptions(library);
+  BuildOptions buildOptions;
+  PL::gContentSystem->SetupOptions(library, buildOptions);
 
   bool allBuilt = true;
 
@@ -434,7 +435,7 @@ HandleOf<ResourcePackage> ImportJob::BuildContentItems(Status& status, ContentIt
     
     UpdateTaskProgress((float)(i + 1) / toBuild.Size(), "Processing : " + contentItem->Filename);
 
-    contentItem->BuildContentItem(false);
+    contentItem->BuildContent();
 
     if (buildOptions.Failure)
     {

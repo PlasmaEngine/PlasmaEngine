@@ -14,7 +14,7 @@ ImageContent::ImageContent()
   mReload = false;
 }
 
-void ImageContent::BuildContentItem(BuildOptions& options)
+void ImageContent::BuildContent(BuildOptions& options)
 {
   forRange (BuilderComponent* bc, Builders.All())
   {

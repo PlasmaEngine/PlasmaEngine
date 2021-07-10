@@ -505,7 +505,7 @@ String GeometryContent::GetName()
   return FilePath::GetFileNameWithoutExtension(Filename);
 }
 
-void GeometryContent::BuildContentItem(BuildOptions& options)
+void GeometryContent::BuildContent(BuildOptions& options)
 {
   bool needToBuild = ContentComposition::AnyNeedsBuilding(options);
   if (needToBuild)

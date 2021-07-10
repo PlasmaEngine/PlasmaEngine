@@ -44,6 +44,7 @@ LightningDefineEnum(StoreResult);
 LightningDefineEnum(StreamType);
 LightningDefineEnum(TabWidth);
 LightningDefineEnum(TimeMode);
+LightningDefineEnum(Verbosity);
 LightningDefineEnum(WindowState);
 LightningDefineEnum(WindowStyleFlags);
 LightningDefineEnum(GeometryValue);
@@ -134,6 +135,7 @@ LightningDefineStaticLibrary(EngineLibrary)
   LightningInitializeEnum(StreamType);
   LightningInitializeEnum(TabWidth);
   LightningInitializeEnum(TimeMode);
+  LightningInitializeEnum(Verbosity);
   LightningInitializeEnum(WindowState);
   LightningInitializeEnum(WindowStyleFlags);
   LightningInitializeEnum(GeometryValue);

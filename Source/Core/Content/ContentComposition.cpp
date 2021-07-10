@@ -162,7 +162,7 @@ bool ContentComposition::AnyNeedsBuilding(BuildOptions& options)
   return false;
 }
 
-void ContentComposition::BuildContentItem(BuildOptions& options)
+void ContentComposition::BuildContent(BuildOptions& options)
 {
   bool anyBuilt = false;
   forRange (BuilderComponent* bc, Builders.All())

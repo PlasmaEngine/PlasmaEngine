@@ -4,6 +4,8 @@
 namespace Plasma
 {
 
+DeclareEnum2(Verbosity, Minimal, Detailed);
+
 typedef OrderedHashMap<String, String> StringMap;
 
 template <typename rangeType, typename castType>

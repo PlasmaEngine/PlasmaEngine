@@ -41,14 +41,14 @@ Resource* AddResourceFromFile(StringParam filePath, StringParam resourceType)
   {
     // Build a package to load the content items resources
     Status status;
-    HandleOf<ResourcePackage> packageHandle = PL::gContentSystem->BuildSingleContentItem(status, newContentItem);
-    ResourcePackage* package = packageHandle;
+    ResourcePackage package;
+    PL::gContentSystem->BuildContentItem(status, newContentItem, package);
     DoNotifyStatus(status);
 
-    PL::gResources->LoadIntoLibrary(status, resourceLibrary, package, true);
+    PL::gResources->LoadIntoLibrary(status, resourceLibrary, &package, true);
     DoNotifyStatus(status);
 
-    DoEditorSideImporting(package, NULL);
+    DoEditorSideImporting(&package, NULL);
 
     DoNotify("File Added", String::Format("File '%s' has been added.", fileName.c_str()), "Disk");
   }
@@ -414,19 +414,19 @@ void ReloadContentItem(ContentItem* contentItem)
 
   // Rebuild the content item to get new modified resources
   Status status;
-  HandleOf<ResourcePackage> packageHandle = PL::gContentSystem->BuildSingleContentItem(status, contentItem);
-  ResourcePackage* package = packageHandle;
+  ResourcePackage package;
+  PL::gContentSystem->BuildContentItem(status, contentItem, package);
 
   DoNotifyStatus(status);
 
   // Remove this content items old resources (may have been removed)
-  UnloadInactive(contentItem, resourceLibrary, package);
+  UnloadInactive(contentItem, resourceLibrary, &package);
 
   // Reload resources / load new resources
-  PL::gResources->ReloadPackage(resourceLibrary, package);
+  PL::gResources->ReloadPackage(resourceLibrary, &package);
 
   // May have editor-side importing to do (archetypes, etc)
-  DoEditorSideImporting(package, NULL);
+  DoEditorSideImporting(&package, NULL);
 }
 
 void EditResourceExternal(Resource* resource)
@@ -516,8 +516,8 @@ Resource* LoadResourceFromNewContentItem(ResourceManager* resourceManager,
 
   // Build the content item to get a resource package with one resource
   Status status;
-  HandleOf<ResourcePackage> packageHandle = PL::gContentSystem->BuildSingleContentItem(status, newContentItem);
-  ResourcePackage* package = packageHandle;
+  ResourcePackage package;
+  PL::gContentSystem->BuildContentItem(status, newContentItem, package);
 
   if (status.Failed())
   {
@@ -530,10 +530,10 @@ Resource* LoadResourceFromNewContentItem(ResourceManager* resourceManager,
   ContentLibrary* contentLibrary = newContentItem->mLibrary;
 
   // Resource that are added this way only have one resource per content item
-  ErrorIf(package->Resources.Size() != 1 && !newContentItem->mIgnoreMultipleResourcesWarning,
+  ErrorIf(package.Resources.Size() != 1 && !newContentItem->mIgnoreMultipleResourcesWarning,
           "Multiple resources in content item.");
 
-  if (package->Resources.Size() > 0)
+  if (package.Resources.Size() > 0)
   {
     // ResourceLibrary resource will be loaded into
     ResourceLibrary* resourceLibrary = PL::gResources->GetResourceLibrary(contentLibrary->Name);
@@ -541,7 +541,7 @@ Resource* LoadResourceFromNewContentItem(ResourceManager* resourceManager,
     if (resource)
     {
       // if the resource was already created, just add it to the set
-      resourceManager->AddResource(package->Resources[0], resource);
+      resourceManager->AddResource(package.Resources[0], resource);
       resource->UpdateContentItem(newContentItem);
 
       if (resourceLibrary)
@@ -552,7 +552,7 @@ Resource* LoadResourceFromNewContentItem(ResourceManager* resourceManager,
       // new resource
       Status status;
       // Events are sent by the resource manager
-      PL::gResources->LoadIntoLibrary(status, resourceLibrary, package, true);
+      PL::gResources->LoadIntoLibrary(status, resourceLibrary, &package, true);
       DoNotifyStatus(status);
 
       // RESOURCEREFACTOR Why was this doing what it was doing...????

@@ -131,14 +131,13 @@ public:
   ContentLibrary* LibraryFromDirectory(Status& status, StringParam name, StringParam directory);
 
   /// Build the Content Library into a Resource Package.
-  HandleOf<ResourcePackage> BuildLibrary(Status& status, ContentLibrary* library, bool sendEvent);
+  void BuildLibrary(Status& status, ContentLibrary* library, ResourcePackage& package);
 
   /// Build ContentItems into Resource Package.
-  HandleOf<ResourcePackage>
-  BuildContentItems(Status& status, ContentItemArray& toBuild, ContentLibrary* library, bool useJobs);
+  void BuildContentItems(Status& status, ContentItemArray& toBuild, ResourcePackage& package);
 
   /// Build Individual ContentItems into Resource Package.
-  HandleOf<ResourcePackage> BuildSingleContentItem(Status& status, ContentItem* contentItem);
+  void BuildContentItem(Status& status, ContentItem* contentItem, ResourcePackage& package);
 
   // Content item management
 
@@ -157,10 +156,14 @@ public:
   // Find a content item by file name (Not the full path).
   ContentItem* FindContentItemByFileName(StringParam filename);
 
-  // Internals
+  //Internals
   ContentItem* CreateFromName(StringRange name);
+  void SetupOptions(ContentLibrary* library, BuildOptions& buildOptions);
   void EnumerateLibrariesInPath(StringParam path);
+  void BuildLibraryIntoPackageJob(ContentLibrary* library);
+  void BuildPackage(BuildOptions& buildOptions, ContentLibrary* library, ResourcePackage& package);
 
+  BuildOptions Options;
   ContentComponentFactory ComponentFactory;
 
   typedef HashMap<String, ContentTypeEntry> ContentCreatorMapType;
@@ -198,6 +201,8 @@ public:
   /// Where the tools (curl, crash handler, etc) are located
   String ToolPath;
 
+  Verbosity::Enum SystemVerbosity;
+  TextStream* DefaultBuildStream;
   HashSet<ContentItemId> mModifiedContentItems;
 
 private:

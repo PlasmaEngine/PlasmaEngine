@@ -193,12 +193,13 @@ Object* ContentItem::GetEditingObject(Resource* resource)
   }
 }
 
-void ContentItem::BuildContentItem(bool useJob)
+void ContentItem::BuildContent()
 {
   ZoneScoped;
   ProfileScopeFunctionArgs(Filename);
-  BuildOptions options(mLibrary);
-  BuildContentItem(options);
+  BuildOptions options;
+  PL::gContentSystem->SetupOptions(mLibrary, options);
+  BuildContent(options);
 }
 
 void ContentItem::BuildListing(ResourceListing& listing)
