@@ -64,35 +64,33 @@ bool LoadFromDataFile(type& object,
                       DataFileFormat::Enum format = DataFileFormat::Text,
                       bool checkTypename = true)
 {
-  Status status;
-  UniquePointer<Serializer> stream(GetLoaderStreamFile(status, fileName, format));
-  if (stream)
-  {
-    PolymorphicNode node;
-    stream->GetPolymorphic(node);
-    cstr objectTypeName = LightningVirtualTypeId(&object)->Name.c_str();
-    if (!checkTypename || node.TypeName == objectTypeName)
+    Status status;
+    UniquePointer<Serializer> stream(GetLoaderStreamFile(status, fileName, format));
+    if (stream)
     {
-      object.Serialize(*stream);
-      stream->EndPolymorphic();
-      return true;
+        PolymorphicNode node;
+        stream->GetPolymorphic(node);
+        cstr objectTypeName = LightningVirtualTypeId(&object)->Name.c_str();
+        if (!checkTypename || node.TypeName == objectTypeName)
+        {
+            object.Serialize(*stream);
+            stream->EndPolymorphic();
+            return true;
+        }
+        else
+        {
+            ErrorIf(true, "Object in file %s not the same as object. "
+                "Object's type '%s' Type In file '%s'. ",
+                fileName.c_str(), objectTypeName, node.TypeName.Data());
+            return false;
+        }
     }
     else
     {
-      ErrorIf(true,
-              "Object in file %s not the same as object. "
-              "Object's type '%s' Type In file '%s'. ",
-              fileName.c_str(),
-              objectTypeName,
-              node.TypeName.Data());
-      return false;
+        ErrorIf(!stream, "Failed to load file %s into data stream. %s",
+            fileName.c_str(), status.Message.c_str());
+        return false;
     }
-  }
-  else
-  {
-    ErrorIf(!stream, "Failed to load file %s into data stream. %s", fileName.c_str(), status.Message.c_str());
-    return false;
-  }
 }
 
 // Load an object from a data block.

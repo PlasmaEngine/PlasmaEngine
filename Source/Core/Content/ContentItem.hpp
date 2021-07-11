@@ -90,9 +90,11 @@ public:
   // (may be the content item or the runtime resource)
   virtual Object* GetEditingObject(Resource* resource);
 
-  // Helper that builds the content item using build options from the content
-  // libarary.
-  void BuildContentItem(bool useJob);
+  // Build the content item
+  virtual void BuildContent(BuildOptions& buildOptions) = 0;
+
+  // Helper that builds the content item using build options from the content libarary.
+  void BuildContent();
 
   // Build the resource listing that this content item makes
   virtual void BuildListing(ResourceListing& listing);
@@ -117,8 +119,6 @@ public:
   virtual void OnInitialize();
 
 protected:
-  // Build the content item
-  virtual void BuildContentItem(BuildOptions& buildOptions) = 0;
 };
 
 // Resource Meta Operations

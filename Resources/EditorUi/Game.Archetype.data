@@ -1,0 +1,11 @@
+[Version:1]
+GameSession 
+{
+	var Name = ""
+	DefaultGameSetup 
+	{
+		var StartingSpace = "4faa6050b86884ec:DefaultArchetype"
+		var StartingLevel = "577d126becbdd810:EmptyLevel"
+		var LoadEditingLevel = true
+	}
+}

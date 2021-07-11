@@ -1,0 +1,8 @@
+[Version:1]
+ContentLibrary 
+{
+	var Name = "Fallback"
+	var LibraryId = 0x60c5a4a01b2b15a8
+	var SourceControlType = ""
+	var ReadOnly = false
+}

@@ -128,6 +128,14 @@ bool JobSystem::AreAllJobsCompleted()
   return completed;
 }
 
+int JobSystem::GetTotalJobs()
+{
+    mLock.Lock();
+    int jobs = mPendingJobs.Size() + mActiveJobs.Size();
+    mLock.Unlock();
+    return jobs;
+}
+
 OsInt JobSystem::WorkerThreadEntry()
 {
   for (;;)

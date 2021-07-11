@@ -328,10 +328,11 @@ void AddLibraryUI::OnCreate(Event* e)
   }
 
   Status buildStatus;
-  ResourcePackage* resourcePackage = PL::gContentSystem->BuildLibrary(buildStatus, library, true);
+  ResourcePackage resourcePackage;
+  PL::gContentSystem->BuildLibrary(buildStatus, library, resourcePackage);
 
   Status status;
-  ResourceLibrary* lib = PL::gResources->LoadPackage(status, resourcePackage);
+  ResourceLibrary* lib = PL::gResources->LoadPackage(status, &resourcePackage);
   if (!status)
   {
     DoNotifyError("Failed to load resource package.", status.Message);
@@ -348,12 +349,12 @@ void AddLibraryUI::OnCreate(Event* e)
       projectSettings->SharedResourceLibraries.PushBack(lib);
 
       Status projectResourceStatus;
-      projectSettings->ProjectResourceLibrary = PL::gResources->LoadPackage(projectResourceStatus, resourcePackage);
+      projectSettings->ProjectResourceLibrary = PL::gResources->LoadPackage(projectResourceStatus, &resourcePackage);
 
       if (!projectResourceStatus)
         DoNotifyError("Failed to load resource package.", projectResourceStatus.Message);
 
-      DoEditorSideImporting(resourcePackage, nullptr);
+      DoEditorSideImporting(&resourcePackage, nullptr);
 
       PL::gEditor->SetExploded(false, true);
       PL::gEditor->ProjectLoaded();

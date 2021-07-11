@@ -3,7 +3,7 @@
 
 namespace Plasma
 {
-const bool ThreadingEnabled = false;
+const bool ThreadingEnabled = true;
 
 struct ThreadPrivateData
 {

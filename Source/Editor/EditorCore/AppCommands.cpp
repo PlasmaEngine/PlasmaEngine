@@ -178,22 +178,22 @@ void PlayUnitTestFile()
   unitTestSystem->PlayFromPlasmaTestFile();
 }
 
-void CopyPrebuiltContent()
-{
-  PlasmaPrint("Copying prebuilt content...\n");
-  // Save all resources and build them so the
-  // output directory is up to date
-  if (PL::gEditor)
-    PL::gEditor->SaveAll(true);
-  // We copy all libraries (including Fallback) because we only expect this to be run by the install steps
-  const String outputDirectory = PL::gContentSystem->PrebuiltContentPath;
-  forRange (ContentLibrary* library, PL::gContentSystem->Libraries.Values())
-  {
-    PlasmaPrint("  Copying %s\n", library->Name.c_str());
-    ExportUtility::CopyLibraryOut(outputDirectory, library, false);
-  }
-  Download(outputDirectory);
-}
+//void CopyPrebuiltContent()
+//{
+//  PlasmaPrint("Copying prebuilt content...\n");
+//  // Save all resources and build them so the
+//  // output directory is up to date
+//  if (PL::gEditor)
+//    PL::gEditor->SaveAll(true);
+//  // We copy all libraries (including Fallback) because we only expect this to be run by the install steps
+//  const String outputDirectory = PL::gContentSystem->PrebuiltContentPath;
+//  forRange (ContentLibrary* library, PL::gContentSystem->Libraries.Values())
+//  {
+//    PlasmaPrint("  Copying %s\n", library->Name.c_str());
+//    ExportUtility::CopyLibraryOut(outputDirectory, library, false);
+//  }
+//  Download(outputDirectory);
+//}
 
 void BindAppCommands(Cog* config, CommandManager* commands)
 {
@@ -218,7 +218,7 @@ void BindAppCommands(Cog* config, CommandManager* commands)
   commands->AddCommand("PlasmaHub", BindCommandFunction(OpenPlasmaHub), true);
   commands->AddCommand("Documentation", BindCommandFunction(OpenDocumentation), true);
 
-  commands->AddCommand("CopyPrebuiltContent", BindCommandFunction(CopyPrebuiltContent));
+  //commands->AddCommand("CopyPrebuiltContent", BindCommandFunction(CopyPrebuiltContent));
 }
 
 } // namespace Plasma

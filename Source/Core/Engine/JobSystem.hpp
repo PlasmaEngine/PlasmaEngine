@@ -66,6 +66,8 @@ public:
 
   bool AreAllJobsCompleted();
 
+  int GetTotalJobs();
+
 private:
   // Takes a job from the job queue and runs it.
   // If no jobs are available, this will return false.

@@ -79,6 +79,7 @@ ContentSystem::ContentSystem()
 {
   mHistoryEnabled = true;
   mIdCount = 0;
+  DefaultBuildStream = nullptr;
 
   // some special load order dependencies
   LoadOrderMap["FontDefinition"] = 5;
@@ -95,11 +96,14 @@ ContentSystem::ContentSystem()
   IgnoredExtensions.Insert("libview");
   IgnoredExtensions.Insert("__pycache__");
 
+  SystemVerbosity = Verbosity::Minimal;
+
   HistoryPath = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "History");
 }
 
 ContentSystem::~ContentSystem()
 {
+  SafeDelete(DefaultBuildStream);
   DeleteObjectsInContainer(Libraries);
 }
 
@@ -198,62 +202,62 @@ ContentLibrary* ContentSystem::LibraryFromDirectory(Status& status, StringParam 
   return library;
 }
 
-HandleOf<ResourcePackage> ContentSystem::BuildLibrary(Status& status, ContentLibrary* library, bool sendEvent)
+void ContentSystem::BuildLibrary(Status& status, ContentLibrary* library, ResourcePackage& package, bool sendEvents = false)
 {
-  ZoneScoped;
-  ProfileScopeFunctionArgs(library->Name);
-  PlasmaPrintFilter(Filter::EngineFilter, "Building Content Library '%s'\n", library->Name.c_str());
+    ZoneScoped;
+    ProfileScopeFunctionArgs(library->Name);
+    PlasmaPrintFilter(Filter::EngineFilter, "Building Content Library '%s'\n", library->Name.c_str());
 
-  Cog* configCog = PL::gEngine->GetConfigCog();
-  MainConfig* mainConfig = configCog->has(MainConfig);
-  String sourceDirectory = mainConfig->SourceDirectory;
+    Cog* configCog = PL::gEngine->GetConfigCog();
+    MainConfig* mainConfig = configCog->has(MainConfig);
+    String sourceDirectory = mainConfig->SourceDirectory;
 
-  String outputPath = library->GetOutputPath();
+    String outputPath = library->GetOutputPath();
 
-  // If we don't already have the content output directory, then see if we have
-  // local prebuilt content that can be copied into the output directory (this
-  // is faster than building the content ourselves, if it exists).
-  if (!DirectoryExists(outputPath))
-  {
-    String versionedContentName = FilePath::GetFileName(ContentOutputPath);
-    String prebuiltContent = FilePath::Combine(PrebuiltContentPath, library->Name);
-    if (DirectoryExists(prebuiltContent))
+    // If we don't already have the content output directory, then see if we have
+    // local prebuilt content that can be copied into the output directory (this
+    // is faster than building the content ourselves, if it exists).
+    if (!DirectoryExists(outputPath))
     {
-      PlasmaPrint("Copying prebuilt content from '%s' to '%s'\n", prebuiltContent.c_str(), outputPath.c_str());
-      ZoneScopedN("PrebuiltContent");
-      ProfileScope("PrebuiltContent");
-      CopyFolderContents(outputPath, prebuiltContent);
+        String versionedContentName = FilePath::GetFileName(ContentOutputPath);
+        String prebuiltContent = FilePath::Combine(PrebuiltContentPath, library->Name);
+        if (DirectoryExists(prebuiltContent))
+        {
+            PlasmaPrint("Copying prebuilt content from '%s' to '%s'\n", prebuiltContent.c_str(), outputPath.c_str());
+            ZoneScopedN("PrebuiltContent");
+            ProfileScope("PrebuiltContent");
+            CopyFolderContents(outputPath, prebuiltContent);
+        }
+        else
+        {
+            PlasmaPrint("Prebuilt content '%s' does not exist\n", prebuiltContent.c_str());
+        }
     }
     else
     {
-      PlasmaPrint("Prebuilt content '%s' does not exist\n", prebuiltContent.c_str());
+        PlasmaPrint("Content output for '%s' exists\n", outputPath.c_str());
     }
-  }
-  else
-  {
-    PlasmaPrint("Content output for '%s' exists\n", outputPath.c_str());
-  }
 
-  Array<ContentItem*> items;
-  items.Reserve(library->ContentItems.Size());
-  items.Append(library->ContentItems.Values());
-  HandleOf<ResourcePackage> package = PL::gContentSystem->BuildContentItems(status, items, library, false);
+    Array<ContentItem*> items;
+    items.Reserve(library->ContentItems.Size());
+    items.Append(library->ContentItems.Values());
+    PL::gContentSystem->BuildContentItems(status, items, package);
 
-  String libraryPackageFile = FilePath::CombineWithExtension(outputPath, library->Name, ".pack");
-  package->Save(libraryPackageFile);
+    String libraryPackageFile = FilePath::CombineWithExtension(outputPath, library->Name, ".pack");
+    package.Save(libraryPackageFile);
 
-  if (sendEvent)
-  {
-    // Changing this to non-delayed could be a problem
-    // If it is, we need to allocate the ResourcePackage.
-    ContentSystemEvent toSend;
-    toSend.mLibrary = library;
-    toSend.mPackage = package;
-    PL::gContentSystem->DispatchEvent(Events::PackageBuilt, &toSend);
-  }
+    if (sendEvents)
+    {
+        // Changing this to non-delayed could be a problem
+        // If it is, we need to allocate the ResourcePackage.
+        ContentSystemEvent toSend;
+        toSend.mLibrary = library;
+        toSend.mPackage = package;
+        PL::gContentSystem->DispatchEvent(Events::PackageBuilt, &toSend);
+    }
 
-  return package;
 }
+
 
 class ContentAddCleanUp
 {
@@ -712,81 +716,141 @@ ContentItem* ContentSystem::CreateFromName(StringRange name)
   return nullptr;
 }
 
-HandleOf<ResourcePackage>
-ContentSystem::BuildContentItems(Status& status, ContentItemArray& toBuild, ContentLibrary* library, bool useJobs)
+void ContentSystem::SetupOptions(ContentLibrary* library, BuildOptions& buildOptions)
 {
-  ZoneScoped;
-  ProfileScopeFunctionArgs(library->Name);
-  PL::gEngine->LoadingStart();
-
-  ResourcePackage* package = new ResourcePackage();
-  package->Name = library->Name;
-
-  package->Location = library->GetOutputPath();
-  CreateDirectoryAndParents(package->Location);
-
-  BuildOptions buildOptions(library);
-
-  bool allBuilt = true;
-
-  for (uint i = 0; i < toBuild.Size(); ++i)
-  {
-    // Process from this contentItem down.
-    ContentItem* contentItem = toBuild[i];
-    static const String cProcessing("Processing");
-    PL::gEngine->LoadingUpdate(
-            cProcessing, library->Name, contentItem->Filename, ProgressType::Normal, (float)(i + 1) / toBuild.Size());
-
-    contentItem->BuildContentItem(useJobs);
-
-    if (buildOptions.Failure)
-    {
-      PlasmaPrint("Content Build Failed, %s\n", buildOptions.Message.c_str());
-      buildOptions.Failure = false;
-      buildOptions.Message = String();
-      allBuilt = false;
-    }
-
-    contentItem->BuildListing(package->Resources);
-
-    // Don't do this in the thread (do it after).
-    if (contentItem->mNeedsEditorProcessing)
-      package->EditorProcessing.PushBack(contentItem);
-  }
-
-  Sort(package->Resources.All(), SortByLoadOrder());
-
-  if (!allBuilt)
-    status.SetFailed(String::Format("Failed to build content library '%s'", library->Name.c_str()));
-
-  PL::gEngine->LoadingFinish();
-  return package;
+    library->SetPaths(buildOptions);
+    buildOptions.Packaging = Packaging::Directory;
+    buildOptions.Verbosity = SystemVerbosity;
+    buildOptions.ProcessingLevel = ProcessingLevel::Production;
+    buildOptions.BuildMode = BuildMode::Incremental;
+    buildOptions.ToolPath = PL::gContentSystem->ToolPath;
+    buildOptions.BuildStatus = BuildStatus::Starting;
+    buildOptions.SendProgress = true;
+    buildOptions.BuildTextStream = DefaultBuildStream;
+    buildOptions.Failure = false;
 }
 
-HandleOf<ResourcePackage> ContentSystem::BuildSingleContentItem(Status& status, ContentItem* contentItem)
+
+void ContentSystem::BuildContentItems(Status& status, ContentItemArray& toBuild, ResourcePackage& package)
 {
-  ContentItemArray contentItems;
-  contentItems.PushBack(contentItem);
-  HandleOf<ResourcePackage> package = BuildContentItems(status, contentItems, contentItem->mLibrary, false);
-  DoNotifyStatus(status);
-  return package;
+    PL::gEngine->LoadingStart();
+
+    BuildOptions buildOptions;
+    ContentLibrary* library = toBuild[0]->mLibrary;
+
+    SetupOptions(library, buildOptions);
+
+    package.Name = library->Name;
+
+    package.Location = library->GetOutputPath();
+    CreateDirectoryAndParents(package.Location);
+
+
+    bool allBuilt = true;
+
+    for (uint i = 0; i < toBuild.Size(); ++i)
+    {
+        // Process from this contentItem down.
+        ContentItem* contentItem = toBuild[i];
+        static const String cProcessing("Processing");
+        PL::gEngine->LoadingUpdate(
+            cProcessing, library->Name, contentItem->Filename, ProgressType::Normal, (float)(i + 1) / toBuild.Size());
+
+        contentItem->BuildContent();
+
+        if (buildOptions.Failure)
+        {
+            PlasmaPrint("Content Build Failed, %s\n", buildOptions.Message.c_str());
+            buildOptions.Failure = false;
+            buildOptions.Message = String();
+            allBuilt = false;
+        }
+
+        contentItem->BuildListing(package.Resources);
+
+        // Don't do this in the thread (do it after).
+     //   if (contentItem->mNeedsEditorProcessing)
+           // package.EditorProcessing.PushBack(contentItem);
+    }
+
+    Sort(package.Resources.All(), SortByLoadOrder());
+
+    if (!allBuilt)
+        status.SetFailed(String::Format("Failed to build content library '%s'", library->Name.c_str()));
+
+    PL::gEngine->LoadingFinish();
+}
+
+void ContentSystem::BuildContentItem(Status& status, ContentItem* contentItem,
+    ResourcePackage& package)
+{
+    ContentItemArray contentItems;
+    contentItems.PushBack(contentItem);
+    BuildContentItems(status, contentItems, package);
 }
 
 void ContentSystem::EnumerateLibrariesInPath(StringParam path)
 {
-  // For every item in the search path
-  FileRange files(path);
-  for (; !files.Empty(); files.PopFront())
-  {
-    // If the path is a directory, enumerate it
-    String directoryPath = FilePath::Combine(path, files.Front());
-    if (DirectoryExists(directoryPath))
+    //For every item in the search path
+    FileRange files(path);
+    for (; !files.Empty(); files.PopFront())
     {
-      String name = files.Front();
-      Status status;
-      LibraryFromDirectory(status, name, directoryPath);
+        //If the path is a directory, enumerate it
+        String directoryPath = FilePath::Combine(path, files.Front());
+        if (DirectoryExists(directoryPath))
+        {
+            String name = files.Front();
+            Status status;
+            LibraryFromDirectory(status, name, directoryPath);
+        }
     }
-  }
+}
+
+//---------------------------------------------------- Build Content Library Job
+class BuildContentLibraryJob : public Job
+{
+public:
+    ContentLibrary* library;
+    BuildOptions buildOptions;
+
+    BuildContentLibraryJob(ContentLibrary* library)
+        :library(library)
+    {
+    }
+
+    int Cancel() override
+    {
+        DebugPrint("Canceled build of library '%s'\n", library->Name.c_str());
+        buildOptions.BuildStatus = BuildStatus::Canceled;
+        return 0;
+    }
+
+    void Execute() override
+    {
+        Status status;
+        ResourcePackage* package = new ResourcePackage();
+        PL::gContentSystem->BuildLibrary(status, library, *package);
+
+        ContentSystemEvent* event = new ContentSystemEvent();
+        event->mLibrary = library;
+        event->mPackage = package;
+        PL::gDispatch->Dispatch(PL::gContentSystem, Events::PackageBuilt, event);
+    }
+
+};
+
+void ContentSystem::BuildLibraryIntoPackageJob(ContentLibrary* library)
+{
+    // This seems to occasionally happen, but when it does it crashes on another
+    // thread. I'm attempting to get more information by adding this here...
+    if (library == nullptr)
+    {
+        FatalEngineError("Content library is null for some reason");
+        return;
+    }
+
+    BuildContentLibraryJob* job = new BuildContentLibraryJob(library);
+    PL::gJobs->AddJob(job);
 }
 
 } // namespace Plasma

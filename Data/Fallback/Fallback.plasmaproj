@@ -10,6 +10,7 @@ Cog
 		var ProjectSpace = "Space"
 		var AutoTakeProjectScreenshot = false
 		var Guid = 0x5495377007825215
+		var libraries = ""
 	}
 	WindowLaunchSettings 
 	{

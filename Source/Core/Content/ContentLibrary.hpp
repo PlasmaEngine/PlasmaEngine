@@ -59,6 +59,7 @@ public:
   ContentItem* FindContentItemByFileName(StringParam filename);
 
   void Serialize(Serializer& stream);
+  void BuildContent(BuildOptions& buildOptions);
   void BuildListing(ResourceListing& listing);
 
   // Resources in this library hashed by unique file id
@@ -76,6 +77,7 @@ private:
   // Remove a content item from this library.
   bool RemoveContentItem(ContentItem* contentItem);
 
+  void SetPaths(BuildOptions& options);
   bool mReadOnly;
 
   ContentMapType ContentItems;

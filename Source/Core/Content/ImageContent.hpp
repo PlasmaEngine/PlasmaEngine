@@ -12,7 +12,7 @@ public:
   LightningDeclareType(ImageContent, TypeCopyMode::ReferenceType);
   ImageContent();
 
-  void BuildContentItem(BuildOptions& options) override;
+  void BuildContent(BuildOptions& options) override;
 
   bool mReload;
 };
