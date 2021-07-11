@@ -202,7 +202,7 @@ ContentLibrary* ContentSystem::LibraryFromDirectory(Status& status, StringParam 
   return library;
 }
 
-void ContentSystem::BuildLibrary(Status& status, ContentLibrary* library, ResourcePackage& package)
+void ContentSystem::BuildLibrary(Status& status, ContentLibrary* library, ResourcePackage& package, bool sendEvents = false)
 {
     ZoneScoped;
     ProfileScopeFunctionArgs(library->Name);
@@ -246,7 +246,7 @@ void ContentSystem::BuildLibrary(Status& status, ContentLibrary* library, Resour
     String libraryPackageFile = FilePath::CombineWithExtension(outputPath, library->Name, ".pack");
     package.Save(libraryPackageFile);
 
-    if (false)
+    if (sendEvents)
     {
         // Changing this to non-delayed could be a problem
         // If it is, we need to allocate the ResourcePackage.

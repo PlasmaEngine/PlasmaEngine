@@ -131,7 +131,7 @@ public:
   ContentLibrary* LibraryFromDirectory(Status& status, StringParam name, StringParam directory);
 
   /// Build the Content Library into a Resource Package.
-  void BuildLibrary(Status& status, ContentLibrary* library, ResourcePackage& package);
+  void BuildLibrary(Status& status, ContentLibrary* library, ResourcePackage& package, bool sendEvents = false);
 
   /// Build ContentItems into Resource Package.
   void BuildContentItems(Status& status, ContentItemArray& toBuild, ResourcePackage& package);
