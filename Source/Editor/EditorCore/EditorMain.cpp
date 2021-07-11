@@ -94,6 +94,13 @@ bool EditorMain::LoadPackage(Cog* projectCog, ContentLibrary* library, ResourceP
     DoEditorSideImporting(package, nullptr);
 
     PL::gEditor->SetExploded(false, true);
+
+    int jobs = PL::gJobs->GetTotalJobs();
+    if (jobs >= 0)
+    {
+        PL::gEditor->ProjectLoaded();
+    }
+
     return true;
   }
   else
