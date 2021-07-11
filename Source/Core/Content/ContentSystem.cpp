@@ -204,19 +204,8 @@ ContentLibrary* ContentSystem::LibraryFromDirectory(Status& status, StringParam 
 
 void ContentSystem::BuildLibrary(Status& status, ContentLibrary* library, ResourcePackage& package)
 {
-  ZoneScoped;
-  ProfileScopeFunctionArgs(library->Name);
-
-  BuildOptions buildOptions;
-  SetupOptions(library, buildOptions);
-  BuildPackage(buildOptions, library, package);
-
-  if (buildOptions.BuildStatus != BuildStatus::Completed)
-      status.SetFailed(buildOptions.Message);
-}
-
-void ContentSystem::BuildPackage(BuildOptions& buildOptions, ContentLibrary* library, ResourcePackage& package)
-{
+    ZoneScoped;
+    ProfileScopeFunctionArgs(library->Name);
     PlasmaPrintFilter(Filter::EngineFilter, "Building Content Library '%s'\n", library->Name.c_str());
 
     Cog* configCog = PL::gEngine->GetConfigCog();
@@ -235,6 +224,7 @@ void ContentSystem::BuildPackage(BuildOptions& buildOptions, ContentLibrary* lib
         if (DirectoryExists(prebuiltContent))
         {
             PlasmaPrint("Copying prebuilt content from '%s' to '%s'\n", prebuiltContent.c_str(), outputPath.c_str());
+            ZoneScopedN("PrebuiltContent");
             ProfileScope("PrebuiltContent");
             CopyFolderContents(outputPath, prebuiltContent);
         }
@@ -251,13 +241,12 @@ void ContentSystem::BuildPackage(BuildOptions& buildOptions, ContentLibrary* lib
     Array<ContentItem*> items;
     items.Reserve(library->ContentItems.Size());
     items.Append(library->ContentItems.Values());
-    Status buildStatus;
-    PL::gContentSystem->BuildContentItems(buildStatus, items, package);
+    PL::gContentSystem->BuildContentItems(status, items, package);
 
     String libraryPackageFile = FilePath::CombineWithExtension(outputPath, library->Name, ".pack");
     package.Save(libraryPackageFile);
 
-    if (true)
+    if (false)
     {
         // Changing this to non-delayed could be a problem
         // If it is, we need to allocate the ResourcePackage.
@@ -266,7 +255,9 @@ void ContentSystem::BuildPackage(BuildOptions& buildOptions, ContentLibrary* lib
         toSend.mPackage = package;
         PL::gContentSystem->DispatchEvent(Events::PackageBuilt, &toSend);
     }
+
 }
+
 
 class ContentAddCleanUp
 {
@@ -742,9 +733,6 @@ void ContentSystem::SetupOptions(ContentLibrary* library, BuildOptions& buildOpt
 
 void ContentSystem::BuildContentItems(Status& status, ContentItemArray& toBuild, ResourcePackage& package)
 {
-    if (toBuild.Empty())
-        return;
-
     PL::gEngine->LoadingStart();
 
     BuildOptions buildOptions;
@@ -752,29 +740,43 @@ void ContentSystem::BuildContentItems(Status& status, ContentItemArray& toBuild,
 
     SetupOptions(library, buildOptions);
 
+    package.Name = library->Name;
+
+    package.Location = library->GetOutputPath();
+    CreateDirectoryAndParents(package.Location);
+
+
+    bool allBuilt = true;
+
     for (uint i = 0; i < toBuild.Size(); ++i)
     {
-        //Process from this contentItem down.
+        // Process from this contentItem down.
         ContentItem* contentItem = toBuild[i];
-        PL::gEngine->LoadingUpdate("Loading", package.Name, contentItem->Filename, ProgressType::Normal, (float)(i + 1) / toBuild.Size());
+        static const String cProcessing("Processing");
+        PL::gEngine->LoadingUpdate(
+            cProcessing, library->Name, contentItem->Filename, ProgressType::Normal, (float)(i + 1) / toBuild.Size());
 
-        contentItem->BuildContent(buildOptions);
+        contentItem->BuildContent();
 
         if (buildOptions.Failure)
         {
-            status.SetFailed(buildOptions.Message);
-            PL::gEngine->LoadingFinish();
-            return;
+            PlasmaPrint("Content Build Failed, %s\n", buildOptions.Message.c_str());
+            buildOptions.Failure = false;
+            buildOptions.Message = String();
+            allBuilt = false;
         }
 
         contentItem->BuildListing(package.Resources);
+
+        // Don't do this in the thread (do it after).
+     //   if (contentItem->mNeedsEditorProcessing)
+           // package.EditorProcessing.PushBack(contentItem);
     }
 
     Sort(package.Resources.All(), SortByLoadOrder());
 
-    package.Location = library->GetOutputPath();
-
-    package.EditorProcessing.Swap(buildOptions.EditorProcessing);
+    if (!allBuilt)
+        status.SetFailed(String::Format("Failed to build content library '%s'", library->Name.c_str()));
 
     PL::gEngine->LoadingFinish();
 }
@@ -825,9 +827,9 @@ public:
 
     void Execute() override
     {
-        PL::gContentSystem->SetupOptions(library, buildOptions);
+        Status status;
         ResourcePackage* package = new ResourcePackage();
-        PL::gContentSystem->BuildPackage(buildOptions, library, *package);
+        PL::gContentSystem->BuildLibrary(status, library, *package);
 
         ContentSystemEvent* event = new ContentSystemEvent();
         event->mLibrary = library;

@@ -161,8 +161,7 @@ public:
   void SetupOptions(ContentLibrary* library, BuildOptions& buildOptions);
   void EnumerateLibrariesInPath(StringParam path);
   void BuildLibraryIntoPackageJob(ContentLibrary* library);
-  void BuildPackage(BuildOptions& buildOptions, ContentLibrary* library, ResourcePackage& package);
-
+ 
   BuildOptions Options;
   ContentComponentFactory ComponentFactory;
 

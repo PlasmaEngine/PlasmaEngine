@@ -44,44 +44,38 @@ bool LoadContentLibrary(StringParam name)
     ZoneScoped;
     ProfileScopeFunctionArgs(name);
     ContentLibrary* library = PL::gContentSystem->Libraries.FindValue(name, nullptr);
-    if (library)
+    if (!library)
     {
-        Status status;
-        ResourcePackage package;
-        PL::gContentSystem->BuildLibrary(status, library, package);
-
-        if (status)
-        {
-            forRange(ResourceEntry & entry, package.Resources.All())
-            {
-                if (entry.mLibrarySource)
-                {
-                    if (ContentEditorOptions* options = entry.mLibrarySource->has(ContentEditorOptions))
-                        entry.mLibrarySource->ShowInEditor = options->mShowInEditor;
-                    else
-                        entry.mLibrarySource->ShowInEditor = false;
-                }
-            }
-
-            Status status;
-            PL::gResources->LoadPackage(status, &package);
-            if (!status)
-                DoNotifyError("Failed to load resource package.", status.Message);
-
-            return (bool)status;
-        }
-        else
-        {
-            return false;
-        }
-
-        return true;
-    }
-    else
-    {
-        PlasmaPrint("Failed to find core content library %s.\n", name.c_str());
+        FatalEngineError("Failed to find core content library %s.\n", name.c_str());
         return false;
     }
+
+    Status status;
+    ResourcePackage package;
+    PL::gContentSystem->BuildLibrary(status, library, package);
+
+    if (!status)
+        return false;
+
+    forRange(ResourceEntry & entry, package.Resources.All())
+    {
+        if (entry.mLibrarySource)
+        {
+            if (ContentEditorOptions* options = entry.mLibrarySource->has(ContentEditorOptions))
+                entry.mLibrarySource->ShowInEditor = options->mShowInEditor;
+            else
+                entry.mLibrarySource->ShowInEditor = false;
+        }
+    }
+
+    PL::gResources->LoadPackage(status, &package);
+    if (!status)
+    {
+        FatalEngineError("Failed to load core content library for editor. Resources"
+            " need to be in the working directory.");
+    }
+
+    return (bool)status;
 }
 
 void LoadCoreContent(Array<String>& coreLibs)

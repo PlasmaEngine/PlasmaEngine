@@ -448,7 +448,7 @@ SpriteSheetImporter::AddSpriteResource(StringParam name, Image& output, IntRect 
   ResourceLibrary* resourceLibrary = PL::gResources->GetResourceLibrary(addContent.Library->Name);
   PL::gResources->ReloadPackage(resourceLibrary, &package);
 
-  ErrorIf(package->Resources.Size() != 1, "Should only be a single SpriteSource built.");
+  ErrorIf(package.Resources.Size() != 1, "Should only be a single SpriteSource built.");
   SpriteSource* spriteSource = (SpriteSource*)PL::gResources->GetResource(package.Resources.Front().mResourceId);
 
   return spriteSource;
