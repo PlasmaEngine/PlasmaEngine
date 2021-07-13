@@ -14,6 +14,7 @@ EditorMain::EditorMain(Composite* parent, OsWindow* window) : Editor(parent)
   mTimeSinceEscape = 100.0f;
   mDisableInput = false;
   mGamePending = false;
+  UserPackagesLoaded = 0;
   ConnectThisTo(parent, Events::Closing, OnClosing);
   ConnectThisTo(this, Events::MouseDown, OnMouseDown);
   ConnectThisTo(PL::gContentSystem, Events::PackageBuilt, OnPackagedBuilt);
@@ -35,7 +36,7 @@ bool EditorMain::LoadPackage(Cog* projectCog, ContentLibrary* library, ResourceP
 
   ResourceSystem* resourceSystem = PL::gResources;
 
-  if (project->ProjectContentLibrary == library)
+  if (project->ProjectContentLibrary == library || project->ExtraContentLibraries.Contains(library))
   {
     // Load all packages
     forRange (ResourcePackage* dependentPackage, PackagesToLoad.All())
@@ -50,9 +51,12 @@ bool EditorMain::LoadPackage(Cog* projectCog, ContentLibrary* library, ResourceP
     }
     PackagesToLoad.Clear();
 
-    // Set the content library so Loading may try to create new content for
-    // fixing old content elements.
-    mProjectLibrary = library;
+    if (project->ProjectContentLibrary == library)
+    {
+        // Set the content library so Loading may try to create new content for
+        // fixing old content elements.
+        mProjectLibrary = library;
+    }
 
     Status status;
     project->ProjectResourceLibrary = resourceSystem->LoadPackage(status, package);
@@ -61,39 +65,14 @@ bool EditorMain::LoadPackage(Cog* projectCog, ContentLibrary* library, ResourceP
 
     DoEditorSideImporting(package, nullptr);
     PL::gEditor->SetExploded(false, true);
-    int jobs = PL::gJobs->GetTotalJobs();
 
+    UserPackagesLoaded++;
 
-    if (jobs <= 0)
+    // if we have loaded all extra content + main library
+    if (UserPackagesLoaded >= project->ExtraContentLibraries.Size() + 1)
     {
         PL::gEditor->ProjectLoaded();
     }
-
-    return true;
-  }
-  else if(project->ExtraContentLibraries.Contains(library))
-  {
-    // Load all packages
-    forRange (ResourcePackage* dependentPackage, PackagesToLoad.All())
-    {
-      Status status;
-      ResourceLibrary* lib = resourceSystem->LoadPackage(status, dependentPackage);
-      if (!status)
-        DoNotifyError("Failed to load resource package.", status.Message);
-
-      project->SharedResourceLibraries.PushBack(lib);
-      delete dependentPackage;
-    }
-    PackagesToLoad.Clear();
-
-    Status status;
-    project->ProjectResourceLibrary = resourceSystem->LoadPackage(status, package);
-    if (!status)
-      DoNotifyError("Failed to load resource package.", status.Message);
-
-    DoEditorSideImporting(package, nullptr);
-
-    PL::gEditor->SetExploded(false, true);
 
     return true;
   }

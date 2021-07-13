@@ -69,6 +69,7 @@ public:
   void OnMainClick(MouseEvent* event);
 
   Array<ResourcePackage*> PackagesToLoad;
+  int UserPackagesLoaded;
 };
 
 } // namespace Plasma
