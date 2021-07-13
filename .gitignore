@@ -42,3 +42,7 @@ External/
 Source/Core/Common/PlasmaConfig.hpp
 
 Installer/
+
+desktop.ini
+
+CMakeSettings.json
