@@ -70,14 +70,14 @@ struct ImageBasedLighting
     iblInputs.SpecularColor = GeometryPass.GetSpecularColor(geometrySample2);
     iblInputs.RenderDiffuse = this.RenderDiffuse;
     iblInputs.RenderSpecular = this.RenderSpecular;
-    iblInputs.SSR = this.SSRTexture.Sample(this.Uv);
+    //iblInputs.SSR = this.SSRTexture.Sample(this.Uv);
     iblInputs.Intensity = this.Intensity;
     
     var color = ImageBasedLighting.Compute(iblInputs, &this.Skybox, &this.EnvironmentBrdfLut);
     color = Math.Min(color, Real3(this.MaxIntensity));
    
-    //var ssr = this.SSRTexture.Sample(this.Uv);
-    //color = Math.Lerp(color, ssr.XYZ, ssr.W);
+    var ssr = this.SSRTexture.Sample(this.Uv);
+    color = Math.Lerp(color, ssr.XYZ * (1.0 - iblInputs.Roughness) , ssr.W);
     
     // Remove color banding
     color = Utility.ApplyDither(color, &this.DitherTexture, this.Uv, this.ViewportSize);

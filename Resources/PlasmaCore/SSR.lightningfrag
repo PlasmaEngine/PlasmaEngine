@@ -59,9 +59,9 @@ struct SSRBlur
         output += this.Texture.Sample(uv);
       }
     }
-    output /= 49.0;
+    output /= 50.0;
     
-    this.Target0 = output;
+    this.Target0 = Math.Saturate(output);
   }
 }
 
