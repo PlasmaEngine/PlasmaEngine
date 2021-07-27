@@ -111,21 +111,21 @@ class PointLight : LightningComponent
   function DebugDraw()
   {
     var position = this.Transform.WorldTranslation;
-    //if(this.LightLengthInput > 0)
-    //{
-    //  var start = position;
-    //  start.X -= this.LightLengthInput / 0.5;
-    //  var end = position;
-    //  end.X += this.LightLengthInput / 0.5;
+    if(this.LightLengthInput > 0)
+    {
+      var start = position;
+      start.X -= this.LightLengthInput;
+      var end = position;
+      end.X += this.LightLengthInput;
       
-    //  var tubeLight = DebugCapsule(start, end, this.LightRadiusInput) {Color = Real4(0.5, 0.5, 0.0, 1.0)};
-    //  DebugDraw.Add(tubeLight);
-    //}
-    //else
-    //{
+      var tubeLight = DebugCapsule(start, end, this.LightRadiusInput) {Color = Real4(0.5, 0.5, 0.0, 1.0)};
+      DebugDraw.Add(tubeLight);
+    }
+    else
+    {
       var lightSphere = DebugSphere(position, this.LightRadiusInput) {Color = Real4(0.5, 0.5, 0.0, 1.0)};
       DebugDraw.Add(lightSphere);
-   // }
+    }
     
     var falloffSphere = DebugSphere(position, this.FalloffRadius) {Color = Real4(1.0, 1.0, 0.0, 1.0)};
     DebugDraw.Add(falloffSphere);
