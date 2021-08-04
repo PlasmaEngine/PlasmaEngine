@@ -270,10 +270,36 @@ class DeferredRenderer : LightningComponent
       
       event.AddRenderTaskRenderPass(lightSettings, RenderGroup.Lights, lightPass, "DirectLighting");
     }
+    
+    var unlitSettings = RenderSettings();
+    unlitSettings.ColorTarget = lightBuffer;
+    unlitSettings.DepthTarget = this.Depth;
+    unlitSettings.CullMode = CullMode.Disabled;
+    unlitSettings.DepthSettings.DepthMode = DepthMode.Write;
+    unlitSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
+    unlitSettings.DepthSettings.StencilMode = StencilMode.Enabled;
+    unlitSettings.DepthSettings.StencilCompareFunc = TextureCompareFunc.Always;
+    unlitSettings.DepthSettings.StencilFailOp = StencilOp.Keep;
+    unlitSettings.DepthSettings.DepthFailOp = StencilOp.Keep;
+    unlitSettings.DepthSettings.DepthPassOp = StencilOp.Replace;
+    unlitSettings.DepthSettings.StencilTestValue = 1 as Byte;
+    
+    unlitSettings.BlendSettings.BlendMode = BlendMode.Separate;
+    unlitSettings.BlendSettings.BlendEquation = BlendEquation.Add;
+    unlitSettings.BlendSettings.SourceFactor = BlendFactor.SourceAlpha;
+    unlitSettings.BlendSettings.DestFactor = BlendFactor.One;
+    unlitSettings.BlendSettings.SourceFactorAlpha = BlendFactor.One;
+    unlitSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
+    unlitSettings.CullMode = CullMode.BackFace;
+    unlitSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
+  
+    var unlitPass = Unit();
+    event.AddRenderTaskRenderPass(unlitSettings, RenderGroup.Unlit, unlitPass, "Unlit");
   
     event.AddRenderTaskClearTarget(this.SSRBuffer, Real4.Zero);
 
-     // Additive materials 
+  
+           // Additive materials 
     var alphaSettings = RenderSettings();
     alphaSettings.ColorTarget = lightBuffer;
     alphaSettings.DepthTarget = this.Depth;
