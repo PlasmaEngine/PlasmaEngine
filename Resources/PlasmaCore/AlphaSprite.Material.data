@@ -3,10 +3,11 @@ Material
 {
 	var RenderGroups = Array
 	{
-		"56dc0b2bbc86c4cb:AlphaBlend"
 		"5961eaa40f1649f6:ZSort"
+		"612904579a5ab10e:Unlit"
 	}
 	SpriteSourceColor 
 	{
+		var SpriteSource = "null"
 	}
 }
