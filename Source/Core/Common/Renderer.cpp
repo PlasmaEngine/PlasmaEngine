@@ -594,7 +594,8 @@ uint GetBlockSize(TextureCompression::Enum compression)
     return 16;
   case TextureCompression::BC6:
     return 16;
-    // case TextureCompression::BC7: return 16;
+  case TextureCompression::BC7: 
+    return 16;
   default:
     return 0;
   }

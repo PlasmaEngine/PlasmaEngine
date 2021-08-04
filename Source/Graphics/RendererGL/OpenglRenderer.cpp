@@ -201,7 +201,8 @@ namespace Plasma
             return GL_COMPRESSED_RG_RGTC2;
         case TextureCompression::BC6:
             return GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB;
-            // case TextureCompression::BC7: return GL_COMPRESSED_RGBA_BPTC_UNORM_ARB;
+        case TextureCompression::BC7: 
+            return GL_COMPRESSED_RGBA_BPTC_UNORM_ARB;
         default:
             return 0;
         }
