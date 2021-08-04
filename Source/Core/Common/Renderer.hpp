@@ -184,7 +184,7 @@ namespace Plasma
     ///   Used for two channel maps like normals with reconstructed Z
     /// BC6 - RGB floats stored at 1 byte per pixel
     ///   Used for high dynamic range images
-    DeclareEnum7(TextureCompression, None, BC1, BC2, BC3, BC4, BC5, BC6);
+    DeclareEnum8(TextureCompression, None, BC1, BC2, BC3, BC4, BC5, BC6, BC7);
 
     /// How to address the texture with uv's outside of the range [0, 1]
     /// Clamp - Uses the last pixel at the border of the image
