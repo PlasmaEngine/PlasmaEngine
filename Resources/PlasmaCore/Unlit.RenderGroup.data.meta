@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "Unlit"
+		var ResourceId = 0x612904579a5ab10e
+		var LoaderType = "RenderGroup"
+		var Version = 0
+	}
+}

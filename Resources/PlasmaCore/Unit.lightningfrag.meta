@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "Unit"
+		var ResourceId = 0x612905b2e04e77cb
+	}
+}
