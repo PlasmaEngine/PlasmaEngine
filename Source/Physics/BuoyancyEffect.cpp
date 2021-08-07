@@ -44,6 +44,8 @@ void BuoyancyEffect::ApplyEffect(RigidBody* obj, real dt)
   if(!GetActive())
     return;
 
+  ZoneScoped;
+
   // Buoyancy applies a force that is dependent on the volume of the object.
   // To do this we need to iterate over all colliders in the body.
   // Note: This is currently incorrect if multiple colliders of a rigid body overlap.

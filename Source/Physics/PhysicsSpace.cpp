@@ -248,6 +248,7 @@ void PhysicsSpace::Serialize(Serializer& stream)
 
 void PhysicsSpace::Initialize(CogInitializer& initializer)
 {
+  ZoneScoped;
   mPhysicsEngine = PL::gEngine->has(PhysicsEngine);
   mHeap = mPhysicsEngine->mHeap;
 
@@ -580,6 +581,7 @@ void PhysicsSpace::SetPhysicsSolverConfig(PhysicsSolverConfig* config)
 
 void PhysicsSpace::UpdateModifiedResources()
 {
+  ZoneScoped;
   ConvexMeshManager::GetInstance()->UpdateAndNotifyModifiedResources();
   MultiConvexMeshManager::GetInstance()->UpdateAndNotifyModifiedResources();
   PhysicsMeshManager::GetInstance()->UpdateAndNotifyModifiedResources();
@@ -596,6 +598,7 @@ void PhysicsSpace::FrameUpdate()
 
 void PhysicsSpace::SystemLogicUpdate(UpdateEvent* updateEvent)
 {
+  ZoneScoped;
   ProfileScopeTree("Physics", "Engine", ByteColorRGBA(232, 0, 34, 255));
 
   {
@@ -655,9 +658,11 @@ void PhysicsSpace::IterateTimestep(real dt)
 {
   mIterationDt = dt;
 
+  ZoneScoped;
   ProfileScopeTree("Iteration", "Physics", Color::SaddleBrown);
 
   {
+    ZoneScopedN("Velocity Integration");
     ProfileScopeTree("Velocity Integration", "Iteration", Color::Goldenrod);
     PreCalculateEffects(dt);
     ApplyHierarchyEffects(dt);
@@ -698,11 +703,12 @@ void PhysicsSpace::IterateTimestep(real dt)
   // from raycasting since they are positioned based upon their parent's position.
   UpdatePhysicsCarsTransforms(dt);
 
-  PushBroadPhaseQueue();
+  PushBroadPhaseQueueProfiled();
 }
 
 void PhysicsSpace::IntegrateBodiesVelocity(real dt)
 {
+  ZoneScoped;
   RigidBodyList::range range = mRigidBodies.All();
 
   while(!range.Empty())
@@ -754,6 +760,7 @@ void PhysicsSpace::IntegrateBodiesPosition(real dt)
 
 void PhysicsSpace::BroadPhase()
 {
+  ZoneScoped;
   ProfileScopeTree("BroadPhase", "Iteration", Color::SaddleBrown);
   mPossiblePairs.Clear();
 
@@ -794,6 +801,7 @@ void PhysicsSpace::BroadPhase()
 
 void PhysicsSpace::NarrowPhase()
 {
+  ZoneScoped;
   ProfileScopeTree("NarrowPhase", "Iteration", Color::Salmon);
 
   HeapAllocator allocator(mHeap);
@@ -847,6 +855,7 @@ void PhysicsSpace::NarrowPhase()
 void PhysicsSpace::PreSolve(real dt)
 {
   // Send out pre-solve events
+  ZoneScoped;
   ProfileScopeTree("PreSolveEvents", "Iteration", Color::Peru);
   mEventManager->DispatchPreSolveEvents(this);
   PushBroadPhaseQueue();
@@ -854,6 +863,7 @@ void PhysicsSpace::PreSolve(real dt)
 
 void PhysicsSpace::ResolutionPhase(real dt)
 {
+  ZoneScoped;
   // Solve all velocity constraints
   ProfileScopeTree("ResolutionPhase", "Iteration", Color::OrangeRed);
   mIslandManager->Solve(dt, GetAllowSleep(), mDebugDrawFlags.Field);
@@ -1328,6 +1338,7 @@ void PhysicsSpace::PublishEvents()
 
 void PhysicsSpace::PreCalculateEffects(real dt)
 {
+  ZoneScoped;
   // Tell all effects to cache any information that doesn't change between bodies
   // (world vectors, etc...). Unfortunately this is called on effects that will
   // never apply to anything (regions with no collisions) but the cost should be minimal.
@@ -1341,6 +1352,7 @@ void PhysicsSpace::PreCalculateEffects(real dt)
 
 void PhysicsSpace::UpdateRegions(real dt)
 {
+  ZoneScoped;
   RegionList::range range = mRegions.All();
 
   while(!range.Empty())
@@ -1353,6 +1365,7 @@ void PhysicsSpace::UpdateRegions(real dt)
 
 void PhysicsSpace::ApplyHierarchyEffects(real dt)
 {
+  ZoneScoped;
   // If an effect is somewhere randomly in a hierarchy then
   // apply it to the nearest parent rigid body
   PhysicsEffectList::range effects = mHierarchyEffects.All();
@@ -1408,6 +1421,7 @@ void PhysicsSpace::ApplyGlobalEffects(RigidBody* body, real dt)
 
 void PhysicsSpace::WakeInactiveMovingBodies()
 {
+  ZoneScoped;
   RigidBodyList::range range = mInactiveRigidBodies.All();
 
   while(!range.Empty())
@@ -1748,6 +1762,7 @@ void PhysicsSpace::ActivateKinematic(RigidBody* body)
 
 void PhysicsSpace::UpdateKinematicVelocities()
 {
+  ZoneScoped;
   // Now that we've finished our physics frame, it's safe
   // to update the old transform values of this body and update the kinematic
   // velocity from where we were to where we ended up.
@@ -1769,6 +1784,8 @@ void PhysicsSpace::UpdateKinematicVelocities()
 
 void PhysicsSpace::UpdateKinematicState()
 {
+  ZoneScoped;
+
   // Take all of the stopped kinematic bodies
   // (ones who are just now not getting transform updates)
   // and clear out their velocity. Now they are inactive
@@ -1797,6 +1814,7 @@ void PhysicsSpace::UpdateKinematicState()
 
 void PhysicsSpace::UpdatePhysicsCars(real dt)
 {
+  ZoneScoped;
   CarList::range range = mCars.All();
   while(!range.Empty())
   {
@@ -1807,6 +1825,7 @@ void PhysicsSpace::UpdatePhysicsCars(real dt)
 
 void PhysicsSpace::UpdatePhysicsCarsTransforms(real dt)
 {
+  ZoneScoped;
   CarList::range range = mCars.All();
   while(!range.Empty())
   {

@@ -52,6 +52,8 @@ void ThrustEffect::ApplyEffect(RigidBody* obj, real dt)
   if(!GetActive())
     return;
 
+  ZoneScoped;
+
   // Apply the force to the rigid body at our thrust center
   Vec3 force = mWorldThrustDirection * mForceStrength;
   obj->ApplyForceAtPointNoWakeUp(force, mWorldThrustCenter);
