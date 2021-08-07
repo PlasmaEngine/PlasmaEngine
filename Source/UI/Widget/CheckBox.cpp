@@ -25,6 +25,7 @@ LightningDefineType(CheckBox, builder, type)
 
 CheckBox::CheckBox(Composite* parent) : Composite(parent)
 {
+  ZoneScoped;
   static const String className = "CheckBox";
   mDefSet = mDefSet->GetDefinitionSet(className);
 
@@ -119,6 +120,7 @@ Vec2 CheckBox::GetMinSize()
 
 void CheckBox::UpdateTransform()
 {
+  ZoneScoped;
   Vec2 boxSize = CheckBoxUi::CheckSize;
   Vec2 checkSize = mCheckIcon->GetSize();
   Vec3 boxOffset = GetCenterPosition(mSize, boxSize);
@@ -167,6 +169,7 @@ LightningDefineType(TextCheckBox, builder, type)
 
 TextCheckBox::TextCheckBox(Composite* parent) : Composite(parent)
 {
+  ZoneScoped;
   this->SetLayout(CreateRowLayout());
   mCheckBox = new CheckBox(this);
   mText = new Label(this);
