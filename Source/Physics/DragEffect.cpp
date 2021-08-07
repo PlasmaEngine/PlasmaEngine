@@ -31,6 +31,8 @@ void DragEffect::ApplyEffect(RigidBody* obj, real dt)
   if(!GetActive())
     return;
 
+  ZoneScoped;
+
   // Deal with dt being 0 (timescale of 0 for instance)
   real invDt = 0;
   if(dt != 0)

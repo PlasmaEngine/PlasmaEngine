@@ -67,6 +67,8 @@ void CustomPhysicsEffect::ApplyEffect(RigidBody* obj, real dt)
   if(!GetActive())
     return;
 
+  ZoneScoped;
+
   CustomPhysicsEffectEvent toSend;
   toSend.mEffect = this;
   toSend.mRigidBody = obj;
