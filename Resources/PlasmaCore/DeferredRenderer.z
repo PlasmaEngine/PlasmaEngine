@@ -324,6 +324,9 @@ class DeferredRenderer : LightningComponent
 
     AlphaRenderPass.OnAlphaWithPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
     
+        // Toon Rendering  
+    if(this.Owner.PostProcessToon != null)
+      this.Owner.PostProcessToon.OnRenderTasksUpdate(event, lightBuffer, this.GBuffer0, lightBuffer);
     
     // Distance Fog
     if(this.Owner.PostProcessFog != null)
@@ -356,10 +359,6 @@ class DeferredRenderer : LightningComponent
     alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
 
     event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.Water, waterPass, "Water");
-    
-    // Toon Rendering  
-    if(this.Owner.PostProcessToon != null)
-      this.Owner.PostProcessToon.OnRenderTasksUpdate(event, lightBuffer, this.GBuffer0, lightBuffer);
     
     //  Depth of Field.
     if(this.Owner.PostProcessDOF != null)
