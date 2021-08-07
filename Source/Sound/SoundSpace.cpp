@@ -56,6 +56,7 @@ SoundSpace::~SoundSpace()
 
 void SoundSpace::Initialize(CogInitializer& config)
 {
+  ZoneScoped;
   // Are we in editor mode?
   mEditorMode = !GetGameSession() || GetGameSession()->IsEditorMode();
   // Add this space to the system's list
@@ -242,6 +243,7 @@ HandleOf<SoundNode> SoundSpace::GetOutputNode()
 
 void SoundSpace::Update()
 {
+  ZoneScoped;
   // If this sound space should pause when the level is paused, check for
   // handling that
   if (mPauseWithTimeSpace)
