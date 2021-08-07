@@ -51,6 +51,7 @@ AudioFadeObject::AudioFadeObject() :
 void AudioFadeObject::StartFade(
     float startingVolume, unsigned startingIndex, unsigned fadeFrames, SoundAsset* asset, bool crossFade)
 {
+  ZoneScoped;
   mFading = true;
   mFrameIndex = 0;
   mStartFrame = startingIndex;
@@ -67,6 +68,7 @@ void AudioFadeObject::StartFade(
 
 void AudioFadeObject::ApplyFade(float* buffer, unsigned howManyFrames)
 {
+  ZoneScoped;
   if (!mFading)
     return;
 
@@ -123,6 +125,7 @@ void AudioFadeObject::GetMoreSamples()
 
 void MusicNotificationObject::ProcessAndNotify(float currentTime, SoundInstance* instance)
 {
+  ZoneScoped;
   if (mSecondsPerEighth == 0.0f)
     return;
 
@@ -626,6 +629,7 @@ InstanceVolumeModifier* SoundInstance::GetAvailableVolumeModThreaded()
 
 bool SoundInstance::GetOutputForThisMixThreaded(BufferType* outputBuffer, const unsigned numberOfChannels)
 {
+  ZoneScoped;
   // Check if we already processed output for this mix version
   if (mSavedOutputVersionThreaded == PL::gSound->Mixer.mMixVersionThreaded)
   {
@@ -740,6 +744,7 @@ bool SoundInstance::GetOutputSamples(BufferType* outputBuffer,
 
 void SoundInstance::AddSamplesToBufferThreaded(BufferType* buffer, unsigned outputFrames, unsigned outputChannels)
 {
+  ZoneScoped;
   // Check if there are saved samples from last mix
   if (!SavedSamplesThreaded.Empty())
   {
