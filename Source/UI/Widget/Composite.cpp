@@ -80,6 +80,7 @@ void Composite::AttachChildWidget(Widget* child, AttachType::Enum attachType)
 
 void Composite::InternalDetach(Composite* parent, Widget* child)
 {
+  ZoneScoped;
   parent->DebugValidate();
   child->DebugValidate();
   ErrorIf(child->mParent != parent, "Object is not a child of the parent.");
@@ -89,6 +90,7 @@ void Composite::InternalDetach(Composite* parent, Widget* child)
 
 void Composite::InternalAttach(Composite* parent, Widget* child)
 {
+  ZoneScoped;
   parent->DebugValidate();
   child->DebugValidate();
   ErrorIf(child->mDestroyed, "Widget is being destroyed and is now attaching to another widget.");
@@ -109,6 +111,7 @@ void Composite::InternalAttach(Composite* parent, Widget* child)
 
 void Composite::ChangeRoot(RootWidget* newRoot)
 {
+  ZoneScoped;
   DebugValidate();
   newRoot->DebugValidate();
   if (mRootWidget == newRoot)
@@ -126,6 +129,7 @@ void Composite::ChangeRoot(RootWidget* newRoot)
 
 void Composite::DestroyChildren()
 {
+  ZoneScoped;
   DebugValidate();
   Widget* child = mChildren.Begin();
   while (child != mChildren.End())
@@ -139,6 +143,7 @@ void Composite::DestroyChildren()
 
 void Composite::OnDestroy()
 {
+  ZoneScoped;
   DebugValidate();
   DestroyChildren();
   Widget::OnDestroy();
@@ -146,6 +151,7 @@ void Composite::OnDestroy()
 
 void Composite::SetLayout(Layout* layout)
 {
+  ZoneScoped;
   DebugValidate();
   SafeDelete(mLayout);
   mLayout = layout;
@@ -153,6 +159,7 @@ void Composite::SetLayout(Layout* layout)
 
 void Composite::DoLayout()
 {
+  ZoneScoped;
   DebugValidate();
   LayoutArea data;
   data.Size = mSize;
@@ -181,6 +188,7 @@ void Composite::ShiftOntoScreen(Vec3 offset)
 void Composite::RenderUpdate(
     ViewBlock& viewBlock, FrameBlock& frameBlock, Mat4Param parentTx, ColorTransform colorTx, WidgetRect clipRect)
 {
+  ZoneScoped;
   DebugValidate();
   Widget::RenderUpdate(viewBlock, frameBlock, parentTx, colorTx, clipRect);
 
@@ -212,6 +220,7 @@ void Composite::RenderUpdate(
 
 Widget* Composite::HitTest(Vec2 location, Widget* ignore)
 {
+  ZoneScoped;
   DebugValidate();
   // Skip inactive object
   if (InputBlocked())
@@ -243,6 +252,7 @@ Widget* Composite::HitTest(Vec2 location, Widget* ignore)
 
 void Composite::UpdateChildTransforms()
 {
+  ZoneScoped;
   DebugValidate();
   static const size_t MaxIterations = 1000;
   size_t counter = 0;
@@ -263,6 +273,7 @@ void Composite::UpdateChildTransforms()
 
 void Composite::UpdateTransform()
 {
+  ZoneScoped;
   DebugValidate();
   if (mIsUpdatingTransform)
   {
@@ -351,6 +362,7 @@ Vec2 Composite::Measure(LayoutArea& data)
 
 Widget* Find(StringParam name, UiTraversal::Enum traversalType, size_t& index, Widget* parent)
 {
+  ZoneScoped;
   // Get itself as a composite
   Composite* composite = parent->GetSelfAsComposite();
 
@@ -430,6 +442,7 @@ void Composite::SetToolTip(String text)
 
 void Composite::OnHoverToolTip(MouseEvent* e)
 {
+  ZoneScoped;
   if (mShowToolTip)
   {
     ToolTip* toolTip = new ToolTip(this);
