@@ -36,6 +36,7 @@ PhysicsRaycastProvider::PhysicsRaycastProvider()
 
 void PhysicsRaycastProvider::RayCast(Ray& ray, CastInfo& castInfo, RaycastResultList& results)
 {
+  ZoneScoped;
   // If we don't select static or dynamic, there's nothing to do...
   if(!mDynamicColliders && !mStaticColliders)
     return;
@@ -67,6 +68,8 @@ void PhysicsRaycastProvider::RayCast(Ray& ray, CastInfo& castInfo, RaycastResult
 
 void PhysicsRaycastProvider::FrustumCast(Frustum& frustum, CastInfo& castInfo, RaycastResultList& results)
 {
+  ZoneScoped;
+
   // Make sure there is a physics space
   PhysicsSpace* physicsSpace = castInfo.mTargetSpace->has(PhysicsSpace);
   if(physicsSpace == nullptr)

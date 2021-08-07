@@ -32,18 +32,21 @@ void PhysicsNodeManager::CommitChangesProfiled(BroadPhasePackage* package)
 {
   //update transforms
   {
+    ZoneScopedN("Transform Updates");
     ProfileScopeTree("Transform Updates", "Physics", Color::LightPink);
     TransformUpdate();
   }
 
   //update mass terms
   {
+    ZoneScopedN("Mass Recomputation");
     ProfileScopeTree("Mass Recomputation", "Physics", Color::Gainsboro);
     MassUpdate();
   }
 
   //send out the BroadPhase commands
   {
+    ZoneScopedN("Batched Colliders");
     ProfileScopeTree("BatchedColliders", "Physics", Color::Goldenrod);
     BroadPhaseUpdate(package);
   }

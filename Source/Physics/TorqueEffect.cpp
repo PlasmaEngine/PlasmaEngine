@@ -63,6 +63,8 @@ void TorqueEffect::ApplyEffect(RigidBody* obj, real dt)
   if(!GetActive())
     return;
 
+  ZoneScoped;
+
   Vec3 torque = mWorldTorqueAxis * mTorqueStrength;
   obj->ApplyTorqueNoWakeUp(torque);
 }

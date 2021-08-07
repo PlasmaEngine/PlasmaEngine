@@ -66,6 +66,8 @@ void WindEffect::ApplyEffect(SpringSystem* obj, real dt)
   if(!GetActive())
     return;
 
+  ZoneScoped;
+
   // Wind force is based upon v^2
   Vec3 windDir = mWorldWindDirection;
   real windSpeed = mWorldWindDirection.AttemptNormalize();
@@ -97,6 +99,8 @@ void WindEffect::ApplyEffect(SpringSystem* obj, real dt)
 
 void WindEffect::ApplyEffect(Collider& collider, RigidBody* obj, real dt)
 {
+  ZoneScoped;
+
   Vec3 scale = collider.GetWorldScale();
   Mat3 rot = collider.GetWorldRotation();
 
