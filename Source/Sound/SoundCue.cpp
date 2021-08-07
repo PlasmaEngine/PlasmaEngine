@@ -551,6 +551,7 @@ void SoundCue::StopPreview()
 
 HandleOf<SoundInstance> SoundCue::PlayCue(SoundSpace* space, HandleOf<SoundNode> outputNode, bool startPaused)
 {
+  ZoneScoped;
   // No sounds to choose from
   if (Sounds.Empty())
   {
