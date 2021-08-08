@@ -55,7 +55,7 @@ AudioMixer::AudioMixer() :
 
 OsInt StartMix(void* mixer)
 {
-  tracy::SetThreadName("WorkerThread");
+  tracy::SetThreadName("Mixer Thread");
   ((AudioMixer*)mixer)->MixLoopThreaded();
   return 0;
 }

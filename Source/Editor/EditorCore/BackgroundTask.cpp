@@ -105,6 +105,7 @@ BackgroundTask::~BackgroundTask()
 
 void BackgroundTask::Execute()
 {
+  ZoneScoped;
   // Because sometimes people connect to the background task right after this
   // call we don't want to start the job yet. This would be better fixed by
   // letting the outside callers add the job themselves, however for now this

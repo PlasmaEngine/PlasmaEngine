@@ -795,6 +795,7 @@ class FilterJob : public Job
 public:
   void Execute() override
   {
+    ZoneScoped;
     uint width = (*mMipHeaders)[mTargetIndex].mWidth;
     float alpha = mRoughness * mRoughness;
 

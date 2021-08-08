@@ -827,6 +827,7 @@ public:
 
     void Execute() override
     {
+        ZoneScoped;
         Status status;
         ResourcePackage* package = new ResourcePackage();
         PL::gContentSystem->BuildLibrary(status, library, *package);

@@ -933,7 +933,7 @@ namespace Plasma
 
     void StreamedVertexBuffer::FlushBuffer(bool deactivate)
     {
-        TracyGpuZone("DrawStreamed");
+        TracyGpuZone("FlushBuffers");
         if (mCurrentBufferOffset > 0)
         {
             if (mPrimitiveType == PrimitiveType::Triangles)
@@ -1724,6 +1724,7 @@ namespace Plasma
         plGlSetSwapInterval(this, 0);
 
         plGlSwapBuffers(this);
+        TracyGpuCollect;
 
         int swapInterval = mVsync ? 1 : 0;
         plGlSetSwapInterval(this, swapInterval);
@@ -1756,6 +1757,7 @@ namespace Plasma
           ZoneScopedN("SwapBuffers");
      	  TracyGpuZone("SwapBuffer")
 	      plGlSwapBuffers(this);
+          TracyGpuCollect;
 		}
 
     	{
@@ -1956,6 +1958,7 @@ namespace Plasma
     	
         {
 			ZoneScopedN("ExecuteRenderJob");
+            TracyGpuZone("PostProcess");
 			ZoneText(task->mDisplayName.c_str(), sizeof(task->mDisplayName));
             ProfileScopeTree(task->mDisplayName, "Plasma::ExecuteRendererJob", Color::Cyan)
 
@@ -1972,6 +1975,7 @@ namespace Plasma
 	        mNextTextureSlot = 0;
 	        SetShaderParameters(resourceId, task->mShaderInputsId, mNextTextureSlot);
 	        SetShaderParameters(cGlobalShaderInputsId, task->mShaderInputsId, mNextTextureSlot);
+
 
 	        // draw fullscreen triangle
 	        glBindVertexArray(mTriangleArray);

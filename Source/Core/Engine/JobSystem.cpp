@@ -22,6 +22,7 @@ void Job::Execute()
 
 void Job::ExecuteAsyncBegin()
 {
+  ZoneScoped;
   Execute();
   ExecuteAsyncEnd();
 }
