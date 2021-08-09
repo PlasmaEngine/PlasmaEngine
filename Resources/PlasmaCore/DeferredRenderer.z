@@ -324,6 +324,19 @@ class DeferredRenderer : LightningComponent
 
     AlphaRenderPass.OnAlphaWithPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
     
+    var refraction = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
+    
+    event.AddRenderTaskClearTarget(refraction, Real4.Zero);
+    
+    var refractSettings = RenderSettings();
+    refractSettings.ColorTarget = refraction;
+    refractSettings.DepthTarget = this.Depth;
+    refractSettings.DepthSettings.DepthMode = DepthMode.Read;
+    refractSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
+    
+    event.AddRenderTaskRenderPass(refractSettings, RenderGroup.Refractive, RefractivePass(), "RefractivePass");
+  
+    
         // Toon Rendering  
     if(this.Owner.PostProcessToon != null)
       this.Owner.PostProcessToon.OnRenderTasksUpdate(event, lightBuffer, this.GBuffer0, lightBuffer);
@@ -359,6 +372,11 @@ class DeferredRenderer : LightningComponent
     alphaSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
 
     event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.Water, waterPass, "Water");
+    
+        var postRefract = PostApplyRefractive();
+    postRefract.SceneColor = lightBuffer.Texture;
+    postRefract.Refraction = refraction.Texture;
+    event.AddRenderTaskPostProcess(lightBuffer, postRefract, "Refraction");
     
     //  Depth of Field.
     if(this.Owner.PostProcessDOF != null)
