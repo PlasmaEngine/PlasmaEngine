@@ -1,0 +1,55 @@
+[Pixel]
+struct Refractive
+{
+    [Input] var Uv : Real2;
+    [Input] var Texture : SampledImage2d;
+    [Input] var RefractiveScalar : Real = 1.0;
+    [Input] var Scroll : Real = 0.0;
+    [Input] var UvScalar : Real = 1.0;
+    [Input] var FrameTime : Real;
+    [Output] var Refractive : Real2;
+    
+    function Main()
+    {
+      var sample = this.Texture.Sample(this.Uv * this.UvScalar + Real2(0, this.Scroll * this.FrameTime)).XY;
+      var sample2 = this.Texture.Sample(this.Uv * this.UvScalar + Real2(-this.Scroll * this.FrameTime)).XY;
+      sample = (sample + sample2) * 0.5;
+      sample -= Real2(0.5);
+      sample *= 2.0;
+      this.Refractive = sample * this.RefractiveScalar * 0.1;
+    }
+}
+
+[Pixel][RenderPass]
+struct RefractivePass
+{
+  [Input] var Refractive : Real2 = Real2.Zero;
+
+  [Output] var Target0 : Real4;
+
+  function Main()
+  {
+    this.Target0 = Real4(this.Refractive.X, this.Refractive.Y, 0, 1);
+  }
+}
+
+
+[Pixel][PostProcess]
+struct PostApplyRefractive
+{
+  [Input] var SceneColor : SampledImage2d;
+  [Input] var Refraction : SampledImage2d;
+  [Input] var Uv : Real2;
+  [Output] var Target0 : Real4;
+  
+  function Main()
+  {
+    var refractAmount = this.Refraction.Sample(this.Uv).XY;
+    var refractiveScalar = Math.Length(refractAmount);
+    this.Target0 = this.SceneColor.Sample(this.Uv + refractAmount);
+   // if(refractiveScalar > 0.0)
+     // this.Target0 *= Real4(1,0,0,1);
+     
+     //this.Target0 = Real4(refractAmount,0,0);
+  }
+}
