@@ -179,11 +179,12 @@ struct FullscreenTriangle
 [Pixel][RenderPass]
 struct ColorOutput
 {
-  [Input] var Color : Real4 = Real4(0.0);
+  [Input] var Albedo : Real3 = Real3(0.0);
+  [Input] var Alpha : Real = 0.0;
   [Output] var Target0 : Real4;
   function Main()
   {
-    this.Target0 = this.Color;
+    this.Target0 = Real4(this.Albedo, this.Alpha);
   }
 }
 

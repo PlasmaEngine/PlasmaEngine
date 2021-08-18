@@ -6,8 +6,13 @@ Material
 		"5961eaa40f1649f6:ZSort"
 		"612904579a5ab10e:Unlit"
 	}
-	SpriteSourceColor 
+	AlbedoValue 
 	{
-		var SpriteSource = "null"
+		var AlbedoValue = Real4{0.99000001, 0, 0, 1}
+		var GammaCorrect = true
+	}
+	AlphaValue 
+	{
+		var AlphaValue = 0.844450831
 	}
 }

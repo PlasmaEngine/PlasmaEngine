@@ -1,0 +1,12 @@
+[Version:1]
+Material 
+{
+	var RenderGroups = Array
+	{
+		"612904579a5ab10e:Unlit"
+	}
+	SpriteSourceColor 
+	{
+		var SpriteSource = "null"
+	}
+}

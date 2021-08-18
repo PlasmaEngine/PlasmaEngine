@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "UIMaterial"
+		var ResourceId = 0x613389523a13dd05
+		var LoaderType = "Material"
+		var Version = 0
+	}
+}

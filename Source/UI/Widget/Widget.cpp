@@ -734,7 +734,11 @@ ViewNode& Widget::AddRenderNodes(ViewBlock& viewBlock, FrameBlock& frameBlock, W
   if (texture->mType == TextureType::TextureCube)
     spriteMaterial = MaterialManager::FindOrNull("TextureCubePreview");
   else
-    spriteMaterial = MaterialManager::FindOrNull("AlphaSprite");
+    spriteMaterial = MaterialManager::FindOrNull("UIMaterial");
+
+  // Fallback to the older material setup
+  if (spriteMaterial == nullptr)
+      spriteMaterial = MaterialManager::FindOrNull("AlphaSprite");
 
   frameNode.mMeshRenderData = nullptr;
   frameNode.mMaterialRenderData = spriteMaterial->mRenderData;
