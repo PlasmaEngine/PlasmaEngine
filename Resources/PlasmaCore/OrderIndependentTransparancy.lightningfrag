@@ -1,29 +1,120 @@
 [Pixel][RenderPass]
 struct WeighPass
 {
-  [Input] var Albedo : Real3;
+  
+  [AppBuiltInInput] var ViewToWorld : Real4x4;
+  [AppBuiltInInput] var WorldToView : Real4x4;
+  [Input] var ViewNormal : Real3 = Real3(0.0, 0.0, 1.0);
+  
+  
+  [AppBuiltInInput] var ViewportSize : Real2;
+  
+  [Input] var Albedo : Real3 = Real3(1.0, 0.0, 0.0);
+  [Input] var Metallic : Real = 0.0;
+  [Input] var Roughness : Real = 1.0;
+  [Input] var Specular : Real = 0.5;
+  [Input] var Emissive : Real3 = Real3(0.0, 0.0, 0.0);
+  [Input] var SpecularColor : Real3 = Real3(0.0, 0.0, 0.0);
+  
   [Input] var Alpha : Real = 0.5;
   [Input] var DepthRangeSetting : Real = 200.0;
   [StageInput] var PerspectivePosition : Real4;
   [FragmentInput][StageInput] var ViewPosition : Real3;
   [Input] var DitherTexture : SampledImage2d;
+  
+  [Input] var EnvironmentBrdfLut : SampledImage2d;
+  [Input] var Skybox : SampledImageCube;
+  [Input] var IndirectIntensity : Real = 1.0;
+  [Input] var RenderDiffuse : Boolean = true;
+  [Input] var RenderSpecular : Boolean = true;
+  
+  [Input] var DirectLightColor : Real3 = Real3(1.0);
+  [Input] var DirectLightDirection : Real3 = Real3(0.0, -1.0, 0.0);
+  [Input] var DirectLightIntensity : Real = 1.0;
+  [Input] var LightTemperature : Real = 6500.0;
+  
+  [Input] var LightTransform : Real4x4;
+  [Input] var ShadowBuffer : SampledDepthImage2d;
+  [Input] var NormalOffsetBias : Real = 0.1;
 
   [Output] var Target0 : Real4;
   [Output] var Target1 : Real4;
 
   function Main()
   {
+    
+    this.DirectLightIntensity /= 1000;
+    
+    var viewDirection = Math.Normalize(-this.ViewPosition);
+    
     //// Get the viewspace depth of the current pixel.
     var depth = Math.Abs(this.ViewPosition.Z);
     
-    //// Color values are between 0-1.
-    var color = Real4(this.Albedo.X, this.Albedo.Y, this.Albedo.Z, this.Alpha);
     
+    var screenUv = Utility.NdcToScreenUv(this.PerspectivePosition.XY / this.PerspectivePosition.W);
+  
+    
+        // Indirect lighting
+    var indirectInputs = ImageBasedLightingInputs();
+    indirectInputs.WorldNormal = Math.MultiplyNormal(this.ViewToWorld, -this.ViewNormal);
+    indirectInputs.WorldViewDirection = Math.MultiplyNormal(this.ViewToWorld, viewDirection);
+    indirectInputs.Albedo = this.Albedo;
+    indirectInputs.Metallic = this.Metallic;
+    indirectInputs.Roughness = this.Roughness;
+    indirectInputs.Specular = this.Specular;
+    indirectInputs.SpecularColor = this.SpecularColor;
+    indirectInputs.RenderDiffuse = this.RenderDiffuse;
+    indirectInputs.RenderSpecular = this.RenderSpecular;
+    indirectInputs.Intensity = this.IndirectIntensity;
+    
+    var indirectColor = ImageBasedLighting.Compute(indirectInputs, &this.Skybox, &this.EnvironmentBrdfLut);
+    
+     // Direct lighting
+    var directInputs = DirectLightingInputs();
+    directInputs.ViewNormal = this.ViewNormal;
+    directInputs.ViewDirection = viewDirection;
+    directInputs.LightDirection = Math.Normalize(-Math.MultiplyNormal(this.WorldToView, this.DirectLightDirection));
+    directInputs.LightColor = this.DirectLightColor * (Utility.KelvinToRGB(this.LightTemperature) /100);
+    directInputs.LightRadius = 0;
+    directInputs.LightDistance = 1;
+    directInputs.SpecularMultiplier = 1;
+    directInputs.Albedo = this.Albedo;
+    directInputs.Metallic = this.Metallic;
+    directInputs.Roughness = this.Roughness;
+    directInputs.Specular = this.Specular;
+    directInputs.RenderDiffuse = this.RenderDiffuse;
+    directInputs.RenderSpecular = this.RenderSpecular;
+    
+    var directColor = DirectLighting.Compute(directInputs);
+    
+    indirectColor = Utility.ApplyDither(indirectColor, &this.DitherTexture, screenUv, this.ViewportSize);
+    directColor = Utility.ApplyDither(directColor, &this.DitherTexture, screenUv, this.ViewportSize);
+    
+    var metallicIndirectColor = indirectColor * this.Albedo * this.Metallic;
+    indirectColor = Math.Lerp(indirectColor, metallicIndirectColor, this.Metallic);
+    
+    indirectColor *= this.IndirectIntensity;
+    directColor *= this.DirectLightIntensity ;
+    
+        // Shadows
+    var viewPosition = this.ViewPosition + this.ViewNormal * this.NormalOffsetBias;
+    var worldPosition = Math.MultiplyPoint(this.ViewToWorld, viewPosition);
+    var shadowPosition = Math.Multiply(this.LightTransform, Real4(worldPosition, 1.0));
+    
+    var uv = Utility.NdcToScreenUv(shadowPosition.XYZ / shadowPosition.W);
+    
+    var shadowFactor = ShadowMapping.ComputePcf5x5(uv, &this.ShadowBuffer);
+    directColor *= shadowFactor;
+    
+    var finalMaterial  = Math.Saturate(indirectColor) + Math.Saturate(directColor); 
     // Increase if distant transparencies are blending together too much.
     // This is something that depends on the viewspace depth units and can be tweaked 
     // for better results.
     var depthRangeSetting = Math.Clamp(this.DepthRangeSetting, 100.0, 300.0);
     var depthStrengthSetting = 6.0;
+    
+      //// Color values are between 0-1.
+    var color = Real4(finalMaterial.X, finalMaterial.Y, finalMaterial.Z, this.Alpha);
     
     // Calculate the actual weight, this is part of the accum texture computation.
     // Clamp((Range Adjustment)/(NoZeroDiv + DepthScale), Min(Underflow16f), Max(Overflow16f));
@@ -31,6 +122,10 @@ struct WeighPass
     // Scale the weight by maximum coverage.
     var maxColorTimesAlpha = Math.Min(1.0, Math.Max(Math.Max(color.X, color.Y), color.Z) * color.W);
     w *= Math.Max(maxColorTimesAlpha, color.W);
+    
+    //color = Real4(indirectColor, 1.0);
+    
+    
     
     // Scale the accum texure result by the above computed weight.
     this.Target0 = Real4(color.XYZ  * color.W, color.W) ;
