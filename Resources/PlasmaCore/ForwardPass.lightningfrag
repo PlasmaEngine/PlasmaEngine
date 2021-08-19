@@ -119,6 +119,10 @@ struct ForwardPassAlpha
   [Input] var DirectLightDirection : Real3 = Real3(0.0, -1.0, 0.0);
   [Input] var DirectLightIntensity : Real = 1.0;
 
+    [Input] var LightTransform : Real4x4;
+  [Input] var ShadowBuffer : SampledDepthImage2d;
+  [Input] var NormalOffsetBias : Real = 0.1;
+  
   
   [Input] var LightTemperature : Real = 6500.0;
   
@@ -189,6 +193,15 @@ struct ForwardPassAlpha
     indirectColor *= this.IndirectIntensity;
     directColor *= this.DirectLightIntensity ;
     
+        var viewPosition = this.ViewPosition + this.ViewNormal * this.NormalOffsetBias;
+    var worldPosition = Math.MultiplyPoint(this.ViewToWorld, viewPosition);
+    var shadowPosition = Math.Multiply(this.LightTransform, Real4(worldPosition, 1.0));
+    
+    var uv = Utility.NdcToScreenUv(shadowPosition.XYZ / shadowPosition.W);
+    
+    var shadowFactor = ShadowMapping.ComputePcf5x5(uv, &this.ShadowBuffer);
+    directColor *= shadowFactor;
+    
     this.Target0 = Real4(Math.Saturate(indirectColor) + Math.Saturate(directColor), this.Alpha);
   }
 }
@@ -210,6 +223,7 @@ struct ForwardPassShadows
   [Input] var Metallic : Real = 0.0;
   [Input] var Roughness : Real = 1.0;
   [Input] var Specular : Real = 0.5;
+  [Input] var SpecularColor : Real3 = Real3(0.0, 0.0, 0.0);
   
   [Input] var DitherTexture : SampledImage2d;
   [Input] var EnvironmentBrdfLut : SampledImage2d;
@@ -245,8 +259,10 @@ struct ForwardPassShadows
     indirectInputs.Metallic = this.Metallic;
     indirectInputs.Roughness = this.Roughness;
     indirectInputs.Specular = this.Specular;
+    indirectInputs.SpecularColor = this.SpecularColor;
     indirectInputs.RenderDiffuse = this.RenderDiffuse;
     indirectInputs.RenderSpecular = this.RenderSpecular;
+    indirectInputs.Intensity = this.IndirectIntensity;
     
     var indirectColor = ImageBasedLighting.Compute(indirectInputs, &this.Skybox, &this.EnvironmentBrdfLut);
     
@@ -269,7 +285,7 @@ struct ForwardPassShadows
     
     // Remove color banding
     indirectColor = Utility.ApplyDither(indirectColor, &this.DitherTexture, screenUv, this.ViewportSize);
-   // directColor = Utility.ApplyDither(directColor, &this.DitherTexture, screenUv, this.ViewportSize);
+    // directColor = Utility.ApplyDither(directColor, &this.DitherTexture, screenUv, this.ViewportSize);
     
     indirectColor *= this.IndirectIntensity;
     directColor *= this.DirectLightIntensity /10;
