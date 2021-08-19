@@ -64,7 +64,7 @@ class AlphaRenderPass : LightningComponent
   }
   
   [Static]
-  function OnOIT(event: RenderTasksEvent, depthRange : Real, depth : RenderTarget, lightBuffer : RenderTarget)
+  function OnOIT(event: RenderTasksEvent, depthRange : Real, depth : RenderTarget, lightBuffer : RenderTarget, skybox : Texture, alphaForwardSettings : AlphaForwardSettings, lightCog : Cog)
   {
     
     // Buffers for OIT.
@@ -74,6 +74,29 @@ class AlphaRenderPass : LightningComponent
     var wPSetting = RenderSettings();
     var weighPass = WeighPass();
     weighPass.DepthRangeSetting = depthRange;
+    
+    weighPass.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
+    weighPass.DitherTexture = Texture.BlueNoise;
+    weighPass.Skybox = skybox;
+    weighPass.IndirectIntensity = alphaForwardSettings.IndirectIntensity;
+    weighPass.RenderDiffuse = alphaForwardSettings.RenderDiffuse;
+    weighPass.RenderSpecular = alphaForwardSettings.RenderSpec;
+    
+        var light = lightCog;
+    if (light != null && light.DirectionalLight != null)
+    {
+       
+      weighPass.DirectLightColor = light.DirectionalLight.LightColor.XYZ;
+      weighPass.DirectLightDirection = light.DirectionalLight.LightDirection;
+      weighPass.DirectLightIntensity = light.DirectionalLight.LightIntensity;
+      weighPass.LightTemperature = light.DirectionalLight.LightTemperature;
+      
+      
+      weighPass.LightTransform = light.ShadowRenderer.LightTransform;
+      weighPass.ShadowBuffer = light.ShadowRenderer.ShadowBuffer;
+      weighPass.NormalOffsetBias = light.ShadowRenderer.NormalOffsetBias;
+    }
+      
     
     // Set both the rendertargets.
     wPSetting.MultiRenderTarget.ColorTarget0 = accumulation;

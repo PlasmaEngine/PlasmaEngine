@@ -190,7 +190,7 @@ class ForwardRenderer : LightningComponent
     AlphaRenderPass.OnAlphaNoPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
     
     // Order Independent Transparancy
-    AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, depthTarget, colorTarget);
+    AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, depthTarget, colorTarget, this.Skybox, alphaForwardSettigns, this.DirectionalLight.Cog);
     
         var camera = event.CameraViewportCog.Camera;
     
