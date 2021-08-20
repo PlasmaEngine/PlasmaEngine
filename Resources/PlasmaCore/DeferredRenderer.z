@@ -345,6 +345,8 @@ class DeferredRenderer : LightningComponent
     if(this.Owner.PostProcessFog != null)
       this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer0, this.GBuffer1, lightBuffer);
     
+        // Order Independent Transparancy
+    AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, this.Depth, lightBuffer, this.Skybox, alphaForwardSettigns, this.DirectionalLight.Cog);
     
     // Water
     var waterPass = WaterPass();
@@ -378,6 +380,38 @@ class DeferredRenderer : LightningComponent
     postRefract.Refraction = refraction.Texture;
     event.AddRenderTaskPostProcess(lightBuffer, postRefract, "Refraction");
     
+    
+    var forwardSettings = RenderSettings();
+    forwardSettings.ColorTarget = lightBuffer;
+    forwardSettings.DepthTarget = this.Depth;
+    forwardSettings.CullMode = CullMode.BackFace;
+    forwardSettings.DepthSettings.DepthMode = DepthMode.Read;
+    forwardSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.Always;
+    
+    var drawLast = ForwardPassShadows();
+    drawLast.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
+    drawLast.DitherTexture = Texture.BlueNoise;
+    drawLast.Skybox = this.Skybox;
+    drawLast.IndirectIntensity = this.IndirectIntensity;
+    drawLast.RenderDiffuse = this.RenderDiffuse;
+    drawLast.RenderSpecular = this.RenderSpecular;
+    
+    if (light != null && light.DirectionalLight != null)
+    {
+      drawLast.DirectLightColor = light.DirectionalLight.LightColor.XYZ;
+      drawLast.DirectLightDirection = light.DirectionalLight.LightDirection;
+      drawLast.DirectLightIntensity = light.DirectionalLight.LightIntensity;
+      
+      drawLast.LightTransform = light.ShadowRenderer.LightTransform;
+      drawLast.ShadowBuffer = light.ShadowRenderer.ShadowBuffer;
+      drawLast.NormalOffsetBias = light.ShadowRenderer.NormalOffsetBias;
+    }
+  
+    drawLast.DirectLightIntensity *= this.DirectLighting as Real;
+    drawLast.IndirectIntensity *= this.IndirectLighting as Real;
+    
+    event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.DrawLast, drawLast, "DrawLast");
+    
     //  Depth of Field.
     if(this.Owner.PostProcessDOF != null)
       this.Owner.PostProcessDOF.OnRenderTasksUpdate(event, this.GBuffer0, lightBuffer);   
@@ -399,8 +433,7 @@ class DeferredRenderer : LightningComponent
     // Alpha No PostFX
     AlphaRenderPass.OnAlphaNoPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
     
-    // Order Independent Transparancy
-    AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, this.Depth, lightBuffer, this.Skybox, alphaForwardSettigns, this.DirectionalLight.Cog);
+
     
     
     var camera = event.CameraViewportCog.Camera;

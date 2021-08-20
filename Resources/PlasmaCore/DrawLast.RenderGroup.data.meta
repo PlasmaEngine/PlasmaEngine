@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "DrawLast"
+		var ResourceId = 0x6131ae97c7d3cb77
+		var LoaderType = "RenderGroup"
+		var Version = 0
+	}
+}
