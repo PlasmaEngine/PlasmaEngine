@@ -68,8 +68,8 @@ class AlphaRenderPass : LightningComponent
   {
     
     // Buffers for OIT.
-    var accumulation = event.GetRenderTarget(event.ViewportSize, TextureFormat.RGBA16f);
-    var revealage = event.GetRenderTarget(event.ViewportSize, TextureFormat.RGBA16f);
+    var accumulation = event.GetRenderTarget(lightBuffer.Texture.Size, TextureFormat.RGBA16f);
+    var revealage = event.GetRenderTarget(lightBuffer.Texture.Size, TextureFormat.RGBA16f);
     
     var wPSetting = RenderSettings();
     var weighPass = WeighPass();
@@ -122,7 +122,7 @@ class AlphaRenderPass : LightningComponent
     wPSetting.DepthTarget = depth;
     
     // No culling transparent objects.
-    wPSetting.CullMode = CullMode.Disabled;
+    wPSetting.CullMode = CullMode.BackFace;
     
     // Clear the render targets.
     event.AddRenderTaskClearTarget(accumulation, Real4(0.0));
