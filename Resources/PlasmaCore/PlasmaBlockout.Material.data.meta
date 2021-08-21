@@ -15,4 +15,12 @@ DataContent
 			"Material"
 		}
 	}
+	ResourceTemplate 
+	{
+		var DisplayName = ""
+		var Description = "Useful for visualizing level blockouts"
+		var SortWeight = 10
+		var Category = "Opaque"
+		var CategorySortWeight = 99
+	}
 }

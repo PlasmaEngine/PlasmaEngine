@@ -1,0 +1,56 @@
+[Version:1]
+Material 
+{
+	var RenderGroups = Array
+	{
+		"60cd4568b487baa6:Water"
+		"5961eaa40f1649f6:ZSort"
+		"613f0544f91ac215:Refractive"
+	}
+	WaterVertex 
+	{
+		var Steepness = 0.200000003
+		var WaveADirection = Real2{-16.1954556, 20}
+		var WaveASpeed = 1.70000005
+		var WaveAWaveLength = 12.1000004
+		var WaveBDirection = Real2{-39.9764595, 20}
+		var WaveBSpeed = 10.1000004
+		var WaveBWaveLength = 10.6000004
+		var WaveCDirection = Real2{-10.6463184, 20}
+		var WaveCSpeed = 14
+		var WaveCWaveLength = 6.70000029
+	}
+	WaterSurface 
+	{
+		var MainColor = Real4{0.0590000004, 0.263000011, 0.451000005, 1}
+		var SecondColor = Real4{0.00800000038, 0.0780000016, 0.165000007, 1}
+		var DeepColorStrength = 1
+		var FogColor = Real4{0.00800000038, 0.0350000001, 0.0710000023, 1}
+		var FogDensity = 500
+		var ShallowAlphaValue = 0.688489974
+		var ShallowAlphaStrength = 2
+		var PrimaryNormalMap = "60cc1856ab1a5d74:WaterNormals"
+		var PrimarySpeed = Real2{0.200000003, 0.200000003}
+		var PrimaryBumpiness = 2
+		var PrimaryFlipRed = false
+		var PrimaryFlipGreen = false
+		var SecondaryNormalMap = "60cd4ad905fdc92f:WaterNormalTest"
+		var SecondarySpeed = Real2{0.200000003, 0.200000003}
+		var SecondaryBumpiness = 2
+		var SecondaryFlipRed = false
+		var SecondaryFlipGreen = false
+	}
+	RoughnessValue 
+	{
+		var RoughnessValue = 0.525857985
+	}
+	Refractive 
+	{
+		var Uv = Real2{0, 0}
+		var Texture = "60cc1856ab1a5d74:WaterNormals"
+		var RefractiveScalar = 1
+		var Scroll = 0
+		var UvScalar = 1
+		var FrameTime = 0
+	}
+}
