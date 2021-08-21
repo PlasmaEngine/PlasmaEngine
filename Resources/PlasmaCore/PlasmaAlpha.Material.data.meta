@@ -8,4 +8,16 @@ DataContent
 		var LoaderType = "Material"
 		var Version = 0
 	}
+	ContentEditorOptions 
+	{
+		var ShowInEditor = true
+	}
+	ResourceTemplate 
+	{
+		var DisplayName = ""
+		var Description = "Alpha Material"
+		var SortWeight = 10
+		var Category = "Alpha"
+		var CategorySortWeight = 100
+	}
 }
