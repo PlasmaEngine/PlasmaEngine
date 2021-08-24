@@ -109,13 +109,13 @@ cstr GetWindowsExceptionCode(int exceptionCode)
   case STATUS_FLOAT_INVALID_OPERATION:
     return "Float Invalid Operation";
   case STATUS_FLOAT_DIVIDE_BY_ZERO:
-    return "Float Divide by Plasma";
+    return "Float Divide by Zero";
   case STATUS_FLOAT_OVERFLOW:
     return "Float Overflow";
   case STATUS_FLOAT_MULTIPLE_TRAPS:
     return "Float Multiple Traps (sse float exception)";
   case STATUS_INTEGER_DIVIDE_BY_ZERO:
-    return "Integer Division by Plasma";
+    return "Integer Division by Zero";
   case STATUS_ACCESS_VIOLATION:
     return "Access Violation";
   case STATUS_STACK_OVERFLOW:
