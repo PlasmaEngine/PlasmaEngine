@@ -56,7 +56,7 @@ namespace Plasma
 		SerializeNameDefault(mSize, 20.0f);
 		SerializeNameDefault(mAperture, 16.0f);
 		SerializeNameDefault(mFocalDistance, 22.0f);
-		SerializeNameDefault(mShutterSpeed, 100.0f);
+		SerializeNameDefault(mShutterSpeed, 250.0f);
 		SerializeNameDefault(mISO, 100.0f);
 	}
 
