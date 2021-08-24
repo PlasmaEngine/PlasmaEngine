@@ -16,6 +16,9 @@ private:
   void UserInitialize() override;
   void UserStartup() override;
   void UserCreation() override;
+
+private:
+    UniquePointer<FileListener> mFileListener;
 };
 
 } // namespace Plasma

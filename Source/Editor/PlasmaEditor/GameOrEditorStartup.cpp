@@ -17,6 +17,19 @@ void GameOrEditorStartup::UserInitializeConfig(Cog* configCog)
 
 void GameOrEditorStartup::UserInitialize()
 {
+  mFileListener = new FileListener();
+  
+  CrashHandler::Enable();
+
+  CrashHandler::SetPreMemoryDumpCallback(Plasma::CrashPreMemoryDumpCallback,
+      NULL);
+  CrashHandler::SetCustomMemoryCallback(Plasma::CrashCustomMemoryCallback,
+      NULL); CrashHandler::SetLoggingCallback(Plasma::CrashLoggingCallback,
+      mFileListener);
+  CrashHandler::SetSendCrashReportCallback(Plasma::SendCrashReport, NULL);
+  CrashHandler::SetCrashStartCallback(Plasma::CrashStartCallback, NULL);
+
+
   String projectFile = Environment::GetValue<String>("file");
   bool playGame = Environment::GetValue<bool>("play", false);
   String newProject = Environment::GetValue<String>("newProject");
