@@ -24,6 +24,7 @@ public:
 
   void Execute()
   {
+    ZoneScoped;
     SendBlockingTaskStart("Archiving");
 
     ProjectSettings* project = mProject->has(ProjectSettings);
