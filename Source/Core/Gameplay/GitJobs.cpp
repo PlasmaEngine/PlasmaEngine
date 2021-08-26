@@ -11,6 +11,7 @@ void GitCloneJob::OnCloneComplete(void* userData)
 
 void GitCloneJob::ExecuteAsyncBegin()
 {
+  ZoneScoped;
   Git::GetInstance()->Clone(mUrl, mDirectory, &OnCloneComplete, this);
 }
 

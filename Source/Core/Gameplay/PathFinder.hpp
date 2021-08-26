@@ -335,6 +335,7 @@ public:
   // Job Interface
   void Execute() override
   {
+    ZoneScoped;
     Timer timer;
 
     PathFinderEvent<NodeKey>* toSend = new PathFinderEvent<NodeKey>();

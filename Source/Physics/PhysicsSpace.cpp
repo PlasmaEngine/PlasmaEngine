@@ -692,6 +692,7 @@ void PhysicsSpace::IterateTimestep(real dt)
   UpdateKinematicState();
 
   {
+    ZoneScoped;
     ProfileScopeTree("Position Integration", "Iteration", Color::Goldenrod);
     IntegrateBodiesPosition(dt);
   }
