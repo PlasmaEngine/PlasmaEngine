@@ -268,6 +268,7 @@ AddLibraryUI::AddLibraryUI(Composite* parent, LibraryView* libraryView): Composi
   mLibraryPath = new TextBox(pathRow);
   mLibraryPath->SetEditable(true);
   mLibraryPath->SetSizing(SizeAxis::X,SizePolicy::Flex, Pixels(200));
+  mLibraryPath->SetInteractive(false);
   
   TextButton* pathSelectButton = new TextButton(pathRow);
   pathSelectButton->SetText("...");
@@ -278,32 +279,21 @@ AddLibraryUI::AddLibraryUI(Composite* parent, LibraryView* libraryView): Composi
 
   buttonBar->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
   {
-    TextButton* createButton = new  TextButton(buttonBar);
-    createButton->SetText("Create");
-    createButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
-    
-    ConnectThisTo(createButton, Events::ButtonPressed, OnCreate);
-    
-    Composite* space = new Composite(buttonBar);
-    space->SetSizing(SizeAxis::X, SizePolicy::Flex, 1);
-
     TextButton* cancelButton = new  TextButton(buttonBar);
     cancelButton->SetText("Cancel");
     cancelButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
     ConnectThisTo(cancelButton, Events::ButtonPressed, OnCancel);
+        
+    Composite* space = new Composite(buttonBar);
+    space->SetSizing(SizeAxis::X, SizePolicy::Flex, 1);
+
+    TextButton* createButton = new  TextButton(buttonBar);
+    createButton->SetText("Create");
+    createButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
+    ConnectThisTo(createButton, Events::ButtonPressed, OnCreate);
   }
   
-  Cog* projectCog = PL::gEditor->mProject;
-  
-  if(projectCog != nullptr)
-  {
-    ProjectSettings* projectSettings = projectCog->has(ProjectSettings);
-    
-    if(projectSettings != nullptr)
-    {
-      mLibraryPath->SetText(FilePath::Combine(projectSettings->ProjectFolder, mNewLibraryName->GetText()));
-    }
-  }
+  mLibraryPath->SetText(mNewLibraryName->GetText());
 }
 
 AddLibraryUI::~AddLibraryUI()
@@ -314,7 +304,7 @@ void AddLibraryUI::OnCreate(Event* e)
 {
   if(!mCanCreateLibrary)
   {
-    DoNotify("Error", "Library with that name already exists", "Warning");
+    DoNotify("Error", "Library with that name already exists, or name/path is invalid.", "Warning");
     return;
   }
   Status s;
@@ -410,9 +400,11 @@ void AddLibraryUI::OnFolderSelected(OsFileSelection* e)
       forRange (String library, projectSettings->ExtraLibraries.All())
       {
         String name = mNewLibraryName->GetText().ToLower();
-        if(name.CompareTo(library.ToLower()))
+
+        if(name == library)
         {
           valid = false;
+          break;
         }
       }
     }

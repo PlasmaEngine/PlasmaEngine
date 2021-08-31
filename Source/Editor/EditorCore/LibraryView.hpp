@@ -66,7 +66,7 @@ namespace Plasma
     TextBox* mLibraryPath;
     LibraryView* mLibraryView;
 
-    bool mCanCreateLibrary = true;
+    bool mCanCreateLibrary = false;
   };
   
 class LibraryView : public Composite
