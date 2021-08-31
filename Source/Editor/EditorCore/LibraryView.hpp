@@ -77,7 +77,7 @@ namespace Plasma
     TextCheckBox* mSetIndependentPathCheckbox;
     LibraryView* mLibraryView;
 
-    bool mCanCreateLibrary = true;
+    bool mCanCreateLibrary = false;
   };
 
   class MoveItemUI : public Composite
