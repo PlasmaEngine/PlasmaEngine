@@ -37,6 +37,10 @@ String StripResourceExtension(StringParam filename)
     // Check if the included middle extension is a Plasma Engine resource
     MetaDatabase* metaDatabase = MetaDatabase::GetInstance();
     BoundType* type = metaDatabase->FindType(resourceExtension);
+
+    if (!type)
+      return filename;
+
     // If it is a Plasma Engine resource strip it from the filename
     if (type->IsA(LightningTypeId(Resource)))
     {
