@@ -333,9 +333,12 @@ String GetLauncherLocationFromLauncherConfig()
 
 void LauncherOpenProjectComposite::OnConnectionFailed(Event* e)
 {
-  // Try to run from the installed location, if not open the old dialog
+  PlasmaTodo("(Matt, 2021-8-29): should we switch the order of this? Open last-opened launcher, then fall back to installed path? Possibly better for launcher dev...");
+
+  // Try to run from the installed location
   if (!RunFromInstalledPath())
   {
+    // fall back to last-opened 
     String launcherPath = GetLauncherLocationFromLauncherConfig();
     if (!launcherPath.Empty() && RunLauncherExe(launcherPath))
       return;

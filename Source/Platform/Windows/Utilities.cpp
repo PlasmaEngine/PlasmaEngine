@@ -265,11 +265,6 @@ bool ShellOpenApplication(StringParam file, StringParam parameters)
   return status.Succeeded();
 }
 
-String GetInstalledExecutable(StringParam organization, StringParam name, StringParam guid)
-{
-  return GetRelativeExecutable(organization, name);
-}
-
 void MarkAsExecutable(cstr fileName)
 {
 }
@@ -523,6 +518,8 @@ bool GetRegistryValue(void* key, StringParam subKey, StringParam value, String& 
   return true;
 }
 
+namespace Os
+{
 String GetInstalledExecutable(StringParam organization, StringParam name, StringParam guid)
 {
   String path1 = String::Format("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{%s}_is1", guid.c_str());
@@ -536,7 +533,13 @@ String GetInstalledExecutable(StringParam organization, StringParam name, String
                 GetRegistryValue(HKEY_LOCAL_MACHINE, path1, cInstallLocation, directory) ||
                 GetRegistryValue(HKEY_LOCAL_MACHINE, path2, cInstallLocation, directory);
   if (!result)
-    return GetRelativeExecutable(organization, name);
+  {
+      // return empty string to indicate failure to find executable
+      return String();
+  }
+
   return FilePath::Combine(directory, organization + name + cExecutableExtensionWithDot);
 }
+}// namespace Plasma
+
 } // namespace Plasma
