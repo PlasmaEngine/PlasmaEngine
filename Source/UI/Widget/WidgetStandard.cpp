@@ -103,6 +103,7 @@ LightningDefineStaticLibrary(WidgetLibrary)
   LightningInitializeType(Modal);
   LightningInitializeType(Text);
   LightningInitializeType(MultiLineText);
+  LightningInitializeType(FolderLocation);
 
   EngineLibraryExtensions::AddNativeExtensions(builder);
 }

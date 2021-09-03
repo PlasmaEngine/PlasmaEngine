@@ -9,6 +9,10 @@ namespace Events
 DeclareEvent(LauncherConfigChanged);
 } // namespace Events
 
+// fwd declare
+class StringChangeEvent;
+class FolderLocation;
+
 /// The various configuration settings for the launcher.
 class SettingsMenu : public Composite
 {
@@ -24,19 +28,19 @@ public:
 
   void OnActivated(Event* e);
   void OnDeactivated(Event* e);
-  void OnProjectLocationTextSubmit(Event* e);
-  void OnBrowseProjectLocation(Event* e);
-  void OnBrowseProjectLocationSelected(OsFileSelection* e);
-  void OnDownloadLocationTextChanged(Event* e);
-  void OnDownloadLocationTextSubmit(Event* e);
-  void OnBrowseDownloadLocation(Event* e);
-  void OnBrowseDownloadLocationSelected(OsFileSelection* e);
-  void OnChangeDownloadLocation(ModalConfirmEvent* e);
+
+  void OnDefaultProjectLocationChange(StringChangeEvent* e);
+
+  void OnDownloadLocationTextSubmit(StringChangeEvent* e);
+  void OnConfirmChangeDownloadLocation(ModalConfirmEvent* e);
+  void MoveDownloadLocation(StringChangeEvent* e);
+
   void OnAutoRunModeSelected(Event* e);
   void OnMaxRecentProjectsModified(Event* e);
   void OnAutoCheckForMajorUpdatesModified(Event* e);
   void OnShowDevelopModified(Event* e);
   void OnShowExperimentalBranchesModified(Event* e);
+
 
   void OnCheckForUpdates(Event* e);
   void OnCheckForLauncherUpdates(Event* e);
@@ -47,7 +51,7 @@ public:
   void LoadFromConfig();
   void RevertConfigToDefaults();
 
-  void OnSettingsPressed(Event*);
+  void OnSettingsPressed(Event*);	
   void OnModalClosed(Event*);
 
   void AnimateIn();
@@ -59,8 +63,8 @@ public:
   Element* mModalBackground;
   Element* mBackground;
   ComboBox* mAutoRunMode;
-  TextBoxButton* mDefaultProjectLocation;
-  TextBoxButton* mDownloadLocation;
+  FolderLocation* mDefaultProjectLocation;
+  FolderLocation* mDownloadLocation;
   LauncherWindow* mLauncher;
   TextBox* mMaxNumberOfRecentProjects;
   CheckBox* mAutoCheckForLauncherUpdatesCheckBox;
