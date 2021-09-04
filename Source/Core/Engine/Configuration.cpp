@@ -66,6 +66,8 @@ LightningDefineType(ContentConfig, builder, type)
   PlasmaBindComponent();
   PlasmaBindDocumented();
   type->AddAttribute(ObjectAttributes::cCore);
+  PlasmaTodo("Add folder-select dialog for Editor ContentOutput path");
+  LightningBindFieldProperty(ContentOutput);
 }
 
 void ContentConfig::Serialize(Serializer& stream)
