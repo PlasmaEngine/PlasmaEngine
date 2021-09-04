@@ -121,22 +121,42 @@ SettingsMenu::SettingsMenu(Modal* parent, LauncherWindow* launcher) :
 
   // Download location
   {
-    mDownloadLocation = new FolderLocation();
-    mDefaultProjectLocation->mStyle = style;
-    mDownloadLocation->mLabel = "DEFAULT DOWNLOAD LOCATION";
-    mDownloadLocation->mFileDialogFilterDescription = "Download Folder";
-    mDownloadLocation->GetConfigValue = [](){ 
-        LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
-        return config->mDownloadPath;
+      mDownloadLocation = new FolderLocation();
+      mDownloadLocation->mStyle = style;
+      mDownloadLocation->mLabel = "DEFAULT DOWNLOAD LOCATION";
+      mDownloadLocation->mFileDialogFilterDescription = "Download Folder";
+      mDownloadLocation->GetConfigValue = []() {
+          LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
+          return config->mDownloadPath;
+      };
+      mDownloadLocation->SetConfigValue = [](String value) {
+          LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
+          config->mDownloadPath = value;
+      };
+      mDownloadLocation->mConfigSavedEventLabel = Events::LauncherConfigChanged;
+      ConnectThisTo(mDownloadLocation, Events::FolderLocationUpdated, OnDownloadLocationTextSubmit);
+      ConnectThisTo(mDownloadLocation, Events::ConfigChangeApplied, MoveDownloadLocation);
+      mDownloadLocation->Create(this, mWidgetsToAnimate);
+  }
+
+  // ContentOutput location
+  {
+    mContentOutputLocation = new FolderLocation();
+    mContentOutputLocation->mStyle = style;
+    mContentOutputLocation->mLabel = "DEFAULT CACHE LOCATION";
+    mContentOutputLocation->mFileDialogFilterDescription = "Content Cache";
+    mContentOutputLocation->GetConfigValue = [](){ 
+        ContentConfig* config = PL::gEngine->GetConfigCog()->has(ContentConfig);
+        return config->ContentOutput;
     };
-    mDownloadLocation->SetConfigValue = [](String value) {
-        LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
-        config->mDownloadPath = value;
+    mContentOutputLocation->SetConfigValue = [](String value) {
+        ContentConfig* config = PL::gEngine->GetConfigCog()->has(ContentConfig);
+        config->ContentOutput = value;
     };
-    mDownloadLocation->mConfigSavedEventLabel = Events::LauncherConfigChanged;
-    ConnectThisTo(mDownloadLocation, Events::FolderLocationUpdated, OnDownloadLocationTextSubmit);
-    ConnectThisTo(mDownloadLocation, Events::ConfigChangeApplied, MoveDownloadLocation);
-    mDownloadLocation->Create(this, mWidgetsToAnimate);
+    mContentOutputLocation->mConfigSavedEventLabel = Events::LauncherConfigChanged;
+    ConnectThisTo(mContentOutputLocation, Events::FolderLocationUpdated, OnContentOutputLocationTextSubmit);
+    ConnectThisTo(mContentOutputLocation, Events::ConfigChangeApplied, MoveContentOutputLocation);
+    mContentOutputLocation->Create(this, mWidgetsToAnimate);
   }
 
   new Spacer(this, SizePolicy::Fixed, Pixels(0, 10));
@@ -304,7 +324,6 @@ void SettingsMenu::OnDownloadLocationTextSubmit(StringChangeEvent* e)
 
 void SettingsMenu::OnConfirmChangeDownloadLocation(ModalConfirmEvent* e)
 {
-  LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
   if (e->mConfirmed == true)
   {
     mDownloadLocation->ApplyChange();
@@ -330,6 +349,61 @@ void SettingsMenu::MoveDownloadLocation(StringChangeEvent* e)
     if (oldPath != newPath)
         DeleteDirectory(oldPath);
 }
+
+
+void SettingsMenu::OnContentOutputLocationTextSubmit(StringChangeEvent* e)
+{
+    String& oldPath = e->OldValue;
+    String& newPath = e->NewValue;
+
+    // Since we're just moving the folder to the new location, we can't move to a
+    // sub-folder of the current location, to detect this we're just seeing if the
+    // starting paths are the same (by adding a trailing '\' right now, hopefully
+    // that's sufficient) and if they are we're just showing a tooltip to the user
+    String oldPathWithSeparator = BuildString(oldPath, cDirectorySeparatorCstr);
+    String newPathWithSeparator = BuildString(FilePath::Normalize(newPath), cDirectorySeparatorCstr);
+    if (newPathWithSeparator.StartsWith(oldPathWithSeparator))
+    {
+        mContentOutputLocation->ResetWithError("Cannot move to sub-directory");
+        return;
+    }
+
+    // Make a confirmation dialog to see if the user whats to move
+    // the downloads folder and contents to the new location
+    ModalConfirmAction* modal = new ModalConfirmAction(mParentModal, "Move content cache to new location?");
+    ConnectThisTo(modal, Events::ModalConfirmResult, OnConfirmChangeDownloadLocation);
+    mConfirmModal = modal;
+}
+
+void SettingsMenu::OnConfirmChangeContentOutputLocation(ModalConfirmEvent* e)
+{
+    if (e->mConfirmed == true)
+    {
+        mContentOutputLocation->ApplyChange();
+    }
+    else
+    {
+        // They hit cancel, set the download location text back to the config's settings
+        mContentOutputLocation->Reset();
+    }
+}
+
+void SettingsMenu::MoveContentOutputLocation(StringChangeEvent* e)
+{
+    String oldPath = e->OldValue;
+    String newPath = e->NewValue;
+
+    PlasmaPrint("Settings: Changing content cache from '%s' to '%s'\n", oldPath.c_str(), newPath.c_str());
+
+    // Move the old folder to the new location
+    MoveFolderContents(newPath, oldPath);
+    // Currently Move doesn't delete the old directory, so delete it...
+    if (oldPath != newPath)
+        DeleteDirectory(oldPath);
+
+    PlasmaTodo("Update DefaultEditorConfiguration.data with new ContentOutput cache location");
+}
+
 
 void SettingsMenu::OnAutoRunModeSelected(Event* e)
 {

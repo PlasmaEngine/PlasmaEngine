@@ -35,6 +35,10 @@ public:
   void OnConfirmChangeDownloadLocation(ModalConfirmEvent* e);
   void MoveDownloadLocation(StringChangeEvent* e);
 
+  void OnContentOutputLocationTextSubmit(StringChangeEvent* e);
+  void OnConfirmChangeContentOutputLocation(ModalConfirmEvent* e);
+  void MoveContentOutputLocation(StringChangeEvent* e);
+
   void OnAutoRunModeSelected(Event* e);
   void OnMaxRecentProjectsModified(Event* e);
   void OnAutoCheckForMajorUpdatesModified(Event* e);
@@ -65,6 +69,7 @@ public:
   ComboBox* mAutoRunMode;
   FolderLocation* mDefaultProjectLocation;
   FolderLocation* mDownloadLocation;
+  FolderLocation* mContentOutputLocation;
   LauncherWindow* mLauncher;
   TextBox* mMaxNumberOfRecentProjects;
   CheckBox* mAutoCheckForLauncherUpdatesCheckBox;

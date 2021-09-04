@@ -28,6 +28,7 @@ void FolderLocation::Create(Composite* Parent, Array<Widget*>& CreatedWidgets)
     new Spacer(Parent, SizePolicy::Fixed, Pixels(0, -9));
 
     mLocation = new TextBoxButton(Parent, "OpenFolderIcon");
+    mLocation->SetText(GetConfigValue());
     mLocation->SetStyle(TextBoxStyle::Modern);
     mLocation->SetEditable(true);
     mLocation->mButton->mBackgroundColor = ToByteColor(mStyle.mBackgroundColor);
