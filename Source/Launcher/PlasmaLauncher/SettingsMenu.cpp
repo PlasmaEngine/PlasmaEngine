@@ -102,7 +102,7 @@ SettingsMenu::SettingsMenu(Modal* parent, LauncherWindow* launcher) :
 
   // Default Project Location
   {
-      mDefaultProjectLocation = new FolderLocation();
+      mDefaultProjectLocation = new FolderLocation(this);
       mDefaultProjectLocation->mStyle = style;
       mDefaultProjectLocation->mLabel = "DEFAULT PROJECT LOCATION";
       mDefaultProjectLocation->mFileDialogFilterDescription = "Project Folder";
@@ -116,12 +116,12 @@ SettingsMenu::SettingsMenu(Modal* parent, LauncherWindow* launcher) :
       };
       mDefaultProjectLocation->mConfigSavedEventLabel = Events::LauncherConfigChanged;
       ConnectThisTo(mDefaultProjectLocation, Events::FolderLocationUpdated, OnDefaultProjectLocationChange);
-      mDefaultProjectLocation->Create(this, mWidgetsToAnimate);
+      mDefaultProjectLocation->Create(mWidgetsToAnimate);
   }
 
   // Download location
   {
-      mDownloadLocation = new FolderLocation();
+      mDownloadLocation = new FolderLocation(this);
       mDownloadLocation->mStyle = style;
       mDownloadLocation->mLabel = "DEFAULT DOWNLOAD LOCATION";
       mDownloadLocation->mFileDialogFilterDescription = "Download Folder";
@@ -136,12 +136,12 @@ SettingsMenu::SettingsMenu(Modal* parent, LauncherWindow* launcher) :
       mDownloadLocation->mConfigSavedEventLabel = Events::LauncherConfigChanged;
       ConnectThisTo(mDownloadLocation, Events::FolderLocationUpdated, OnDownloadLocationTextSubmit);
       ConnectThisTo(mDownloadLocation, Events::ConfigChangeApplied, MoveDownloadLocation);
-      mDownloadLocation->Create(this, mWidgetsToAnimate);
+      mDownloadLocation->Create(mWidgetsToAnimate);
   }
 
   // ContentOutput location
   {
-    mContentOutputLocation = new FolderLocation();
+    mContentOutputLocation = new FolderLocation(this);
     mContentOutputLocation->mStyle = style;
     mContentOutputLocation->mLabel = "DEFAULT CACHE LOCATION";
     mContentOutputLocation->mFileDialogFilterDescription = "Content Cache";
@@ -156,7 +156,7 @@ SettingsMenu::SettingsMenu(Modal* parent, LauncherWindow* launcher) :
     mContentOutputLocation->mConfigSavedEventLabel = Events::LauncherConfigChanged;
     ConnectThisTo(mContentOutputLocation, Events::FolderLocationUpdated, OnContentOutputLocationTextSubmit);
     ConnectThisTo(mContentOutputLocation, Events::ConfigChangeApplied, MoveContentOutputLocation);
-    mContentOutputLocation->Create(this, mWidgetsToAnimate);
+    mContentOutputLocation->Create(mWidgetsToAnimate);
   }
 
   new Spacer(this, SizePolicy::Fixed, Pixels(0, 10));

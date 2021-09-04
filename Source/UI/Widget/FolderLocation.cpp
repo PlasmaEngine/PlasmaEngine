@@ -18,16 +18,22 @@ LightningDefineType(FolderLocation, builder, type)
 {
 }
 
-void FolderLocation::Create(Composite* Parent, Array<Widget*>& CreatedWidgets)
+FolderLocation::FolderLocation(Composite* parent) :
+    Composite(parent)
 {
-    Text* text = new Text(Parent, mStyle.mFont, 11);
+    SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 5)));
+}
+
+void FolderLocation::Create(Array<Widget*>& CreatedWidgets)
+{
+    Text* text = new Text(this, mStyle.mFont, 11);
     text->SetText(mLabel);
     text->SetColor(mStyle.mTextColor);
-    CreatedWidgets.PushBack(text);
+    //CreatedWidgets.PushBack(text);
 
-    new Spacer(Parent, SizePolicy::Fixed, Pixels(0, -9));
+    new Spacer(this, SizePolicy::Fixed, Pixels(0, -9));
 
-    mLocation = new TextBoxButton(Parent, "OpenFolderIcon");
+    mLocation = new TextBoxButton(this, "OpenFolderIcon");
     mLocation->SetText(GetConfigValue());
     mLocation->SetStyle(TextBoxStyle::Modern);
     mLocation->SetEditable(true);
@@ -36,8 +42,10 @@ void FolderLocation::Create(Composite* Parent, Array<Widget*>& CreatedWidgets)
     mLocation->mButton->mBackgroundClickedColor = ToByteColor(mStyle.mButtonClickedColor);
     ConnectThisTo(mLocation, Events::TextChanged, OnLocationTextChanged);
     ConnectThisTo(mLocation, Events::TextSubmit, OnLocationTextSubmit);
-    CreatedWidgets.PushBack(mLocation);
     ConnectThisTo(mLocation->mButton, Events::ButtonPressed, OnBrowseLocation);
+    //CreatedWidgets.PushBack(mLocation);
+    
+    CreatedWidgets.PushBack(this);
 }
 
 void FolderLocation::OnLocationTextChanged(Event* e)

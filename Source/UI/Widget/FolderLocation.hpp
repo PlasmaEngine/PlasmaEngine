@@ -30,10 +30,12 @@ struct FolderLocationStyle
 	Vec4 mButtonHoverColor, mButtonClickedColor;
 };
 
-class FolderLocation : public EventObject
+class FolderLocation : public Composite
 {
 public:
 	LightningDeclareType(FolderLocation, TypeCopyMode::ReferenceType);
+
+	FolderLocation(Composite* parent);
 
 	typedef String(*GetStringFn)();
 	typedef void(*SetStringFn)(String s);
@@ -47,7 +49,7 @@ public:
 	String mConfigSavedEventLabel;
 	FolderLocationStyle mStyle;
 
-	void Create(Composite* Parent, Array<Widget*>& CreatedWidgets);
+	void Create(Array<Widget*>& CreatedWidgets);
 
 	// overwrites the config value with the currently-entered text
 	void ApplyChange();

@@ -9,10 +9,6 @@ namespace Events
 DeclareEvent(LauncherConfigChanged);
 } // namespace Events
 
-// fwd declare
-class StringChangeEvent;
-class FolderLocation;
-
 /// The various configuration settings for the launcher.
 class SettingsMenu : public Composite
 {
