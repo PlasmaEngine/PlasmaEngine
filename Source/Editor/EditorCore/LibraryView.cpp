@@ -938,9 +938,12 @@ void LibraryView::OnRightMouseUp(MouseEvent* event)
     }
   }
 
-  // If a specific resource is not found pop up the generic add resources menu
-  menu->AddPlasmaContextMenu("Resources");
-  menu->ShiftOntoScreen(ToVector3(event->Position));
+  // If a specific resource is not found and the current library is writeable, pop up the generic add resources menu
+  if (mContentLibrary->GetWritable())
+  {
+      menu->AddPlasmaContextMenu("Resources");
+      menu->ShiftOntoScreen(ToVector3(event->Position));
+  }
 }
 
 void LibraryView::OnKeyDown(KeyboardEvent* event)
@@ -1387,7 +1390,7 @@ bool LibraryView::AddResourceOptionsToMenu(ContextMenu* menu, StringParam resouc
   if (boundType && boundType->IsA(LightningTypeId(Resource)))
   {
     ResourceManager* manager = PL::gResources->GetResourceManager(boundType);
-    if (manager->mCanAddFile || manager->mCanCreateNew)
+    if ((manager->mCanAddFile || manager->mCanCreateNew) && mContentLibrary->GetWritable())
     {
       if (addDivider)
         menu->AddDivider();
