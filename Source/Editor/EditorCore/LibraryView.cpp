@@ -258,21 +258,31 @@ AddLibraryUI::AddLibraryUI(Composite* parent, LibraryView* libraryView): Composi
   new Label(this, "Text", "Library Name:");
   mNewLibraryName = new TextBox(this);
   mNewLibraryName->SetEditable(true);
-  mNewLibraryName->SetText("NewLibrary");
-  
+  mNewLibraryName->SetText("NewLibrary");  
+  mNewLibraryName->TakeFocus();
   new Label(this, "Text", "Library Path:");
 
   Composite* pathRow = new Composite(this);
   pathRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
   
   mLibraryPath = new TextBox(pathRow);
-  mLibraryPath->SetEditable(true);
+  mLibraryPath->SetEditable(false);
   mLibraryPath->SetSizing(SizeAxis::X,SizePolicy::Flex, Pixels(200));
+  mLibraryPath->SetInteractive(false);
   
-  TextButton* pathSelectButton = new TextButton(pathRow);
-  pathSelectButton->SetText("...");
-  pathSelectButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
-  ConnectThisTo(pathSelectButton, Events::ButtonPressed, OnSelectPath);
+  mPathSelectButton = new TextButton(pathRow);
+  mPathSelectButton->SetText("...");
+  mPathSelectButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
+  mPathSelectButton->SetInteractive(false);
+  ConnectThisTo(mPathSelectButton, Events::ButtonPressed, OnSelectPath);
+
+  Composite* pathCheckboxRow = new Composite(this);
+  pathCheckboxRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
+
+  mSetIndependentPathCheckbox = new TextCheckBox(pathCheckboxRow);
+  mSetIndependentPathCheckbox->SetCheckedDirect(false);
+  mSetIndependentPathCheckbox->SetText(" Enable Manual Library Path Editing");
+  ConnectThisTo(mSetIndependentPathCheckbox, Events::LeftClick, OnToggleEditablePath);
   
   Composite* buttonBar = new Composite(this);
 
@@ -294,16 +304,21 @@ AddLibraryUI::AddLibraryUI(Composite* parent, LibraryView* libraryView): Composi
   }
   
   Cog* projectCog = PL::gEditor->mProject;
-  
-  if(projectCog != nullptr)
+
+  if (projectCog != nullptr)
   {
-    ProjectSettings* projectSettings = projectCog->has(ProjectSettings);
-    
-    if(projectSettings != nullptr)
-    {
-      mLibraryPath->SetText(FilePath::Combine(projectSettings->ProjectFolder, mNewLibraryName->GetText()));
-    }
+      ProjectSettings* projectSettings = projectCog->has(ProjectSettings);
+
+      if (projectSettings != nullptr)
+      {
+          mLibraryPath->SetText(FilePath::Combine(projectSettings->ProjectFolder, mNewLibraryName->GetText()));
+      }
   }
+
+  UpdateLibraryPath();
+
+  ConnectThisTo(this, Events::KeyUp, OnKeyUp);
+
 }
 
 AddLibraryUI::~AddLibraryUI()
@@ -371,6 +386,22 @@ void AddLibraryUI::OnCreate(Event* e)
   CloseTabContaining(this);
 }
 
+void AddLibraryUI::OnToggleEditablePath(Event* e)
+{
+    bool isChecked = mSetIndependentPathCheckbox->GetChecked();
+    if (mLibraryPath->mInteractive != isChecked)
+    {
+        mLibraryPath->SetInteractive(isChecked);
+        mLibraryPath->SetEditable(isChecked);
+        mLibraryPath->MarkAsNeedsUpdate();
+        mPathSelectButton->SetInteractive(isChecked);
+        mPathSelectButton->MarkAsNeedsUpdate();
+
+        if (!isChecked)
+            UpdateLibraryPath();
+    }
+}
+
 void AddLibraryUI::OnSelectPath(Event* e)
 {
   // Set up the callback for when library path is selected
@@ -424,6 +455,38 @@ void AddLibraryUI::OnFolderSelected(OsFileSelection* e)
 void AddLibraryUI::OnCancel(Event* e)
 {
   CloseTabContaining(this);
+}
+
+void AddLibraryUI::OnKeyUp(KeyboardEvent* event) {
+
+    if (event->Key == Keys::Enter && !mLibraryPath->GetText().Empty() && !mNewLibraryName->GetText().Empty())
+    {
+        OnCreate(nullptr);
+    }
+    else if (event->Key == Keys::Escape)
+    {
+        OnCancel(nullptr);
+    }
+    else if(!mSetIndependentPathCheckbox->GetChecked())
+    {
+        UpdateLibraryPath();
+    }
+}
+
+void AddLibraryUI::UpdateLibraryPath()
+{
+    Cog* projectCog = PL::gEditor->mProject;
+
+    if (projectCog != nullptr)
+    {
+        ProjectSettings* projectSettings = projectCog->has(ProjectSettings);
+
+        if (projectSettings != nullptr)
+        {
+            mLibraryPath->SetText(FilePath::Combine(projectSettings->ProjectFolder, mNewLibraryName->GetText()));
+            mLibraryPath->MarkAsNeedsUpdate();
+        }
+    }
 }
 
 LightningDefineType(LibraryView, builder, type)

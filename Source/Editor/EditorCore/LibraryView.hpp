@@ -48,14 +48,23 @@ namespace Plasma
     AddLibraryUI(Composite* parent, LibraryView* libraryView);
     ~AddLibraryUI();
 
+    /// Called when we are typing in the library name text box.
+    void UpdateLibraryPath();
+
     /// Called when on create button is pressed.
     void OnCreate(Event* e);
 
     /// Called when library path is selected.
     void OnSelectPath(Event* e);
 
+    /// Called when the checkbox is checked
+    void OnToggleEditablePath(Event* e);
+
     /// Called when folder is selected and validates selection.
     void OnFolderSelected(OsFileSelection* e);
+
+    /// Called when 
+    void OnKeyUp(KeyboardEvent* event);
 
     /// Called when the cancel button is pressed.
     void OnCancel(Event* e);
@@ -64,6 +73,8 @@ namespace Plasma
   private:
     TextBox* mNewLibraryName;
     TextBox* mLibraryPath;
+    TextButton* mPathSelectButton;
+    TextCheckBox* mSetIndependentPathCheckbox;
     LibraryView* mLibraryView;
 
     bool mCanCreateLibrary = true;
