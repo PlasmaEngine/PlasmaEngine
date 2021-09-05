@@ -152,10 +152,6 @@ ContentLibrary* ContentSystem::LibraryFromDirectory(Status& status, StringParam 
     // Set name if necessary
     if (library->Name.Empty())
       library->Name = name;
-
-    // Check to see if the library file is writable
-    // if it is not prevent modifications to this library.
-    library->mReadOnly = !FileWritable(libraryFile);
   }
   else
   {

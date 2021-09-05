@@ -75,6 +75,10 @@ public:
   // Resources that were modified in the editor.
   HashSet<ResourceId> mModifiedResources;
 
+  // Map of core resource library names to their respective resource libraries
+  typedef OrderedHashMap<String, ResourceLibrary*> LoadedSetMap;
+  LoadedSetMap LoadedPlasmaCoreLibraries;
+
   // Map of resource library names to resource libraries
   typedef OrderedHashMap<String, ResourceLibrary*> LoadedSetMap;
   LoadedSetMap LoadedResourceLibraries;
