@@ -862,58 +862,61 @@ void LibraryView::OnTileViewRightClick(TileViewEvent* event)
 
 void LibraryView::OnRightClickObject(Composite* objectToAttachTo, DataIndex index)
 {
-  mCommandIndices.Clear();
+    mCommandIndices.Clear();
 
-  ContextMenu* menu = new ContextMenu(objectToAttachTo);
-  Mouse* mouse = PL::gMouse;
+    ContextMenu* menu = new ContextMenu(objectToAttachTo);
+    Mouse* mouse = PL::gMouse;
 
-  mDataSelection->GetSelected(mCommandIndices);
-  mPrimaryCommandIndex = index;
-  LibDataEntry* entry = (LibDataEntry*)mSource->ToEntry(mPrimaryCommandIndex);
+    mDataSelection->GetSelected(mCommandIndices);
+    mPrimaryCommandIndex = index;
+    LibDataEntry* entry = (LibDataEntry*)mSource->ToEntry(mPrimaryCommandIndex);
 
-  Resource* resource = entry->mResource;
-  if (resource)
-  {
-    ConnectMenu(menu, "Edit", OnEdit, true);
-    ConnectMenu(menu, "Rename", OnRename, false);
-    ConnectMenu(menu, "Edit Content Meta", OnEditMeta, false);
-    ConnectMenu(menu, "Edit Tags", OnEditTags, false);
-    ConnectMenu(menu, "Remove", OnRemove, false);
-
-    if (resource && resource->mManager->mCanDuplicate)
+    Resource* resource = entry->mResource;
+    if (resource)
     {
-      ConnectMenu(menu, "Duplicate", OnDuplicate, false);
+        ConnectMenu(menu, "Edit", OnEdit, true);
+        ConnectMenu(menu, "Rename", OnRename, false);
+        ConnectMenu(menu, "Edit Content Meta", OnEditMeta, false);
+        ConnectMenu(menu, "Edit Tags", OnEditTags, false);
+        
+        if (mContentLibrary->GetWritable())
+        {
+            ConnectMenu(menu, "Remove", OnRemove, false);
+            if (resource && resource->mManager->mCanDuplicate)
+            {
+                ConnectMenu(menu, "Duplicate", OnDuplicate, false);
+            }
+        }
+
+        BoundType* resourceType = LightningVirtualTypeId(resource);
+
+        // Add composing and translation test functions for materials
+        if (resourceType->IsA(LightningTypeId(Material)))
+        {
+            ConnectMenu(menu, "ComposeLightningMaterial", OnComposeLightningMaterial, false);
+            ConnectMenu(menu, "TranslateLightningPixelMaterial", OnTranslateLightningPixelMaterial, false);
+            ConnectMenu(menu, "TranslateLightningGeometryMaterial", OnTranslateLightningGeometryMaterial, false);
+            ConnectMenu(menu, "TranslateLightningVertexMaterial", OnTranslateLightningVertexMaterial, false);
+        }
+        // Add a translation tests function for fragments
+        if (resourceType->IsA(LightningTypeId(LightningFragment)))
+        {
+            ConnectMenu(menu, "TranslateFragment", OnTranslateFragment, false);
+        }
+
+        AddResourceOptionsToMenu(menu, resourceType->Name, true);
+    }
+    else
+    {
+        // When right clicking on a resource tag show an "Add 'resourceType'" option
+        // if the user can add this type of resource
+        if (AddResourceOptionsToMenu(menu, entry->mTag))
+            menu->AddDivider();
+        ConnectMenu(menu, "Add Tag To Search", OnAddTagToSearch, true);
     }
 
-    BoundType* resourceType = LightningVirtualTypeId(resource);
-
-    // Add composing and translation test functions for materials
-    if (resourceType->IsA(LightningTypeId(Material)))
-    {
-      ConnectMenu(menu, "ComposeLightningMaterial", OnComposeLightningMaterial, false);
-      ConnectMenu(menu, "TranslateLightningPixelMaterial", OnTranslateLightningPixelMaterial, false);
-      ConnectMenu(menu, "TranslateLightningGeometryMaterial", OnTranslateLightningGeometryMaterial, false);
-      ConnectMenu(menu, "TranslateLightningVertexMaterial", OnTranslateLightningVertexMaterial, false);
-    }
-    // Add a translation tests function for fragments
-    if (resourceType->IsA(LightningTypeId(LightningFragment)))
-    {
-      ConnectMenu(menu, "TranslateFragment", OnTranslateFragment, false);
-    }
-
-    AddResourceOptionsToMenu(menu, resourceType->Name, true);
-  }
-  else
-  {
-    // When right clicking on a resource tag show an "Add 'resourceType'" option
-    // if the user can add this type of resource
-    if (AddResourceOptionsToMenu(menu, entry->mTag))
-      menu->AddDivider();
-    ConnectMenu(menu, "Add Tag To Search", OnAddTagToSearch, true);
-  }
-
-  menu->SizeToContents();
-  menu->ShiftOntoScreen(ToVector3(mouse->GetClientPosition()));
+    menu->SizeToContents();
+    menu->ShiftOntoScreen(ToVector3(mouse->GetClientPosition()));
 }
 
 void LibraryView::OnRightMouseUp(MouseEvent* event)

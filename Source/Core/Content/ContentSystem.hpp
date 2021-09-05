@@ -191,6 +191,8 @@ public:
   String HistoryPath;
   bool mHistoryEnabled;
 
+  Array<String> PlasmaCoreLibraryNames;
+
   // These paths are set by the editor
   Array<String> LibrarySearchPaths;
   String ContentOutputPath;
