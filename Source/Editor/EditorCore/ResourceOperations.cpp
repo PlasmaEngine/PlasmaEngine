@@ -193,7 +193,7 @@ Resource* DuplicateResource(Resource* resource, StringParam expectedNewName)
   String resourceTypeName = resourceManager->mResourceTypeName;
   ContentItem* contentItem = resource->mContentItem;
 
-  ReturnIf(!contentItem->mResourceIsContentItem, NULL, "Can not duplicate resource.");
+  ReturnIf(!contentItem->mResourceIsContentItem, NULL, "Cannot duplicate resource.");
 
   String newName = expectedNewName;
   // If there wasn't a name specified, build up the new full file name.
@@ -252,6 +252,45 @@ Resource* DuplicateResource(Resource* resource, StringParam expectedNewName)
   Resource* duplicate = LoadResourceFromNewContentItem(resourceManager, newContentItem, NULL);
   resourceManager->ResourceDuplicated(resource, duplicate);
   return duplicate;
+}
+
+bool MoveResource(Resource* resource, ContentLibrary* targetLibrary)
+{
+    if (PL::gEngine->IsReadOnly())
+    {
+        DoNotifyWarning("Resources", "Cannot rename resources while in read-only mode");
+        return false;
+    }
+
+    ResourceManager* resourceManager = resource->GetManager();
+    String resourceTypeName = resourceManager->mResourceTypeName;
+    ContentItem* contentItem = resource->mContentItem;
+    String previousLocation = contentItem->mLibrary->SourcePath;
+
+    ReturnIf(!contentItem->mResourceIsContentItem, false, "Cannot move resource. The resource is either corrupted or a resource that is unable to move.");
+    ReturnIf(targetLibrary != nullptr, false, "Cannot move resource to a null library.");
+    ReturnIf(targetLibrary->GetReadOnly(), false, "Cannot move resource to a library that is read only.");
+
+    bool result = PL::gContentSystem->MoveContentItem(contentItem, targetLibrary);
+    if (result == false)
+    {
+        DoNotifyWarning("Resources", "Moving resource failed.");
+        return result;
+    }
+
+    resource->UpdateContentItem(contentItem);
+
+    ResourceEvent event;
+    event.Name = resource->Name;
+    event.Manager = resourceManager;
+    event.EventResource = resource;
+    event.PreviousLocation = previousLocation;
+    event.NewLocation = targetLibrary->SourcePath;
+    event.EventResourceLibrary = PL::gResources->GetResourceLibrary(targetLibrary->Name);
+    resourceManager->DispatchEvent(Events::ResourceModified, &event);
+    PL::gResources->DispatchEvent(Events::ResourceModified, &event);
+
+    return true;
 }
 
 bool RenameResource(Resource* resource, StringParam newName)
