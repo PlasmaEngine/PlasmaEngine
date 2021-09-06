@@ -254,70 +254,70 @@ TileViewWidget* LibraryTileView::CreateTileViewWidget(
 
 AddLibraryUI::AddLibraryUI(Composite* parent, LibraryView* libraryView): Composite(parent), mLibraryView(libraryView)
 {
-  this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 2), Thickness::cZero));
-  new Label(this, "Text", "Library Name:");
-  mNewLibraryName = new TextBox(this);
-  mNewLibraryName->SetEditable(true);
-  mNewLibraryName->SetText("NewLibrary");  
-  mNewLibraryName->TakeFocus();
-  new Label(this, "Text", "Library Path:");
+    this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 2), Thickness::cZero));
+    new Label(this, "Text", "Library Name:");
+    mNewLibraryName = new TextBox(this);
+    mNewLibraryName->SetEditable(true);
+    mNewLibraryName->SetText("NewLibrary");  
+    mNewLibraryName->TakeFocus();
+    new Label(this, "Text", "Library Path:");
 
-  Composite* pathRow = new Composite(this);
-  pathRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
+    Composite* pathRow = new Composite(this);
+    pathRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
   
-  mLibraryPath = new TextBox(pathRow);
-  mLibraryPath->SetEditable(false);
-  mLibraryPath->SetSizing(SizeAxis::X,SizePolicy::Flex, Pixels(200));
-  mLibraryPath->SetInteractive(false);
+    mLibraryPath = new TextBox(pathRow);
+    mLibraryPath->SetEditable(false);
+    mLibraryPath->SetSizing(SizeAxis::X,SizePolicy::Flex, Pixels(200));
+    mLibraryPath->SetInteractive(false);
   
-  mPathSelectButton = new TextButton(pathRow);
-  mPathSelectButton->SetText("...");
-  mPathSelectButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
-  mPathSelectButton->SetInteractive(false);
-  ConnectThisTo(mPathSelectButton, Events::ButtonPressed, OnSelectPath);
+    mPathSelectButton = new TextButton(pathRow);
+    mPathSelectButton->SetText("...");
+    mPathSelectButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
+    mPathSelectButton->SetInteractive(false);
+    ConnectThisTo(mPathSelectButton, Events::ButtonPressed, OnSelectPath);
 
-  Composite* pathCheckboxRow = new Composite(this);
-  pathCheckboxRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
+    Composite* pathCheckboxRow = new Composite(this);
+    pathCheckboxRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
 
-  mSetIndependentPathCheckbox = new TextCheckBox(pathCheckboxRow);
-  mSetIndependentPathCheckbox->SetCheckedDirect(false);
-  mSetIndependentPathCheckbox->SetText(" Enable Manual Library Path Editing");
-  ConnectThisTo(mSetIndependentPathCheckbox, Events::LeftClick, OnToggleEditablePath);
+    mSetIndependentPathCheckbox = new TextCheckBox(pathCheckboxRow);
+    mSetIndependentPathCheckbox->SetCheckedDirect(false);
+    mSetIndependentPathCheckbox->SetText(" Enable Manual Library Path Editing");
+    ConnectThisTo(mSetIndependentPathCheckbox, Events::LeftClick, OnToggleEditablePath);
   
-  Composite* buttonBar = new Composite(this);
+    Composite* buttonBar = new Composite(this);
 
-  buttonBar->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
-  {
-    TextButton* createButton = new  TextButton(buttonBar);
-    createButton->SetText("Create");
-    createButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
+    buttonBar->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
+    {
+        Composite* space = new Composite(buttonBar);
+        space->SetSizing(SizeAxis::X, SizePolicy::Flex, 1);
+
+        TextButton* createButton = new  TextButton(buttonBar);
+        createButton->SetText("Create");
+        createButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
     
-    ConnectThisTo(createButton, Events::ButtonPressed, OnCreate);
-    
-    Composite* space = new Composite(buttonBar);
-    space->SetSizing(SizeAxis::X, SizePolicy::Flex, 1);
+        ConnectThisTo(createButton, Events::ButtonPressed, OnCreate);
 
-    TextButton* cancelButton = new  TextButton(buttonBar);
-    cancelButton->SetText("Cancel");
-    cancelButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
-    ConnectThisTo(cancelButton, Events::ButtonPressed, OnCancel);
-  }
+        TextButton* cancelButton = new  TextButton(buttonBar);
+        cancelButton->SetText("Cancel");
+        cancelButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
+        ConnectThisTo(cancelButton, Events::ButtonPressed, OnCancel);
+    }
   
-  Cog* projectCog = PL::gEditor->mProject;
+    Cog* projectCog = PL::gEditor->mProject;
 
-  if (projectCog != nullptr)
-  {
-      ProjectSettings* projectSettings = projectCog->has(ProjectSettings);
+    if (projectCog != nullptr)
+    {
+        ProjectSettings* projectSettings = projectCog->has(ProjectSettings);
 
-      if (projectSettings != nullptr)
-      {
-          mLibraryPath->SetText(FilePath::Combine(projectSettings->ProjectFolder, mNewLibraryName->GetText()));
-      }
-  }
+        if (projectSettings != nullptr)
+        {
+            mLibraryPath->SetText(FilePath::Combine(projectSettings->ProjectFolder, mNewLibraryName->GetText()));
+        }
+    }
 
-  UpdateLibraryPath();
+    UpdateLibraryPath();
 
-  ConnectThisTo(this, Events::KeyUp, OnKeyUp);
+    ConnectThisTo(this, Events::KeyUp, OnKeyUp);
 
 }
 
@@ -1735,6 +1735,86 @@ void LibraryView::OnCreateLibraryPress(Event* e)
 
   CenterToWindow(PL::gEditor, window, false);
   window->MoveToFront();
+}
+
+MoveItemUI::MoveItemUI(Composite* parent, LibraryView* libraryView): Composite(parent), mLibraryView(libraryView)
+{
+    this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 2), Thickness::cZero));
+
+    mLibrariesRow = new Composite(this);
+    mLibrariesRow->SetSizing(SizeAxis::Y, SizePolicy::Flex, Pixels(16));
+    mLibrariesRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Pixels(5, 0), Thickness(1, 0, 2, 0)));
+    new Label(mLibrariesRow, "Text", "Library: ");
+
+    mContentLibraries = new StringComboBox(mLibrariesRow);
+    BuildContentLibraryList();
+
+    Composite* buttonBar = new Composite(this);
+
+    buttonBar->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
+    {
+        Composite* space = new Composite(buttonBar);
+        space->SetSizing(SizeAxis::X, SizePolicy::Flex, 1);
+
+        TextButton* createButton = new  TextButton(buttonBar);
+        createButton->SetText("Move");
+        createButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
+
+        ConnectThisTo(createButton, Events::ButtonPressed, OnMove);
+
+        TextButton* cancelButton = new  TextButton(buttonBar);
+        cancelButton->SetText("Cancel");
+        cancelButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
+        ConnectThisTo(cancelButton, Events::ButtonPressed, OnCancel);
+    }
+}
+
+MoveItemUI::~MoveItemUI()
+{
+}
+
+void MoveItemUI::BuildContentLibraryList()
+{
+    mContentLibraries->ClearItems();
+    mLibrariesRow->SetActive(false);
+
+    forRange(ContentLibrary * library, PL::gContentSystem->Libraries.Values())
+    {
+        if (library == nullptr || library->GetReadOnly())
+            continue;
+
+        // Only show the library if a resource library was built from it and if it's writeable
+        if (PL::gResources->GetResourceLibrary(library->Name))
+            mContentLibraries->AddItem(library->Name);
+    }
+
+    // Enable dropdown selection menu for multiple libraries
+    if (mContentLibraries->GetCount() > 1)
+    {
+        mLibrariesRow->SetActive(true);
+    }
+}
+
+void MoveItemUI::OnMove(Event* e)
+{
+    if (PL::gEngine->IsReadOnly())
+    {
+        DoNotifyWarning("Resources", "Cannot rename resources in read-only mode");
+        return;
+    }
+
+    // compile list of selected resources
+    Resource* resource;
+
+    
+    
+    // execute the move func
+    MoveResource(resource, PL::gContentSystem->Libraries.FindValue(mContentLibraries->GetSelectedString(), nullptr));
+}
+
+void MoveItemUI::OnCancel(Event* e)
+{
+
 }
   
 } // namespace Plasma

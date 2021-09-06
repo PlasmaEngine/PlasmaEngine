@@ -42,6 +42,8 @@ public:
   String Name;
   String Path;
   String LastIdName;
+  String PreviousLocation;
+  String NewLocation;
   ResourceManager* Manager;
   Resource* EventResource;
   ResourceLibrary* EventResourceLibrary;
