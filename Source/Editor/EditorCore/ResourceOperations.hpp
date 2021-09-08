@@ -20,7 +20,7 @@ void AddResourcesFromFiles(const Array<String>& files, StringParam resourceType)
 Resource* DuplicateResource(Resource* resource, StringParam newName = String());
 
 // Move a resource
-bool MoveResource(Resource* resource, ContentLibrary* targetLibrary);
+bool MoveResource(Resource* resource, ContentLibrary* targetContentLibrary, ResourceLibrary* targetResourceLibrary);
 
 // Rename a resource
 bool RenameResource(Resource* resource, StringParam newName);

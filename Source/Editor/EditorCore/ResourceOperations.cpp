@@ -254,7 +254,7 @@ Resource* DuplicateResource(Resource* resource, StringParam expectedNewName)
   return duplicate;
 }
 
-bool MoveResource(Resource* resource, ContentLibrary* targetLibrary)
+bool MoveResource(Resource* resource, ContentLibrary* targetContentLibrary, ResourceLibrary* targetResourceLibrary)
 {
     if (PL::gEngine->IsReadOnly())
     {
@@ -266,27 +266,32 @@ bool MoveResource(Resource* resource, ContentLibrary* targetLibrary)
     String resourceTypeName = resourceManager->mResourceTypeName;
     ContentItem* contentItem = resource->mContentItem;
     String previousLocation = contentItem->mLibrary->SourcePath;
+    HandleOf<Resource> resourceHandle = resource;
 
     ReturnIf(!contentItem->mResourceIsContentItem, false, "Cannot move resource. The resource is either corrupted or a resource that is unable to move.");
-    ReturnIf(targetLibrary != nullptr, false, "Cannot move resource to a null library.");
-    ReturnIf(targetLibrary->GetReadOnly(), false, "Cannot move resource to a library that is read only.");
+    ReturnIf(targetContentLibrary == nullptr, false, "Cannot move resource to a null library.");
+    ReturnIf(targetContentLibrary->GetReadOnly(), false, "Cannot move resource to a library that is read only.");
 
-    bool result = PL::gContentSystem->MoveContentItem(contentItem, targetLibrary);
+    bool result = PL::gContentSystem->MoveContentItem(contentItem, targetContentLibrary);
     if (result == false)
     {
         DoNotifyWarning("Resources", "Moving resource failed.");
         return result;
     }
 
+    resource->mResourceLibrary->Resources.EraseValueError(resourceHandle);
+    resource->mResourceLibrary = targetResourceLibrary;
+    targetResourceLibrary->Resources.PushBack(resourceHandle);
     resource->UpdateContentItem(contentItem);
+    contentItem->SaveContent();
 
     ResourceEvent event;
     event.Name = resource->Name;
     event.Manager = resourceManager;
     event.EventResource = resource;
     event.PreviousLocation = previousLocation;
-    event.NewLocation = targetLibrary->SourcePath;
-    event.EventResourceLibrary = PL::gResources->GetResourceLibrary(targetLibrary->Name);
+    event.NewLocation = targetContentLibrary->SourcePath;
+    event.EventResourceLibrary = PL::gResources->GetResourceLibrary(targetContentLibrary->Name);
     resourceManager->DispatchEvent(Events::ResourceModified, &event);
     PL::gResources->DispatchEvent(Events::ResourceModified, &event);
 

@@ -79,6 +79,27 @@ namespace Plasma
 
     bool mCanCreateLibrary = true;
   };
+
+  class MoveItemUI : public Composite
+  {
+  public:
+    typedef MoveItemUI LightningSelf;
+
+    MoveItemUI(Composite* parent, LibraryView* libraryView);
+    ~MoveItemUI();
+
+    void BuildContentLibraryList();
+
+    void OnMove(Event* e);
+
+    void OnCancel(Event* e);
+
+  private:
+     StringComboBox* mContentLibraries;
+     LibraryView* mLibraryView;
+     Composite* mLibrariesRow;
+
+  };
   
 class LibraryView : public Composite
 {
@@ -117,10 +138,12 @@ public:
   float GetTagEditorSize(SizeAxis::Enum axis);
   void SetTagEditorSize(SizeAxis::Enum axis, float size);
 
-void SetSelectedByName(String name);
+  void SetSelectedByName(String name);
 
-/// Returns current selected library in view
-ContentLibrary* GetLibrary() { return mContentLibrary; }
+  /// Returns current selected library in view
+  ContentLibrary* GetLibrary() { return mContentLibrary; }
+
+  Array<Resource*> GetSelectedResources();
 
 private:
   void UpdateVisibleResources();
@@ -159,6 +182,7 @@ private:
   void OnEditTags(ObjectEvent* event);
   void OnMessageBox(MessageBoxEvent* event);
   void OnDuplicate(Event* event);
+
   /// Extra context menus for lightning fragment translation. These should
   /// eventually be moved to some external registration once it is possible.
   void OnComposeLightningMaterial(Event* event);
@@ -202,6 +226,7 @@ private:
 
   /// Displays AddLibraryUI Window.
   void OnCreateLibraryPress(Event* e);
+  void OnMoveResourcePress(Event* e);
   
   /// Used to hide
   HashSet<String> mHiddenLibraries;
