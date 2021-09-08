@@ -589,6 +589,7 @@ LibraryView::LibraryView(Composite* parent) : Composite(parent), mResourceLibrar
   ConnectThisTo(PL::gResources, Events::ResourcesLoaded, OnResourcesModified);
   ConnectThisTo(PL::gResources, Events::ResourcesUnloaded, OnResourcesModified);
   ConnectThisTo(PL::gResources, Events::ResourceTagsModified, OnResourcesModified);
+  ConnectThisTo(PL::gResources, Events::ResourceModified, OnResourcesModified);
 
   ConnectThisTo(mTreeView, Events::MouseScroll, OnMouseScroll);
 
@@ -944,11 +945,15 @@ void LibraryView::OnRightClickObject(Composite* objectToAttachTo, DataIndex inde
         
         if (mContentLibrary->GetWritable())
         {
-            ConnectMenu(menu, "Remove", OnRemove, false);
-            if (resource && resource->mManager->mCanDuplicate)
+            menu->AddDivider();
+            if (resource) {
+                ConnectMenu(menu, "Move", OnMoveResourcePress, false);
+            }
+            else if (resource && resource->mManager->mCanDuplicate)
             {
                 ConnectMenu(menu, "Duplicate", OnDuplicate, false);
             }
+            ConnectMenu(menu, "Remove", OnRemove, false);
         }
 
         BoundType* resourceType = LightningVirtualTypeId(resource);
@@ -1333,25 +1338,7 @@ void LibraryView::OnMessageBox(MessageBoxEvent* event)
 {
   if (event->ButtonIndex == MessageResult::Yes)
   {
-    Array<Resource*> resourcesToRemove;
-    // content items with an associated resource that will be deleted
-    HashSet<ContentItem*> contentItems;
-
-    for (uint i = 0; i < mCommandIndices.Size(); ++i)
-    {
-      DataIndex currIndex = mCommandIndices[i];
-      LibDataEntry* treeNode = (LibDataEntry*)mSource->ToEntry(currIndex);
-      if (Resource* resource = treeNode->mResource)
-      {
-        // only delete 1 resource for a content item as removing one removes all
-        // associated resources
-        if (!contentItems.Contains(resource->mContentItem))
-        {
-          resourcesToRemove.PushBack(resource);
-          contentItems.Insert(resource->mContentItem);
-        }
-      }
-    }
+    Array<Resource*> resourcesToRemove = GetSelectedResources();
 
     forRange (Resource* resource, resourcesToRemove.All())
     {
@@ -1372,6 +1359,19 @@ void LibraryView::OnDuplicate(Event* event)
   LibDataEntry* treeNode = (LibDataEntry*)mSource->ToEntry(mPrimaryCommandIndex);
   if (Resource* resource = treeNode->mResource)
     DuplicateResource(resource);
+}
+
+void LibraryView::OnMoveResourcePress(Event* e)
+{
+    Window* window = new Window(PL::gEditor);
+    MoveItemUI* moveItemUI = new MoveItemUI(window, this);
+
+    window->SizeToContents();
+    window->SetTitle("Move Resource");
+    window->SetDockMode(DockMode::DockNone);
+
+    CenterToWindow(PL::gEditor, window, false);
+    window->MoveToFront();
 }
 
 void LibraryView::OnComposeLightningMaterial(Event* event)
@@ -1737,6 +1737,29 @@ void LibraryView::OnCreateLibraryPress(Event* e)
   window->MoveToFront();
 }
 
+Array<Resource*> LibraryView::GetSelectedResources()
+{
+    Array<Resource*> selectedResources;
+    // content items with an associated resource will be selected
+    HashSet<ContentItem*> contentItems;
+
+    for (uint i = 0; i < mCommandIndices.Size(); ++i)
+    {
+        DataIndex currIndex = mCommandIndices[i];
+        LibDataEntry* treeNode = (LibDataEntry*)mSource->ToEntry(currIndex);
+        if (Resource* resource = treeNode->mResource)
+        {
+            if (!contentItems.Contains(resource->mContentItem))
+            {
+                selectedResources.PushBack(resource);
+                contentItems.Insert(resource->mContentItem);
+            }
+        }
+    }
+
+    return selectedResources;
+}
+
 MoveItemUI::MoveItemUI(Composite* parent, LibraryView* libraryView): Composite(parent), mLibraryView(libraryView)
 {
     this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 2), Thickness::cZero));
@@ -1747,6 +1770,7 @@ MoveItemUI::MoveItemUI(Composite* parent, LibraryView* libraryView): Composite(p
     new Label(mLibrariesRow, "Text", "Library: ");
 
     mContentLibraries = new StringComboBox(mLibrariesRow);
+    mContentLibraries->SetSizing(SizeAxis::X, SizePolicy::Flex, Pixels(16));
     BuildContentLibraryList();
 
     Composite* buttonBar = new Composite(this);
@@ -1803,18 +1827,24 @@ void MoveItemUI::OnMove(Event* e)
         return;
     }
 
-    // compile list of selected resources
-    Resource* resource;
+    // list of selected resources
+    Array<Resource*> resourcesToMove = mLibraryView->GetSelectedResources();
 
+    forRange(Resource * resource, resourcesToMove)
+    {
+        // execute the move func
+        if (MoveResource(resource, PL::gContentSystem->Libraries.FindValue(mContentLibraries->GetSelectedString(), nullptr), PL::gResources->GetResourceLibrary(mContentLibraries->GetSelectedString())))
+        {
+            mLibraryView->MarkAsNeedsUpdate();
+        }
+    }
     
-    
-    // execute the move func
-    MoveResource(resource, PL::gContentSystem->Libraries.FindValue(mContentLibraries->GetSelectedString(), nullptr));
-}
-
-void MoveItemUI::OnCancel(Event* e)
-{
-
+    OnCancel(nullptr);
 }
   
+void MoveItemUI::OnCancel(Event* e)
+{
+    CloseTabContaining(this);
+}
+
 } // namespace Plasma
