@@ -1,0 +1,15 @@
+[Version:1]
+Material 
+{
+	var RenderGroups = Array
+	{
+		"611c473b923dbe5a:Decal"
+	}
+	Decal 
+	{
+		var AlbedoMap = "5826e695131c0f51:Black"
+		var AlphaMap = "5826e695131ca33a:White"
+		var AlphaModifyer = 0.04595064
+		var AlphaMultiplier = 1
+	}
+}

@@ -1,0 +1,70 @@
+// MIT Licensed (see LICENSE.md).
+
+// Shader input attribute definitions
+// [AppBuiltInInput] Input comes from predefined data given by the graphics engine
+// [StageInput]      Input comes from the previous hardware stage (mesh -> vertex -> geometry -> pixel)
+// [FragmentInput]   Input comes from a previous fragment in the same stage
+// [PropertyInput]   Input comes from this fragment
+// [Input]           Input auto resolves from any of the previous in the order
+//                   [FragmentInput][StageInput][AppBuiltInInput][PropertyInput]
+//
+// Pixel fragment Example:
+// [FragmentInput][StageInput] var ViewNormal : Real3;
+// Input will come from a previous pixel fragment that outputs ViewNormal
+// otherwise, input will come from the vertex shader
+
+[Pixel]
+struct Decal
+{
+
+	// FarPlane from the Camera (positive value)
+	[AppBuiltInInput] var FarPlane : Real;
+  [FragmentInput][StageInput] var Uv : Real2;
+  
+	[AppBuiltInInput] var ViewToLocal : Real4x4;
+  
+  [FragmentInput][StageInput] var GeometryBuffer0 : SampledImage2d;
+  [FragmentInput][StageInput] var GeometryBuffer1 : SampledImage2d;
+  [Input][Output] var AlbedoMap : SampledImage2d;
+  [Input][Output] var AlphaMap : SampledImage2d;
+  [Input] var AlphaModifyer : Real = 0.0;
+  [Input] var AlphaMultiplier : Real = 1.0;
+
+  
+  [FragmentInput][Output] var Albedo : Real3;
+  [Output] var Metallic : Real;
+  [FragmentInput][StageInput][Output] var ViewNormal : Real3;
+  [Output] var ViewNormalMesh : Real3;
+  [StageInput] var ViewTangent : Real3;
+  [StageInput] var ViewBitangent : Real3;
+  
+  [FragmentInput][StageInput] var ViewPosition : Real3;
+  
+  [StageInput] var PerspectivePosition : Real4;
+  
+  function Main()
+  {
+    var screenCoord = Utility.NdcToScreenUv(this.PerspectivePosition.XY / this.PerspectivePosition.W);
+    var gbufferSample = this.GeometryBuffer0.Sample(screenCoord);
+    var gbuffer1Sample = this.GeometryBuffer1.Sample(screenCoord);
+    
+    var depth = GeometryPass.GetDepth(gbufferSample);
+    
+   this.ViewPosition = this.ViewPosition.XYZ * (this.FarPlane / - this.ViewPosition.Z);
+    this.ViewPosition *= depth;
+    
+    var worldPos = Math.Multiply(this.ViewToLocal, Real4(this.ViewPosition,1));
+    worldPos.XYZ /= worldPos.W;
+    
+    if(0.5 - Math.Abs(worldPos.X) < 0 || 0.5 - Math.Abs(worldPos.Y) < 0 || 0.5 - Math.Abs(worldPos.Z) < 0)
+      ShaderIntrinsics.Kill();
+      
+    var texCoord = worldPos.XY + Real2(0.5);
+    var albedo = this.AlbedoMap.Sample(texCoord);
+    var alpha = Math.Saturate((this.AlphaMap.Sample(texCoord).X + this.AlphaModifyer) * this.AlphaMultiplier);
+
+    this.Albedo = Math.Lerp(gbuffer1Sample.XYZ, albedo.XYZ, alpha);
+    this.Metallic = gbuffer1Sample.W;
+
+  }
+}

@@ -22,6 +22,9 @@ class DeferredRenderer : LightningComponent
   // Toggles output of the image-based lighting pass that uses the skybox.
   [Group("Settings")]
   [Property] var IndirectLighting : Boolean = true;
+  // Toggles decal rendering for the renderer
+  [Group("Settings")]
+  [Property] var RenderDecals : Boolean = true;
   // Arbitrary scalar for the output of IndirectLighting.
   [Group("Skybox")]
   [Property] var IndirectIntensity : Real = 1.0;
@@ -173,6 +176,33 @@ class DeferredRenderer : LightningComponent
     // Only process opaque pixels
     lightSettings.DepthSettings.StencilTestValue = 1 as Byte;
     
+     if(this.RenderDecals)
+    {
+      var decalSettings = RenderSettings();
+      decalSettings.ColorTarget = this.GBuffer1;
+      decalSettings.DepthTarget = this.Depth;
+    
+      var decalShaderInputs = ShaderInputs.Create();
+      decalShaderInputs.Add("Decal", "GeometryBuffer0", this.GBuffer0.Texture);
+      decalShaderInputs.Add("Decal", "GeometryBuffer1", this.GBuffer1.Texture);
+      decalSettings.GlobalShaderInputs = decalShaderInputs;
+    
+      decalSettings.DepthSettings.DepthMode = DepthMode.Read;
+      decalSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.GreaterEqual;
+      // Using stencil buffer to optimally identify which pixels had opaque objects rendered to them
+      decalSettings.DepthSettings.StencilMode = StencilMode.Enabled;
+      decalSettings.DepthSettings.StencilCompareFunc = TextureCompareFunc.Always;
+      decalSettings.DepthSettings.StencilFailOp = StencilOp.Keep;
+      decalSettings.DepthSettings.DepthFailOp = StencilOp.Keep;
+      decalSettings.DepthSettings.DepthPassOp = StencilOp.Replace;
+      decalSettings.DepthSettings.StencilTestValue = 1 as Byte;
+      decalSettings.CullMode = CullMode.FrontFace;
+      
+      var decalPass = DecalPass();
+      event.AddRenderTaskRenderPass(decalSettings, RenderGroup.Decal, decalPass, "Decals");
+    
+    }
+    
     if (this.GeometryDebug != GeometryValue.None)
     {
       // Bring skybox to gamma space for monitor display
@@ -213,7 +243,7 @@ class DeferredRenderer : LightningComponent
         
       return;
     }
-      
+    
     if (this.IndirectLighting)
     {
       var imageBasedLighting = ImageBasedLighting();
