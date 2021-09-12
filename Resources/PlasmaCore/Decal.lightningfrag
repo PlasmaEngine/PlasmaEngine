@@ -25,10 +25,16 @@ struct Decal
   
   [FragmentInput][StageInput] var GeometryBuffer0 : SampledImage2d;
   [FragmentInput][StageInput] var GeometryBuffer1 : SampledImage2d;
-  [Input][Output] var AlbedoMap : SampledImage2d;
   [Input][Output] var AlphaMap : SampledImage2d;
   [Input] var AlphaModifyer : Real = 0.0;
   [Input] var AlphaMultiplier : Real = 1.0;
+  
+  [Input] var UseAlbedo : Boolean = true;
+  [Input] var AlbedoMap : SampledImage2d;
+  
+  [Input] var UseMetallic : Boolean = true;
+  [Input] var MetallicMap : SampledImage2d;
+  [Input] var MetallicModifyer : Real = 0.0;
 
   
   [FragmentInput][Output] var Albedo : Real3;
@@ -50,7 +56,7 @@ struct Decal
     
     var depth = GeometryPass.GetDepth(gbufferSample);
     
-   this.ViewPosition = this.ViewPosition.XYZ * (this.FarPlane / - this.ViewPosition.Z);
+    this.ViewPosition = this.ViewPosition.XYZ * (this.FarPlane / - this.ViewPosition.Z);
     this.ViewPosition *= depth;
     
     var worldPos = Math.Multiply(this.ViewToLocal, Real4(this.ViewPosition,1));
@@ -62,9 +68,13 @@ struct Decal
     var texCoord = worldPos.XY + Real2(0.5);
     var albedo = this.AlbedoMap.Sample(texCoord);
     var alpha = Math.Saturate((this.AlphaMap.Sample(texCoord).X + this.AlphaModifyer) * this.AlphaMultiplier);
+    
+    var metallic = this.MetallicMap.Sample(texCoord).X + this.MetallicModifyer;
+    metallic = Math.Saturate(metallic);
+    
 
-    this.Albedo = Math.Lerp(gbuffer1Sample.XYZ, albedo.XYZ, alpha);
-    this.Metallic = gbuffer1Sample.W;
+    this.Albedo = Math.Lerp(gbuffer1Sample.XYZ, albedo.XYZ, alpha * this.UseAlbedo as Real);
+    this.Metallic = Math.Lerp(gbuffer1Sample.W, metallic, alpha * this.UseMetallic as Real);
 
   }
 }
