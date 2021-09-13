@@ -29,7 +29,6 @@ void FolderLocation::Create(Array<Widget*>& CreatedWidgets)
     Text* text = new Text(this, mStyle.mFont, 11);
     text->SetText(mLabel);
     text->SetColor(mStyle.mTextColor);
-    //CreatedWidgets.PushBack(text);
 
     new Spacer(this, SizePolicy::Fixed, Pixels(0, -9));
 
@@ -43,7 +42,6 @@ void FolderLocation::Create(Array<Widget*>& CreatedWidgets)
     ConnectThisTo(mLocation, Events::TextChanged, OnLocationTextChanged);
     ConnectThisTo(mLocation, Events::TextSubmit, OnLocationTextSubmit);
     ConnectThisTo(mLocation->mButton, Events::ButtonPressed, OnBrowseLocation);
-    //CreatedWidgets.PushBack(mLocation);
     
     CreatedWidgets.PushBack(this);
 }
