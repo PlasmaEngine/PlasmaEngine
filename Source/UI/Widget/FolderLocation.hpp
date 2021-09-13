@@ -49,7 +49,7 @@ public:
 	String mConfigSavedEventLabel;
 	FolderLocationStyle mStyle;
 
-	void Create(Array<Widget*>& CreatedWidgets);
+	void Create();
 
 	// overwrites the config value with the currently-entered text
 	void ApplyChange();

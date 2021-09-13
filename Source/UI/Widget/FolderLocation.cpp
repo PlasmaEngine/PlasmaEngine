@@ -24,7 +24,7 @@ FolderLocation::FolderLocation(Composite* parent) :
     SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 5)));
 }
 
-void FolderLocation::Create(Array<Widget*>& CreatedWidgets)
+void FolderLocation::Create()
 {
     Text* text = new Text(this, mStyle.mFont, 11);
     text->SetText(mLabel);
@@ -42,8 +42,6 @@ void FolderLocation::Create(Array<Widget*>& CreatedWidgets)
     ConnectThisTo(mLocation, Events::TextChanged, OnLocationTextChanged);
     ConnectThisTo(mLocation, Events::TextSubmit, OnLocationTextSubmit);
     ConnectThisTo(mLocation->mButton, Events::ButtonPressed, OnBrowseLocation);
-    
-    CreatedWidgets.PushBack(this);
 }
 
 void FolderLocation::OnLocationTextChanged(Event* e)

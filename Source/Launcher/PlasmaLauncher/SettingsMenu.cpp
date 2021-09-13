@@ -116,7 +116,8 @@ SettingsMenu::SettingsMenu(Modal* parent, LauncherWindow* launcher) :
       };
       mDefaultProjectLocation->mConfigSavedEventLabel = Events::LauncherConfigChanged;
       ConnectThisTo(mDefaultProjectLocation, Events::FolderLocationUpdated, OnDefaultProjectLocationChange);
-      mDefaultProjectLocation->Create(mWidgetsToAnimate);
+      mDefaultProjectLocation->Create();
+      mWidgetsToAnimate.PushBack(mDefaultProjectLocation);
   }
 
   // Download location
@@ -136,7 +137,8 @@ SettingsMenu::SettingsMenu(Modal* parent, LauncherWindow* launcher) :
       mDownloadLocation->mConfigSavedEventLabel = Events::LauncherConfigChanged;
       ConnectThisTo(mDownloadLocation, Events::FolderLocationUpdated, OnDownloadLocationTextSubmit);
       ConnectThisTo(mDownloadLocation, Events::ConfigChangeApplied, MoveDownloadLocation);
-      mDownloadLocation->Create(mWidgetsToAnimate);
+      mDownloadLocation->Create();
+      mWidgetsToAnimate.PushBack(mDownloadLocation);
   }
 
   // ContentOutput location
@@ -156,7 +158,8 @@ SettingsMenu::SettingsMenu(Modal* parent, LauncherWindow* launcher) :
     mContentOutputLocation->mConfigSavedEventLabel = Events::LauncherConfigChanged;
     ConnectThisTo(mContentOutputLocation, Events::FolderLocationUpdated, OnContentOutputLocationTextSubmit);
     ConnectThisTo(mContentOutputLocation, Events::ConfigChangeApplied, MoveContentOutputLocation);
-    mContentOutputLocation->Create(mWidgetsToAnimate);
+    mContentOutputLocation->Create();
+    mWidgetsToAnimate.PushBack(mContentOutputLocation);
   }
 
   new Spacer(this, SizePolicy::Fixed, Pixels(0, 10));
