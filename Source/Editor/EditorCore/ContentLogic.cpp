@@ -19,8 +19,18 @@ void LoadContentConfig()
   String sourceDirectory = mainConfig->SourceDirectory;
   ErrorIf(sourceDirectory.Empty(), "Expected a source directory");
 
+  String contentOutputDirectory = GetUserDocumentsApplicationDirectory();
+
   if (contentConfig)
-    librarySearchPaths.InsertAt(0, contentConfig->LibraryDirectories.All());
+  {
+      librarySearchPaths.InsertAt(0, contentConfig->LibraryDirectories.All());
+
+      if (contentConfig->ContentOutput.Empty() == false)
+      {
+          PlasmaTodo("(Matt, 2021-8-29): validate new content output path? Depends on whether validation occurs before serialization");
+          contentOutputDirectory = contentConfig->ContentOutput;
+      }
+  }
 
   librarySearchPaths.PushBack(FilePath::Combine(sourceDirectory, "Resources"));
 
@@ -32,8 +42,9 @@ void LoadContentConfig()
   // version selector goes live) set the content folder to a unique directory
   // based upon the version number
   String revisionChangesetName = BuildString("Version-", GetRevisionNumberString(), "-", GetChangeSetString());
+
   contentSystem->ContentOutputPath =
-      FilePath::Combine(GetUserDocumentsApplicationDirectory(), "ContentOutput", revisionChangesetName);
+      FilePath::Combine(contentOutputDirectory, "ContentOutput", revisionChangesetName);
   contentSystem->PrebuiltContentPath =
       FilePath::Combine(sourceDirectory, "Build", "PrebuiltContent", revisionChangesetName);
   PlasmaPrint("Content output directory '%s'\n", contentSystem->ContentOutputPath.c_str());

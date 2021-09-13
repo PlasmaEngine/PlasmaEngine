@@ -17,6 +17,7 @@ class DataEvent;
 class DefinitionSet;
 class DispatchAtParams;
 class DisplayRender;
+class FolderLocation;
 class GraphicsEngine;
 class Gripper;
 class GripZones;
@@ -105,3 +106,4 @@ DeclareEnum6(ToolTipColorScheme, Default, Gray, Red, Yellow, Green, Orange);
 #include "MultiManager.hpp"
 #include "Viewport.hpp"
 #include "LabeledTextBox.hpp"
+#include "FolderLocation.hpp"
