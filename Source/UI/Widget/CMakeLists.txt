@@ -23,6 +23,8 @@ target_sources(Widget
     ${CMAKE_CURRENT_LIST_DIR}/Controls.hpp
     ${CMAKE_CURRENT_LIST_DIR}/EditText.cpp
     ${CMAKE_CURRENT_LIST_DIR}/EditText.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/FolderLocation.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FolderLocation.hpp
     ${CMAKE_CURRENT_LIST_DIR}/Events.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Events.hpp
     ${CMAKE_CURRENT_LIST_DIR}/ImageWidget.cpp

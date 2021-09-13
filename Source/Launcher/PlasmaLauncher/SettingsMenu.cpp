@@ -90,46 +90,76 @@ SettingsMenu::SettingsMenu(Modal* parent, LauncherWindow* launcher) :
 
   new Spacer(this, SizePolicy::Fixed, Pixels(0, 10));
 
+  // build common style struct for FolderLocation objects
+  FolderLocationStyle style;
+  style.mFont = mLauncherRegularFont;
+  style.mTextColor = SettingsUi::SettingsColor;
+  style.mBackgroundColor = SettingsUi::BackgroundColor;
+  style.mHoverColor = SettingsUi::SettingsHoverColor;
+  style.mClickedColor = SettingsUi::SettingsClickedColor;
+  style.mButtonHoverColor = SettingsUi::TextBoxButtonHover;
+  style.mButtonClickedColor = SettingsUi::TextBoxButtonClicked;
+
   // Default Project Location
   {
-    Text* text = new Text(this, mLauncherRegularFont, 11);
-    text->SetText("DEFAULT PROJECT LOCATION");
-    text->SetColor(SettingsUi::SettingsColor);
-    mWidgetsToAnimate.PushBack(text);
-
-    new Spacer(this, SizePolicy::Fixed, Pixels(0, -9));
-
-    mDefaultProjectLocation = new TextBoxButton(this, "OpenFolderIcon");
-    mDefaultProjectLocation->SetStyle(TextBoxStyle::Modern);
-    mDefaultProjectLocation->SetEditable(true);
-    mDefaultProjectLocation->mEditTextField->mFont->mFontHeight = 10;
-    mDefaultProjectLocation->mButton->mBackgroundColor = ToByteColor(SettingsUi::BackgroundColor);
-    mDefaultProjectLocation->mButton->mBackgroundHoverColor = ToByteColor(SettingsUi::TextBoxButtonHover);
-    mDefaultProjectLocation->mButton->mBackgroundClickedColor = ToByteColor(SettingsUi::TextBoxButtonClicked);
-    ConnectThisTo(mDefaultProjectLocation, Events::TextSubmit, OnProjectLocationTextSubmit);
-    mWidgetsToAnimate.PushBack(mDefaultProjectLocation);
-    ConnectThisTo(mDefaultProjectLocation->mButton, Events::ButtonPressed, OnBrowseProjectLocation);
+      mDefaultProjectLocation = new FolderLocation(this);
+      mDefaultProjectLocation->mStyle = style;
+      mDefaultProjectLocation->mLabel = "DEFAULT PROJECT LOCATION";
+      mDefaultProjectLocation->mFileDialogFilterDescription = "Project Folder";
+      mDefaultProjectLocation->GetConfigValue = []() {
+          LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
+          return config->mDefaultProjectSaveLocation;
+      };
+      mDefaultProjectLocation->SetConfigValue = [](String value) {
+          LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
+          config->mDefaultProjectSaveLocation = value;
+      };
+      mDefaultProjectLocation->mConfigSavedEventLabel = Events::LauncherConfigChanged;
+      ConnectThisTo(mDefaultProjectLocation, Events::FolderLocationUpdated, OnDefaultProjectLocationChange);
+      mDefaultProjectLocation->Create();
+      mWidgetsToAnimate.PushBack(mDefaultProjectLocation);
   }
 
   // Download location
   {
-    Text* text = new Text(this, mLauncherRegularFont, 11);
-    text->SetText("DEFAULT DOWNLOAD LOCATION");
-    text->SetColor(SettingsUi::SettingsColor);
-    mWidgetsToAnimate.PushBack(text);
+      mDownloadLocation = new FolderLocation(this);
+      mDownloadLocation->mStyle = style;
+      mDownloadLocation->mLabel = "DEFAULT DOWNLOAD LOCATION";
+      mDownloadLocation->mFileDialogFilterDescription = "Download Folder";
+      mDownloadLocation->GetConfigValue = []() {
+          LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
+          return config->mDownloadPath;
+      };
+      mDownloadLocation->SetConfigValue = [](String value) {
+          LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
+          config->mDownloadPath = value;
+      };
+      mDownloadLocation->mConfigSavedEventLabel = Events::LauncherConfigChanged;
+      ConnectThisTo(mDownloadLocation, Events::FolderLocationUpdated, OnDownloadLocationTextSubmit);
+      ConnectThisTo(mDownloadLocation, Events::ConfigChangeApplied, MoveDownloadLocation);
+      mDownloadLocation->Create();
+      mWidgetsToAnimate.PushBack(mDownloadLocation);
+  }
 
-    new Spacer(this, SizePolicy::Fixed, Pixels(0, -9));
-
-    mDownloadLocation = new TextBoxButton(this, "OpenFolderIcon");
-    mDownloadLocation->SetStyle(TextBoxStyle::Modern);
-    mDownloadLocation->SetEditable(true);
-    mDownloadLocation->mButton->mBackgroundColor = ToByteColor(SettingsUi::BackgroundColor);
-    mDownloadLocation->mButton->mBackgroundHoverColor = ToByteColor(SettingsUi::TextBoxButtonHover);
-    mDownloadLocation->mButton->mBackgroundClickedColor = ToByteColor(SettingsUi::TextBoxButtonClicked);
-    ConnectThisTo(mDownloadLocation, Events::TextChanged, OnDownloadLocationTextChanged);
-    ConnectThisTo(mDownloadLocation, Events::TextSubmit, OnDownloadLocationTextSubmit);
-    mWidgetsToAnimate.PushBack(mDownloadLocation);
-    ConnectThisTo(mDownloadLocation->mButton, Events::ButtonPressed, OnBrowseDownloadLocation);
+  // ContentOutput location
+  {
+    mContentOutputLocation = new FolderLocation(this);
+    mContentOutputLocation->mStyle = style;
+    mContentOutputLocation->mLabel = "DEFAULT CACHE LOCATION";
+    mContentOutputLocation->mFileDialogFilterDescription = "Content Cache";
+    mContentOutputLocation->GetConfigValue = [](){ 
+        ContentConfig* config = PL::gEngine->GetConfigCog()->has(ContentConfig);
+        return config->ContentOutput;
+    };
+    mContentOutputLocation->SetConfigValue = [](String value) {
+        ContentConfig* config = PL::gEngine->GetConfigCog()->has(ContentConfig);
+        config->ContentOutput = value;
+    };
+    mContentOutputLocation->mConfigSavedEventLabel = Events::LauncherConfigChanged;
+    ConnectThisTo(mContentOutputLocation, Events::FolderLocationUpdated, OnContentOutputLocationTextSubmit);
+    ConnectThisTo(mContentOutputLocation, Events::ConfigChangeApplied, MoveContentOutputLocation);
+    mContentOutputLocation->Create();
+    mWidgetsToAnimate.PushBack(mContentOutputLocation);
   }
 
   new Spacer(this, SizePolicy::Fixed, Pixels(0, 10));
@@ -264,149 +294,119 @@ void SettingsMenu::OnDeactivated(Event* e)
     modal->Cancel();
 }
 
-void SettingsMenu::OnProjectLocationTextSubmit(Event* e)
+
+void SettingsMenu::OnDefaultProjectLocationChange(StringChangeEvent* e)
 {
-  LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
-
-  PlasmaPrint("Settings: Changing project location from '%s' to '%s'\n",
-         config->mDefaultProjectSaveLocation.c_str(),
-         mDefaultProjectLocation->GetText().c_str());
-
-  config->mDefaultProjectSaveLocation = mDefaultProjectLocation->GetText();
-  SaveConfig();
-
-  Event toSend;
-  PL::gEngine->GetConfigCog()->DispatchEvent(Events::LauncherConfigChanged, &toSend);
+    PlasmaPrint("Settings: Changing default project location from '%s' to '%s'\n", e->OldValue.c_str(), e->NewValue.c_str());
+    mDefaultProjectLocation->ApplyChange();
 }
 
-void SettingsMenu::OnBrowseProjectLocation(Event* e)
+void SettingsMenu::OnDownloadLocationTextSubmit(StringChangeEvent* e)
 {
-  // Set up the callback for when project file is selected
-  const String CallBackEvent = "ProjectLocationCallback";
-  if (!GetDispatcher()->IsConnected(CallBackEvent, this))
-    ConnectThisTo(this, CallBackEvent, OnBrowseProjectLocationSelected);
-
-  // Open the open file dialog
-  FileDialogConfig* config = FileDialogConfig::Create();
-  config->EventName = CallBackEvent;
-  config->CallbackObject = this;
-  config->Title = "Select a folder";
-  config->AddFilter("Project Folder", "*.none");
-  config->DefaultFileName = mDefaultProjectLocation->GetText();
-  config->StartingDirectory = mDefaultProjectLocation->GetText();
-  config->Flags |= FileDialogFlags::Folder;
-  PL::gEngine->has(OsShell)->SaveFile(config);
-}
-
-void SettingsMenu::OnBrowseProjectLocationSelected(OsFileSelection* e)
-{
-  if (e->Files.Size() > 0)
-  {
-    String path = BuildString(FilePath::GetDirectoryPath(e->Files[0]), cDirectorySeparatorCstr);
-    mDefaultProjectLocation->SetText(path);
-    OnProjectLocationTextSubmit(nullptr);
-  }
-}
-
-void SettingsMenu::OnDownloadLocationTextChanged(Event* e)
-{
-  // If there's an active tooltip then destroy it (the user is changing the text
-  // right now)
-  ToolTip* toolTip = mToolTip;
-  if (toolTip != nullptr)
-    toolTip->Destroy();
-}
-
-void SettingsMenu::OnDownloadLocationTextSubmit(Event* e)
-{
-  LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
-  String oldDownloadPath = config->mDownloadPath;
-  String oldDownloadPathWithSeparator = BuildString(oldDownloadPath, cDirectorySeparatorCstr);
+  String& oldDownloadPath = e->OldValue;
+  String& newDownloadPath = e->NewValue;
 
   // Since we're just moving the folder to the new location, we can't move to a
   // sub-folder of the current location, to detect this we're just seeing if the
   // starting paths are the same (by adding a trailing '\' right now, hopefully
   // that's sufficient) and if they are we're just showing a tooltip to the user
-  String newPathWithSeparator = BuildString(FilePath::Normalize(mDownloadLocation->GetText()), cDirectorySeparatorCstr);
-  if (newPathWithSeparator.StartsWith(oldDownloadPathWithSeparator))
+  String oldPathWithSeparator = BuildString(oldDownloadPath, cDirectorySeparatorCstr);
+  String newPathWithSeparator = BuildString(FilePath::Normalize(newDownloadPath), cDirectorySeparatorCstr);
+  if (newPathWithSeparator.StartsWith(oldPathWithSeparator))
   {
-    mDownloadLocation->SetText(config->mDownloadPath);
-
-    ToolTip* toolTip = new ToolTip(mDownloadLocation, "Cannot move to sub-directory");
-    mToolTip = toolTip;
-    // Don't have the tooltip destroyed when the mouse leaves the text box
-    toolTip->SetDestroyOnMouseExit(false);
-    // Queue up an action to destroy the tooltip after a little bit
-    ActionSequence* seq = new ActionSequence(toolTip);
-    seq->Add(new ActionDelay(5.0f));
-    seq->Add(new CallAction<Widget, &Widget::Destroy>(toolTip));
+    mDownloadLocation->ResetWithError("Cannot move to sub-directory");
     return;
   }
 
   // Make a confirmation dialog to see if the user whats to move
   // the downloads folder and contents to the new location
   ModalConfirmAction* modal = new ModalConfirmAction(mParentModal, "Move downloads to new location?");
-  ConnectThisTo(modal, Events::ModalConfirmResult, OnChangeDownloadLocation);
+  ConnectThisTo(modal, Events::ModalConfirmResult, OnConfirmChangeDownloadLocation);
   mConfirmModal = modal;
 }
 
-void SettingsMenu::OnBrowseDownloadLocation(Event* e)
+void SettingsMenu::OnConfirmChangeDownloadLocation(ModalConfirmEvent* e)
 {
-  // Set up the callback for when project file is selected
-  const String CallBackEvent = "DownloadLocationCallback";
-  if (!GetDispatcher()->IsConnected(CallBackEvent, this))
-    ConnectThisTo(this, CallBackEvent, OnBrowseDownloadLocationSelected);
-
-  // Open the open file dialog
-  FileDialogConfig* config = FileDialogConfig::Create();
-  config->EventName = CallBackEvent;
-  config->CallbackObject = this;
-  config->Title = "Select a folder";
-  config->AddFilter("Project Folder", "*.none");
-  config->StartingDirectory = mDownloadLocation->GetText();
-  config->Flags |= FileDialogFlags::Folder;
-  PL::gEngine->has(OsShell)->SaveFile(config);
-}
-
-void SettingsMenu::OnBrowseDownloadLocationSelected(OsFileSelection* e)
-{
-  if (e->Files.Size() > 0)
-  {
-    String path = FilePath::GetDirectoryPath(e->Files[0]);
-    mDownloadLocation->SetText(path);
-
-    OnDownloadLocationTextSubmit(nullptr);
-  }
-}
-
-void SettingsMenu::OnChangeDownloadLocation(ModalConfirmEvent* e)
-{
-  LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
   if (e->mConfirmed == true)
   {
-    // Grab the old download path and update to the new one
-    String oldDownloadPath = config->mDownloadPath;
-    config->mDownloadPath = mDownloadLocation->GetText();
-    SaveConfig();
-
-    PlasmaPrint("Settings: Changing downloads from '%s' to '%s'\n", oldDownloadPath.c_str(), config->mDownloadPath.c_str());
-
-    // Move the old folder to the new location
-    MoveFolderContents(config->mDownloadPath, oldDownloadPath);
-    // Currently Move doesn't delete the old directory, so delete it...
-    if (oldDownloadPath != config->mDownloadPath)
-      DeleteDirectory(oldDownloadPath);
-
-    Event toSend;
-    PL::gEngine->GetConfigCog()->DispatchEvent(Events::LauncherConfigChanged, &toSend);
+    mDownloadLocation->ApplyChange();
   }
   else
   {
     // They hit cancel, set the download location text back to the config's
     // settings
-    mDownloadLocation->SetText(config->mDownloadPath);
+    mDownloadLocation->Reset();
   }
 }
+
+void SettingsMenu::MoveDownloadLocation(StringChangeEvent* e)
+{
+    String oldPath = e->OldValue;
+    String newPath = e->NewValue;
+
+    PlasmaPrint("Settings: Changing downloads from '%s' to '%s'\n", oldPath.c_str(), newPath.c_str());
+
+    // Move the old folder to the new location
+    MoveFolderContents(newPath, oldPath);
+    // Currently Move doesn't delete the old directory, so delete it...
+    if (oldPath != newPath)
+        DeleteDirectory(oldPath);
+}
+
+
+void SettingsMenu::OnContentOutputLocationTextSubmit(StringChangeEvent* e)
+{
+    String& oldPath = e->OldValue;
+    String& newPath = e->NewValue;
+
+    // Since we're just moving the folder to the new location, we can't move to a
+    // sub-folder of the current location, to detect this we're just seeing if the
+    // starting paths are the same (by adding a trailing '\' right now, hopefully
+    // that's sufficient) and if they are we're just showing a tooltip to the user
+    String oldPathWithSeparator = BuildString(oldPath, cDirectorySeparatorCstr);
+    String newPathWithSeparator = BuildString(FilePath::Normalize(newPath), cDirectorySeparatorCstr);
+    if (newPathWithSeparator.StartsWith(oldPathWithSeparator))
+    {
+        mContentOutputLocation->ResetWithError("Cannot move to sub-directory");
+        return;
+    }
+
+    // Make a confirmation dialog to see if the user whats to move
+    // the downloads folder and contents to the new location
+    ModalConfirmAction* modal = new ModalConfirmAction(mParentModal, "Move content cache to new location?");
+    ConnectThisTo(modal, Events::ModalConfirmResult, OnConfirmChangeDownloadLocation);
+    mConfirmModal = modal;
+}
+
+void SettingsMenu::OnConfirmChangeContentOutputLocation(ModalConfirmEvent* e)
+{
+    if (e->mConfirmed == true)
+    {
+        mContentOutputLocation->ApplyChange();
+    }
+    else
+    {
+        // They hit cancel, set the download location text back to the config's settings
+        mContentOutputLocation->Reset();
+    }
+}
+
+void SettingsMenu::MoveContentOutputLocation(StringChangeEvent* e)
+{
+    String oldPath = e->OldValue;
+    String newPath = e->NewValue;
+
+    PlasmaPrint("Settings: Changing content cache from '%s' to '%s'\n", oldPath.c_str(), newPath.c_str());
+
+    // Move the old folder to the new location
+    MoveFolderContents(newPath, oldPath);
+    // Currently Move doesn't delete the old directory, so delete it...
+    if (oldPath != newPath)
+        DeleteDirectory(oldPath);
+
+    PlasmaTodo("Update DefaultEditorConfiguration.data with new ContentOutput cache location");
+}
+
 
 void SettingsMenu::OnAutoRunModeSelected(Event* e)
 {
@@ -515,8 +515,8 @@ void SettingsMenu::LoadFromConfig()
   LauncherConfig* config = PL::gEngine->GetConfigCog()->has(LauncherConfig);
   RecentProjects* recentProjects = PL::gEngine->GetConfigCog()->has(RecentProjects);
 
-  mDefaultProjectLocation->SetText(config->mDefaultProjectSaveLocation);
-  mDownloadLocation->SetText(config->mDownloadPath);
+  mDefaultProjectLocation->Reset();
+  mDownloadLocation->Reset();
   mAutoRunMode->SetSelectedItem(config->mAutoRunMode, false);
 
   mMaxNumberOfRecentProjects->SetText(ToString(recentProjects->mMaxRecentProjects));
@@ -596,5 +596,6 @@ void SettingsMenu::AnimateOut()
   forRange (Widget* widget, mWidgetsToAnimate.All())
     group->Add(MoveWidgetAction(widget, destination, SettingsUi::SlideInTime));
 }
+
 
 } // namespace Plasma
