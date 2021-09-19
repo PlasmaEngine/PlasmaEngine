@@ -1849,11 +1849,15 @@ void MoveItemUI::BuildContentLibraryList()
 
     }
 
+    if (mContentLibraries->GetCount() >= 1)
+    {
+        mContentLibraries->SetSelectedItem(0, false);
+    }
+
     // Enable dropdown selection menu for multiple libraries
     if (mContentLibraries->GetCount() > 1)
     {
         mLibrariesRow->SetActive(true);
-        mContentLibraries->SetSelectedItem(0, false);
     }
 }
 
@@ -1871,6 +1875,10 @@ void MoveItemUI::OnMove(Event* e)
         if (MoveResource(resource, PL::gContentSystem->Libraries.FindValue(mContentLibraries->GetSelectedString(), nullptr), PL::gResources->GetResourceLibrary(mContentLibraries->GetSelectedString())))
         {
             mLibraryView->MarkAsNeedsUpdate();
+        }
+        else
+        {
+            DoNotifyWarning("Resources", "Moving resource " + resource->Name + " failed.");
         }
     }
     

@@ -98,12 +98,6 @@ void LoadCoreContent(Array<String>& coreLibs)
 
   PlasmaPrint("Loading Content...\n");
 
-  PL::gContentSystem->PlasmaCoreLibraryNames.PushBack("FragmentCore");
-  PL::gContentSystem->PlasmaCoreLibraryNames.PushBack("Loading");
-
-  LoadContentLibrary("FragmentCore");
-  LoadContentLibrary("Loading");
-
   forRange (String libraryName, coreLibs.All())
   {
     LoadContentLibrary(libraryName);
