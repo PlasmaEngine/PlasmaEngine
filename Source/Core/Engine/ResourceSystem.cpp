@@ -158,7 +158,7 @@ ResourceLibrary* ResourceSystem::LoadPackage(Status& status, ResourcePackage* pa
   // Core first, then others) and pretend we're always dependent upon the
   // previous resource library
   ResourceLibrary* lastResourceLibrary = nullptr;
-  forRange (ResourceLibrary* library, LoadedPlasmaCoreLibraries.Values())
+  forRange (ResourceLibrary* library, LoadedDependencyLibraries.Values())
   {
     lastResourceLibrary = library;
   }
@@ -170,7 +170,10 @@ ResourceLibrary* ResourceSystem::LoadPackage(Status& status, ResourcePackage* pa
   LoadedResourceLibraries.InsertOrError(package->Name, resourceLibrary);
 
   if (PL::gContentSystem->PlasmaCoreLibraryNames.Contains(package->Name))
+  {
       LoadedPlasmaCoreLibraries.InsertOrError(package->Name, resourceLibrary);
+      LoadedDependencyLibraries.InsertOrError(package->Name, resourceLibrary);
+  }
 
   if (lastResourceLibrary != nullptr)
     resourceLibrary->AddDependency(lastResourceLibrary);
@@ -308,6 +311,11 @@ void ResourceSystem::LoadIntoLibrary(Status& status,
 
     if (resource)
       resourceLibrary->Add(resource, isNew);
+
+    if (resourceLibrary->mFragments.Size() > 0 && !LoadedDependencyLibraries.ContainsKey(resourceLibrary->Name))
+    {
+        LoadedDependencyLibraries.InsertOrError(resourceLibrary->Name, resourceLibrary);
+    }
   }
 
   if (!status)
