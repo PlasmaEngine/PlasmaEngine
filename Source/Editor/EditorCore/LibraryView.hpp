@@ -88,16 +88,20 @@ namespace Plasma
     MoveItemUI(Composite* parent, LibraryView* libraryView);
     ~MoveItemUI();
 
+    //Used to retrieve and build all libraries we can move resources to.
     void BuildContentLibraryList();
 
+    //Executed when the user presses the move button.
     void OnMove(Event* e);
 
+    //Executed when the cancel button is pressed.
     void OnCancel(Event* e);
 
   private:
      StringComboBox* mContentLibraries;
      LibraryView* mLibraryView;
      Composite* mLibrariesRow;
+     Array<Resource*> mResourcesToMove;
 
   };
   
@@ -128,6 +132,9 @@ public:
 
   /// Sets the current search to the given tags.
   void SetSearchTags(TagList& tags);
+
+  /// Gets currently selected library's name
+  String GetSelectedLibraryName();
 
   /// Creates a preview group of the given tag with the current search as
   /// extra tags.
