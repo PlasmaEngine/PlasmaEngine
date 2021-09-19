@@ -946,13 +946,16 @@ void LibraryView::OnRightClickObject(Composite* objectToAttachTo, DataIndex inde
         if (mContentLibrary->GetWritable())
         {
             menu->AddDivider();
+            
             if (resource) {
                 ConnectMenu(menu, "Move", OnMoveResourcePress, false);
             }
-            else if (resource && resource->mManager->mCanDuplicate)
+            
+            if (resource && resource->mManager->mCanDuplicate)
             {
                 ConnectMenu(menu, "Duplicate", OnDuplicate, false);
             }
+            
             ConnectMenu(menu, "Remove", OnRemove, false);
         }
 
@@ -1760,18 +1763,63 @@ Array<Resource*> LibraryView::GetSelectedResources()
     return selectedResources;
 }
 
+String LibraryView::GetSelectedLibraryName()
+{
+    return mContentLibrary != nullptr ? mContentLibrary->Name : "";
+}
+
 MoveItemUI::MoveItemUI(Composite* parent, LibraryView* libraryView): Composite(parent), mLibraryView(libraryView)
 {
-    this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 2), Thickness::cZero));
+    this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(5, 2), Thickness::cZero));
 
     mLibrariesRow = new Composite(this);
-    mLibrariesRow->SetSizing(SizeAxis::Y, SizePolicy::Flex, Pixels(16));
+    mLibrariesRow->SetSizing(SizeAxis::Y, SizePolicy::Flex, Pixels(0));
     mLibrariesRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Pixels(5, 0), Thickness(1, 0, 2, 0)));
-    new Label(mLibrariesRow, "Text", "Library: ");
+    {
+        new Label(mLibrariesRow, "Text", "Library: ");
 
-    mContentLibraries = new StringComboBox(mLibrariesRow);
-    mContentLibraries->SetSizing(SizeAxis::X, SizePolicy::Flex, Pixels(16));
-    BuildContentLibraryList();
+        mContentLibraries = new StringComboBox(mLibrariesRow);
+        mContentLibraries->SetSizing(SizeAxis::X, SizePolicy::Flex, Pixels(18));
+        BuildContentLibraryList();
+
+        mResourcesToMove = mLibraryView->GetSelectedResources();
+    }
+
+    Composite* textBar = new Composite(this);
+
+    textBar->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Vec2::cZero, Thickness(1,4,1,4)));
+    {
+        Text* moveText = new Text(textBar, "NotoSans-Regular", 11);
+        moveText->SetText("Selected resources to move are:");
+
+        Widget* divider1 = new ContextMenuDivider(textBar, MenuUi::GutterColor);
+
+        int numberOfNamesPerLine = 5;
+        // This breaks up the display of the names of resources so that if a user has like 30 items selected, it won't extend off the screen
+        for (int i = 0; i < mResourcesToMove.Size(); i += numberOfNamesPerLine)
+        {
+            String resourcesToMove;
+            int nextNumberToStopAt = mResourcesToMove.Size() - i >= numberOfNamesPerLine ? (i + numberOfNamesPerLine) : mResourcesToMove.Size();
+
+            for (int j = i; j < nextNumberToStopAt; j++)
+            {
+                resourcesToMove = resourcesToMove + mResourcesToMove[j]->Name + ", ";
+            }
+
+            Text* resourceText = new Text(textBar, "NotoSans-Regular", 11);
+            resourceText->SetText(resourcesToMove);
+        }
+
+        Widget* divider2 = new ContextMenuDivider(textBar, MenuUi::GutterColor);
+        
+        Text* warningText1 = new Text(textBar, "NotoSans-Regular", 11);
+        warningText1->SetText("This operation cannot be undone, and may possibly break dependent assets.");
+        
+        Text* warningText2 = new Text(textBar, "NotoSans-Regular", 11); 
+        warningText2->SetText("Please be sure to double check the selected resources.");
+
+
+    }
 
     Composite* buttonBar = new Composite(this);
 
@@ -1810,12 +1858,14 @@ void MoveItemUI::BuildContentLibraryList()
         // Only show the library if a resource library was built from it and if it's writeable
         if (PL::gResources->GetResourceLibrary(library->Name))
             mContentLibraries->AddItem(library->Name);
+
     }
 
     // Enable dropdown selection menu for multiple libraries
     if (mContentLibraries->GetCount() > 1)
     {
         mLibrariesRow->SetActive(true);
+        mContentLibraries->SetSelectedItem(0, false);
     }
 }
 
@@ -1823,14 +1873,11 @@ void MoveItemUI::OnMove(Event* e)
 {
     if (PL::gEngine->IsReadOnly())
     {
-        DoNotifyWarning("Resources", "Cannot rename resources in read-only mode");
+        DoNotifyWarning("Resources", "Cannot move resources in read-only mode");
         return;
     }
 
-    // list of selected resources
-    Array<Resource*> resourcesToMove = mLibraryView->GetSelectedResources();
-
-    forRange(Resource * resource, resourcesToMove)
+    forRange(Resource* resource, mResourcesToMove)
     {
         // execute the move func
         if (MoveResource(resource, PL::gContentSystem->Libraries.FindValue(mContentLibraries->GetSelectedString(), nullptr), PL::gResources->GetResourceLibrary(mContentLibraries->GetSelectedString())))
