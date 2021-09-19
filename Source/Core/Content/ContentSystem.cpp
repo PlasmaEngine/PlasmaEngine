@@ -695,6 +695,7 @@ bool ContentSystem::MoveContentItem(ContentItem* contentItem, ContentLibrary* ta
     // Does a file with this name already exist?
     // Does a file with the same name exist in the target library folder? If not, then we need to move it.
 
+    // TODO: add dialogue here instead to ask the user if they want to overwrite whatever file exists here.
     bool fileExistsAtNewDirectory = FileExists(newFullPath);
     if (fileExistsAtNewDirectory && (currentLibrary->SourcePath != targetLibrary->SourcePath))
     {
@@ -715,6 +716,8 @@ bool ContentSystem::MoveContentItem(ContentItem* contentItem, ContentLibrary* ta
 
     currentLibrary->Load();
     targetLibrary->Load();
+
+    contentItem->SaveContent();
 
     return true;
 }

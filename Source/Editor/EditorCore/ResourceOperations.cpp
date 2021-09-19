@@ -268,14 +268,14 @@ bool MoveResource(Resource* resource, ContentLibrary* targetContentLibrary, Reso
     String previousLocation = contentItem->mLibrary->SourcePath;
     HandleOf<Resource> resourceHandle = resource;
 
-    ReturnIf(!contentItem->mResourceIsContentItem, false, "Cannot move resource. The resource is either corrupted or a resource that is unable to move.");
+    ReturnIf(!contentItem->mResourceIsContentItem, false, "Cannot move resource" + resource->Name + ".The resource is either corrupted or a resource that is unable to move.");
     ReturnIf(targetContentLibrary == nullptr, false, "Cannot move resource to a null library.");
     ReturnIf(targetContentLibrary->GetReadOnly(), false, "Cannot move resource to a library that is read only.");
 
     bool result = PL::gContentSystem->MoveContentItem(contentItem, targetContentLibrary);
     if (result == false)
     {
-        DoNotifyWarning("Resources", "Moving resource failed.");
+        DoNotifyWarning("Resources", "Moving resource " + resource->Name +  " failed.");
         return result;
     }
 
@@ -283,7 +283,6 @@ bool MoveResource(Resource* resource, ContentLibrary* targetContentLibrary, Reso
     resource->mResourceLibrary = targetResourceLibrary;
     targetResourceLibrary->Resources.PushBack(resourceHandle);
     resource->UpdateContentItem(contentItem);
-    contentItem->SaveContent();
 
     ResourceEvent event;
     event.Name = resource->Name;

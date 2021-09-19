@@ -171,7 +171,6 @@ ResourceLibrary* ResourceSystem::LoadPackage(Status& status, ResourcePackage* pa
 
   if (PL::gContentSystem->PlasmaCoreLibraryNames.Contains(package->Name))
   {
-      LoadedPlasmaCoreLibraries.InsertOrError(package->Name, resourceLibrary);
       LoadedDependencyLibraries.InsertOrError(package->Name, resourceLibrary);
   }
 
@@ -311,11 +310,11 @@ void ResourceSystem::LoadIntoLibrary(Status& status,
 
     if (resource)
       resourceLibrary->Add(resource, isNew);
+  }
 
-    if (resourceLibrary->mFragments.Size() > 0 && !LoadedDependencyLibraries.ContainsKey(resourceLibrary->Name))
-    {
-        LoadedDependencyLibraries.InsertOrError(resourceLibrary->Name, resourceLibrary);
-    }
+  if (resourceLibrary->mFragments.Size() > 0 && !LoadedDependencyLibraries.ContainsKey(resourceLibrary->Name))
+  {
+      LoadedDependencyLibraries.InsertOrError(resourceLibrary->Name, resourceLibrary);
   }
 
   if (!status)

@@ -100,10 +100,14 @@ void GameOrEditorStartup::UserStartup()
   else
   {
     Array<String> coreLibs;
+
+    coreLibs.PushBack("FragmentCore");
+    coreLibs.PushBack("Loading");
     coreLibs.PushBack("PlasmaCore");
     coreLibs.PushBack("UiWidget");
     coreLibs.PushBack("EditorUi");
     coreLibs.PushBack("Editor");
+
     LoadCoreContent(coreLibs);
   }
 
