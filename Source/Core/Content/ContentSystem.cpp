@@ -152,10 +152,6 @@ ContentLibrary* ContentSystem::LibraryFromDirectory(Status& status, StringParam 
     // Set name if necessary
     if (library->Name.Empty())
       library->Name = name;
-
-    // Check to see if the library file is writable
-    // if it is not prevent modifications to this library.
-    library->mReadOnly = !FileWritable(libraryFile);
   }
   else
   {
@@ -680,6 +676,47 @@ bool ContentSystem::RenameContentItemFile(ContentItem* contentItem, StringParam 
   library->ContentItems.Insert(contentItem->UniqueFileId, contentItem);
 
   return true;
+}
+
+bool ContentSystem::MoveContentItem(ContentItem* contentItem, ContentLibrary* targetLibrary)
+{
+    // Build Strings
+
+    // Get the original full path to the content item and meta file
+    String oldId = contentItem->UniqueFileId;
+    String contentFile = contentItem->GetFullPath();
+    String contentMetaFile = contentItem->GetMetaFilePath();
+    
+    String oldPath = FilePath::GetDirectoryPath(contentFile);
+    String newFullPath = FilePath::Combine(targetLibrary->SourcePath, contentItem->Filename);
+
+    ContentLibrary* currentLibrary = contentItem->mLibrary;
+
+    // Does a file with this name already exist?
+    // Does a file with the same name exist in the target library folder? If not, then we need to move it.
+
+    // TODO: add dialogue here instead to ask the user if they want to overwrite whatever file exists here.
+    bool fileExistsAtNewDirectory = FileExists(newFullPath);
+    if (fileExistsAtNewDirectory && (currentLibrary->SourcePath != targetLibrary->SourcePath))
+    {
+        return false;
+    }
+    else if (!fileExistsAtNewDirectory)
+    {
+        // If the file does not exists in the directory that we are trying to move it to, we need to remove the meta file and move the file.
+        if (!contentItem->DeleteMetaFile())
+            PlasmaPrint("Unable to delete meta file for %s", contentItem->Filename);
+        MoveFile(newFullPath, contentItem->GetFullPath());
+    }
+
+    currentLibrary->ContentItems.Erase(oldId);
+    contentItem->UniqueFileId = UniqueFileId(newFullPath);
+    contentItem->mLibrary = targetLibrary;
+    targetLibrary->ContentItems.Insert(contentItem->UniqueFileId, contentItem);
+
+    contentItem->SaveContent();
+
+    return true;
 }
 
 String ContentSystem::GetHistoryPath(ContentLibrary* library)

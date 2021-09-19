@@ -183,94 +183,97 @@ bool LightningShaderIRCompositor::CompositeCompute(ShaderDefinition& shaderDef, 
 void LightningShaderIRCompositor::CollectFragmentsPerStage(LightningShaderPtrArray& inputFragments,
                                                        CompositedShaderInfo& compositeInfo)
 {
-  // Reset all stages
-  for (size_t i = 0; i < CompositorShaderStage::Size; ++i)
-  {
-    StageLinkingInfo& stage = compositeInfo.mStages[i];
-    stage.Clear();
-    stage.mVertexLinkingInfo.mOwningStage = &stage;
-    stage.mPrimitiveLinkingInfo.mOwningStage = &stage;
-  }
-
-  // Iterate over all fragments and map them to the correct compositor shader
-  // stage
-  for (size_t i = 0; i < inputFragments.Size(); ++i)
-  {
-    LightningShaderPtr shaderType = inputFragments[i];
-    ShaderIRTypeMeta* fragmentMeta = shaderType->mMeta;
-    // If this is a valid fragment type
-    if (fragmentMeta != nullptr && fragmentMeta->mFragmentType != FragmentType::None)
+    // Reset all stages
+    for (size_t i = 0; i < CompositorShaderStage::Size; ++i)
     {
-      // Add this fragment to the corresponding compositor shader stage (not to
-      // be confused with 'ShaderStage')
-      CompositorShaderStage::Enum compostiorStage = FragmentTypeToCompostitorShaderStage(fragmentMeta->mFragmentType);
-      StageLinkingInfo& stageInfo = compositeInfo.mStages[compostiorStage];
-      stageInfo.mFragmentTypes.PushBack(shaderType);
+        StageLinkingInfo& stage = compositeInfo.mStages[i];
+        stage.Clear();
+        stage.mVertexLinkingInfo.mOwningStage = &stage;
+        stage.mPrimitiveLinkingInfo.mOwningStage = &stage;
     }
-  }
 
-  // Special case the various stages
+    // Iterate over all fragments and map them to the correct compositor shader
+    // stage
+    for (size_t i = 0; i < inputFragments.Size(); ++i)
+    {
+        LightningShaderPtr shaderType = inputFragments[i];
+        if (shaderType != nullptr)
+        {
+            ShaderIRTypeMeta* fragmentMeta = shaderType->mMeta;
+            // If this is a valid fragment type
+            if (fragmentMeta != nullptr && fragmentMeta->mFragmentType != FragmentType::None)
+            {
+                // Add this fragment to the corresponding compositor shader stage (not to
+                // be confused with 'ShaderStage')
+                CompositorShaderStage::Enum compostiorStage = FragmentTypeToCompostitorShaderStage(fragmentMeta->mFragmentType);
+                StageLinkingInfo& stageInfo = compositeInfo.mStages[compostiorStage];
+                stageInfo.mFragmentTypes.PushBack(shaderType);
+            }
+        }
+    }
 
-  // The vertex stage has all fragments map to the in and out vertex types.
-  StageLinkingInfo& vertexStageInfo = compositeInfo.mStages[CompositorShaderStage::Vertex];
-  vertexStageInfo.mInputVertexTypes = vertexStageInfo.mFragmentTypes;
-  vertexStageInfo.mOutputVertexTypes = vertexStageInfo.mInputVertexTypes;
-  vertexStageInfo.SetFragmentType(FragmentType::Vertex);
+    // Special case the various stages
 
-  // The same is true for the pixel stage (they operator on interpolated vertex
-  // data)
-  StageLinkingInfo& pixelStageInfo = compositeInfo.mStages[CompositorShaderStage::Pixel];
-  pixelStageInfo.mInputVertexTypes = pixelStageInfo.mFragmentTypes;
-  pixelStageInfo.mOutputVertexTypes = pixelStageInfo.mInputVertexTypes;
-  pixelStageInfo.SetFragmentType(FragmentType::Pixel);
+    // The vertex stage has all fragments map to the in and out vertex types.
+    StageLinkingInfo& vertexStageInfo = compositeInfo.mStages[CompositorShaderStage::Vertex];
+    vertexStageInfo.mInputVertexTypes = vertexStageInfo.mFragmentTypes;
+    vertexStageInfo.mOutputVertexTypes = vertexStageInfo.mInputVertexTypes;
+    vertexStageInfo.SetFragmentType(FragmentType::Vertex);
 
-  // Geometry shaders are the first more complicated stage
-  StageLinkingInfo& geometryStageInfo = compositeInfo.mStages[CompositorShaderStage::Geometry];
-  geometryStageInfo.mPrimitiveTypes = geometryStageInfo.mFragmentTypes;
-  geometryStageInfo.SetFragmentType(FragmentType::Geometry);
-  // The fragments define the primitive in/outs for the geometry shader stage
-  geometryStageInfo.mPrimitiveTypes = geometryStageInfo.mFragmentTypes;
-  if (!geometryStageInfo.mPrimitiveTypes.Empty())
-  {
-    LightningShaderPtr geometryFragmentType = geometryStageInfo.mPrimitiveTypes[0];
-    Lightning::GeometryFragmentUserData* geometryUserData =
+    // The same is true for the pixel stage (they operator on interpolated vertex
+    // data)
+    StageLinkingInfo& pixelStageInfo = compositeInfo.mStages[CompositorShaderStage::Pixel];
+    pixelStageInfo.mInputVertexTypes = pixelStageInfo.mFragmentTypes;
+    pixelStageInfo.mOutputVertexTypes = pixelStageInfo.mInputVertexTypes;
+    pixelStageInfo.SetFragmentType(FragmentType::Pixel);
+
+    // Geometry shaders are the first more complicated stage
+    StageLinkingInfo& geometryStageInfo = compositeInfo.mStages[CompositorShaderStage::Geometry];
+    geometryStageInfo.mPrimitiveTypes = geometryStageInfo.mFragmentTypes;
+    geometryStageInfo.SetFragmentType(FragmentType::Geometry);
+    // The fragments define the primitive in/outs for the geometry shader stage
+    geometryStageInfo.mPrimitiveTypes = geometryStageInfo.mFragmentTypes;
+    if (!geometryStageInfo.mPrimitiveTypes.Empty())
+    {
+        LightningShaderPtr geometryFragmentType = geometryStageInfo.mPrimitiveTypes[0];
+        Lightning::GeometryFragmentUserData* geometryUserData =
         geometryFragmentType->mLightningType->Has<Lightning::GeometryFragmentUserData>();
-    ErrorIf(geometryUserData == nullptr, "Geometry Fragment is missing user data");
+        ErrorIf(geometryUserData == nullptr, "Geometry Fragment is missing user data");
 
-    // The vertex in/outs come from the in/out stream types in the main of the
-    // geometry fragment.
-    LightningShaderPtr inputVertexType = geometryUserData->GetInputVertexType();
-    LightningShaderPtr outputVertexType = geometryUserData->GetOutputVertexType();
-    geometryStageInfo.mInputVertexTypes.PushBack(inputVertexType);
-    geometryStageInfo.mOutputVertexTypes.PushBack(outputVertexType);
-  }
+        // The vertex in/outs come from the in/out stream types in the main of the
+        // geometry fragment.
+        LightningShaderPtr inputVertexType = geometryUserData->GetInputVertexType();
+        LightningShaderPtr outputVertexType = geometryUserData->GetOutputVertexType();
+        geometryStageInfo.mInputVertexTypes.PushBack(inputVertexType);
+        geometryStageInfo.mOutputVertexTypes.PushBack(outputVertexType);
+    }
 
-  // Now record what stages are actually active. A stage is active if it has any
-  // fragments. The cpu, vertex, pixel, and gpu stage are always active though.
-  // The hardware stages are always present and vertex/pixel shaders have to
-  // exist. They also must be auto-generated for pass-through to work.
-  for (size_t i = 0; i < CompositorShaderStage::Size; ++i)
-  {
-    StageLinkingInfo* stageInfo = &compositeInfo.mStages[i];
-    if (i == CompositorShaderStage::Cpu || i == CompositorShaderStage::Gpu || i == CompositorShaderStage::Vertex ||
+    // Now record what stages are actually active. A stage is active if it has any
+    // fragments. The cpu, vertex, pixel, and gpu stage are always active though.
+    // The hardware stages are always present and vertex/pixel shaders have to
+    // exist. They also must be auto-generated for pass-through to work.
+    for (size_t i = 0; i < CompositorShaderStage::Size; ++i)
+    {
+        StageLinkingInfo* stageInfo = &compositeInfo.mStages[i];
+        if (i == CompositorShaderStage::Cpu || i == CompositorShaderStage::Gpu || i == CompositorShaderStage::Vertex ||
         i == CompositorShaderStage::Pixel || !stageInfo->mFragmentTypes.Empty())
-      compositeInfo.mActiveStages.PushBack(stageInfo);
-  }
+        compositeInfo.mActiveStages.PushBack(stageInfo);
+    }
 
-  // For each active stage, link the attachment sub-stages to their previous and
-  // next respective attachment sub-stages. This is necessary when resolving
-  // stage in/outs to facilitate pass-through.
-  for (size_t i = 0; i < compositeInfo.mActiveStages.Size() - 1; ++i)
-  {
-    StageLinkingInfo* currStage = compositeInfo.mActiveStages[i];
-    StageLinkingInfo* nextStage = compositeInfo.mActiveStages[i + 1];
+    // For each active stage, link the attachment sub-stages to their previous and
+    // next respective attachment sub-stages. This is necessary when resolving
+    // stage in/outs to facilitate pass-through.
+    for (size_t i = 0; i < compositeInfo.mActiveStages.Size() - 1; ++i)
+    {
+        StageLinkingInfo* currStage = compositeInfo.mActiveStages[i];
+        StageLinkingInfo* nextStage = compositeInfo.mActiveStages[i + 1];
 
-    currStage->mVertexLinkingInfo.mNextStage = &nextStage->mVertexLinkingInfo;
-    currStage->mPrimitiveLinkingInfo.mNextStage = &nextStage->mPrimitiveLinkingInfo;
+        currStage->mVertexLinkingInfo.mNextStage = &nextStage->mVertexLinkingInfo;
+        currStage->mPrimitiveLinkingInfo.mNextStage = &nextStage->mPrimitiveLinkingInfo;
 
-    nextStage->mVertexLinkingInfo.mPreviousStage = &currStage->mVertexLinkingInfo;
-    nextStage->mPrimitiveLinkingInfo.mPreviousStage = &currStage->mPrimitiveLinkingInfo;
-  }
+        nextStage->mVertexLinkingInfo.mPreviousStage = &currStage->mVertexLinkingInfo;
+        nextStage->mPrimitiveLinkingInfo.mPreviousStage = &currStage->mPrimitiveLinkingInfo;
+    }
 }
 
 bool LightningShaderIRCompositor::ValidateStages(CompositedShaderInfo& compositeInfo)
