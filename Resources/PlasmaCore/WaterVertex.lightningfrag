@@ -39,19 +39,19 @@ struct WaterVertex
 
 
 
-  [Input][Slider(0,1, 0.1)]  var Steepness : Real;
+  [Input][Slider(0,1, 0.1)]  var Steepness : Real = 0.2;
   
   [Input] var WaveADirection : Real2 = Real2(0.5, 20);
   [Input][Slider(0.01,20, 0.1)] var WaveASpeed : Real = 1.0;
-  [Input][Slider(1,200, 0.1)]  var WaveAWaveLength : Real;
+  [Input][Slider(1,200, 0.1)]  var WaveAWaveLength : Real = 0.1;
 
   [Input] var WaveBDirection : Real2 = Real2(0.25, 20);
   [Input][Slider(0.01,50, 0.1)] var WaveBSpeed : Real = 1.0;
-  [Input][Slider(1,50, 0.1)]  var WaveBWaveLength : Real;
+  [Input][Slider(1,50, 0.1)]  var WaveBWaveLength : Real = 0.2;
   
   [Input] var WaveCDirection : Real2 = Real2(0.25, 20);
   [Input][Slider(0.01,50, 0.1)] var WaveCSpeed : Real = 1.0;
-  [Input][Slider(1,20, 0.1)]  var WaveCWaveLength : Real;
+  [Input][Slider(1,20, 0.1)]  var WaveCWaveLength : Real = 0.3;
 
   // Vertex Attributes
   // Standard mesh attributes

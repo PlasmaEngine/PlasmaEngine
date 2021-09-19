@@ -1,0 +1,30 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "UnlitMaterial"
+		var ResourceId = 0x612906ac78b18879
+		var LoaderType = "Material"
+		var Version = 0
+	}
+	ContentTags 
+	{
+		var Tags = Array
+		{
+			"Material"
+		}
+	}
+	ResourceTemplate 
+	{
+		var DisplayName = ""
+		var Description = "A material template"
+		var SortWeight = 20
+		var Category = "Opaque"
+		var CategorySortWeight = 99
+	}
+	ContentEditorOptions 
+	{
+		var ShowInEditor = true
+	}
+}

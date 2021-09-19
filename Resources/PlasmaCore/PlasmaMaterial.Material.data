@@ -9,6 +9,7 @@ Material
 	AlbedoMap 
 	{
 		var AlbedoMap = "5827bc9481103535:PlasmaAlbedo"
+		var InvertAlpha = false
 	}
 	NormalMap 
 	{
@@ -21,11 +22,19 @@ Material
 	{
 		var MetallicMap = "5827acd640fecdcb:PlasmaMetallic"
 		var Invert = false
+		var UseRed = true
+		var UseGreen = false
+		var UseBlue = false
+		var UseAlpha = false
 	}
 	RoughnessMap 
 	{
 		var RoughnessMap = "5827b28df611775d:PlasmaRoughness"
 		var Invert = false
+		var UseRed = true
+		var UseGreen = false
+		var UseBlue = false
+		var UseAlpha = false
 	}
 	SpecularValue 
 	{

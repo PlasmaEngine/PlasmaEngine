@@ -83,6 +83,7 @@ size_t Thread::GetCurrentThreadId()
 
 bool Thread::Initialize(EntryFunction entry, void* instance, StringParam threadName)
 {
+
   PlasmaGetPrivateData(ThreadPrivateData);
 	
   mThreadName = threadName;
@@ -99,6 +100,8 @@ bool Thread::Initialize(EntryFunction entry, void* instance, StringParam threadN
 
   if (self->mHandle != INVALID_HANDLE_VALUE)
   {
+
+    tracy::SetThreadName(threadName.c_str());
     SetThreadDebugName(self->mThreadId, threadName.c_str());
     return true;
   }

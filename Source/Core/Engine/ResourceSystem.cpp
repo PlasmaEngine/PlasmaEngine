@@ -157,10 +157,10 @@ ResourceLibrary* ResourceSystem::LoadPackage(Status& status, ResourcePackage* pa
   // get true dependencies. Find the last resource library (assuming we load
   // Core first, then others) and pretend we're always dependent upon the
   // previous resource library
-  ResourceLibrary* lastResourceLibrary = nullptr;
+  ResourceLibrary* lastLoadedDependencyLibrary = nullptr;
   forRange (ResourceLibrary* library, LoadedDependencyLibraries.Values())
   {
-    lastResourceLibrary = library;
+      lastLoadedDependencyLibrary = library;
   }
 
   ResourceLibrary* resourceLibrary = new ResourceLibrary();
@@ -175,8 +175,8 @@ ResourceLibrary* ResourceSystem::LoadPackage(Status& status, ResourcePackage* pa
       LoadedDependencyLibraries.InsertOrError(package->Name, resourceLibrary);
   }
 
-  if (lastResourceLibrary != nullptr)
-    resourceLibrary->AddDependency(lastResourceLibrary);
+  if (lastLoadedDependencyLibrary != nullptr)
+    resourceLibrary->AddDependency(lastLoadedDependencyLibrary);
 
   LoadIntoLibrary(status, resourceLibrary, package, false);
 

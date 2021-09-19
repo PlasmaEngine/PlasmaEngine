@@ -10,6 +10,7 @@ Material
 	{
 		var Texture = "58269ef7734c0e55:Grey"
 		var Threshold = 0.5
+		var UseRed = false
 	}
 	FlipBackfaceNormals 
 	{
@@ -17,5 +18,6 @@ Material
 	AlbedoMap 
 	{
 		var AlbedoMap = "58269ef7734c0e55:Grey"
+		var InvertAlpha = false
 	}
 }

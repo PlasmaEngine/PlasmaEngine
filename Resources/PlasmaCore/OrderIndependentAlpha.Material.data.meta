@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "OrderIndependentAlpha"
+		var ResourceId = 0x610f958a964a8d28
+		var LoaderType = "Material"
+		var Version = 0
+	}
+}

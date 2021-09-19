@@ -30,6 +30,7 @@ cstr PhysicsEngine::GetName()
 
 void PhysicsEngine::Initialize(SystemInitializer& initializer)
 {
+  ZoneScoped;
   // Allocate the collision manager.
   mCollisionManager = new Physics::CollisionManager();
 

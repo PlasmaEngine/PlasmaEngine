@@ -86,7 +86,8 @@ bool DataTreeLoader::OpenBuffer(Status& status, StringRange data, StringRange so
 
 void DataTreeLoader::Close()
 {
-  SafeDelete(mFileRoot);
+  if(mFileRoot)
+    SafeDelete(mFileRoot);
   mNodeStack.Clear();
   mNext = nullptr;
 }

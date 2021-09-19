@@ -269,6 +269,7 @@ AddLibraryUI::AddLibraryUI(Composite* parent, LibraryView* libraryView): Composi
     mLibraryPath->SetEditable(false);
     mLibraryPath->SetSizing(SizeAxis::X,SizePolicy::Flex, Pixels(200));
     mLibraryPath->SetInteractive(false);
+
   
     mPathSelectButton = new TextButton(pathRow);
     mPathSelectButton->SetText("...");
@@ -318,7 +319,6 @@ AddLibraryUI::AddLibraryUI(Composite* parent, LibraryView* libraryView): Composi
     UpdateLibraryPath();
 
     ConnectThisTo(this, Events::KeyUp, OnKeyUp);
-
 }
 
 AddLibraryUI::~AddLibraryUI()
@@ -329,7 +329,7 @@ void AddLibraryUI::OnCreate(Event* e)
 {
   if(!mCanCreateLibrary)
   {
-    DoNotify("Error", "Library with that name already exists", "Warning");
+    DoNotify("Error", "Library with that name already exists, or name/path is invalid.", "Warning");
     return;
   }
   Status s;
@@ -441,9 +441,11 @@ void AddLibraryUI::OnFolderSelected(OsFileSelection* e)
       forRange (String library, projectSettings->ExtraLibraries.All())
       {
         String name = mNewLibraryName->GetText().ToLower();
-        if(name.CompareTo(library.ToLower()))
+
+        if(name == library)
         {
           valid = false;
+          break;
         }
       }
     }

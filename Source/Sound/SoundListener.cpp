@@ -32,6 +32,7 @@ SoundListener::~SoundListener()
 
 void SoundListener::Initialize(CogInitializer& initializer)
 {
+  ZoneScoped;
   // Get space and add to space's list of listeners
   mSpace = initializer.mSpace->has(SoundSpace);
   mSpace->mListeners.PushBack(this);

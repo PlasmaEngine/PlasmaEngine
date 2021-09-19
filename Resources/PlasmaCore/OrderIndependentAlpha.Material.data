@@ -3,16 +3,13 @@ Material
 {
 	var RenderGroups = Array
 	{
-		"581cffd64d449122:Opaque"
-		"580269d9a1d6b870:ShadowCasters"
-	}
-	UVProperties 
-	{
-		var Scale = Real2{100, 100}
+		"56dc0b2bbc86c4cb:AlphaBlend"
+		"5961eaa40f1649f6:ZSort"
 	}
 	AlbedoMap 
 	{
 		var AlbedoMap = "5827bc9481103535:PlasmaAlbedo"
+		var InvertAlpha = false
 	}
 	NormalMap 
 	{
@@ -24,15 +21,28 @@ Material
 	MetallicMap 
 	{
 		var MetallicMap = "5827acd640fecdcb:PlasmaMetallic"
-		var Invert = false
+		var Invert = true
+		var UseRed = true
+		var UseGreen = false
+		var UseBlue = false
+		var UseAlpha = false
 	}
 	RoughnessMap 
 	{
 		var RoughnessMap = "5827b28df611775d:PlasmaRoughness"
 		var Invert = false
+		var UseRed = true
+		var UseGreen = false
+		var UseBlue = false
+		var UseAlpha = false
 	}
-	SpecularValue 
+	AlphaMap 
 	{
-		var SpecularValue = 0.5
+		var AlphaMap = "5573a48b3504254e:SsaoRandom4x4"
+		var Invert = true
+	}
+	RoughnessValue 
+	{
+		var RoughnessValue = -0.294349283
 	}
 }

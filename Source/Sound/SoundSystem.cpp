@@ -154,6 +154,7 @@ SoundSystem::~SoundSystem()
 
 void SoundSystem::Initialize(SystemInitializer& initializer)
 {
+  ZoneScoped;
   PL::gSound = this;
 
   // Create a System object and initialize.
@@ -393,6 +394,7 @@ GranularSynthNode* SoundSystem::GranularSynthNode()
 
 void SoundSystem::Update(bool debugger)
 {
+  ZoneScoped;
   if (debugger)
     return;
 

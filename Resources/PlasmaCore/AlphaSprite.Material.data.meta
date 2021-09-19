@@ -13,10 +13,10 @@ DataContent
 		var DisplayName = ""
 		var Description = "A material template"
 		var SortWeight = 100
-		var Category = ""
-		var CategorySortWeight = 100
+		var Category = "Sprite"
+		var CategorySortWeight = 102
 	}
-	ContentEditorOptions
+	ContentEditorOptions 
 	{
 		var ShowInEditor = true
 	}
