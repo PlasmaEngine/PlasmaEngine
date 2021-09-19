@@ -714,9 +714,6 @@ bool ContentSystem::MoveContentItem(ContentItem* contentItem, ContentLibrary* ta
     contentItem->mLibrary = targetLibrary;
     targetLibrary->ContentItems.Insert(contentItem->UniqueFileId, contentItem);
 
-    currentLibrary->Load();
-    targetLibrary->Load();
-
     contentItem->SaveContent();
 
     return true;
