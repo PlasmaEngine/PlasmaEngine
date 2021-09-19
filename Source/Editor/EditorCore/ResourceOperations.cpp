@@ -263,7 +263,6 @@ bool MoveResource(Resource* resource, ContentLibrary* targetContentLibrary, Reso
     }
 
     ResourceManager* resourceManager = resource->GetManager();
-    String resourceTypeName = resourceManager->mResourceTypeName;
     ContentItem* contentItem = resource->mContentItem;
     String previousLocation = contentItem->mLibrary->SourcePath;
     HandleOf<Resource> resourceHandle = resource;
