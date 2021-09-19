@@ -33,10 +33,12 @@ class AlphaRenderPass : LightningComponent
       forwardAlpha.DirectLightIntensity = light.DirectionalLight.LightIntensity;
       forwardAlpha.LightTemperature = light.DirectionalLight.LightTemperature;
       
-      
-      forwardAlpha.LightTransform = light.ShadowRenderer.LightTransform;
-      forwardAlpha.ShadowBuffer = light.ShadowRenderer.ShadowBuffer;
-      forwardAlpha.NormalOffsetBias = light.ShadowRenderer.NormalOffsetBias;
+      if(light.ShadowRenderer != null)
+      {
+        forwardAlpha.LightTransform = light.ShadowRenderer.LightTransform;
+        forwardAlpha.ShadowBuffer = light.ShadowRenderer.ShadowBuffer;
+        forwardAlpha.NormalOffsetBias = light.ShadowRenderer.NormalOffsetBias;
+      }
     }
    
     
@@ -91,10 +93,12 @@ class AlphaRenderPass : LightningComponent
       weighPass.DirectLightIntensity = light.DirectionalLight.LightIntensity;
       weighPass.LightTemperature = light.DirectionalLight.LightTemperature;
       
-      
-      weighPass.LightTransform = light.ShadowRenderer.LightTransform;
-      weighPass.ShadowBuffer = light.ShadowRenderer.ShadowBuffer;
-      weighPass.NormalOffsetBias = light.ShadowRenderer.NormalOffsetBias;
+      if(light.ShadowRenderer != null)
+      {
+        weighPass.LightTransform = light.ShadowRenderer.LightTransform;
+        weighPass.ShadowBuffer = light.ShadowRenderer.ShadowBuffer;
+        weighPass.NormalOffsetBias = light.ShadowRenderer.NormalOffsetBias;
+      }
     }
       
     
