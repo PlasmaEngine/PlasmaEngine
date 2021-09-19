@@ -1884,12 +1884,13 @@ void MoveItemUI::OnMove(Event* e)
     }
 
     ContentLibrary* targetContentLibrary = PL::gContentSystem->Libraries.FindValue(mContentLibraries->GetSelectedString(), nullptr);
+    ResourceLibrary* targetResourceLibrary = PL::gResources->GetResourceLibrary(mContentLibraries->GetSelectedString());
     
     forRange(Resource* resource, mResourcesToMove)
     {
         
         // execute the move func
-        if (MoveResource(resource, targetContentLibrary, PL::gResources->GetResourceLibrary(mContentLibraries->GetSelectedString())))
+        if (MoveResource(resource, targetContentLibrary, targetResourceLibrary))
         {
             mLibraryView->MarkAsNeedsUpdate();
         }
