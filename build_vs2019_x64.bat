@@ -4,7 +4,57 @@ if not exist build\win64 (
 )
 cd build\win64
 
-call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+setlocal ENABLEEXTENSIONS
+
+:: try to use vswhere.exe to get VS install dir
+if not EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" (
+
+	FOR /F "tokens=* USEBACKQ" %%F IN (`call "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) DO (
+	SET product_dir=%%F)
+	
+	goto :EndLoop
+
+)
+
+:: Finding VS install by iterating over possible versions in the registry
+set VSVer[0]=16.0
+set VSVer[1]=15.0
+set VSVer[2]=14.0
+set VSVer[3]=13.0
+set VSVer[4]=12.0
+set VSVer[5]=11.0
+set VSVer[6]=10.0
+set "index=0"
+
+:VerLoop
+if not defined VSVer[%index%] goto :EndLoop
+
+:: 32-bit system:
+::call set KEY_NAME="HKLM\SOFTWARE\Microsoft\VisualStudio\%%VSVer[%index%]%%\Setup\VS"
+:: 64-bit system:
+call set KEY_NAME=HKLM\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\%%VSVer[%index%]%%\Setup\VS
+set VALUE_NAME=ProductDir
+
+call echo VS %%VSVer[%index%]%%:
+
+FOR /F "usebackq tokens=2,* skip=2" %%L IN ( `reg query %KEY_NAME% /v %VALUE_NAME%` ) DO ( 
+SET product_dir=%%M)
+
+set /a "index+=1"
+if "%product_dir%" NEQ "" goto :EndLoop
+GOTO :VerLoop
+
+
+:EndLoop
+if defined product_dir (
+echo Visual Studio Product Dir: %product_dir%
+) else (
+echo %KEY_NAME%\%VALUE_NAME% not found.
+pause
+exit
+)
+
+call "%product_dir%\VC\Auxiliary\Build\vcvars64.bat"
 cmake ..\..\ -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="Sdk"
 cmake --build .
 cd ..\..\
