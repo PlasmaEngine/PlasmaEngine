@@ -22,7 +22,6 @@ static const String cDescriptionColumn = "Description";
 // Orange
 static const Vec4 cPlasmaCommandColor(1, 0.647f, 0, 1);
 
-static const bool cNotUsingHotKeyResource = true;
 static const bool cHotKeysEditable = false;
 
 /// HotKeyBinding ref when a binding conflict has occurred
@@ -846,19 +845,6 @@ HotKeyEditor::HotKeyEditor(Composite* parent) :
     mCurrentSort(CommandCompare::None)
 {
   mHotKeys = HotKeyCommands::GetInstance();
-
-  if (!cNotUsingHotKeyResource)
-  {
-    String userHotKeyFile = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Default.HotKeyDataSet.data");
-
-    if (!FileExists(userHotKeyFile))
-    {
-      String coreHotKeyFile; // =
-                             // HotKeyManager::GetDefault()->mContentItem->GetFullPath();
-
-      CopyFileInternal(userHotKeyFile, coreHotKeyFile);
-    }
-  }
 
   ConnectThisTo(LightningManager::GetInstance(), Events::ScriptsCompiledPostPatch, OnScriptsCompiled);
 

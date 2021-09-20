@@ -10,6 +10,7 @@ DefineEvent(RecentProjectsUpdated);
 } // namespace Events
 
 bool MainConfig::sConfigCanSave = true;
+static bool cLookInOldConfigDirectory = true;
 
 LightningDefineType(MainConfig, builder, type)
 {
@@ -18,6 +19,7 @@ LightningDefineType(MainConfig, builder, type)
   LightningBindGetterProperty(BuildDate);
   LightningBindGetterProperty(BuildVersion);
   LightningBindGetterProperty(DataDirectory);
+
   type->AddAttribute(ObjectAttributes::cCore);
 }
 
@@ -334,11 +336,6 @@ void RecentProjects::RemoveMissingProjects()
   }
 }
 
-String GetConfigDirectory()
-{
-  return GetUserDocumentsApplicationDirectory();
-}
-
 String GetConfigFileName()
 {
   return String::Format("ConfigurationV%d.data", GetConfigVersion());
@@ -346,13 +343,14 @@ String GetConfigFileName()
 
 String GetRemoteConfigFilePath(StringParam organization, StringParam applicationName)
 {
-  return FilePath::Combine(GetRemoteUserDocumentsApplicationDirectory(organization, applicationName),
+  return FilePath::Combine(GetUserApplicationDirectory(organization, applicationName),
                            GetConfigFileName());
 }
 
 String GetConfigFilePath()
 {
-  return FilePath::Combine(GetConfigDirectory(), GetConfigFileName());
+  return FilePath::Combine(GetUserApplicationDirectory(), 
+                           GetConfigFileName());
 }
 
 void SaveConfig()
@@ -360,9 +358,9 @@ void SaveConfig()
   if (!MainConfig::sConfigCanSave)
     return;
 
-  String configDirectory = GetConfigDirectory();
-  CreateDirectoryAndParents(configDirectory);
   String configFile = GetConfigFilePath();
+  String configDirectory = FilePath::GetDirectoryPath(configFile);
+  CreateDirectoryAndParents(configDirectory);
 
   ObjectSaver saver;
   Status status;
@@ -394,15 +392,12 @@ Cog* LoadConfig(ModifyConfigFn modifier, void* userData)
 
   static const String cDataDirectoryName("Data");
 
-  String documentDirectory = GetUserDocumentsDirectory();
-  String applicationDirectory = GetApplicationDirectory();
   String configFile = GetConfigFilePath();
   String sourceDirectory = FindSourceDirectory();
   String dataDirectory = FilePath::Combine(sourceDirectory, cDataDirectoryName);
   const String defaultConfigFile = String::Format("Default%sConfiguration.data", GetApplicationName().c_str());
 
   Cog* configCog = nullptr;
-  bool userConfigExists = false;
 
   // Locations to look for the config file.
   // Some of them are absolute, some are relative to the working directory.
@@ -412,8 +407,14 @@ Cog* LoadConfig(ModifyConfigFn modifier, void* userData)
   {
     // In the working directory (for exported projects).
     searchConfigPaths.PushBack(GetConfigFileName());
-    // The user config in the documents directory.
+    // The user config in the appdata directory.
     searchConfigPaths.PushBack(configFile);
+    
+    if (cLookInOldConfigDirectory)
+    {
+        // The user config in the documents directory.
+        searchConfigPaths.PushBack(FilePath::Combine(GetUserDocumentsApplicationDirectory(), GetConfigFileName()));
+    }
   }
   // In the source's Data directory.
   searchConfigPaths.PushBack(FilePath::Combine(dataDirectory, defaultConfigFile));
@@ -427,7 +428,6 @@ Cog* LoadConfig(ModifyConfigFn modifier, void* userData)
       // Make sure we successfully created the config Cog from the data file.
       if (configCog != nullptr)
       {
-        userConfigExists = (path == configFile);
         PlasmaPrintFilter(Filter::DefaultFilter, "Using config '%s'.\n", path.c_str());
         break;
       }

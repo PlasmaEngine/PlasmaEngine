@@ -36,7 +36,7 @@ ImporterResult::Type Importer::CheckForImport()
   buffer.Read(status, (byte*)node->Data, node->Size);
   String uniqueName(node);
 
-  mOutputDirectory = FilePath::Combine(GetUserLocalDirectory(), uniqueName);
+  mOutputDirectory = FilePath::Combine(GetUserApplicationDirectory(), uniqueName);
 
   String applicationPath = GetApplication();
   String applicationName = FilePath::GetFileName(applicationPath);
