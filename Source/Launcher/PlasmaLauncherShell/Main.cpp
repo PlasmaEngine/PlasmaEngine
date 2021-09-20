@@ -23,7 +23,7 @@ Plasma::String GetLauncherDownloadedPath()
 {
   String majorVersionIdStr = ToString(GetMajorVersion());
   String launcherFolderName = BuildString("PlasmaLauncher_", majorVersionIdStr, ".0");
-  String searchLocation = FilePath::Combine(GetUserLocalDirectory(), launcherFolderName);
+  String searchLocation = FilePath::Combine(GetUserApplicationDirectory(), launcherFolderName);
 
   String foundPath;
   int bestId = -1;

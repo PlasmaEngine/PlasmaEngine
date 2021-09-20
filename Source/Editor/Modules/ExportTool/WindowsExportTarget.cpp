@@ -36,8 +36,6 @@ void WindowsExportTarget::ExportApplication()
     String projectFile = FilePath::Combine(outputPath, projectFileName);
     SaveToDataFile(*project->GetOwner(), projectFile);
 
-    String contentOutput = PL::gContentSystem->ContentOutputPath;
-
     // archive all core resources
     Archive engineArchive(ArchiveMode::Compressing);
     ArchiveLibraryOutput(engineArchive, "FragmentCore");

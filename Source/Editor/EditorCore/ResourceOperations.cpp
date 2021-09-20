@@ -267,7 +267,7 @@ bool MoveResource(Resource* resource, ContentLibrary* targetContentLibrary, Reso
     String previousLocation = contentItem->mLibrary->SourcePath;
     HandleOf<Resource> resourceHandle = resource;
 
-    ReturnIf(!contentItem->mResourceIsContentItem, false, "Cannot move resource" + resource->Name + ".The resource is either corrupted or a resource that is unable to move.");
+    ReturnIf(!contentItem->mResourceIsContentItem, false, String("Cannot move resource" + resource->Name + ".The resource is either corrupted or a resource that is unable to move.").c_str());
     ReturnIf(targetContentLibrary == nullptr, false, "Cannot move resource to a null library.");
     ReturnIf(targetContentLibrary->GetReadOnly(), false, "Cannot move resource to a library that is read only.");
 
@@ -644,7 +644,7 @@ String GetResourceFileName(ResourceManager* resourceManager, StringParam resourc
 
 String GetEditorTrash()
 {
-  return FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Trash");
+  return FilePath::Combine(GetUserApplicationDirectory(), "Trash");
 }
 
 // Code paths for new resource:

@@ -12,9 +12,11 @@ class ObjectStore : public ExplicitSingleton<ObjectStore>
 public:
   LightningDeclareType(ObjectStore, TypeCopyMode::ReferenceType);
 
-  /// Set the object store name. This is to prevent
-  /// store name conflicts.
+  /// Set the object store name. This is so each project has a separate store file.
   void SetStoreName(StringParam storeName);
+
+  /// Set the object store directory. This is so the local user can configure where persistent data is stored on their machine
+  void MigrateStoreLocation(StringParam oldLocation);
 
   /// Is there an entry record for the object in the store?
   bool IsEntryStored(StringParam name);
@@ -40,22 +42,22 @@ public:
   /// Clear the store
   void ClearStore();
 
-  /// Returns the directory path to the object store
-  String GetDirectoryPath();
-
 private:
-  // Helper function for file names.
-  String GetFile(StringParam name);
-  void SetupDirectory();
+	// Helper function for file names.
+	String BuildStorePath();
+	String BuildTrashPath();
+	String GetFullFilePath(StringParam storePath, StringParam entryName);
 
-  /// Populate the internal array of file names in the ObjectStore, if the
-  /// proper ObjectStore directory exists.
-  void PopulateEntries(StringParam storePath);
+	/// Create the store directory
+	void SetupDirectory(StringParam storePath);
 
-  String mStoreName;
-  String mStorePath;
+	/// Populate the internal array of file names in the ObjectStore, if the
+	/// proper ObjectStore directory exists.
+	void PopulateEntries(StringParam storePath);
 
-  Array<String> mEntries;
+	String mStoreName;
+
+	Array<String> mEntries;
 };
 
 } // namespace Plasma

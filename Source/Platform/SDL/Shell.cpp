@@ -360,7 +360,7 @@ void Shell::OpenFile(FileDialogInfo& config)
 #if !defined(PlasmaPlatformNoShellSaveFile)
 void Shell::SaveFile(FileDialogInfo& config)
 {
-  String downloads = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Downloads");
+  String downloads = FilePath::Combine(GetUserApplicationDirectory(), "Downloads");
   CreateDirectoryAndParents(downloads);
 
   String filePath = FilePath::Combine(downloads, config.DefaultFileName);

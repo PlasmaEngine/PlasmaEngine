@@ -95,7 +95,7 @@ ContentSystem::ContentSystem()
   IgnoredExtensions.Insert("libview");
   IgnoredExtensions.Insert("__pycache__");
 
-  HistoryPath = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "History");
+  HistoryPath = FilePath::Combine(GetUserApplicationDirectory(), "History");
 }
 
 ContentSystem::~ContentSystem()
@@ -211,7 +211,6 @@ HandleOf<ResourcePackage> ContentSystem::BuildLibrary(Status& status, ContentLib
   // is faster than building the content ourselves, if it exists).
   if (!DirectoryExists(outputPath))
   {
-    String versionedContentName = FilePath::GetFileName(ContentOutputPath);
     String prebuiltContent = FilePath::Combine(PrebuiltContentPath, library->Name);
     if (DirectoryExists(prebuiltContent))
     {

@@ -19,17 +19,23 @@ void LoadContentConfig()
   String sourceDirectory = mainConfig->SourceDirectory;
   ErrorIf(sourceDirectory.Empty(), "Expected a source directory");
 
-  String contentOutputDirectory = GetUserDocumentsApplicationDirectory();
+  String contentOutputDirectory = GetUserApplicationDirectory();
 
   if (contentConfig)
   {
       librarySearchPaths.InsertAt(0, contentConfig->LibraryDirectories.All());
+
+      PlasmaPrint("Config has ContentOutput directory: '%s'\n", contentConfig->ContentOutput.c_str());
 
       if (contentConfig->ContentOutput.Empty() == false)
       {
           PlasmaTodo("(Matt, 2021-8-29): validate new content output path? Depends on whether validation occurs before serialization");
           contentOutputDirectory = contentConfig->ContentOutput;
       }
+  }
+  else
+  {
+      Warn("No ContentConfig found on Config Cog");
   }
 
   librarySearchPaths.PushBack(FilePath::Combine(sourceDirectory, "Resources"));

@@ -947,19 +947,50 @@ void ClearObjectStore()
   ObjectStore::GetInstance()->ClearStore();
 }
 
+struct ExportHeightMapModal : public SafeId32EventObject
+{
+    typedef ExportHeightMapModal LightningSelf;
+
+    ExportHeightMapModal(HeightMap* heightMap)
+    {
+        mHeightMap = heightMap;
+
+        const String CallBackEvent = "Callback";
+
+        FileDialogConfig* config = FileDialogConfig::Create();
+        config->EventName = CallBackEvent;
+        config->CallbackObject = this;
+        config->Title = "Export Height Map from Selected Cog";
+        config->AddFilter("OBJ", "*.obj");
+        config->DefaultFileName = BuildString("HeightMap", ".obj");
+        config->mDefaultSaveExtension = "obj";
+        config->StartingDirectory = GetUserDocumentsDirectory();
+
+        ConnectThisTo(this, CallBackEvent, OnFileSelected);
+        PL::gEngine->has(OsShell)->SaveFile(config);
+    }
+
+    void OnFileSelected(OsFileSelection* event)
+    {
+        if (event->Success)
+            HeightMap::SaveToObj(event->Files[0], mHeightMap);
+        delete this;
+    }
+
+    HeightMap* mHeightMap;
+};
+
 void ExportHeightMapToObj(Editor* editor, Space* space)
 {
-  Cog* primary = editor->GetSelection()->GetPrimaryAs<Cog>();
-  if (primary == nullptr)
-    return;
+    Cog* primary = editor->GetSelection()->GetPrimaryAs<Cog>();
+    if (primary == nullptr)
+        return;
 
-  HeightMap* heightMap = primary->has(HeightMap);
-  if (heightMap)
-  {
-    String directory = GetUserDocumentsDirectory();
-    String filePath = FilePath::Combine(directory, "HeightMap.obj");
-    HeightMap::SaveToObj(filePath, heightMap);
-  }
+    HeightMap* heightMap = primary->has(HeightMap);
+    if (heightMap)
+    {
+        new ExportHeightMapModal(heightMap);
+    }
 }
 
 void Mode2D(Editor* editor)

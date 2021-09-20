@@ -11,16 +11,24 @@
 namespace Plasma
 {
 
-String GetRemoteUserDocumentsApplicationDirectory(StringParam organization, StringParam applicationName)
+String GetUserApplicationDirectory(StringParam organization, StringParam applicationName)
 {
-  return FilePath::Combine(GetUserDocumentsDirectory(), BuildString(organization, applicationName));
+    return FilePath::Combine(GetUserLocalDirectory(), BuildString(organization, applicationName));
+}
+
+String GetUserApplicationDirectory()
+{
+    return GetUserApplicationDirectory(GetOrganization(), GetApplicationName());
+}
+
+String GetUserDocumentsApplicationDirectory(StringParam organization, StringParam applicationName)
+{
+    return FilePath::Combine(GetUserDocumentsDirectory(), BuildString(organization, applicationName));
 }
 
 String GetUserDocumentsApplicationDirectory()
 {
-  String directory = GetRemoteUserDocumentsApplicationDirectory(GetOrganization(), GetApplicationName());
-  CreateDirectoryAndParents(directory);
-  return directory;
+    return GetUserDocumentsApplicationDirectory(GetOrganization(), GetApplicationName());
 }
 
 String GetApplicationDirectory()
