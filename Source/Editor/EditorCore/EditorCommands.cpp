@@ -991,6 +991,10 @@ void ExportHeightMapToObj(Editor* editor, Space* space)
     {
         new ExportHeightMapModal(heightMap);
     }
+    else
+    {
+        Warn("No HeightMap on selected object %s", primary->GetName().c_str());
+    }
 }
 
 void Mode2D(Editor* editor)
