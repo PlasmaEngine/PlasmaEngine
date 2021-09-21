@@ -397,25 +397,29 @@ Cog* LoadConfig(ModifyConfigFn modifier, void* userData)
   String dataDirectory = FilePath::Combine(sourceDirectory, cDataDirectoryName);
   const String defaultConfigFile = String::Format("Default%sConfiguration.data", GetApplicationName().c_str());
 
+  // for temporary use with cLookInOldConfigDirectory
+  String oldConfigFile = FilePath::Combine(GetUserDocumentsApplicationDirectory(), GetConfigFileName());
+
   Cog* configCog = nullptr;
 
   // Locations to look for the config file.
   // Some of them are absolute, some are relative to the working directory.
   Array<String> searchConfigPaths;
 
-  if (!useDefault)
-  {
-    // In the working directory (for exported projects).
-    searchConfigPaths.PushBack(GetConfigFileName());
-    // The user config in the appdata directory.
-    searchConfigPaths.PushBack(configFile);
-    
-    if (cLookInOldConfigDirectory)
+    if (!useDefault)
     {
-        // The user config in the documents directory.
-        searchConfigPaths.PushBack(FilePath::Combine(GetUserDocumentsApplicationDirectory(), GetConfigFileName()));
+        // In the working directory (for exported projects).
+        searchConfigPaths.PushBack(GetConfigFileName());
+        // The user config in the appdata directory.
+        searchConfigPaths.PushBack(configFile);
+
+        if (cLookInOldConfigDirectory)
+        {
+            // The user config in the documents directory.
+            searchConfigPaths.PushBack(oldConfigFile);
+        }
     }
-  }
+
   // In the source's Data directory.
   searchConfigPaths.PushBack(FilePath::Combine(dataDirectory, defaultConfigFile));
 
@@ -433,6 +437,15 @@ Cog* LoadConfig(ModifyConfigFn modifier, void* userData)
       }
     }
   }
+   
+    if (cLookInOldConfigDirectory)
+    {
+        // Remove old config so people don't get confused
+        if (FileExists(oldConfigFile))
+        {
+            DeleteFile(oldConfigFile);
+        }
+    }
 
   if (configCog == nullptr)
   {
