@@ -368,6 +368,11 @@ void Editor::LoadDefaultLevel()
     String lastEditedLevel = configCog->has(EditorConfig)->EditingLevel;
     Level* lastEdited = LevelManager::FindOrNull(lastEditedLevel);
 
+    if (lastEditedLevel.Empty() == false && lastEdited == nullptr)
+    {
+        Warn("Couldn't load last edited level: %s", lastEditedLevel.c_str());
+    }
+
     // Is this level from this project?
     if (lastEdited && lastEdited->mContentItem->mLibrary == mProjectLibrary)
       level = lastEdited;
