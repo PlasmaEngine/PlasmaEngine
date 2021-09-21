@@ -10,11 +10,24 @@ void ArchiveProjectFile(Cog* projectCog, StringParam filePath)
   ProjectSettings* project = projectCog->has(ProjectSettings);
   String projectDirectory = project->ProjectFolder;
 
+  PlasmaPrintFilter(Filter::ArchiveFilter, "Archive operation starting (%s -> %s)...\n", project->ProjectName.c_str(), filePath.c_str());
+
+  FilterFileRegex sourceControlFilter ("", ".*(\\.git).*");
+
   Status status;
   Archive projectArchive(ArchiveMode::Compressing);
-  projectArchive.ArchiveDirectory(status, projectDirectory);
+  projectArchive.ArchiveDirectory(status, projectDirectory, "", &sourceControlFilter);
+
+  PlasmaPrintFilter(Filter::ArchiveFilter, "Writing zip file (%s)...\n", filePath.c_str());
+
   projectArchive.WriteZipFile(filePath);
+
+  PlasmaPrintFilter(Filter::ArchiveFilter, "Zip file written.\n");
+  PlasmaPrintFilter(Filter::ArchiveFilter, "Downloading file (%s)...\n", filePath.c_str());
+
   Download(filePath);
+
+  PlasmaPrintFilter(Filter::ArchiveFilter, "File downloaded.\n");
 }
 
 class ArchiveProjectJob : public Job

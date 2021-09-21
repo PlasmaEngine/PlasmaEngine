@@ -20,7 +20,8 @@ enum Enum
   EngineFilter = 0x0010,      // Filter for Core Engine Operations
   ActiveFilter = 0x0020,      // Filter for debugging
   PerformanceFilter = 0x0040, // Filter for performance (Framerate, etc)
-  PhysicsFilter = 0x0080      // Filter for Physics
+  PhysicsFilter = 0x0080,     // Filter for Physics
+  ArchiveFilter = 0x0100,     // Filter for Archival operations
 };
 } // namespace Filter
 

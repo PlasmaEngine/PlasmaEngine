@@ -117,6 +117,8 @@ void Archive::Clear()
 
 void Archive::ArchiveDirectory(Status& status, StringParam path, StringParam parentPath, FileFilter* filter)
 {
+    PlasmaPrintFilter(Filter::ArchiveFilter, "Archiving directory %s\n", path.c_str());
+
   FileRange files(path);
   for (; !files.Empty(); files.PopFront())
   {
@@ -138,6 +140,8 @@ void Archive::ArchiveDirectory(Status& status, StringParam path, StringParam par
     }
     else
     {
+        PlasmaPrintFilter(Filter::ArchiveFilter, "Archiving file %s\n", files.Front().c_str());
+
       AddFile(fullPath, relativePath);
     }
   }
