@@ -154,7 +154,6 @@ class ForwardRenderer : LightningComponent
     var unlitPass = Unit();
     event.AddRenderTaskRenderPass(unlitSettings, RenderGroup.Unlit, unlitPass, "Unlit");
   
- 
     // Additive materials 
     var alphaSettings = RenderSettings();
     alphaSettings.ColorTarget = colorTarget;
@@ -179,7 +178,6 @@ class ForwardRenderer : LightningComponent
     alphaForwardSettigns.RenderSpec = this.RenderSpecular;
 
     AlphaRenderPass.OnAlphaWithPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
-    
            
     // Bloom
     if (this.Owner.PostProcessBloom != null)
@@ -192,7 +190,7 @@ class ForwardRenderer : LightningComponent
     // Order Independent Transparancy
     AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, depthTarget, colorTarget, this.Skybox, alphaForwardSettigns, this.DirectionalLight.Cog);
     
-        var camera = event.CameraViewportCog.Camera;
+    var camera = event.CameraViewportCog.Camera;
     
     if(camera != null)
     {
