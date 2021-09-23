@@ -19,6 +19,27 @@ struct DecalPass
   function Main()
   {
     this.Target1.XYZ = this.Albedo.XYZ;
-    this.Target1.W = this.Metallic;
+    this.Target1.W = this.Alpha;
+  }
+}
+
+[Pixel][PostProcess]
+struct DecalMerge
+{
+  [Input] var DBuffer1 : SampledImage2d;
+  [Input] var GBuffer1 : SampledImage2d;
+  
+  
+  [FragmentInput][StageInput] var Uv : Real2;
+  
+  [Output] var Target1 : Real4;
+      
+  function Main()
+  {
+    var dbuffer = this.DBuffer1.Sample(this.Uv);
+    var gbuffer = this.GBuffer1.Sample(this.Uv);
+    
+    this.Target1.XYZ = Math.Lerp(gbuffer.XYZ, dbuffer.XYZ, dbuffer.W);
+    this.Target1.W = gbuffer.W;
   }
 }

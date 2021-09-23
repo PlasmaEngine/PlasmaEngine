@@ -28,6 +28,7 @@ struct Decal
   [Input][Output] var AlphaMap : SampledImage2d;
   [Input] var AlphaModifyer : Real = 0.0;
   [Input] var AlphaMultiplier : Real = 1.0;
+  [Input] var InvertAlpha : Boolean = false;
   
   [Input] var UseAlbedo : Boolean = true;
   [Input] var AlbedoMap : SampledImage2d;
@@ -43,6 +44,8 @@ struct Decal
   [Output] var ViewNormalMesh : Real3;
   [StageInput] var ViewTangent : Real3;
   [StageInput] var ViewBitangent : Real3;
+  
+  [Output] var Alpha : Real;
   
   [FragmentInput][StageInput] var ViewPosition : Real3;
   
@@ -72,9 +75,12 @@ struct Decal
     var metallic = this.MetallicMap.Sample(texCoord).X + this.MetallicModifyer;
     metallic = Math.Saturate(metallic);
     
+    if(this.InvertAlpha)
+      alpha = 1.0 - alpha;
 
-    this.Albedo = Math.Lerp(gbuffer1Sample.XYZ, albedo.XYZ, alpha * this.UseAlbedo as Real);
-    this.Metallic = Math.Lerp(gbuffer1Sample.W, metallic, alpha * this.UseMetallic as Real);
+    this.Albedo = albedo.XYZ;
+    this.Alpha = alpha;
+    this.Metallic = metallic * this.UseMetallic as Real;
 
   }
 }

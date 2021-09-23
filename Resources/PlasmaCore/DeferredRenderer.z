@@ -75,6 +75,9 @@ class DeferredRenderer : LightningComponent
   var GBuffer2 : RenderTarget; // XY = Unused , Z = EmissivePower, A = AO
   var GBuffer3 : RenderTarget; // XY = Unused , Z = EmissivePower, A = AO
   
+  
+  var DBuffer1 : RenderTarget; // XYZ = Albedo,  A = Metallic
+  
   var Depth : RenderTarget;
   var VelPosBuffer : RenderTarget;
   var SSRBuffer : RenderTarget;
@@ -112,6 +115,9 @@ class DeferredRenderer : LightningComponent
     this.GBuffer2 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
     this.GBuffer3 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
     
+    
+    this.DBuffer1 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
+    
     this.Depth = event.GetRenderTarget(viewportSize, TextureFormat.Depth24Stencil8);
     
     this.VelPosBuffer = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
@@ -132,11 +138,11 @@ class DeferredRenderer : LightningComponent
       viewportSize = this.CustomResolution;
     
     this.ResizeBuffers(event);
-        
+              
     GBufferPass.AddGBufferRenderPass(event, this.GBuffer0, this.GBuffer1, this.GBuffer2, this.GBuffer3, this.Depth);
     
     // Lighting
-    var lightBuffer = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
+    var lightBuffer = event.GetRenderTarget(event.ViewportSize, TextureFormat.RGBA16f);
     event.AddRenderTaskClearTarget(lightBuffer, Real4(0.0, 0.0, 0.0, 1.0));
     
     var lightSettings = RenderSettings();
@@ -178,8 +184,10 @@ class DeferredRenderer : LightningComponent
     
      if(this.RenderDecals)
     {
+      event.AddRenderTaskClearTarget(this.DBuffer1, Real4.Zero);
+      
       var decalSettings = RenderSettings();
-      decalSettings.ColorTarget = this.GBuffer1;
+      decalSettings.ColorTarget = this.DBuffer1;
       decalSettings.DepthTarget = this.Depth;
     
       var decalShaderInputs = ShaderInputs.Create();
@@ -189,17 +197,36 @@ class DeferredRenderer : LightningComponent
     
       decalSettings.DepthSettings.DepthMode = DepthMode.Read;
       decalSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.GreaterEqual;
-      // Using stencil buffer to optimally identify which pixels had opaque objects rendered to them
-      decalSettings.DepthSettings.StencilMode = StencilMode.Enabled;
-      decalSettings.DepthSettings.StencilCompareFunc = TextureCompareFunc.Always;
-      decalSettings.DepthSettings.StencilFailOp = StencilOp.Keep;
-      decalSettings.DepthSettings.DepthFailOp = StencilOp.Keep;
-      decalSettings.DepthSettings.DepthPassOp = StencilOp.Replace;
-      decalSettings.DepthSettings.StencilTestValue = 1 as Byte;
       decalSettings.CullMode = CullMode.FrontFace;
+      decalSettings.DepthSettings.DepthMode = DepthMode.Read;
+      decalSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.GreaterEqual;
+      
+      decalSettings.BlendSettings.BlendMode = BlendMode.Enabled;
+      decalSettings.BlendSettings.BlendEquation = BlendEquation.ReverseSubtract;
+      decalSettings.BlendSettings.SourceFactor = BlendFactor.SourceColor;
+      decalSettings.BlendSettings.DestFactor = BlendFactor.One;
+      decalSettings.BlendSettings.SourceFactorAlpha = BlendFactor.SourceAlpha;
+      decalSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
+      decalSettings.DepthSettings.DepthMode = DepthMode.Read;
       
       var decalPass = DecalPass();
       event.AddRenderTaskRenderPass(decalSettings, RenderGroup.Decal, decalPass, "Decals");
+      
+      //if(true)
+      //{
+      //  this.LinearToGamma(event, this.DBuffer1, this.FinalOutput);
+        
+      //this.DrawDebugObjects(event, this.FinalOutput, this.Depth);
+      //  return;
+      //}
+
+      
+      var mergePass = DecalMerge();
+      mergePass.DBuffer1 = this.DBuffer1.Texture;
+      mergePass.GBuffer1 = this.GBuffer1.Texture;
+      event.AddRenderTaskPostProcess(this.GBuffer1, mergePass, "DecalMerge"); 
+      
+ 
     
     }
     
@@ -442,23 +469,29 @@ class DeferredRenderer : LightningComponent
     
     event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.DrawLast, drawLast, "DrawLast");
     
+    var fullResTarget = event.GetRenderTarget(event.ViewportSize, TextureFormat.RGBA16f);
+    
+    var copyFullRes = CopyTarget();
+    copyFullRes.Texture = lightBuffer.Texture;
+    event.AddRenderTaskPostProcess(fullResTarget, copyFullRes, "CopyFullRes");
+    
     //  Depth of Field.
     if(this.Owner.PostProcessDOF != null)
-      this.Owner.PostProcessDOF.OnRenderTasksUpdate(event, this.GBuffer0, lightBuffer);   
+      this.Owner.PostProcessDOF.OnRenderTasksUpdate(event, this.GBuffer0, fullResTarget);   
       
           
     // Screen Space Reflections
     if(this.Owner.PostProcessSSR != null)
-      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer0, this.GBuffer1, lightBuffer, this.SSRBuffer);
+      this.Owner.PostProcessSSR.AddSSRRenderTasks(event, this.GBuffer0, this.GBuffer1, fullResTarget, this.SSRBuffer);
      
       
     // Bloom
     if (this.Owner.PostProcessBloom != null)
-      this.Owner.PostProcessBloom.AddRenderTasks(event, lightBuffer);
+      this.Owner.PostProcessBloom.AddRenderTasks(event, fullResTarget);
         
     // God Rays
     if(this.Owner.PostProcessGodRays != null)
-      this.Owner.PostProcessGodRays.OnRenderTasksUpdate(event, this.GBuffer0.Texture, lightBuffer);
+      this.Owner.PostProcessGodRays.OnRenderTasksUpdate(event, this.GBuffer0.Texture, fullResTarget);
     
     // Alpha No PostFX
     AlphaRenderPass.OnAlphaNoPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
@@ -471,22 +504,22 @@ class DeferredRenderer : LightningComponent
     if(camera != null)
     {
       var exposure = Exposure();
-      exposure.ScreenBuffer = lightBuffer.Texture;
+      exposure.ScreenBuffer = fullResTarget.Texture;
       exposure.Aperture = camera.Aperture;
       exposure.ShutterSpeed = 1.0 / camera.ShutterSpeed;
       exposure.ISO = camera.ISO;
       
-      event.AddRenderTaskPostProcess(lightBuffer, exposure, "Exposure");
+      event.AddRenderTaskPostProcess(fullResTarget, exposure, "Exposure");
     }
       
-    this.DrawDebugObjects(event, lightBuffer, this.Depth);
+    this.DrawDebugObjects(event, fullResTarget, this.Depth);
 
     //Smaa
     if(this.Owner.PostProcessSMAA != null)
-      this.Owner.PostProcessSMAA.AddRenderTask(event, lightBuffer, this.Depth);
+      this.Owner.PostProcessSMAA.AddRenderTask(event, fullResTarget, this.Depth);
     
     // Bring final lighting to gamma space for monitor display
-    this.LinearToGamma(event, lightBuffer, this.FinalOutput);
+    this.LinearToGamma(event, fullResTarget, this.FinalOutput);
     
     
     if(this.Owner.PostProcessTAA != null)
