@@ -94,11 +94,9 @@ void LoadCoreContent(Array<String>& coreLibs)
   ZoneScoped;
   ProfileScopeFunction();
   PL::gContentSystem->EnumerateLibraries();
+  PL::gContentSystem->PlasmaCoreLibraryNames = coreLibs;
 
   PlasmaPrint("Loading Content...\n");
-
-  LoadContentLibrary("FragmentCore");
-  LoadContentLibrary("Loading");
 
   forRange (String libraryName, coreLibs.All())
   {

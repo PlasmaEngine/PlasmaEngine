@@ -65,6 +65,8 @@ public:
 
   // Save the content object meta file data.
   void SaveMetaFile();
+  // Delete the meta data file.
+  bool DeleteMetaFile();
   // Get the path to the meta file.
   String GetMetaFilePath();
   // Get the full path to the content file.

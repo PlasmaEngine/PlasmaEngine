@@ -88,6 +88,11 @@ String ContentItem::GetMetaFilePath()
   return BuildString(GetFullPath(), ".meta");
 }
 
+bool ContentItem::DeleteMetaFile()
+{
+    return DeleteFile(BuildString(GetFullPath(), ".meta"));
+}
+
 String ContentItem::GetFullPath()
 {
   return FilePath::Combine(mLibrary->SourcePath, Filename);

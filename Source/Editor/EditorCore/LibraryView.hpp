@@ -48,14 +48,23 @@ namespace Plasma
     AddLibraryUI(Composite* parent, LibraryView* libraryView);
     ~AddLibraryUI();
 
+    /// Called when we are typing in the library name text box.
+    void UpdateLibraryPath();
+
     /// Called when on create button is pressed.
     void OnCreate(Event* e);
 
     /// Called when library path is selected.
     void OnSelectPath(Event* e);
 
+    /// Called when the checkbox is checked
+    void OnToggleEditablePath(Event* e);
+
     /// Called when folder is selected and validates selection.
     void OnFolderSelected(OsFileSelection* e);
+
+    /// Called when 
+    void OnKeyUp(KeyboardEvent* event);
 
     /// Called when the cancel button is pressed.
     void OnCancel(Event* e);
@@ -64,9 +73,36 @@ namespace Plasma
   private:
     TextBox* mNewLibraryName;
     TextBox* mLibraryPath;
+    TextButton* mPathSelectButton;
+    TextCheckBox* mSetIndependentPathCheckbox;
     LibraryView* mLibraryView;
 
     bool mCanCreateLibrary = false;
+  };
+
+  class MoveItemUI : public Composite
+  {
+  public:
+    typedef MoveItemUI LightningSelf;
+
+    MoveItemUI(Composite* parent, LibraryView* libraryView);
+    ~MoveItemUI();
+
+    //Used to retrieve and build all libraries we can move resources to.
+    void BuildContentLibraryList();
+
+    //Executed when the user presses the move button.
+    void OnMove(Event* e);
+
+    //Executed when the cancel button is pressed.
+    void OnCancel(Event* e);
+
+  private:
+     StringComboBox* mContentLibraries;
+     LibraryView* mLibraryView;
+     Composite* mLibrariesRow;
+     Array<Resource*> mResourcesToMove;
+
   };
   
 class LibraryView : public Composite
@@ -97,6 +133,9 @@ public:
   /// Sets the current search to the given tags.
   void SetSearchTags(TagList& tags);
 
+  /// Gets currently selected library's name
+  String GetSelectedLibraryName();
+
   /// Creates a preview group of the given tag with the current search as
   /// extra tags.
   PreviewWidgetGroup* CreatePreviewGroup(Composite* parent, StringParam tag, uint max);
@@ -106,10 +145,12 @@ public:
   float GetTagEditorSize(SizeAxis::Enum axis);
   void SetTagEditorSize(SizeAxis::Enum axis, float size);
 
-void SetSelectedByName(String name);
+  void SetSelectedByName(String name);
 
-/// Returns current selected library in view
-ContentLibrary* GetLibrary() { return mContentLibrary; }
+  /// Returns current selected library in view
+  ContentLibrary* GetLibrary() { return mContentLibrary; }
+
+  Array<Resource*> GetSelectedResources();
 
 private:
   void UpdateVisibleResources();
@@ -148,6 +189,7 @@ private:
   void OnEditTags(ObjectEvent* event);
   void OnMessageBox(MessageBoxEvent* event);
   void OnDuplicate(Event* event);
+
   /// Extra context menus for lightning fragment translation. These should
   /// eventually be moved to some external registration once it is possible.
   void OnComposeLightningMaterial(Event* event);
@@ -191,6 +233,7 @@ private:
 
   /// Displays AddLibraryUI Window.
   void OnCreateLibraryPress(Event* e);
+  void OnMoveResourcePress(Event* e);
   
   /// Used to hide
   HashSet<String> mHiddenLibraries;

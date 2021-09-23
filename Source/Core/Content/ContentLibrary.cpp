@@ -10,7 +10,7 @@ LightningDefineType(ContentLibrary, builder, type)
 
 ContentLibrary::ContentLibrary()
 {
-  mReadOnly = false;
+    mReadOnly = false;
 }
 
 ContentLibrary::~ContentLibrary()

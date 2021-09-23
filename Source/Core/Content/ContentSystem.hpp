@@ -152,6 +152,9 @@ public:
   /// Rename a ContentItem's file.
   bool RenameContentItemFile(ContentItem* contentItem, StringParam newFileName);
 
+  /// Move ContentItem to a given library
+  bool MoveContentItem(ContentItem* contentItem, ContentLibrary* targetLibrary);
+
   String GetHistoryPath(ContentLibrary* library);
 
   // Find a content item by file name (Not the full path).
@@ -190,6 +193,8 @@ public:
   /// Where to move deleted content to.
   String HistoryPath;
   bool mHistoryEnabled;
+
+  Array<String> PlasmaCoreLibraryNames;
 
   // These paths are set by the editor
   Array<String> LibrarySearchPaths;
