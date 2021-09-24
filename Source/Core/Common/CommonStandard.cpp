@@ -28,12 +28,12 @@ void CommonLibrary::Initialize()
          "  Application: %s\n"
          "      Working: %s\n"
          "    Documents: %s\n"
-         "        Local: %s\n"
+         "      AppData: %s\n"
          "    Temporary: %s\n",
          GetApplication().c_str(),
          GetWorkingDirectory().c_str(),
-         GetUserDocumentsDirectory().c_str(),
-         GetUserLocalDirectory().c_str(),
+         GetUserDocumentsApplicationDirectory().c_str(),
+         GetUserApplicationDirectory().c_str(),
          GetTemporaryDirectory().c_str());
 }
 

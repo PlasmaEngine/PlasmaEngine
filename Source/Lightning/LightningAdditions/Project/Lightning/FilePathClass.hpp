@@ -152,7 +152,7 @@ namespace Lightning
     LightningDocument(UserLocalDirectory,
     "Application saved information should be placed here (read/write/create permissions should be allowed). "
     "This will always include a directory separator at the end of the result.\n");
-    static String GetUserLocalDirectory();
+    static String GetUserApplicationDirectory();
     
     LightningDocument(UserDocumentsDirectory,
     "User saved data that the user can backup or modify should be placed here (read/write/create permissions should be allowed). "

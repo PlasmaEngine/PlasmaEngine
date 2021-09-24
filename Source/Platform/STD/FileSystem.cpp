@@ -36,6 +36,11 @@ bool PersistFiles()
   return false;
 }
 
+bool BrowseDirectory(StringParam path)
+{
+    return false;
+}
+
 String GetWorkingDirectory()
 {
   std::error_code error;

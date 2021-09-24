@@ -6,48 +6,74 @@ namespace Plasma
 
 LightningDefineType(ObjectStore, builder, type)
 {
-  type->HandleManager = LightningManagerId(PointerManager);
+	type->HandleManager = LightningManagerId(PointerManager);
 
-  PlasmaBindDocumented();
+	PlasmaBindDocumented();
 
-  LightningBindGetter(EntryCount);
+	LightningBindGetter(EntryCount);
 
-  LightningBindMethodAs(IsEntryStored, "IsStored")->AddAttribute(DeprecatedAttribute);
-  LightningBindMethod(IsEntryStored);
-  LightningBindMethod(GetEntryAt);
-  LightningBindMethod(Store);
-  LightningBindMethod(Restore);
-  LightningBindMethod(RestoreOrArchetype);
-  LightningBindMethod(Erase);
-  LightningBindMethod(ClearStore);
-  LightningBindMethod(GetDirectoryPath);
+	LightningBindMethodAs(IsEntryStored, "IsStored")->AddAttribute(DeprecatedAttribute);
+	LightningBindMethod(IsEntryStored);
+	LightningBindMethod(GetEntryAt);
+	LightningBindMethod(Store);
+	LightningBindMethod(Restore);
+	LightningBindMethod(RestoreOrArchetype);
+	LightningBindMethod(Erase);
+	LightningBindMethod(ClearStore);
 }
 
 void ObjectStore::SetStoreName(StringParam storeName)
 {
-  String storePath = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Store", storeName);
-  if (DirectoryExists(storePath))
-    PopulateEntries(storePath);
-
-  mStoreName = storeName;
-  mStorePath = String();
+	// switch over to a new path and populate based on the files there
+	mStoreName = storeName;
+	String storePath = BuildStorePath();
+	SetupDirectory(storePath);
 }
 
-void ObjectStore::SetupDirectory()
+void ObjectStore::MigrateStoreLocation(StringParam oldLocation)
 {
-  if (mStorePath.Empty())
-  {
-    // Build the paths and create the directory to contain stored objects.
+	String newLocation = BuildStorePath();
 
-    // In User documents create a folder call Plasma.
-    String storePath = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Store", mStoreName);
+	// do nothing if it is the same location
+	if (newLocation == oldLocation)
+	{
+		return;
+	}
 
-    CreateDirectoryAndParents(storePath);
+	//create the directory to contain stored objects.
+	if (DirectoryExists(newLocation) == false)
+	{
+		CreateDirectoryAndParents(newLocation);
+	}
 
-    // save the path
-    mStorePath = storePath;
-    PopulateEntries(storePath);
-  }
+	// move the files
+	if (DirectoryExists(oldLocation))
+	{
+		MoveFolderContents(newLocation, oldLocation);
+		DeleteDirectory(oldLocation);
+		PersistFiles();
+	}
+	
+	// populate entries from the new directory
+	SetupDirectory(newLocation);
+}
+
+void ObjectStore::SetupDirectory(StringParam storePath)
+{
+	if (DirectoryExists(storePath) == false)
+	{
+		//create the directory to contain stored objects.
+		CreateDirectoryAndParents(storePath);
+	}
+
+	if (DirectoryExists(storePath))
+	{
+		PopulateEntries(storePath);
+	}
+	else
+	{
+		Warn("Failed to create directory for ObjectStore: %s", storePath.c_str());
+	}
 }
 
 void ObjectStore::PopulateEntries(StringParam storePath)
@@ -57,36 +83,45 @@ void ObjectStore::PopulateEntries(StringParam storePath)
   FileRange filesInDirectory(storePath);
   for (; !filesInDirectory.Empty(); filesInDirectory.PopFront())
   {
-    String filename = filesInDirectory.Front();
-    String name = FilePath::GetFileNameWithoutExtension(filename);
-    mEntries.PushBack(name);
+	String filename = filesInDirectory.Front();
+	String name = FilePath::GetFileNameWithoutExtension(filename);
+	mEntries.PushBack(name);
   }
 }
 
-String ObjectStore::GetFile(StringParam name)
+String ObjectStore::BuildStorePath()
 {
-  SetupDirectory();
-  return FilePath::CombineWithExtension(mStorePath, name, ".data");
+	return FilePath::Combine(GetUserApplicationDirectory(), "Store");
+}
+
+String ObjectStore::BuildTrashPath()
+{
+	return FilePath::Combine(GetUserApplicationDirectory(), "StoreTrash");
+}
+
+String ObjectStore::GetFullFilePath(StringParam storePath, StringParam entryName)
+{
+	return FilePath::CombineWithExtension(storePath, entryName, ".data");
 }
 
 bool ObjectStore::IsEntryStored(StringParam name)
 {
   if (!mEntries.Empty())
   {
-    int count = mEntries.Size();
-    for (int i = 0; i < count; ++i)
-    {
-      if (mEntries[i] == name)
-        return true;
-    }
+	int count = mEntries.Size();
+	for (int i = 0; i < count; ++i)
+	{
+	  if (mEntries[i] == name)
+		return true;
+	}
 
-    return false;
+	return false;
   }
   else
   {
-    // Check to is if file exists.
-    String storeFile = GetFile(name);
-    return FileExists(storeFile);
+	// Check to is if file exists.
+	String storeFile = GetFullFilePath(BuildStorePath(), name);
+	return FileExists(storeFile);
   }
 }
 
@@ -98,18 +133,12 @@ uint ObjectStore::GetEntryCount()
 String ObjectStore::GetEntryAt(uint index)
 {
   if (mEntries.Empty())
-    return String();
+	return String();
 
   if (index >= mEntries.Size())
-    return String();
+	return String();
 
   return mEntries[index];
-}
-
-String ObjectStore::GetDirectoryPath()
-{
-  SetupDirectory();
-  return mStorePath;
 }
 
 // Store an object.
@@ -117,14 +146,14 @@ StoreResult::Enum ObjectStore::Store(StringParam name, Cog* object)
 {
   ReturnIf(object == nullptr, StoreResult::Failed, "Can not store null object.");
 
-  String storeFile = GetFile(name);
+  String storeFile = GetFullFilePath(BuildStorePath(), name);
 
   // Default is added
   StoreResult::Enum result = StoreResult::Added;
 
   // If the file already exists set the result to replaced.
   if (FileExists(storeFile))
-    result = StoreResult::Replaced;
+	result = StoreResult::Replaced;
 
   Status status;
   // Create a text serializer
@@ -137,18 +166,18 @@ StoreResult::Enum ObjectStore::Store(StringParam name, Cog* object)
 
   if (status)
   {
-    if (result == StoreResult::Added)
-      mEntries.PushBack(name);
+	if (result == StoreResult::Added)
+	  mEntries.PushBack(name);
 
-    saver.SetSerializationContext(&savingContext);
-    saver.SaveFullObject(object);
-    saver.Close();
-    PersistFiles();
+	saver.SetSerializationContext(&savingContext);
+	saver.SaveFullObject(object);
+	saver.Close();
+	PersistFiles();
   }
   else
   {
-    PlasmaPrintFilter(Filter::DefaultFilter, "Failed to store object %s", name.c_str());
-    return StoreResult::Failed;
+	PlasmaPrintFilter(Filter::DefaultFilter, "Failed to store object %s", name.c_str());
+	return StoreResult::Failed;
   }
 
   return result;
@@ -159,20 +188,20 @@ Cog* ObjectStore::Restore(StringParam name, Space* space)
 {
   if (space == nullptr)
   {
-    DoNotifyException("Invalid ObjectStore Restore",
-                      "The space passed in was null. Cannot restore an object "
-                      "to an invalid space.");
-    return nullptr;
+	DoNotifyException("Invalid ObjectStore Restore",
+					  "The space passed in was null. Cannot restore an object "
+					  "to an invalid space.");
+	return nullptr;
   }
 
-  String storeFile = GetFile(name);
+  String storeFile = GetFullFilePath(BuildStorePath(), name);
 
   // Test to see if a file exists and restore it from
   // file if it exists
   if (FileExists(storeFile))
   {
-    Cog* cog = space->CreateNamed(storeFile);
-    return cog;
+	Cog* cog = space->CreateNamed(storeFile);
+	return cog;
   }
 
   return nullptr;
@@ -184,12 +213,12 @@ Cog* ObjectStore::RestoreOrArchetype(StringParam name, Archetype* archetype, Spa
 
   if (cog == nullptr && space != nullptr)
   {
-    // Object was not present in store use archetype.
-    cog = space->Create(archetype);
-    if (cog == nullptr)
-    {
-      PlasmaPrintFilter(Filter::DefaultFilter, "Failed to restore object %s", name.c_str());
-    }
+	// Object was not present in store use archetype.
+	cog = space->Create(archetype);
+	if (cog == nullptr)
+	{
+	  PlasmaPrintFilter(Filter::DefaultFilter, "Failed to restore object %s", name.c_str());
+	}
   }
 
   return cog;
@@ -198,35 +227,43 @@ Cog* ObjectStore::RestoreOrArchetype(StringParam name, Archetype* archetype, Spa
 void ObjectStore::Erase(StringParam name)
 {
   // Get the name of the file to remove
-  String storeFile = GetFile(name);
+  String storeFile = GetFullFilePath(BuildStorePath(), name);
 
   // First check if it exists
   if (FileExists(storeFile))
   {
-    // Get the path to where we're moving the file to (in the trash directory)
-    String trashDirectory = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "StoreTrash");
-    String fileDestination = FilePath::Combine(trashDirectory, BuildString(name, ".Data"));
+	// Get the path to where we're moving the file to (in the trash directory)
+	String trashDirectory = BuildTrashPath();
+	String fileDestination = GetFullFilePath(trashDirectory, name);
 
-    // Create the trash directory if it doesn't exist
-    CreateDirectoryAndParents(trashDirectory);
+	// Create the trash directory if it doesn't exist
+	CreateDirectoryAndParents(trashDirectory);
 
-    // Move the file
-    MoveFile(fileDestination, storeFile);
+	// Move the file
+	MoveFile(fileDestination, storeFile);
 
-    mEntries.EraseValue(name);
-    PersistFiles();
+	mEntries.EraseValue(name);
+	PersistFiles();
   }
 }
 
 void ObjectStore::ClearStore()
 {
-  mEntries.Clear();
+	mEntries.Clear();
 
-  SetupDirectory();
-  String trashDirectory = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "StoreTrash");
+	String storeDirectory = BuildStorePath();
+	String trashDirectory = BuildTrashPath();
 
-  MoveFolderContents(trashDirectory, mStorePath);
-  PersistFiles();
+	if (DirectoryExists(storeDirectory))
+	{
+		// Create the trash directory if it doesn't exist
+		CreateDirectoryAndParents(trashDirectory);
+
+		MoveFolderContents(trashDirectory, BuildStorePath());
+		PersistFiles();
+	}
+
+	SetupDirectory(storeDirectory);
 }
 
 } // namespace Plasma

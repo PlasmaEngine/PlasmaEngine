@@ -862,7 +862,7 @@ BackgroundTask* VersionSelector::DownloadPatchLauncherUpdate(StringParam url)
 
   String majorVersionIdStr = ToString(GetMajorVersion());
   String launcherFolderName =
-      FilePath::Combine(GetUserLocalDirectory(), BuildString("PlasmaLauncher_", majorVersionIdStr, ".0"));
+      FilePath::Combine(GetUserApplicationDirectory(), BuildString("PlasmaLauncher_", majorVersionIdStr, ".0"));
   DownloadLauncherPatchInstallerJob* job = new DownloadLauncherPatchInstallerJob(url, launcherFolderName);
   job->mName = "Download Patch Installer";
 

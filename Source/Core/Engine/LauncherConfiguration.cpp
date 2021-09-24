@@ -39,7 +39,7 @@ void LauncherConfig::Serialize(Serializer& stream)
 
   SerializeNameDefault(mDefaultProjectSaveLocation,
                        FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Projects"));
-  SerializeNameDefault(mDownloadPath, FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Downloads"));
+  SerializeNameDefault(mDownloadPath, FilePath::Combine(GetUserApplicationDirectory(), "Downloads"));
   SerializeNameDefault(mDisplayBuildOnProjects, false);
   SerializeNameDefault(mShowDevelopmentBuilds, true);
   SerializeRename(mShowDevelopmentBuilds, "ShowNightlies");
@@ -49,6 +49,8 @@ void LauncherConfig::Serialize(Serializer& stream)
   SerializeNameDefault(mAutoUpdateFrequencyInSeconds, mDefaultReloadFrequency);
   float everyTwelveHours = 60 * 60 * 12;
   SerializeNameDefault(mNewestLauncherUpdateCheckFrequency, everyTwelveHours);
+
+  CreateDirectoryAndParents(mDefaultProjectSaveLocation);
 }
 
 void LauncherConfig::ApplyCommandLineArguments()

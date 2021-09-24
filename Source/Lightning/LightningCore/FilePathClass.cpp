@@ -164,12 +164,12 @@ LightningDefineType(FilePathClass, builder, type)
       ->Description = FilePathClass::TemporaryDirectoryDocumentation();
   LightningFullBindGetterSetter(builder,
                             type,
-                            &FilePathClass::GetUserLocalDirectory,
+                            &FilePathClass::GetUserApplicationDirectory,
                             LightningNoOverload,
                             LightningNoSetter,
                             LightningNoOverload,
-                            "UserLocalDirectory")
-      ->Description = FilePathClass::UserLocalDirectoryDocumentation();
+                            "UserApplicationDirectory")
+      ->Description = FilePathClass::UserApplicationDirectoryDocumentation();
 
   LightningFullBindGetterSetter(builder,
                             type,
@@ -415,7 +415,7 @@ String FilePathClass::GetTemporaryDirectory()
   return AddTrailingDirectorySeparator(Plasma::GetTemporaryDirectory());
 }
 
-String FilePathClass::GetUserLocalDirectory()
+String FilePathClass::GetUserApplicationDirectory()
 {
   return AddTrailingDirectorySeparator(Plasma::GetUserLocalDirectory());
 }
