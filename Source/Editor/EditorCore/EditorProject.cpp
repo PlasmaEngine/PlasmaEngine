@@ -147,32 +147,35 @@ void UnloadProject(Editor* editor, Cog* projectCog)
 
 bool OpenProjectFile(StringParam filename)
 {
-  // File check
-  if (!FileExists(filename))
-  {
-    DoNotifyError("Failed to load project.", String::Format("Project file not found '%s'", filename.c_str()));
-    return false;
-  }
+    // File check
+    if (!FileExists(filename))
+    {
+        DoNotifyError("Failed to load project.", String::Format("Project file not found '%s'", filename.c_str()));
+        return false;
+    }
 
-  // Load the project object
-  Cog* projectCog =
-      PL::gFactory->Create(PL::gEngine->GetEngineSpace(), filename, CreationFlags::ProxyComponentsExpected, nullptr);
-  if (projectCog == nullptr)
-  {
-    DoNotifyError("Failed to load project.", "Project file invalid.");
-    return false;
-  }
-  // Prevent components from being added or removed from the project cog
-  projectCog->mFlags.SetFlag(CogFlags::ScriptComponentsLocked);
+    // Load the project object
+    Cog* projectCog =
+        PL::gFactory->Create(PL::gEngine->GetEngineSpace(), filename, CreationFlags::ProxyComponentsExpected, nullptr);
+    if (projectCog == nullptr)
+    {
+        DoNotifyError("Failed to load project.", "Project file invalid.");
+        return false;
+    }
+    // Prevent components from being added or removed from the project cog
+    projectCog->mFlags.SetFlag(CogFlags::ScriptComponentsLocked);
 
-  ProjectSettings* project = projectCog->has(ProjectSettings);
-  if (project == nullptr)
-    return false;
+    ProjectSettings* project = projectCog->has(ProjectSettings);
+    if (project == nullptr)
+    {
+        DoNotifyError("Failed to load project.", "Project file doesn't have a ProjectSettings component.");
+        return false;
+    }
 
-  // Begin the loading project
-  String projectFolder = FilePath::GetDirectoryPath(filename);
-  LoadProject(PL::gEditor, projectCog, projectFolder, filename);
-  return true;
+    // Begin the loading project
+    String projectFolder = FilePath::GetDirectoryPath(filename);
+    LoadProject(PL::gEditor, projectCog, projectFolder, filename);
+    return true;
 }
 
 // Project Commands

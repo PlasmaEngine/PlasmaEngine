@@ -378,7 +378,12 @@ public:
   bool AddUser(EventBundle* requestBundle);
   bool AddUser(Event* requestEvent);
   bool AddUser();
-
+  
+  /// Method for the server for force-spawn a NetUser object for a connected client
+  NetUser* ServerForceAddUser(NetPeerId theirNetPeerId, EventBundle* addRequestBundle);
+  NetUser* ServerForceAddUser(NetPeerId theirNetPeerId, Event* requestEvent);
+  NetUser* ServerForceAddUser(NetPeerId theirNetPeerId);
+   
   /// Returns the specified network user, else nullptr.
   Cog* GetUser(NetUserId netUserId) const;
 
