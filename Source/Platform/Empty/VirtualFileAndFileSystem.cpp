@@ -383,6 +383,11 @@ String CanonicalizePath(StringParam directoryPath)
   return FilePath::Normalize(directoryPath);
 }
 
+bool BrowseDirectory(StringParam path)
+{
+    return false;
+}
+
 String GetWorkingDirectory()
 {
   return FileSystem::GetInstance()->mWorkingDirectory;
