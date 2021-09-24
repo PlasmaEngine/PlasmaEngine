@@ -368,14 +368,22 @@ void Editor::LoadDefaultLevel()
     String lastEditedLevel = configCog->has(EditorConfig)->EditingLevel;
     Level* lastEdited = LevelManager::FindOrNull(lastEditedLevel);
 
-    if (lastEditedLevel.Empty() == false && lastEdited == nullptr)
+    if (lastEdited == nullptr)
     {
-        Warn("Couldn't load last edited level: %s", lastEditedLevel.c_str());
+        if (lastEditedLevel.Empty() == false)
+        {
+            Warn("Couldn't load last edited level: %s", lastEditedLevel.c_str());
+        }
     }
-
     // Is this level from this project?
-    if (lastEdited && lastEdited->mContentItem->mLibrary == mProjectLibrary)
-      level = lastEdited;
+    else if (lastEdited->mContentItem->mLibrary != mProjectLibrary)
+    {
+        Warn("Cannot open previous level [%s] - not from Project Library", lastEditedLevel.c_str());
+    }
+    else
+    {
+        level = lastEdited;
+    }
   }
 
   GameSession* gameSession = GetEditGameSession();
