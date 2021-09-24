@@ -68,16 +68,43 @@ LightningDefineType(ContentConfig, builder, type)
   PlasmaBindComponent();
   PlasmaBindDocumented();
   type->AddAttribute(ObjectAttributes::cCore);
-  PlasmaTodo("Add folder-select dialog for Editor ContentOutput path");
-  LightningBindFieldProperty(ContentOutput);
+  LightningBindFieldGetter(ContentOutput);
+  LightningBindMethodProperty(PickNewContentOutput);
+  PlasmaTodo("Change this into a warning that pops up when bContentOutputDirty is true");
+  LightningBindCustomGetter(ContentPathChangedAndRequiresRestart);
 }
 
 void ContentConfig::Serialize(Serializer& stream)
 {
   SerializeNameDefault(ContentOutput, String());
-  SerializeNameDefault(ToolsDirectory, String());
   SerializeNameDefault(LibraryDirectories, LibraryDirectories);
   SerializeNameDefault(HistoryEnabled, true);
+}
+
+void ContentConfig::PickNewContentOutput()
+{
+    // see DirectProperty
+    PlasmaTodo("Generalize into a FilePath property with a property editor");
+
+    FileDialogConfig* config = FileDialogConfig::Create();
+    config->CallbackObject = this;
+    config->Title = "Select new Content Output directory";
+    config->Flags = FileDialogFlags::Folder;
+    config->StartingDirectory = ContentOutput;
+
+    ConnectThisTo(this, config->EventName, OnNewContentOutputPathSelected);
+    PL::gEngine->has(OsShell)->SaveFile(config);
+}
+
+void ContentConfig::OnNewContentOutputPathSelected(OsFileSelection* event)
+{
+    if (event->Success == true && 
+        event->Files.Size() > 0 && DirectoryExists(event->Files[0]))
+    {
+        ContentOutput = event->Files[0];
+        bContentOutputDirty = true;
+        SaveConfig();
+    }
 }
 
 LightningDefineType(UserConfig, builder, type)

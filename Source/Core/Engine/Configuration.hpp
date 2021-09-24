@@ -94,11 +94,15 @@ public:
 
   /// Content output directory.
   String ContentOutput;
-  /// Content tools directory.
-  String ToolsDirectory;
+  void PickNewContentOutput();
+  void OnNewContentOutputPathSelected(OsFileSelection* event);
+  bool bContentOutputDirty = false;
+  bool ContentPathChangedAndRequiresRestart() { return bContentOutputDirty; }
+
   /// Directories to search for shared content
   /// libraries.
   Array<String> LibraryDirectories;
+
   /// History stores files instead of deleting them
   bool HistoryEnabled;
 };
