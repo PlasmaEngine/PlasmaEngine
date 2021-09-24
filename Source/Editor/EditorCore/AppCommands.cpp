@@ -195,6 +195,28 @@ void CopyPrebuiltContent()
   Download(outputDirectory);
 }
 
+void BrowseApplicationDirectory(StringParam directoryPath)
+{
+    const bool bSuccess = BrowseDirectory(directoryPath);
+    if (bSuccess == false)
+    {
+        Warn(BuildString("Failed to open path ", directoryPath).c_str());
+    }
+}
+
+void BrowseApplicationDocumentsDirectory()
+{
+    BrowseApplicationDirectory(GetUserDocumentsApplicationDirectory());
+}
+void BrowseApplicationDataDirectory()
+{
+    BrowseApplicationDirectory(GetUserApplicationDirectory());
+}
+void BrowseTemporaryDirectory()
+{
+    BrowseApplicationDirectory(GetTemporaryDirectory());
+}
+
 void BindAppCommands(Cog* config, CommandManager* commands)
 {
   commands->AddCommand("About", BindCommandFunction(ShowAbout), true);
@@ -219,6 +241,10 @@ void BindAppCommands(Cog* config, CommandManager* commands)
   commands->AddCommand("Documentation", BindCommandFunction(OpenDocumentation), true);
 
   commands->AddCommand("CopyPrebuiltContent", BindCommandFunction(CopyPrebuiltContent));
+
+  commands->AddCommand("BrowseApplicationDocumentsDirectory", BindCommandFunction(BrowseApplicationDocumentsDirectory));
+  commands->AddCommand("BrowseApplicationDataDirectory", BindCommandFunction(BrowseApplicationDataDirectory));
+  commands->AddCommand("BrowseTemporaryDirectory", BindCommandFunction(BrowseTemporaryDirectory));
 }
 
 } // namespace Plasma

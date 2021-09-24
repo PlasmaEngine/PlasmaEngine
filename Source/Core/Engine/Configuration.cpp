@@ -68,7 +68,7 @@ LightningDefineType(ContentConfig, builder, type)
   PlasmaBindComponent();
   PlasmaBindDocumented();
   type->AddAttribute(ObjectAttributes::cCore);
-  LightningBindFieldGetter(ContentOutput);
+  LightningBindFieldProperty(ContentOutput);
   LightningBindMethodProperty(PickNewContentOutput);
   PlasmaTodo("Change this into a warning that pops up when bContentOutputDirty is true");
   LightningBindCustomGetter(ContentPathChangedAndRequiresRestart);
@@ -89,7 +89,9 @@ void ContentConfig::PickNewContentOutput()
     FileDialogConfig* config = FileDialogConfig::Create();
     config->CallbackObject = this;
     config->Title = "Select new Content Output directory";
-    config->Flags = FileDialogFlags::Folder;
+    config->AddFilter("Content Output Folder", "*.none");
+    config->Flags |= FileDialogFlags::Folder;
+    config->DefaultFileName = ContentOutput;
     config->StartingDirectory = ContentOutput;
 
     ConnectThisTo(this, config->EventName, OnNewContentOutputPathSelected);

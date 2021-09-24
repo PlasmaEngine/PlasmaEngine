@@ -35,6 +35,9 @@ PlasmaShared void AddVirtualFileSystemEntry(StringParam absolutePath, DataBlock*
 /// Common/Platform library shuts down.
 PlasmaShared bool PersistFiles();
 
+/// For Editor: open platform's file/folder browser to path
+PlasmaShared bool BrowseDirectory(StringParam path);
+
 /// Copies a file. Will spin lock if fails up to a max number of iterations.
 /// (Calls CopyFileInternal) This operation will overwrite the destination file
 /// if it exists.

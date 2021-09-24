@@ -25,6 +25,16 @@ bool PersistFiles()
   return false;
 }
 
+bool BrowseDirectory(StringParam path)
+{
+    Status status;
+    status.CallbackOnFailure = Status::AssertCallback;
+
+    Process process;
+    process.Start(status, BuildString("explorer.exe ", path).c_str(), false, false, false, true);
+    return process.IsRunning();
+}
+
 String GetWorkingDirectory()
 {
   char temp[MAX_PATH + 1];

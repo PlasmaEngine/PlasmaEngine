@@ -21,6 +21,7 @@ void EditLevel(Editor* editor, Resource* resource)
   // Update the last edited level in the user configuration
   Cog* configCog = PL::gEngine->GetConfigCog();
   HasOrAdd<EditorConfig>(configCog)->EditingLevel = level->ResourceIdName;
+  SaveConfig();
 
   Space* space = editor->CreateNewSpace(CreationFlags::Editing);
   space->has(TimeSpace)->SetPaused(true);
