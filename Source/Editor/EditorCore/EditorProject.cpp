@@ -71,6 +71,7 @@ void LoadProject(Editor* editor, Cog* projectCog, StringParam path, StringParam 
   
   /// Store the library on the project
   project->ProjectContentLibrary = projectLibrary;
+  PL::gEditor->mProjectLibrary = projectLibrary;
 
   Status status;
   PL::gContentSystem->BuildLibrary(status, projectLibrary, true);
@@ -91,7 +92,7 @@ void LoadProject(Editor* editor, Cog* projectCog, StringParam path, StringParam 
     Status s;
     PL::gContentSystem->BuildLibrary(s, library, true);
   }
-  
+
   // Always select the first tool
   if (editor->Tools)
     editor->Tools->SelectToolIndex(0);
