@@ -6,54 +6,55 @@ namespace Plasma
 
 void LoadContentConfig()
 {
-  InitializeContentSystem();
+	InitializeContentSystem();
 
-  ContentSystem* contentSystem = PL::gContentSystem;
+	ContentSystem* contentSystem = PL::gContentSystem;
 
-  Cog* configCog = PL::gEngine->GetConfigCog();
-  MainConfig* mainConfig = configCog->has(MainConfig);
+	Cog* configCog = PL::gEngine->GetConfigCog();
+	MainConfig* mainConfig = configCog->has(MainConfig);
 
-  Array<String>& librarySearchPaths = contentSystem->LibrarySearchPaths;
-  ContentConfig* contentConfig = configCog->has(ContentConfig);
+	Array<String>& librarySearchPaths = contentSystem->LibrarySearchPaths;
+	ContentConfig* contentConfig = configCog->has(ContentConfig);
 
-  String sourceDirectory = mainConfig->SourceDirectory;
-  ErrorIf(sourceDirectory.Empty(), "Expected a source directory");
+	String sourceDirectory = mainConfig->SourceDirectory;
+	ErrorIf(sourceDirectory.Empty(), "Expected a source directory");
 
-  String contentOutputDirectory = GetUserApplicationDirectory();
+	String contentOutputDirectory = GetUserApplicationDirectory();
 
-  if (contentConfig)
-  {
-      librarySearchPaths.InsertAt(0, contentConfig->LibraryDirectories.All());
+	if (contentConfig)
+	{
+		librarySearchPaths.InsertAt(0, contentConfig->LibraryDirectories.All());
 
-      PlasmaPrint("Config has ContentOutput directory: '%s'\n", contentConfig->ContentOutput.c_str());
+		PlasmaPrint("Config has ContentOutput directory: '%s'\n", contentConfig->ContentOutput.c_str());
 
-      if (contentConfig->ContentOutput.Empty() == false)
-      {
-          PlasmaTodo("(Matt, 2021-8-29): validate new content output path? Depends on whether validation occurs before serialization");
-          contentOutputDirectory = contentConfig->ContentOutput;
-      }
-  }
-  else
-  {
-      Warn("No ContentConfig found on Config Cog");
-  }
+		if (contentConfig->ContentOutput.Empty() == false && DirectoryExists(contentConfig->ContentOutput))
+		{
+			contentOutputDirectory = contentConfig->ContentOutput;
+		}
+	}
+	else
+	{
+		Warn("No ContentConfig found on Config Cog");
+	}
 
-  librarySearchPaths.PushBack(FilePath::Combine(sourceDirectory, "Resources"));
+	librarySearchPaths.PushBack(FilePath::Combine(sourceDirectory, "Resources"));
 
-  contentSystem->ToolPath = FilePath::Combine(sourceDirectory, "Tools");
+	contentSystem->ToolPath = FilePath::Combine(sourceDirectory, "Tools");
 
-  contentSystem->mHistoryEnabled = contentConfig->HistoryEnabled;
+	contentSystem->mHistoryEnabled = contentConfig->HistoryEnabled;
 
-  // To avoid conflicts of assets of different versions(especially when the
-  // version selector goes live) set the content folder to a unique directory
-  // based upon the version number
-  String revisionChangesetName = BuildString("Version-", GetRevisionNumberString(), "-", GetChangeSetString());
+	String version = Environment::GetValue<String>("versionoverride", BuildString(GetRevisionNumberString(), "-", GetChangeSetString()));
 
-  contentSystem->ContentOutputPath =
-      FilePath::Combine(contentOutputDirectory, "ContentOutput", revisionChangesetName);
-  contentSystem->PrebuiltContentPath =
-      FilePath::Combine(sourceDirectory, "Build", "PrebuiltContent", revisionChangesetName);
-  PlasmaPrint("Content output directory '%s'\n", contentSystem->ContentOutputPath.c_str());
+	// To avoid conflicts of assets of different versions(especially when the
+	// version selector goes live) set the content folder to a unique directory
+	// based upon the version number
+	String revisionChangesetName = BuildString("Version-", version);
+
+	contentSystem->ContentOutputPath =
+		FilePath::Combine(contentOutputDirectory, "ContentOutput", revisionChangesetName);
+	contentSystem->PrebuiltContentPath =
+		FilePath::Combine(sourceDirectory, "Build", "PrebuiltContent", revisionChangesetName);
+	PlasmaPrint("Content output directory '%s'\n", contentSystem->ContentOutputPath.c_str());
 }
 
 bool LoadContentLibrary(StringParam name)
