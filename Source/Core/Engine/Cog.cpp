@@ -655,7 +655,15 @@ Component* Cog::QueryComponentType(BoundType* componentType)
 Component* Cog::FindComponentByBaseTypeName(StringParam baseTypeName)
 {
     BoundType* baseType = MetaDatabase::GetInstance()->FindType(baseTypeName);
-    return GetComponentByIndex(GetComponentIndex(baseType));
+    const int index = GetComponentIndex(baseType);
+    if (index < GetComponentCount())
+    {
+        return GetComponentByIndex(index);
+    }
+    else
+    {
+        return nullptr;
+    }
 }
 
 Component* Cog::GetComponentByName(StringParam componentTypeName)
