@@ -90,7 +90,10 @@ public:
   ContentItem* AddedContentItem;
   // Import Options
   ImportOptions* Options;
-  // Local Name of the file to add.
+  // Full filepath of the file to add.
+  String FullPath;
+  // filename is all the path after our library directory, and can contain subfolders
+  // e.g. for "/LibraryFolder/SubFolder/A.data" the filename is "SubFolder/A.data"
   String FileName;
   // Default name for the builder. If this field is empty,
   // the name will be based on FileName.
