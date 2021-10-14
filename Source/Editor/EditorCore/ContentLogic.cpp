@@ -6,48 +6,55 @@ namespace Plasma
 
 void LoadContentConfig()
 {
-  InitializeContentSystem();
+	InitializeContentSystem();
 
-  ContentSystem* contentSystem = PL::gContentSystem;
+	ContentSystem* contentSystem = PL::gContentSystem;
 
-  Cog* configCog = PL::gEngine->GetConfigCog();
-  MainConfig* mainConfig = configCog->has(MainConfig);
+	Cog* configCog = PL::gEngine->GetConfigCog();
+	MainConfig* mainConfig = configCog->has(MainConfig);
 
-  Array<String>& librarySearchPaths = contentSystem->LibrarySearchPaths;
-  ContentConfig* contentConfig = configCog->has(ContentConfig);
+	Array<String>& librarySearchPaths = contentSystem->LibrarySearchPaths;
+	ContentConfig* contentConfig = configCog->has(ContentConfig);
 
-  String sourceDirectory = mainConfig->SourceDirectory;
-  ErrorIf(sourceDirectory.Empty(), "Expected a source directory");
+	String sourceDirectory = mainConfig->SourceDirectory;
+	ErrorIf(sourceDirectory.Empty(), "Expected a source directory");
 
-  String contentOutputDirectory = GetUserDocumentsApplicationDirectory();
+	String contentOutputDirectory = GetUserApplicationDirectory();
 
-  if (contentConfig)
-  {
-      librarySearchPaths.InsertAt(0, contentConfig->LibraryDirectories.All());
+	if (contentConfig)
+	{
+		librarySearchPaths.InsertAt(0, contentConfig->LibraryDirectories.All());
 
-      if (contentConfig->ContentOutput.Empty() == false)
-      {
-          PlasmaTodo("(Matt, 2021-8-29): validate new content output path? Depends on whether validation occurs before serialization");
-          contentOutputDirectory = contentConfig->ContentOutput;
-      }
-  }
+		PlasmaPrint("Config has ContentOutput directory: '%s'\n", contentConfig->ContentOutput.c_str());
 
-  librarySearchPaths.PushBack(FilePath::Combine(sourceDirectory, "Resources"));
+		if (contentConfig->ContentOutput.Empty() == false && DirectoryExists(contentConfig->ContentOutput))
+		{
+			contentOutputDirectory = contentConfig->ContentOutput;
+		}
+	}
+	else
+	{
+		Warn("No ContentConfig found on Config Cog");
+	}
 
-  contentSystem->ToolPath = FilePath::Combine(sourceDirectory, "Tools");
+	librarySearchPaths.PushBack(FilePath::Combine(sourceDirectory, "Resources"));
 
-  contentSystem->mHistoryEnabled = contentConfig->HistoryEnabled;
+	contentSystem->ToolPath = FilePath::Combine(sourceDirectory, "Tools");
 
-  // To avoid conflicts of assets of different versions(especially when the
-  // version selector goes live) set the content folder to a unique directory
-  // based upon the version number
-  String revisionChangesetName = BuildString("Version-", GetRevisionNumberString(), "-", GetChangeSetString());
+	contentSystem->mHistoryEnabled = contentConfig->HistoryEnabled;
 
-  contentSystem->ContentOutputPath =
-      FilePath::Combine(contentOutputDirectory, "ContentOutput", revisionChangesetName);
-  contentSystem->PrebuiltContentPath =
-      FilePath::Combine(sourceDirectory, "Build", "PrebuiltContent", revisionChangesetName);
-  PlasmaPrint("Content output directory '%s'\n", contentSystem->ContentOutputPath.c_str());
+	String version = Environment::GetValue<String>("versionoverride", BuildString(GetRevisionNumberString(), "-", GetChangeSetString()));
+
+	// To avoid conflicts of assets of different versions(especially when the
+	// version selector goes live) set the content folder to a unique directory
+	// based upon the version number
+	String revisionChangesetName = BuildString("Version-", version);
+
+	contentSystem->ContentOutputPath =
+		FilePath::Combine(contentOutputDirectory, "ContentOutput", revisionChangesetName);
+	contentSystem->PrebuiltContentPath =
+		FilePath::Combine(sourceDirectory, "Build", "PrebuiltContent", revisionChangesetName);
+	PlasmaPrint("Content output directory '%s'\n", contentSystem->ContentOutputPath.c_str());
 }
 
 bool LoadContentLibrary(StringParam name)
@@ -94,11 +101,9 @@ void LoadCoreContent(Array<String>& coreLibs)
   ZoneScoped;
   ProfileScopeFunction();
   PL::gContentSystem->EnumerateLibraries();
+  PL::gContentSystem->PlasmaCoreLibraryNames = coreLibs;
 
   PlasmaPrint("Loading Content...\n");
-
-  LoadContentLibrary("FragmentCore");
-  LoadContentLibrary("Loading");
 
   forRange (String libraryName, coreLibs.All())
   {

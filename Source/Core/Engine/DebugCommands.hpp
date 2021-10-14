@@ -1,7 +1,7 @@
 ﻿#pragma once
 namespace Plasma
 {
-    DeclareEnum9(GeometryValue, None, Normal, Depth, Roughness,  Albedo,  Metallic, Specular, Emissive, AO, SpecularColor)
+    DeclareEnum10(GeometryValue, None, Normal, Depth, Roughness,  Albedo,  Metallic, Specular, Emissive, AO, SpecularColor)
   
     namespace Events
     {

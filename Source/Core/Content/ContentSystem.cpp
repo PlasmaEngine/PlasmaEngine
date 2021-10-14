@@ -95,7 +95,7 @@ ContentSystem::ContentSystem()
   IgnoredExtensions.Insert("libview");
   IgnoredExtensions.Insert("__pycache__");
 
-  HistoryPath = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "History");
+  HistoryPath = FilePath::Combine(GetUserApplicationDirectory(), "History");
 }
 
 ContentSystem::~ContentSystem()
@@ -118,84 +118,80 @@ void ContentSystem::EnumerateLibraries()
 
 ContentLibrary* ContentSystem::LibraryFromDirectory(Status& status, StringParam name, StringParam libraryDirectory)
 {
-  // If the library already exists then update the directory and return the
-  // library
-  if (ContentLibrary* loadedLibrary = Libraries.FindValue(name, nullptr))
-    return loadedLibrary;
+	// If the library already exists then update the directory and return the
+	// library
+	if (ContentLibrary* loadedLibrary = Libraries.FindValue(name, nullptr))
+		return loadedLibrary;
 
-  // Normalize the path to prevent issues with bad paths in config files
-  String directory = FilePath::Normalize(libraryDirectory);
+	// Normalize the path to prevent issues with bad paths in config files
+	String directory = FilePath::Normalize(libraryDirectory);
 
-  // Find the library file
-  String libraryFile = FilePath::CombineWithExtension(directory, name, ".library");
+	// Find the library file
+	String libraryFile = FilePath::CombineWithExtension(directory, name, ".library");
 
-  ContentLibrary* library = new ContentLibrary();
-  library->LibraryFile = libraryFile;
-  library->SourcePath = directory;
+	ContentLibrary* library = new ContentLibrary();
+	library->LibraryFile = libraryFile;
+	library->SourcePath = directory;
 
-  // Does the library file listing file exist?
-  if (FileExists(libraryFile))
-  {
-    // The library file exists, load it
-    bool loaded = library->Load();
+	// Does the library file listing file exist?
+	if (FileExists(libraryFile))
+	{
+		// The library file exists, load it
+		bool loaded = library->Load();
 
-    if (!loaded)
-    {
-      status.SetFailed(String::Format("Can not load library file '%s'", libraryFile.c_str()));
-      return nullptr;
-    }
+		if (!loaded)
+		{
+			status.SetFailed(String::Format("Can not load library file '%s'", libraryFile.c_str()));
+			return nullptr;
+		}
 
-    // Generate an id for this library if necessary
-    if (library->LibraryId == 0)
-      library->LibraryId = GenerateUniqueId64();
+		// Generate an id for this library if necessary
+		if (library->LibraryId == 0)
+			library->LibraryId = GenerateUniqueId64();
 
-    // Set name if necessary
-    if (library->Name.Empty())
-      library->Name = name;
+		// Set name if necessary
+		if (library->Name.Empty())
+			library->Name = name;
+	}
+	else
+	{
+		// Creating a new library
+		library->Name = name;
+		library->LibraryId = GenerateUniqueId64();
+		library->mReadOnly = false;
+		// String prepedDirectory = BuildString("\\\\?\\", directory);
+		if (!DirectoryExists(directory))
+		{
+			// Library directory does not exist so create it
+			// to prevent errors when saving.
+			CreateDirectoryAndParents(directory);
+		}
 
-    // Check to see if the library file is writable
-    // if it is not prevent modifications to this library.
-    library->mReadOnly = !FileWritable(libraryFile);
-  }
-  else
-  {
-    // Creating a new library
-    library->Name = name;
-    library->LibraryId = GenerateUniqueId64();
-    library->mReadOnly = false;
-    // String prepedDirectory = BuildString("\\\\?\\", directory);
-    if (!DirectoryExists(directory))
-    {
-      // Library directory does not exist so create it
-      // to prevent errors when saving.
-      CreateDirectoryAndParents(directory);
-    }
+		library->Save();
+	}
 
-    library->Save();
-  }
+	// Map the library
+	Libraries.InsertOrError(library->Name, library);
 
-  // Map the library
-  Libraries.InsertOrError(library->Name, library);
+	// Scan the directory for the content items
+	Array<String> filesInDirectory;
+	FindFilesRecursively(directory, filesInDirectory);
 
-  // Scan the directory for the content items
-  FileRange filesInDirectory(directory);
+	forRange (String filename, filesInDirectory.All())
+	{
+		Status addStatus;
 
-  for (; !filesInDirectory.Empty(); filesInDirectory.PopFront())
-  {
-    String filename = filesInDirectory.Front();
+		// Add each item to the content library
+		AddContentItemInfo addContent;
+        addContent.FullPath = filename;
+		addContent.FileName = filename.SubString(filename.FindFirstOf(directory).End(), filename.End());
+		addContent.Library = library;
 
-    Status addStatus;
+		AddContentItemToLibrary(addStatus, addContent);
+	}
 
-    // Add each item to the content library
-    AddContentItemInfo addContent;
-    addContent.FileName = filename;
-    addContent.Library = library;
-
-    AddContentItemToLibrary(addStatus, addContent);
-  }
-
-  // Library has been created
-  return library;
+    // Library has been created
+    return library;
 }
 
 HandleOf<ResourcePackage> ContentSystem::BuildLibrary(Status& status, ContentLibrary* library, bool sendEvent)
@@ -215,7 +211,6 @@ HandleOf<ResourcePackage> ContentSystem::BuildLibrary(Status& status, ContentLib
   // is faster than building the content ourselves, if it exists).
   if (!DirectoryExists(outputPath))
   {
-    String versionedContentName = FilePath::GetFileName(ContentOutputPath);
     String prebuiltContent = FilePath::Combine(PrebuiltContentPath, library->Name);
     if (DirectoryExists(prebuiltContent))
     {
@@ -300,7 +295,6 @@ ContentItem* ContentSystem::AddContentItemToLibrary(Status& status, AddContentIt
   }
 
   // Generate final path of the file
-  String fullPath = FilePath::Combine(library->SourcePath, info.FileName);
   String extension = FilePath::GetExtension(info.FileName);
   extension = extension.ToLower();
 
@@ -310,7 +304,7 @@ ContentItem* ContentSystem::AddContentItemToLibrary(Status& status, AddContentIt
   {
     // Check to see if there is a content item with
     // the same file name already in the library
-    if (FileExists(fullPath))
+    if (FileExists(info.FullPath))
     {
       if (info.OnContentFileConflict == ContentFileConflict::FindNewName)
       {
@@ -350,7 +344,7 @@ ContentItem* ContentSystem::AddContentItemToLibrary(Status& status, AddContentIt
         if (existingItem)
         {
           // Replacing content file
-          CopyFile(fullPath, info.ExternalFile);
+          CopyFile(info.FullPath, info.ExternalFile);
 
           // Fill out our content initializer, this has information for the new
           // content options
@@ -384,7 +378,7 @@ ContentItem* ContentSystem::AddContentItemToLibrary(Status& status, AddContentIt
         }
         else
         {
-          String metaFilePath = BuildString(fullPath, ".meta");
+          String metaFilePath = BuildString(info.FullPath, ".meta");
           // If we found the content file and no content item check to see if a
           // meta file is present
           if (FileExists(metaFilePath))
@@ -412,13 +406,13 @@ ContentItem* ContentSystem::AddContentItemToLibrary(Status& status, AddContentIt
     }
 
     // Copy into content library
-    CopyFile(fullPath, info.ExternalFile);
+    CopyFile(info.FullPath, info.ExternalFile);
 
     // Delete file if something fails
-    cleanUp.FileToDelete = fullPath;
+    cleanUp.FileToDelete = info.FullPath;
   }
 
-  String uniqueFileId = UniqueFileId(fullPath);
+  String uniqueFileId = UniqueFileId(info.FullPath);
 
   ContentItem* currentContentItem = library->ContentItems.FindValue(uniqueFileId, nullptr);
 
@@ -437,7 +431,7 @@ ContentItem* ContentSystem::AddContentItemToLibrary(Status& status, AddContentIt
     }
   }
 
-  bool contentFileExists = FileExists(fullPath);
+  bool contentFileExists = FileExists(info.FullPath);
 
   String metaFile = FilePath::CombineWithExtension(library->SourcePath, info.FileName, ".meta");
 
@@ -446,7 +440,7 @@ ContentItem* ContentSystem::AddContentItemToLibrary(Status& status, AddContentIt
     if (!contentFileExists)
     {
       // Meta file but no content item
-      status.SetFailed(String::Format("File '%s' not found but meta file exists.", fullPath.c_str()));
+      status.SetFailed(String::Format("File '%s' not found but meta file exists.", info.FullPath.c_str()));
       return nullptr;
     }
 
@@ -528,7 +522,7 @@ ContentItem* ContentSystem::AddContentItemToLibrary(Status& status, AddContentIt
     if (!contentFileExists)
     {
       status.SetFailed(
-          String::Format("File %s is missing from content library %s ", fullPath.c_str(), library->Name.c_str()));
+          String::Format("File %s is missing from content library %s ", info.FullPath.c_str(), library->Name.c_str()));
       return nullptr;
     }
 
@@ -680,6 +674,47 @@ bool ContentSystem::RenameContentItemFile(ContentItem* contentItem, StringParam 
   library->ContentItems.Insert(contentItem->UniqueFileId, contentItem);
 
   return true;
+}
+
+bool ContentSystem::MoveContentItem(ContentItem* contentItem, ContentLibrary* targetLibrary)
+{
+    // Build Strings
+
+    // Get the original full path to the content item and meta file
+    String oldId = contentItem->UniqueFileId;
+    String contentFile = contentItem->GetFullPath();
+    String contentMetaFile = contentItem->GetMetaFilePath();
+    
+    String oldPath = FilePath::GetDirectoryPath(contentFile);
+    String newFullPath = FilePath::Combine(targetLibrary->SourcePath, contentItem->Filename);
+
+    ContentLibrary* currentLibrary = contentItem->mLibrary;
+
+    // Does a file with this name already exist?
+    // Does a file with the same name exist in the target library folder? If not, then we need to move it.
+
+    // TODO: add dialogue here instead to ask the user if they want to overwrite whatever file exists here.
+    bool fileExistsAtNewDirectory = FileExists(newFullPath);
+    if (fileExistsAtNewDirectory && (currentLibrary->SourcePath != targetLibrary->SourcePath))
+    {
+        return false;
+    }
+    else if (!fileExistsAtNewDirectory)
+    {
+        // If the file does not exists in the directory that we are trying to move it to, we need to remove the meta file and move the file.
+        if (!contentItem->DeleteMetaFile())
+            PlasmaPrint("Unable to delete meta file for %s", contentItem->Filename);
+        MoveFile(newFullPath, contentItem->GetFullPath());
+    }
+
+    currentLibrary->ContentItems.Erase(oldId);
+    contentItem->UniqueFileId = UniqueFileId(newFullPath);
+    contentItem->mLibrary = targetLibrary;
+    targetLibrary->ContentItems.Insert(contentItem->UniqueFileId, contentItem);
+
+    contentItem->SaveContent();
+
+    return true;
 }
 
 String ContentSystem::GetHistoryPath(ContentLibrary* library)

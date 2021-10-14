@@ -188,7 +188,7 @@ void ColorScheme::Save()
     return;
   }
 
-  String userSchemeDirectory = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "ColorSchemes");
+  String userSchemeDirectory = FilePath::Combine(GetUserApplicationDirectory(), "ColorSchemes");
   if (mFilePath.Empty())
     mFilePath = userSchemeDirectory;
 
@@ -236,6 +236,7 @@ void ColorScheme::LoadSchemes()
   TextEditorConfig* textConfig = configCog->has(TextEditorConfig);
 
   String userColorSchemeDirectory = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "ColorSchemes");
+  CreateDirectoryAndParents(userColorSchemeDirectory);
   Enumerate(userColorSchemeDirectory);
 
   // Default color schemes are loaded second to overwrite user schemes using the

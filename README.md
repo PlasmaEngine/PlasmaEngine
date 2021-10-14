@@ -23,8 +23,7 @@ Building on Windows:
   - Install CMake 
   - Install Node.js
   - Do a recusive clone of the git repo
-  - Run init.bat
-  - Run GenerateVS2019.bat
+  - Run build_vs2019_x64.bat
   - Open and Build the .sln file located in `Build\Active`
 
 Building on Linux:

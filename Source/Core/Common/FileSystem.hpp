@@ -35,6 +35,9 @@ PlasmaShared void AddVirtualFileSystemEntry(StringParam absolutePath, DataBlock*
 /// Common/Platform library shuts down.
 PlasmaShared bool PersistFiles();
 
+/// For Editor: open platform's file/folder browser to path
+PlasmaShared bool BrowseDirectory(StringParam path);
+
 /// Copies a file. Will spin lock if fails up to a max number of iterations.
 /// (Calls CopyFileInternal) This operation will overwrite the destination file
 /// if it exists.
@@ -127,17 +130,26 @@ PlasmaShared String GetWorkingDirectory();
 /// Set the working directory for this process.
 PlasmaShared void SetWorkingDirectory(StringParam path);
 
+
 /// Directory for application cache and config files.
 PlasmaShared String GetUserLocalDirectory();
 
-/// Directory for user modifiable configuration files.
+/// App Data Sub-Directory with a specific org.app identifier 
+PlasmaShared String GetUserApplicationDirectory(StringParam organization, StringParam applicationName);
+
+/// App Data Sub-Directory for the active application
+PlasmaShared String GetUserApplicationDirectory();
+
+
+/// Directory for user-facing files. Generally good as a starting directory for save dialogs.
 PlasmaShared String GetUserDocumentsDirectory();
 
-/// Directory for user modifiable files specific to a remote application.
-PlasmaShared String GetRemoteUserDocumentsApplicationDirectory(StringParam organization, StringParam applicationName);
+/// Documents Sub-Directory with a specific org.app identifier 
+PlasmaShared String GetUserDocumentsApplicationDirectory(StringParam organization, StringParam applicationName);
 
-/// Directory for user modifiable files specific to our application.
+/// Documents Sub-Directory for the active application 
 PlasmaShared String GetUserDocumentsApplicationDirectory();
+
 
 /// Directory to the application.
 PlasmaShared String GetApplicationDirectory();

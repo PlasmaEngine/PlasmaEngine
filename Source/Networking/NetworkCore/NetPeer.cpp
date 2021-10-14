@@ -102,6 +102,9 @@ LightningDefineType(NetPeer, builder, type)
   LightningBindOverloadedMethod(AddUser, LightningInstanceOverload(bool, EventBundle*));
   LightningBindOverloadedMethod(AddUser, LightningInstanceOverload(bool, Event*));
   LightningBindOverloadedMethod(AddUser, LightningInstanceOverload(bool));
+  LightningBindOverloadedMethod(ServerForceAddUser, LightningInstanceOverload(NetUser*, NetPeerId, EventBundle*));
+  LightningBindOverloadedMethod(ServerForceAddUser, LightningInstanceOverload(NetUser*, NetPeerId, Event*));
+  LightningBindOverloadedMethod(ServerForceAddUser, LightningInstanceOverload(NetUser*, NetPeerId));
   LightningBindMethod(GetUser);
   LightningBindGetter(UsersAddedByMyPeer);
   LightningBindMethod(GetUsersAddedByPeer);
@@ -2291,6 +2294,108 @@ void NetPeer::HandleReceivedUserAddResponse(NetPeerId theirNetPeerId,
   // Dispatch event
   owner->DispatchEvent(Events::NetPeerReceivedUserAddResponse, &event);
 }
+
+NetUser* NetPeer::ServerForceAddUser(NetPeerId theirNetPeerId, EventBundle* addRequestBundle)
+{
+    Assert(IsOpen());
+    Assert(IsServerOrOffline());
+
+    // Get owner as game session
+    GameSession* owner = static_cast<GameSession*>(GetOwner());
+
+    // Create event
+    NetPeerReceivedUserAddRequest event(owner);
+    event.mTheirNetPeerId = theirNetPeerId;
+    event.mTheirRequestBundle = *addRequestBundle;
+
+    // Set active net user add request (used temporarily during net user creation)
+    mActiveUserAddRequest = &event;
+
+    // Dispatch event
+    owner->DispatchEvent(Events::NetPeerReceivedUserAddRequest, &event);
+
+    // Clear active net user add request
+    mActiveUserAddRequest = nullptr;
+
+    // User request accepted?
+    if (event.mReturnOurAddResponse)
+    {
+        // Get their net user object as provided by the event handler
+        Cog* cog = event.mReturnTheirNetUser;
+        if (!cog) // Unable?
+        {
+            DoNotifyWarning("Unable to accept NetUser",
+                "Their NetUser object was not provided by the "
+                "NetPeerReceivedUserAddRequest event handler");
+
+            // User add request denied
+            return nullptr;
+        }
+
+        // Get net user
+        NetUser* netUser = cog->has(NetUser);
+        if (!netUser) // Unable?
+        {
+            DoNotifyWarning("Unable to accept NetUser", "Cog does not have NetUser Component");
+
+            // User add request denied
+            return nullptr;
+        }
+
+        // Marked for deletion?
+        if (cog->GetMarkedForDestruction())
+        {
+            // User add request denied
+            return nullptr;
+        }
+
+        // User add request accepted
+        return netUser;
+    }
+    // User request denied?
+    else
+    {
+        // Get their net user object as provided by the event handler
+        Cog* cog = event.mReturnTheirNetUser;
+
+        // Created as part of a denied user add request?
+        if (cog)
+        {
+            DoNotifyWarning("Illegal NetUser Creation Attempted",
+                String::Format("A NetUser '%s' was illegally created "
+                    "while denying a user add request."
+                    " A NetUser may only be created when "
+                    "accepting a user add request."
+                    " Try accepting the user add request and "
+                    "then creating the NetUser instead.",
+                    cog->GetDescription().c_str()));
+
+            // Remove this net object from it's family tree (if it hasn't been removed
+            // already)
+            RemoveNetObjectFromFamilyTree(this);
+
+            // Mark object for destruction and return
+            cog->Destroy();
+
+            // User add request denied
+            return nullptr;
+        }
+    }
+
+    // User add request denied
+    return nullptr;
+}
+NetUser* NetPeer::ServerForceAddUser(NetPeerId theirNetPeerId, Event* requestEvent)
+{
+    EventBundle requestBundle(static_cast<GameSession*>(GetOwner()), requestEvent);
+    return ServerForceAddUser(theirNetPeerId, &requestBundle);
+}
+NetUser* NetPeer::ServerForceAddUser(NetPeerId theirNetPeerId)
+{
+    EventBundle requestBundle(static_cast<GameSession*>(GetOwner()));
+    return ServerForceAddUser(theirNetPeerId, &requestBundle);
+}
+
 
 //
 // User Remove Handshake

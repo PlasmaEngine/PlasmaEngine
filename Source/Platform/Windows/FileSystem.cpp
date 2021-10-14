@@ -25,6 +25,16 @@ bool PersistFiles()
   return false;
 }
 
+bool BrowseDirectory(StringParam path)
+{
+    Status status;
+    status.CallbackOnFailure = Status::AssertCallback;
+
+    Process process;
+    process.Start(status, BuildString("explorer.exe ", path).c_str(), false, false, false, true);
+    return process.IsRunning();
+}
+
 String GetWorkingDirectory()
 {
   char temp[MAX_PATH + 1];
@@ -104,6 +114,10 @@ bool FileWritable(StringParam filePath)
 bool DirectoryExists(StringParam filePath)
 {
   DWORD attributes = GetFileAttributes(Widen(filePath).c_str());
+  if (attributes == INVALID_FILE_ATTRIBUTES) {
+      Warn("%s is an invalid directory.", filePath.c_str());
+      return false;
+  }
   return (attributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 

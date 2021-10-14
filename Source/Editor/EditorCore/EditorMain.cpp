@@ -35,6 +35,8 @@ bool EditorMain::LoadPackage(Cog* projectCog, ContentLibrary* library, ResourceP
 
   ResourceSystem* resourceSystem = PL::gResources;
 
+  ContentLibrary* originalProjectLibrary = mProjectLibrary;
+
   // Set the content library so Loading may try to create new content for
   // fixing old content elements.
   mProjectLibrary = library;
@@ -46,6 +48,10 @@ bool EditorMain::LoadPackage(Cog* projectCog, ContentLibrary* library, ResourceP
 
   DoEditorSideImporting(package, nullptr);
   PL::gEditor->SetExploded(false, true);
+
+  // restore original mProjectLibrary value
+  mProjectLibrary = originalProjectLibrary;
+
   return true;
 }
 

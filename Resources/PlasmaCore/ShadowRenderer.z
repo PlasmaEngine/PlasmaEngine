@@ -52,19 +52,25 @@ class ShadowRenderer : LightningComponent
   
   function SetShadowResolution()
   {
-    if (this.ResolutionValue == ShadowResolution.Low)
+    if (this.ResolutionValue == ShadowResolution.VeryLow)
+      this.ShadowResolution = 512;
+    else if (this.ResolutionValue == ShadowResolution.Low)
       this.ShadowResolution = 1024;
     else if (this.ResolutionValue == ShadowResolution.Medium)
       this.ShadowResolution = 2048;
     else if (this.ResolutionValue == ShadowResolution.High)
       this.ShadowResolution = 4096;
+    else if (this.ResolutionValue == ShadowResolution.High)
+      this.ShadowResolution = 8192;
   }
 }
 
 // Sizes for shadow map.
 enum ShadowResolution
 {
+  VeryLow,
   Low,
   Medium,
-  High
+  High,
+  VeryHigh
 }

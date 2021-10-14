@@ -8,6 +8,7 @@ struct MaskedMetallicColor
     [Input] var RedChannel : Real = 0.0;
     [Input] var GreenChannel : Real = 0.0;
     [Input] var BlueChannel : Real = 0.0;
+    [Input] var AlphaChannel : Real = 0.0;
     
     [FragmentInput] var UvScale : Real2 = Real2(1,1);
 
@@ -20,6 +21,7 @@ struct MaskedMetallicColor
         metallic = Math.Lerp(metallic, this.RedChannel, metallicMask.X);
         metallic = Math.Lerp(metallic, this.GreenChannel, metallicMask.Y);
         metallic = Math.Lerp(metallic, this.BlueChannel, metallicMask.Z);
+        metallic = Math.Lerp(metallic, this.AlphaChannel, metallicMask.W);
         this.Metallic = metallic;
     }
 }

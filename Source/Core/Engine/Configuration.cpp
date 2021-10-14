@@ -10,6 +10,7 @@ DefineEvent(RecentProjectsUpdated);
 } // namespace Events
 
 bool MainConfig::sConfigCanSave = true;
+static bool cLookInOldConfigDirectory = true;
 
 LightningDefineType(MainConfig, builder, type)
 {
@@ -18,6 +19,7 @@ LightningDefineType(MainConfig, builder, type)
   LightningBindGetterProperty(BuildDate);
   LightningBindGetterProperty(BuildVersion);
   LightningBindGetterProperty(DataDirectory);
+
   type->AddAttribute(ObjectAttributes::cCore);
 }
 
@@ -66,16 +68,45 @@ LightningDefineType(ContentConfig, builder, type)
   PlasmaBindComponent();
   PlasmaBindDocumented();
   type->AddAttribute(ObjectAttributes::cCore);
-  PlasmaTodo("Add folder-select dialog for Editor ContentOutput path");
   LightningBindFieldProperty(ContentOutput);
+  LightningBindMethodProperty(PickNewContentOutput);
+  PlasmaTodo("Change this into a warning that pops up when bContentOutputDirty is true");
+  LightningBindCustomGetter(ContentPathChangedAndRequiresRestart);
 }
 
 void ContentConfig::Serialize(Serializer& stream)
 {
   SerializeNameDefault(ContentOutput, String());
-  SerializeNameDefault(ToolsDirectory, String());
   SerializeNameDefault(LibraryDirectories, LibraryDirectories);
   SerializeNameDefault(HistoryEnabled, true);
+}
+
+void ContentConfig::PickNewContentOutput()
+{
+    // see DirectProperty
+    PlasmaTodo("Generalize into a FilePath property with a property editor");
+
+    FileDialogConfig* config = FileDialogConfig::Create();
+    config->CallbackObject = this;
+    config->Title = "Select new Content Output directory";
+    config->AddFilter("Content Output Folder", "*.none");
+    config->Flags |= FileDialogFlags::Folder;
+    config->DefaultFileName = ContentOutput;
+    config->StartingDirectory = ContentOutput;
+
+    ConnectThisTo(this, config->EventName, OnNewContentOutputPathSelected);
+    PL::gEngine->has(OsShell)->SaveFile(config);
+}
+
+void ContentConfig::OnNewContentOutputPathSelected(OsFileSelection* event)
+{
+    if (event->Success == true && 
+        event->Files.Size() > 0 && DirectoryExists(event->Files[0]))
+    {
+        ContentOutput = event->Files[0];
+        bContentOutputDirty = true;
+        SaveConfig();
+    }
 }
 
 LightningDefineType(UserConfig, builder, type)
@@ -334,11 +365,6 @@ void RecentProjects::RemoveMissingProjects()
   }
 }
 
-String GetConfigDirectory()
-{
-  return GetUserDocumentsApplicationDirectory();
-}
-
 String GetConfigFileName()
 {
   return String::Format("ConfigurationV%d.data", GetConfigVersion());
@@ -346,13 +372,14 @@ String GetConfigFileName()
 
 String GetRemoteConfigFilePath(StringParam organization, StringParam applicationName)
 {
-  return FilePath::Combine(GetRemoteUserDocumentsApplicationDirectory(organization, applicationName),
+  return FilePath::Combine(GetUserApplicationDirectory(organization, applicationName),
                            GetConfigFileName());
 }
 
 String GetConfigFilePath()
 {
-  return FilePath::Combine(GetConfigDirectory(), GetConfigFileName());
+  return FilePath::Combine(GetUserApplicationDirectory(), 
+                           GetConfigFileName());
 }
 
 void SaveConfig()
@@ -360,9 +387,9 @@ void SaveConfig()
   if (!MainConfig::sConfigCanSave)
     return;
 
-  String configDirectory = GetConfigDirectory();
-  CreateDirectoryAndParents(configDirectory);
   String configFile = GetConfigFilePath();
+  String configDirectory = FilePath::GetDirectoryPath(configFile);
+  CreateDirectoryAndParents(configDirectory);
 
   ObjectSaver saver;
   Status status;
@@ -394,27 +421,34 @@ Cog* LoadConfig(ModifyConfigFn modifier, void* userData)
 
   static const String cDataDirectoryName("Data");
 
-  String documentDirectory = GetUserDocumentsDirectory();
-  String applicationDirectory = GetApplicationDirectory();
   String configFile = GetConfigFilePath();
   String sourceDirectory = FindSourceDirectory();
   String dataDirectory = FilePath::Combine(sourceDirectory, cDataDirectoryName);
   const String defaultConfigFile = String::Format("Default%sConfiguration.data", GetApplicationName().c_str());
 
+  // for temporary use with cLookInOldConfigDirectory
+  String oldConfigFile = FilePath::Combine(GetUserDocumentsApplicationDirectory(), GetConfigFileName());
+
   Cog* configCog = nullptr;
-  bool userConfigExists = false;
 
   // Locations to look for the config file.
   // Some of them are absolute, some are relative to the working directory.
   Array<String> searchConfigPaths;
 
-  if (!useDefault)
-  {
-    // In the working directory (for exported projects).
-    searchConfigPaths.PushBack(GetConfigFileName());
-    // The user config in the documents directory.
-    searchConfigPaths.PushBack(configFile);
-  }
+    if (!useDefault)
+    {
+        // In the working directory (for exported projects).
+        searchConfigPaths.PushBack(GetConfigFileName());
+        // The user config in the appdata directory.
+        searchConfigPaths.PushBack(configFile);
+
+        if (cLookInOldConfigDirectory)
+        {
+            // The user config in the documents directory.
+            searchConfigPaths.PushBack(oldConfigFile);
+        }
+    }
+
   // In the source's Data directory.
   searchConfigPaths.PushBack(FilePath::Combine(dataDirectory, defaultConfigFile));
 
@@ -427,12 +461,20 @@ Cog* LoadConfig(ModifyConfigFn modifier, void* userData)
       // Make sure we successfully created the config Cog from the data file.
       if (configCog != nullptr)
       {
-        userConfigExists = (path == configFile);
         PlasmaPrintFilter(Filter::DefaultFilter, "Using config '%s'.\n", path.c_str());
         break;
       }
     }
   }
+   
+    if (cLookInOldConfigDirectory)
+    {
+        // Remove old config so people don't get confused
+        if (FileExists(oldConfigFile))
+        {
+            DeleteFile(oldConfigFile);
+        }
+    }
 
   if (configCog == nullptr)
   {
