@@ -144,6 +144,7 @@ Resource* AddNewResource(ResourceManager* resourceManager, ResourceAdd& resource
 
   // Attempt to Add to the content library
   AddContentItemInfo addContent;
+  addContent.FullPath = FilePath::Combine(resourceAdd.Library->SourcePath, resourceAdd.FileName);
   addContent.FileName = resourceAdd.FileName;
   addContent.Name = resourceAdd.Name;
   addContent.ExternalFile = resourceAdd.SourceFile;

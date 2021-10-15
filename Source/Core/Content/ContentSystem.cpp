@@ -177,14 +177,14 @@ ContentLibrary* ContentSystem::LibraryFromDirectory(Status& status, StringParam 
 	Array<String> filesInDirectory;
 	FindFilesRecursively(directory, filesInDirectory);
 
-	forRange (String filename, filesInDirectory.All())
+	forRange (String fullpath, filesInDirectory.All())
 	{
 		Status addStatus;
 
 		// Add each item to the content library
 		AddContentItemInfo addContent;
-        addContent.FullPath = filename;
-		addContent.FileName = filename.SubString(filename.FindFirstOf(directory).End(), filename.End());
+        addContent.FullPath = fullpath;
+		addContent.FileName = FilePath::GetFileName(fullpath);
 		addContent.Library = library;
 
 		AddContentItemToLibrary(addStatus, addContent);
