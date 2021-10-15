@@ -17,7 +17,7 @@ DataContent
 	}
 	ResourceTemplate 
 	{
-		var DisplayName = "PlasmaDeval"
+		var DisplayName = "PlasmaDecal"
 		var Description = "Used for decal rendering"
 		var SortWeight = 0
 		var Category = "Decal"

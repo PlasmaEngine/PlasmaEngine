@@ -24,7 +24,6 @@ struct Decal
 	[AppBuiltInInput] var ViewToLocal : Real4x4;
   
   [FragmentInput][StageInput] var GeometryBuffer0 : SampledImage2d;
-  [FragmentInput][StageInput] var GeometryBuffer1 : SampledImage2d;
   [Input][Output] var AlphaMap : SampledImage2d;
   [Input] var AlphaModifyer : Real = 0.0;
   [Input] var AlphaMultiplier : Real = 1.0;
@@ -36,10 +35,15 @@ struct Decal
   [Input] var UseMetallic : Boolean = true;
   [Input] var MetallicMap : SampledImage2d;
   [Input] var MetallicModifyer : Real = 0.0;
+  
+  [Input] var UseRoughness : Boolean = true;
+  [Input] var RoughnessMap : SampledImage2d;
+  [Input] var RoughnessModifyer : Real = 0.0;
 
   
   [FragmentInput][Output] var Albedo : Real3;
   [Output] var Metallic : Real;
+  [Output] var Roughness : Real;
   [FragmentInput][StageInput][Output] var ViewNormal : Real3;
   [Output] var ViewNormalMesh : Real3;
   [StageInput] var ViewTangent : Real3;
@@ -55,7 +59,6 @@ struct Decal
   {
     var screenCoord = Utility.NdcToScreenUv(this.PerspectivePosition.XY / this.PerspectivePosition.W);
     var gbufferSample = this.GeometryBuffer0.Sample(screenCoord);
-    var gbuffer1Sample = this.GeometryBuffer1.Sample(screenCoord);
     
     var depth = GeometryPass.GetDepth(gbufferSample);
     
@@ -75,12 +78,16 @@ struct Decal
     var metallic = this.MetallicMap.Sample(texCoord).X + this.MetallicModifyer;
     metallic = Math.Saturate(metallic);
     
+    var roughness = this.RoughnessMap.Sample(texCoord).X + this.RoughnessModifyer;
+    roughness = Math.Saturate(roughness);
+    
     if(this.InvertAlpha)
       alpha = 1.0 - alpha;
 
     this.Albedo = albedo.XYZ;
     this.Alpha = alpha;
     this.Metallic = metallic * this.UseMetallic as Real;
+    this.Roughness = roughness * this.UseRoughness as Real;
 
   }
 }

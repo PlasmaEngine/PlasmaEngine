@@ -12,12 +12,20 @@ struct DecalPass
   [Input] var Albedo : Real3;
   [Input] var Alpha : Real;
   [Input] var Metallic : Real;
+  [Input] var Roughness : Real;
 
+  // Normal,  Roughness
+  [Output] var Target0 : Real4;
   // Albedo, Metallic
   [Output] var Target1 : Real4;
+  // SpecColor, AO
+  [Output] var Target2 : Real4;
+  // Specular, EmissivePower, BlendMode
+  [Output] var Target3 : Real4;
 
   function Main()
   {
+    this.Target0.W = this.Roughness;
     this.Target1.XYZ = this.Albedo.XYZ;
     this.Target1.W = this.Alpha;
   }
@@ -26,6 +34,8 @@ struct DecalPass
 [Pixel][PostProcess]
 struct DecalMerge
 {
+  
+  [Input] var DBuffer0 : SampledImage2d;
   [Input] var DBuffer1 : SampledImage2d;
   [Input] var GBuffer1 : SampledImage2d;
   
