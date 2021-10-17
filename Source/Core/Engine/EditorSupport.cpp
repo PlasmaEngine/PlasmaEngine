@@ -53,6 +53,7 @@ const String EmptyTile = "EmptyTile";
 const String ViewCube = "ViewCube";
 const String Wedge = "Wedge";
 const String Animation = "Animation";
+const String Decal = "Decal";
 } // namespace CoreArchetypes
 
 } // namespace Plasma

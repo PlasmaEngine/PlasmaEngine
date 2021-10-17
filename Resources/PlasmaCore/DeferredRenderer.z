@@ -226,8 +226,9 @@ class DeferredRenderer : LightningComponent
       
 
       
-      var decalPass = DecalPass();
+      var decalPass = DBufferPass();
       event.AddRenderTaskRenderPass(decalSettings, RenderGroup.Decal, decalPass, "Decals");
+      
       
       //if(true)
       //{
@@ -236,12 +237,18 @@ class DeferredRenderer : LightningComponent
       //this.DrawDebugObjects(event, this.FinalOutput, this.Depth);
       //  return;
       //}
+      
+      var mergePassRoughness = DecalMergeNormalRoughness();
+      mergePassRoughness.DBuffer0 = this.DBuffer0.Texture;
+      mergePassRoughness.GBuffer0 = this.GBuffer0.Texture;
+      mergePassRoughness.DBuffer1 = this.DBuffer1.Texture;
+      event.AddRenderTaskPostProcess(this.GBuffer0, mergePassRoughness, "DecalMergeRoughness");
 
       
-      var mergePass = DecalMerge();
-      mergePass.DBuffer1 = this.DBuffer1.Texture;
-      mergePass.GBuffer1 = this.GBuffer1.Texture;
-      event.AddRenderTaskPostProcess(this.GBuffer1, mergePass, "DecalMerge"); 
+      var mergePassAlbedo = DecalMergeAlbedo();
+      mergePassAlbedo.DBuffer1 = this.DBuffer1.Texture;
+      mergePassAlbedo.GBuffer1 = this.GBuffer1.Texture;
+      event.AddRenderTaskPostProcess(this.GBuffer1, mergePassAlbedo, "DecalMergeAlbedo"); 
       
  
     

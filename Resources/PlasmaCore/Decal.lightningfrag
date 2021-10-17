@@ -44,6 +44,7 @@ struct Decal
   [FragmentInput][Output] var Albedo : Real3;
   [Output] var Metallic : Real;
   [Output] var Roughness : Real;
+
   [FragmentInput][StageInput][Output] var ViewNormal : Real3;
   [Output] var ViewNormalMesh : Real3;
   [StageInput] var ViewTangent : Real3;
@@ -86,8 +87,8 @@ struct Decal
 
     this.Albedo = albedo.XYZ;
     this.Alpha = alpha;
-    this.Metallic = metallic * this.UseMetallic as Real;
-    this.Roughness = roughness * this.UseRoughness as Real;
+    this.Metallic = metallic * alpha * this.UseMetallic as Real;
+    this.Roughness = roughness * alpha * this.UseRoughness as Real;
 
   }
 }
