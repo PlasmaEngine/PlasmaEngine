@@ -59,7 +59,7 @@ struct SSRBlur
         output += this.Texture.Sample(uv);
       }
     }
-    output /= 49.0;
+    output /= 50.0;
     
     this.Target0 = output;
   }
@@ -196,7 +196,7 @@ struct SSR
  
                         var searchGeometrySample = this.GeometryBuffer0.Sample(projectedCoords.XY);
                         searchDepth = GeometryPass.GetDepth(searchGeometrySample);
- 
+                       
                         pDepth = hitPosition.Z - searchDepth;
  
                         direction *= Real3(0.5);
@@ -210,7 +210,7 @@ struct SSR
                         }
                     }
                     
-                    if(hitPosition.Z < pDepth)
+                    if(hitPosition.Z > depth)
                       return;
  
                     projectedCoords = Math.Multiply(this.ViewToPerspective,Real4(hitPosition, 1.0));
@@ -247,6 +247,6 @@ struct SSR
         
         foundResult = foundResult * reflectionMultipler;
         
-        this.Target0 = Real4(ssr,foundResult);
+        this.Target0 = Real4(ssr * reflectionMultipler,foundResult);
     }
 }

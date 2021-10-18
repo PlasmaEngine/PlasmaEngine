@@ -276,6 +276,11 @@ String UniqueFileId(StringParam fullpath)
   return fullpath;
 }
 
+bool BrowseDirectory(StringParam path)
+{
+    return false;
+}
+
 String GetWorkingDirectory()
 {
   char temp[File::MaxPath + 1];

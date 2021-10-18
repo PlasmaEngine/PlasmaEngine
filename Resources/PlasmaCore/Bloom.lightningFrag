@@ -52,7 +52,7 @@ struct BloomBrightPass
     var color = this.Texture.Sample(this.Uv).XYZ;
     
     // Get the luminance of the color (see the Utility fragment file for details on this function)
-    var luminance = Utility.Luminance(color);
+    var luminance = Math.Log(Utility.Luminance(color));
     
     // Calculate the intensity of the bloom that is triggered. If the
     // luminance falls bellow the threshold, no bloom is triggered.

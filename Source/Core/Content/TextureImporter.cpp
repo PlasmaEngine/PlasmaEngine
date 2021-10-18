@@ -341,6 +341,8 @@ nvtt::Format NvttFormat(TextureCompression::Enum compression)
     return nvtt::Format_BC5;
   case TextureCompression::BC6:
     return nvtt::Format_BC6;
+  case TextureCompression::BC7:
+    return nvtt::Format_BC7;
   default:
     return (nvtt::Format)0;
   }

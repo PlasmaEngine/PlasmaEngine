@@ -345,7 +345,7 @@ ExportUI::ExportUI(Composite* parent) : Composite(parent)
   mExportPath = new TextBox(pathRow);
   mExportPath->SetEditable(true);
   mExportPath->SetText(
-      FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Exports", projectSettings->GetProjectName()));
+      FilePath::Combine(GetUserDocumentsDirectory(), projectSettings->GetProjectName()));
   mExportPath->SetSizing(SizeAxis::X, SizePolicy::Flex, Pixels(200));
 
   TextButton* pathSelectButton = new TextButton(pathRow);

@@ -126,6 +126,8 @@ void FlowEffect::ApplyEffect(RigidBody* obj, real dt)
   if(!GetActive())
     return;
 
+  ZoneScoped;
+
   // Get the inverse mass of the object, we need this to compute the acceleration values as forces
   real invMass = obj->mInvMass.GetScalarInvMass();
   if(invMass == real(0))

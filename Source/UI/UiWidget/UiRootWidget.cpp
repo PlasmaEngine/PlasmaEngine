@@ -134,6 +134,7 @@ void UiRootWidget::Initialize(CogInitializer& initializer)
 
 void UiRootWidget::Update()
 {
+  ZoneScoped;
   // Until the TransformUpdateState is fully functional, we should always update
   bool alwaysUpdate = true;
 
@@ -343,6 +344,7 @@ float GetLargestAxis(Vec2 dragMovemvent)
 
 void UiRootWidget::PerformMouseButton(ViewportMouseEvent* e)
 {
+  ZoneScoped;
   UiWidget* mouseOverWidget = mMouseOverWidget;
 
   // Set the correct hit object
@@ -591,6 +593,7 @@ void UiRootWidget::OnKeyboardEvent(KeyboardEvent* e)
 
 void UiRootWidget::Render(RenderTasksEvent* e, RenderTarget* color, RenderTarget* depth, MaterialBlock* renderPass)
 {
+  ZoneScoped;
   if (e == nullptr || color == nullptr || depth == nullptr || renderPass == nullptr)
   {
     DoNotifyExceptionAssert("Cannot render Widgets", "All parameters must be satisfied.");
@@ -633,6 +636,7 @@ void UiRootWidget::RenderWidgets(RenderTasksEvent* e,
                                  Vec4Param colorTransform,
                                  Array<CachedFloatingWidget>* floatingWidgets)
 {
+  ZoneScoped;
   // Don't render inactive, destroyed, or editor hidden widgets
   Cog* widgetCog = widget->GetOwner();
   bool spaceInEditMode = GetSpace()->IsEditorMode();
@@ -704,6 +708,7 @@ void UiRootWidget::FlushGraphicals(RenderTasksEvent* e,
                                    RenderTarget* depth,
                                    MaterialBlock* renderPass)
 {
+  ZoneScoped;
   if (mGraphicals.GetCount() == 0)
     return;
 
@@ -799,3 +804,4 @@ Cog* UiRootWidget::GetDebugSelected()
 }
 
 } // namespace Plasma
+

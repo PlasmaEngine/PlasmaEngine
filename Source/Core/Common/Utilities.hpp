@@ -54,6 +54,9 @@ PlasmaShared bool ShellOpenFile(StringParam file);
 PlasmaShared bool ShellEditFile(StringParam file);
 
 // Open the application with parameters.
+PlasmaShared bool ShellOpenApplicationWithWorkingDirectory(StringParam file, StringParam parameters = String(), StringParam workingDirecotry = String());
+
+// Open the application with parameters.
 PlasmaShared bool ShellOpenApplication(StringParam file, StringParam parameters = String());
 
 // On browser based platforms, we can't access the user's file-system so we need to download files instead.

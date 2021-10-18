@@ -41,7 +41,7 @@ void Extract(const Array<String>& arguments)
 
   // Build the path that we're going to extract to.
   String extractName = BuildString(applicationName, ToString(hash));
-  String extractDirectoryPath = FilePath::Combine(GetUserLocalDirectory(), "PlasmaSelfExtractor", extractName);
+  String extractDirectoryPath = FilePath::Combine(GetUserApplicationDirectory(), "PlasmaSelfExtractor", extractName);
 
   // Get the executable name (hard-coded for now, but we could technically read
   // this from our data section).
@@ -57,7 +57,7 @@ void Extract(const Array<String>& arguments)
   {
     // Check to see if we already have the executable extracted.
     // We're technically writing to a user specific hidden directory that should
-    // persist (GetUserLocalDirectory) which means that after extraction, all
+    // persist (GetUserApplicationDirectory) which means that after extraction, all
     // the files should remain forever unless the user explicitly deletes them.
     if (FileExists(extractExecutablePath))
     {

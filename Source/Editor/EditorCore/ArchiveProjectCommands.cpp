@@ -4,16 +4,30 @@
 namespace Plasma
 {
 
-void ArchiveProjectFile(Cog* projectCog, StringParam filename)
+// compresses the entire ProjectFolder into an archive at filePath
+void ArchiveProjectFile(Cog* projectCog, StringParam filePath)
 {
   ProjectSettings* project = projectCog->has(ProjectSettings);
   String projectDirectory = project->ProjectFolder;
 
+  PlasmaPrintFilter(Filter::ArchiveFilter, "Archive operation starting (%s -> %s)...\n", project->ProjectName.c_str(), filePath.c_str());
+
+  FilterFileRegex sourceControlFilter ("", ".*(\\.git).*");
+
   Status status;
   Archive projectArchive(ArchiveMode::Compressing);
-  projectArchive.ArchiveDirectory(status, projectDirectory);
-  projectArchive.WriteZipFile(filename);
-  Download(filename);
+  projectArchive.ArchiveDirectory(status, projectDirectory, "", &sourceControlFilter);
+
+  PlasmaPrintFilter(Filter::ArchiveFilter, "Writing zip file (%s)...\n", filePath.c_str());
+
+  projectArchive.WriteZipFile(filePath);
+
+  PlasmaPrintFilter(Filter::ArchiveFilter, "Zip file written.\n");
+  PlasmaPrintFilter(Filter::ArchiveFilter, "Downloading file (%s)...\n", filePath.c_str());
+
+  Download(filePath);
+
+  PlasmaPrintFilter(Filter::ArchiveFilter, "File downloaded.\n");
 }
 
 class ArchiveProjectJob : public Job
@@ -24,9 +38,8 @@ public:
 
   void Execute()
   {
+    ZoneScoped;
     SendBlockingTaskStart("Archiving");
-
-    ProjectSettings* project = mProject->has(ProjectSettings);
 
     ArchiveProjectFile(mProject, mFileName);
 
@@ -34,9 +47,10 @@ public:
   }
 };
 
-void StartArchiveJob(StringParam filename)
+// queues up an ArchiveProjectJob
+void StartArchiveJob(StringParam filename, ProjectSettings* project)
 {
-  Cog* projectCog = PL::gEditor->mProject;
+  Cog* projectCog = project->mOwner;
   PL::gEditor->SaveAll(true);
 
   ArchiveProjectJob* job = new ArchiveProjectJob();
@@ -45,32 +59,25 @@ void StartArchiveJob(StringParam filename)
   PL::gJobs->AddJob(job);
 }
 
-void BackupProject(ProjectSettings* project)
+struct ArchiveProjectModal : public SafeId32EventObject
 {
-  String backupDirectory = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Backups");
-  CreateDirectoryAndParents(backupDirectory);
-  String timeStamp = GetTimeAndDateStamp();
-  String fileName = BuildString(project->ProjectName, timeStamp, ".zip");
-  String fullPath = FilePath::Combine(backupDirectory, fileName);
-  StartArchiveJob(fullPath);
-}
+  typedef ArchiveProjectModal LightningSelf;
 
-struct ArchiveProjectCallback : public SafeId32EventObject
-{
-  typedef ArchiveProjectCallback LightningSelf;
-
-  ArchiveProjectCallback()
+  ArchiveProjectModal(String title, ProjectSettings* project, String fileName, String directory)
   {
+    mProject = project;
+
     const String CallBackEvent = "ArchiveCallback";
-    ProjectSettings* project = PL::gEditor->mProject.has(ProjectSettings);
+    CreateDirectoryAndParents(directory);
 
     FileDialogConfig* config = FileDialogConfig::Create();
     config->EventName = CallBackEvent;
     config->CallbackObject = this;
-    config->Title = "Archive a project";
+    config->Title = title;
     config->AddFilter("Zip", "*.zip");
-    config->DefaultFileName = BuildString(project->ProjectName, ".zip");
+    config->DefaultFileName = BuildString(fileName, ".zip");
     config->mDefaultSaveExtension = "zip";
+    config->StartingDirectory = directory;
 
     ConnectThisTo(this, CallBackEvent, OnArchiveProjectFile);
     PL::gEngine->has(OsShell)->SaveFile(config);
@@ -79,14 +86,27 @@ struct ArchiveProjectCallback : public SafeId32EventObject
   void OnArchiveProjectFile(OsFileSelection* event)
   {
     if (event->Success)
-      StartArchiveJob(event->Files[0]);
+      StartArchiveJob(event->Files[0], mProject);
     delete this;
   }
+
+  ProjectSettings* mProject;
 };
 
 void ArchiveProject(ProjectSettings* project)
 {
-  new ArchiveProjectCallback();
+    new ArchiveProjectModal("Archive project", project, 
+        project->ProjectName, GetUserDocumentsDirectory());
+}
+
+void BackupProject(ProjectSettings* project)
+{
+    String backupDirectory = FilePath::Combine(GetUserDocumentsApplicationDirectory(), "Backups");
+    String timeStamp = GetTimeAndDateStamp();
+    String fileName = BuildString(project->ProjectName, timeStamp);
+
+    new ArchiveProjectModal("Backup project", project, 
+        fileName, backupDirectory);
 }
 
 void ExportGame(ProjectSettings* project)

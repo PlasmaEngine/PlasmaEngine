@@ -14,7 +14,7 @@ class PostProcessSSR : LightningComponent
     [Group("Settings")]
     [Property]
     // Max distance a ray can travel
-    var RayDistance : Real = 64.0;
+    var RayDistance : Real = 128.0;
     
     [Group("Settings")]
     [Property]
@@ -34,7 +34,7 @@ class PostProcessSSR : LightningComponent
     [Group("Settings")]
     [Property]
     // Used to control the blur from roughness
-    var RoughnessBlur : Real = 40.0;
+    var RoughnessBlur : Real = 10.0;
     
     [Group("Settings")]
     [Property]
@@ -79,7 +79,7 @@ class PostProcessSSR : LightningComponent
         blurPass.BlurAmount = this.RoughnessBlur;
         event.AddRenderTaskPostProcess(ssrBuffer, blurPass, "SSRBlur");               
         BlurTexture[SeparableBlurRadius25].Call(event, ssrBuffer);         
-        BlurTexture[SeparableBlurRadius25].Call(event, ssrBuffer);
+        BlurTexture[SeparableBlurRadius25].Call(event, ssrBuffer);     
         
         if(this.DebugType == SSRDebugType.Reflections)
         {

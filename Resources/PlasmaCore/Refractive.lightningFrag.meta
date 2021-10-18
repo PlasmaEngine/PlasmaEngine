@@ -1,0 +1,8 @@
+TextContent = 
+{
+	LightningFragmentBuilder = 
+	{
+		string Name = "Refractive",
+		uint64 ResourceId = 57d2cba038d244dd,
+	},
+},

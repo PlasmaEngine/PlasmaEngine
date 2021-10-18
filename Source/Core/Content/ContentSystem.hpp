@@ -90,7 +90,10 @@ public:
   ContentItem* AddedContentItem;
   // Import Options
   ImportOptions* Options;
-  // Local Name of the file to add.
+  // Full filepath of the file to add.
+  String FullPath;
+  // filename is all the path after our library directory, and can contain subfolders
+  // e.g. for "/LibraryFolder/SubFolder/A.data" the filename is "SubFolder/A.data"
   String FileName;
   // Default name for the builder. If this field is empty,
   // the name will be based on FileName.
@@ -152,6 +155,9 @@ public:
   /// Rename a ContentItem's file.
   bool RenameContentItemFile(ContentItem* contentItem, StringParam newFileName);
 
+  /// Move ContentItem to a given library
+  bool MoveContentItem(ContentItem* contentItem, ContentLibrary* targetLibrary);
+
   String GetHistoryPath(ContentLibrary* library);
 
   // Find a content item by file name (Not the full path).
@@ -190,6 +196,8 @@ public:
   /// Where to move deleted content to.
   String HistoryPath;
   bool mHistoryEnabled;
+
+  Array<String> PlasmaCoreLibraryNames;
 
   // These paths are set by the editor
   Array<String> LibrarySearchPaths;

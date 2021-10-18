@@ -121,6 +121,7 @@ void SoundEmitter::Serialize(Serializer& stream)
 
 void SoundEmitter::Initialize(CogInitializer& initializer)
 {
+  ZoneScoped;
   // Get current position
   mTransform = GetOwner()->has(Transform);
   mPrevPosition = mTransform->GetWorldTranslation();
@@ -397,6 +398,7 @@ HandleOf<SoundNode> SoundEmitter::GetOutputNode()
 
 void SoundEmitter::Update(float dt)
 {
+  ZoneScoped;
   EmitterNode* node = mEmitterObject;
 
   // Get new position data
@@ -458,6 +460,7 @@ void SoundEmitter::Update(float dt)
 
 HandleOf<SoundInstance> SoundEmitter::PlayCueInternal(SoundCue* cue, bool startPaused)
 {
+  ZoneScoped;
   if (!cue)
     return nullptr;
 
@@ -511,6 +514,7 @@ bool SoundEmitter::CheckAttenuatorInputs()
 
 void SoundEmitter::SetUpAttenuatorNode(SoundAttenuator* newAttenuator)
 {
+  ZoneScoped;
   SoundAttenuator* oldAttenuator = mAttenuator;
   SoundAttenuatorNode* oldNode = mAttenuatorNode;
 

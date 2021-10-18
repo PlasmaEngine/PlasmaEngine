@@ -370,6 +370,8 @@ float SoundNode::GetVolumeChangeFromOutputsThreaded()
 
 bool SoundNode::Evaluate(BufferType* outputBuffer, const unsigned numberOfChannels, ListenerNode* listener)
 {
+  ZoneScoped;
+
   bool hasOutput;
 
   // Check if this version has already been mixed
@@ -479,6 +481,7 @@ bool SoundNode::AccumulateInputSamples(const unsigned howManySamples,
                                        const unsigned numberOfChannels,
                                        ListenerNode* listener)
 {
+  ZoneScoped;
   // No sources, do nothing
   if (mInputs[AudioThreads::MixThread].Empty())
     return false;

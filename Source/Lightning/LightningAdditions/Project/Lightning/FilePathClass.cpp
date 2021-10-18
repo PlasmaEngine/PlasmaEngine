@@ -43,7 +43,7 @@ namespace Lightning
 
     LightningFullBindGetterSetter(builder, type, &FilePathClass::GetWorkingDirectory, LightningNoOverload, &FilePathClass::SetWorkingDirectory, LightningNoOverload, "WorkingDirectory")->Description = FilePathClass::WorkingDirectoryDocumentation();
     LightningFullBindGetterSetter(builder, type, &FilePathClass::GetTemporaryDirectory, LightningNoOverload, LightningNoSetter, LightningNoOverload, "TemporaryDirectory")->Description = FilePathClass::TemporaryDirectoryDocumentation();
-    LightningFullBindGetterSetter(builder, type, &FilePathClass::GetUserLocalDirectory, LightningNoOverload, LightningNoSetter, LightningNoOverload, "UserLocalDirectory")->Description = FilePathClass::UserLocalDirectoryDocumentation();
+    LightningFullBindGetterSetter(builder, type, &FilePathClass::GetUserApplicationDirectory, LightningNoOverload, LightningNoSetter, LightningNoOverload, "UserApplicationDirectory")->Description = FilePathClass::UserApplicationDirectoryDocumentation();
 
     LightningFullBindGetterSetter(builder, type, &FilePathClass::GetUserDocumentsDirectory, LightningNoOverload, LightningNoSetter, LightningNoOverload, "UserDocumentsDirectory")->Description = FilePathClass::UserDocumentsDirectoryDocumentation();
     LightningFullBindGetterSetter(builder, type, &FilePathClass::GetExecutableDirectory, LightningNoOverload, LightningNoSetter, LightningNoOverload, "ExecutableDirectory")->Description = FilePathClass::ExecutableDirectoryDocumentation();
@@ -278,7 +278,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  String FilePathClass::GetUserLocalDirectory()
+  String FilePathClass::GetUserApplicationDirectory()
   {
     return AddTrailingDirectorySeparator(Plasma::GetUserLocalDirectory());
   }

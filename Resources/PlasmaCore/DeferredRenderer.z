@@ -270,10 +270,36 @@ class DeferredRenderer : LightningComponent
       
       event.AddRenderTaskRenderPass(lightSettings, RenderGroup.Lights, lightPass, "DirectLighting");
     }
+    
+    var unlitSettings = RenderSettings();
+    unlitSettings.ColorTarget = lightBuffer;
+    unlitSettings.DepthTarget = this.Depth;
+    unlitSettings.CullMode = CullMode.Disabled;
+    unlitSettings.DepthSettings.DepthMode = DepthMode.Write;
+    unlitSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
+    unlitSettings.DepthSettings.StencilMode = StencilMode.Enabled;
+    unlitSettings.DepthSettings.StencilCompareFunc = TextureCompareFunc.Always;
+    unlitSettings.DepthSettings.StencilFailOp = StencilOp.Keep;
+    unlitSettings.DepthSettings.DepthFailOp = StencilOp.Keep;
+    unlitSettings.DepthSettings.DepthPassOp = StencilOp.Replace;
+    unlitSettings.DepthSettings.StencilTestValue = 1 as Byte;
+    
+    unlitSettings.BlendSettings.BlendMode = BlendMode.Separate;
+    unlitSettings.BlendSettings.BlendEquation = BlendEquation.Add;
+    unlitSettings.BlendSettings.SourceFactor = BlendFactor.SourceAlpha;
+    unlitSettings.BlendSettings.DestFactor = BlendFactor.One;
+    unlitSettings.BlendSettings.SourceFactorAlpha = BlendFactor.One;
+    unlitSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
+    unlitSettings.CullMode = CullMode.BackFace;
+    unlitSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
+  
+    var unlitPass = Unit();
+    event.AddRenderTaskRenderPass(unlitSettings, RenderGroup.Unlit, unlitPass, "Unlit");
   
     event.AddRenderTaskClearTarget(this.SSRBuffer, Real4.Zero);
 
-     // Additive materials 
+  
+           // Additive materials 
     var alphaSettings = RenderSettings();
     alphaSettings.ColorTarget = lightBuffer;
     alphaSettings.DepthTarget = this.Depth;
@@ -298,11 +324,29 @@ class DeferredRenderer : LightningComponent
 
     AlphaRenderPass.OnAlphaWithPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
     
+    var refraction = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
+    
+    event.AddRenderTaskClearTarget(refraction, Real4.Zero);
+    
+    var refractSettings = RenderSettings();
+    refractSettings.ColorTarget = refraction;
+    refractSettings.DepthTarget = this.Depth;
+    refractSettings.DepthSettings.DepthMode = DepthMode.Read;
+    refractSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
+    
+    event.AddRenderTaskRenderPass(refractSettings, RenderGroup.Refractive, RefractivePass(), "RefractivePass");
+
+    
+        // Toon Rendering  
+    if(this.Owner.PostProcessToon != null)
+      this.Owner.PostProcessToon.OnRenderTasksUpdate(event, lightBuffer, this.GBuffer0, lightBuffer);
     
     // Distance Fog
     if(this.Owner.PostProcessFog != null)
       this.Owner.PostProcessFog.AddFogRenderTask(event, this.GBuffer0, this.GBuffer1, lightBuffer);
     
+        // Order Independent Transparancy
+    AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, this.Depth, lightBuffer, this.Skybox, alphaForwardSettigns, this.DirectionalLight.Cog);
     
     // Water
     var waterPass = WaterPass();
@@ -331,9 +375,42 @@ class DeferredRenderer : LightningComponent
 
     event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.Water, waterPass, "Water");
     
-    // Toon Rendering  
-    if(this.Owner.PostProcessToon != null)
-      this.Owner.PostProcessToon.OnRenderTasksUpdate(event, lightBuffer, this.GBuffer0, lightBuffer);
+        var postRefract = PostApplyRefractive();
+    postRefract.SceneColor = lightBuffer.Texture;
+    postRefract.Refraction = refraction.Texture;
+    event.AddRenderTaskPostProcess(lightBuffer, postRefract, "Refraction");
+    
+    
+    var forwardSettings = RenderSettings();
+    forwardSettings.ColorTarget = lightBuffer;
+    forwardSettings.DepthTarget = this.Depth;
+    forwardSettings.CullMode = CullMode.BackFace;
+    forwardSettings.DepthSettings.DepthMode = DepthMode.Read;
+    forwardSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.Always;
+    
+    var drawLast = ForwardPassShadows();
+    drawLast.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
+    drawLast.DitherTexture = Texture.BlueNoise;
+    drawLast.Skybox = this.Skybox;
+    drawLast.IndirectIntensity = this.IndirectIntensity;
+    drawLast.RenderDiffuse = this.RenderDiffuse;
+    drawLast.RenderSpecular = this.RenderSpecular;
+    
+    if (light != null && light.DirectionalLight != null)
+    {
+      drawLast.DirectLightColor = light.DirectionalLight.LightColor.XYZ;
+      drawLast.DirectLightDirection = light.DirectionalLight.LightDirection;
+      drawLast.DirectLightIntensity = light.DirectionalLight.LightIntensity;
+      
+      drawLast.LightTransform = light.ShadowRenderer.LightTransform;
+      drawLast.ShadowBuffer = light.ShadowRenderer.ShadowBuffer;
+      drawLast.NormalOffsetBias = light.ShadowRenderer.NormalOffsetBias;
+    }
+  
+    drawLast.DirectLightIntensity *= this.DirectLighting as Real;
+    drawLast.IndirectIntensity *= this.IndirectLighting as Real;
+    
+    event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.DrawLast, drawLast, "DrawLast");
     
     //  Depth of Field.
     if(this.Owner.PostProcessDOF != null)
@@ -356,8 +433,7 @@ class DeferredRenderer : LightningComponent
     // Alpha No PostFX
     AlphaRenderPass.OnAlphaNoPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
     
-    // Order Independent Transparancy
-    AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, this.Depth, lightBuffer);
+
     
     
     var camera = event.CameraViewportCog.Camera;

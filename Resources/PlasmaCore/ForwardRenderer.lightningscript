@@ -28,7 +28,11 @@ class ForwardRenderer : LightningComponent
   // If a filmic tonemap should be used when converting lighting results from linear to gamma for monitor display.
   [Property] var ToneMap : Boolean = true;
   // Path to object with DirectionalLight component to use for direct lighting.
-  [Property] var DirectionalLight : CogPath = CogPath();
+  [Property] var DirectionalLight : CogPath = CogPath(":/DirectionalLightShadows");
+  
+    [Group("Transparancy")]
+  // [100-300] Decrease if high opacity surface seem too transparent.
+  [Property][Slider(100,300,1)] var DepthRangeOIT : Real = 200.0;
 
   function Initialize(init : CogInitializer)
   {
@@ -124,60 +128,80 @@ class ForwardRenderer : LightningComponent
       forwardSettings.CullMode = CullMode.Disabled;
       event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.OpaqueDoubleSided, forwardPass, "DoubleSidedForwardPass");
     }
+      
+    var unlitSettings = RenderSettings();
+    unlitSettings.ColorTarget = colorTarget;
+    unlitSettings.DepthTarget = depthTarget;
+    unlitSettings.CullMode = CullMode.Disabled;
+    unlitSettings.DepthSettings.DepthMode = DepthMode.Write;
+    unlitSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
+    unlitSettings.DepthSettings.StencilMode = StencilMode.Enabled;
+    unlitSettings.DepthSettings.StencilCompareFunc = TextureCompareFunc.Always;
+    unlitSettings.DepthSettings.StencilFailOp = StencilOp.Keep;
+    unlitSettings.DepthSettings.DepthFailOp = StencilOp.Keep;
+    unlitSettings.DepthSettings.DepthPassOp = StencilOp.Replace;
+    unlitSettings.DepthSettings.StencilTestValue = 1 as Byte;
     
-    // Additive materials
+    unlitSettings.BlendSettings.BlendMode = BlendMode.Separate;
+    unlitSettings.BlendSettings.BlendEquation = BlendEquation.Add;
+    unlitSettings.BlendSettings.SourceFactor = BlendFactor.SourceAlpha;
+    unlitSettings.BlendSettings.DestFactor = BlendFactor.One;
+    unlitSettings.BlendSettings.SourceFactorAlpha = BlendFactor.One;
+    unlitSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
+    unlitSettings.CullMode = CullMode.BackFace;
+    unlitSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
+  
+    var unlitPass = Unit();
+    event.AddRenderTaskRenderPass(unlitSettings, RenderGroup.Unlit, unlitPass, "Unlit");
+  
+    // Additive materials 
     var alphaSettings = RenderSettings();
     alphaSettings.ColorTarget = colorTarget;
     alphaSettings.DepthTarget = depthTarget;
-    alphaSettings.CullMode = CullMode.BackFace;
+    alphaSettings.CullMode = CullMode.Disabled;
     alphaSettings.BlendSettings.BlendMode = BlendMode.Separate;
     alphaSettings.BlendSettings.BlendEquation = BlendEquation.Add;
-    alphaSettings.BlendSettings.SourceFactor = BlendFactor.InvSourceAlpha;
+    alphaSettings.BlendSettings.SourceFactor = BlendFactor.SourceAlpha;
     alphaSettings.BlendSettings.DestFactor = BlendFactor.One;
-    alphaSettings.BlendSettings.SourceFactorAlpha = BlendFactor.InvSourceAlpha;
+    alphaSettings.BlendSettings.SourceFactorAlpha = BlendFactor.One;
     alphaSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
     alphaSettings.DepthSettings.DepthMode = DepthMode.Read;
-    alphaSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.Less;
+    alphaSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
     event.AddRenderTaskRenderPass(alphaSettings, RenderGroup.AdditiveBlend, ColorOutput(), "AdditiveMaterials");
     
+    // Alpha With PostFX
+    var alphaForwardSettigns = AlphaForwardSettings();
+    alphaForwardSettigns.DirectLighting = this.DirectLighting;
+    alphaForwardSettigns.IndirectIntensity = this.IndirectIntensity;
+    alphaForwardSettigns.IndirectLighting = this.IndirectLighting;
+    alphaForwardSettigns.RenderDiffuse = this.RenderDiffuse;
+    alphaForwardSettigns.RenderSpec = this.RenderSpecular;
+
+    AlphaRenderPass.OnAlphaWithPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
+           
     // Bloom
     if (this.Owner.PostProcessBloom != null)
       this.Owner.PostProcessBloom.AddRenderTasks(event, colorTarget);
       
-    var forwardPassAlpha = ForwardPassAlpha();
-    forwardPassAlpha.EnvironmentBrdfLut = Texture.EnvironmentBrdfLut;
-    forwardPassAlpha.DitherTexture = Texture.BlueNoise;
-    forwardPassAlpha.Skybox = this.Skybox;
-    forwardPassAlpha.IndirectIntensity = this.IndirectIntensity;
-    forwardPassAlpha.RenderDiffuse = this.RenderDiffuse;
-    forwardPassAlpha.RenderSpecular = this.RenderSpecular;
       
-    forwardPassAlpha.DirectLightIntensity = 0.0;
-     
-    if (activeLight)
+          // Alpha No PostFX
+    AlphaRenderPass.OnAlphaNoPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
+    
+    // Order Independent Transparancy
+    AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, depthTarget, colorTarget, this.Skybox, alphaForwardSettigns, this.DirectionalLight.Cog);
+    
+    var camera = event.CameraViewportCog.Camera;
+    
+    if(camera != null)
     {
-      forwardPassAlpha.DirectLightColor = light.DirectionalLight.LightColor.XYZ;
-      forwardPassAlpha.DirectLightDirection = light.DirectionalLight.LightDirection;
-      forwardPassAlpha.DirectLightIntensity = light.DirectionalLight.LightIntensity;
+      var exposure = Exposure();
+      exposure.ScreenBuffer = colorTarget.Texture;
+      exposure.Aperture = camera.Aperture;
+      exposure.ShutterSpeed = 1.0 / camera.ShutterSpeed;
+      exposure.ISO = camera.ISO;
+      
+      event.AddRenderTaskPostProcess(colorTarget, exposure, "Exposure");
     }
-   
-    
-    forwardPassAlpha.DirectLightIntensity *= this.DirectLighting as Real;
-    forwardPassAlpha.IndirectIntensity *= this.IndirectLighting as Real;
-    
-  //  alphaSettings.ColorTarget = this.FinalOutput;
-    forwardSettings.CullMode = CullMode.BackFace;
-    forwardSettings.BlendSettings.BlendMode = BlendMode.Separate;
-    forwardSettings.BlendSettings.BlendEquation = BlendEquation.Add;
-    forwardSettings.BlendSettings.SourceFactor = BlendFactor.SourceAlpha;
-    forwardSettings.BlendSettings.DestFactor = BlendFactor.One;
-    forwardSettings.BlendSettings.SourceFactorAlpha = BlendFactor.One;
-    forwardSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
-    forwardSettings.DepthSettings.DepthMode = DepthMode.Read;
-    forwardSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.Less;
-    forwardSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
-    
-    event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.AlphaBlend, forwardPassAlpha, "AlphaMaterials");
     
     // Bring final lighting to gamma space for monitor display
     this.LinearToGamma(event, colorTarget, final);

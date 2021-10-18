@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "Refractive"
+		var ResourceId = 0x613f0544f91ac215
+		var LoaderType = "RenderGroup"
+		var Version = 0
+	}
+}

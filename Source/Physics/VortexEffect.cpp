@@ -108,6 +108,8 @@ void VortexEffect::ApplyEffect(RigidBody* obj, real dt)
   if(!GetActive())
     return;
 
+  ZoneScoped;
+
   Vec3 worldTwistAxis = mWorldVortexAxis;
 
   Vec3 objPos = obj->GetWorldCenterOfMass();

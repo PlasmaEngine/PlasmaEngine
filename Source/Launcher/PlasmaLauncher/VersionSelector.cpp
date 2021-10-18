@@ -862,7 +862,7 @@ BackgroundTask* VersionSelector::DownloadPatchLauncherUpdate(StringParam url)
 
   String majorVersionIdStr = ToString(GetMajorVersion());
   String launcherFolderName =
-      FilePath::Combine(GetUserLocalDirectory(), BuildString("PlasmaLauncher_", majorVersionIdStr, ".0"));
+      FilePath::Combine(GetUserApplicationDirectory(), BuildString("PlasmaLauncher_", majorVersionIdStr, ".0"));
   DownloadLauncherPatchInstallerJob* job = new DownloadLauncherPatchInstallerJob(url, launcherFolderName);
   job->mName = "Download Patch Installer";
 
@@ -1058,12 +1058,13 @@ void VersionSelector::RunProject(PlasmaBuild* standalone, StringParam projectPat
 {
   // get the location to plasma
   String executablePath = GetInstallExePath(standalone);
+  String workingDirectory = GetInstallLocation(standalone);
 
   PlasmaPrint("Running project '%s' with build '%s'\n", projectPath.c_str(), executablePath.c_str());
 
   // call plasma with our project file
   String commandLine = String::Format("-file \"%s\"", projectPath.c_str());
-  Os::ShellOpenApplication(executablePath, commandLine);
+  Os::ShellOpenApplicationWithWorkingDirectory(executablePath, commandLine, workingDirectory);
 }
 
 void VersionSelector::RunProject(PlasmaBuild* standalone, CachedProject* cachedProject)

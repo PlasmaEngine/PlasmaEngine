@@ -106,6 +106,7 @@ LightningDefineType(Cog, builder, type)
   LightningBindMethod(AddComponentByType);
   LightningBindMethod(AddComponentByName);
 
+  LightningBindMethod(FindComponentByBaseTypeName);
   LightningBindMethod(GetComponentByName);
   LightningBindMethod(GetComponentByIndex);
   LightningBindGetter(ComponentCount);
@@ -651,6 +652,12 @@ Component* Cog::QueryComponentType(BoundType* componentType)
   return mComponentMap.FindValue(componentType, nullptr);
 }
 
+Component* Cog::FindComponentByBaseTypeName(StringParam baseTypeName)
+{
+    BoundType* baseType = MetaDatabase::GetInstance()->FindType(baseTypeName);
+    return GetComponentByIndex(GetComponentIndex(baseType));
+}
+
 Component* Cog::GetComponentByName(StringParam componentTypeName)
 {
   BoundType* componentType = MetaDatabase::GetInstance()->FindType(componentTypeName);
@@ -682,7 +689,7 @@ uint Cog::GetComponentIndex(BoundType* componentType)
   for (uint i = 0; i < mComponents.Size(); ++i)
   {
     Component* component = mComponents[i];
-    if (LightningVirtualTypeId(component) == componentType)
+    if (Type::BoundIsA(LightningVirtualTypeId(component), componentType))
       return i;
   }
 

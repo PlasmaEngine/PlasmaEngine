@@ -133,16 +133,6 @@ void PlasmaStartup::Initialize()
   mFileListener = new FileListener();
   Plasma::Console::Add(mFileListener);
 
-  CrashHandler::Enable();
-
-  // CrashHandler::SetPreMemoryDumpCallback(Plasma::CrashPreMemoryDumpCallback,
-  //                                       NULL);
-  // CrashHandler::SetCustomMemoryCallback(Plasma::CrashCustomMemoryCallback,
-  // NULL); CrashHandler::SetLoggingCallback(Plasma::CrashLoggingCallback,
-  // mFileListener);
-  // CrashHandler::SetSendCrashReportCallback(Plasma::SendCrashReport, NULL);
-  // CrashHandler::SetCrashStartCallback(Plasma::CrashStartCallback, NULL);
-
   Environment* environment = Environment::GetInstance();
   environment->ParseCommandArgs(gCommandLineArguments);
 

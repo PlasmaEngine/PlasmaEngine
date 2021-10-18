@@ -14,11 +14,11 @@ class PostProcessBloom : LightningComponent
   [Property] var Threshold : Real = 1.0;
   // Lens dirst texture
   [Group("Settings")]
-  [Property] var LensDirt : Texture = Texture.White;
+  [Property] var LensDirt : Texture = Texture.Black;
   [Group("Settings")]
-  [Property] var LensDirtIntensity : Real = 0.2;
+  [Property] var LensDirtIntensity : Real = 20;
   [Group("Settings")]
-  [Property] var LensDirtThreshold : Real = 0.1;
+  [Property] var LensDirtThreshold : Real = 5;
   
   // If output should be replace with just the result that's added to the scene for visualizing the effect.
   [Group("Debug")]
@@ -39,6 +39,16 @@ class PostProcessBloom : LightningComponent
   // If this bloom level is applied.
   [Group("Levels")]
   [Property] var Bloom5 : Boolean = true;
+    // If this bloom level is applied.
+  [Group("Levels")]
+  [Property] var Bloom6 : Boolean = true;
+  // If this bloom level is applied.
+  [Group("Levels")]
+  [Property] var Bloom7 : Boolean = true;
+  // If this bloom level is applied.
+  [Group("Levels")]
+  [Property] var Bloom8 : Boolean = true;
+
 
   
   function AddRenderTasks(event : RenderTasksEvent, lightBuffer : RenderTarget)
@@ -50,11 +60,14 @@ class PostProcessBloom : LightningComponent
     var bloomSamplerSettings = SamplerSettings() {Filtering = TextureFiltering.Bilinear};
     
     var bloom0 = event.GetRenderTarget(bufferSize, TextureFormat.RGB16f, bloomSamplerSettings);
-    var bloom1 = event.GetRenderTarget((bufferSize * 0.5) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
-    var bloom2 = event.GetRenderTarget((bufferSize * 0.25) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
-    var bloom3 = event.GetRenderTarget((bufferSize * 0.125) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
-    var bloom4 = event.GetRenderTarget((bufferSize * 0.0625) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
-    var bloom5 = event.GetRenderTarget((bufferSize * 0.03125) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
+    var bloom1 = event.GetRenderTarget((bufferSize / 2) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
+    var bloom2 = event.GetRenderTarget((bufferSize / 4) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
+    var bloom3 = event.GetRenderTarget((bufferSize / 8) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
+    var bloom4 = event.GetRenderTarget((bufferSize / 16) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
+    var bloom5 = event.GetRenderTarget((bufferSize / 32) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
+    var bloom6 = event.GetRenderTarget((bufferSize / 64) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
+    var bloom7 = event.GetRenderTarget((bufferSize / 128) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
+    var bloom8 = event.GetRenderTarget((bufferSize / 256) as Integer2, TextureFormat.RGB16f, bloomSamplerSettings);
     
     // The bright pass separates sufficiently bright parts of the image from the rest
     var bloomBrightPass = BloomBrightPass(); 
@@ -73,10 +86,13 @@ class PostProcessBloom : LightningComponent
     // wide-ranged blurs look better and they become less expensive the
     // smaller the target is.
     DownsampleAndBlur[Filter13TapPartialKarisAverage, SeparableBlurRadius5].Call(event, bloom0, bloom1);
-    DownsampleAndBlur[Filter13Tap, SeparableBlurRadius10].Call(event, bloom1, bloom2);
-    DownsampleAndBlur[Filter13Tap, SeparableBlurRadius15].Call(event, bloom2, bloom3);
-    DownsampleAndBlur[Filter13Tap, SeparableBlurRadius20].Call(event, bloom3, bloom4);
-    DownsampleAndBlur[Filter13Tap, SeparableBlurRadius25].Call(event, bloom4, bloom5);
+    DownsampleAndBlur[Filter13Tap, SeparableBlurRadius5].Call(event, bloom1, bloom2);
+    DownsampleAndBlur[Filter13Tap, SeparableBlurRadius10].Call(event, bloom2, bloom3);
+    DownsampleAndBlur[Filter13Tap, SeparableBlurRadius10].Call(event, bloom3, bloom4);
+    DownsampleAndBlur[Filter13Tap, SeparableBlurRadius15].Call(event, bloom4, bloom5);
+    DownsampleAndBlur[Filter13Tap, SeparableBlurRadius15].Call(event, bloom5, bloom6);
+    DownsampleAndBlur[Filter13Tap, SeparableBlurRadius20].Call(event, bloom6, bloom7);
+    DownsampleAndBlur[Filter13Tap, SeparableBlurRadius20].Call(event, bloom7, bloom8);
     
     // In order to remove the effect of any single bloom level and
     // still do a progressive upsample, clear the unused levels
@@ -91,6 +107,12 @@ class PostProcessBloom : LightningComponent
       event.AddRenderTaskClearTarget(bloom4, Real4(0.0));
     if (!this.Bloom5)
       event.AddRenderTaskClearTarget(bloom5, Real4(0.0));
+    if (!this.Bloom6)
+      event.AddRenderTaskClearTarget(bloom6, Real4(0.0));
+    if (!this.Bloom7)
+      event.AddRenderTaskClearTarget(bloom7, Real4(0.0));
+    if (!this.Bloom8)
+      event.AddRenderTaskClearTarget(bloom8, Real4(0.0));
     
     if (this.DebugBuffer)
       event.AddRenderTaskClearTarget(lightBuffer, Real4(0.0, 0.0, 0.0, 1.0));
@@ -98,6 +120,9 @@ class PostProcessBloom : LightningComponent
     // Progressive upsample
     // This pass accumulates all the blurred bloom buffers that are
     // going to be used and adds them to the light buffer.
+    this.Upsample(event, bloom8, bloom7);
+    this.Upsample(event, bloom7, bloom6);
+    this.Upsample(event, bloom6, bloom5);
     this.Upsample(event, bloom5, bloom4);
     this.Upsample(event, bloom4, bloom3);
     this.Upsample(event, bloom3, bloom2);

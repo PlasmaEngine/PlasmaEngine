@@ -254,56 +254,71 @@ TileViewWidget* LibraryTileView::CreateTileViewWidget(
 
 AddLibraryUI::AddLibraryUI(Composite* parent, LibraryView* libraryView): Composite(parent), mLibraryView(libraryView)
 {
-  this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 2), Thickness::cZero));
-  new Label(this, "Text", "Library Name:");
-  mNewLibraryName = new TextBox(this);
-  mNewLibraryName->SetEditable(true);
-  mNewLibraryName->SetText("NewLibrary");
-  
-  new Label(this, "Text", "Library Path:");
+    this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(0, 2), Thickness::cZero));
+    new Label(this, "Text", "Library Name:");
+    mNewLibraryName = new TextBox(this);
+    mNewLibraryName->SetEditable(true);
+    mNewLibraryName->SetText("NewLibrary");  
+    mNewLibraryName->TakeFocus();
+    new Label(this, "Text", "Library Path:");
 
-  Composite* pathRow = new Composite(this);
-  pathRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
+    Composite* pathRow = new Composite(this);
+    pathRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
   
-  mLibraryPath = new TextBox(pathRow);
-  mLibraryPath->SetEditable(true);
-  mLibraryPath->SetSizing(SizeAxis::X,SizePolicy::Flex, Pixels(200));
-  
-  TextButton* pathSelectButton = new TextButton(pathRow);
-  pathSelectButton->SetText("...");
-  pathSelectButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
-  ConnectThisTo(pathSelectButton, Events::ButtonPressed, OnSelectPath);
-  
-  Composite* buttonBar = new Composite(this);
+    mLibraryPath = new TextBox(pathRow);
+    mLibraryPath->SetEditable(false);
+    mLibraryPath->SetSizing(SizeAxis::X,SizePolicy::Flex, Pixels(200));
+    mLibraryPath->SetInteractive(false);
 
-  buttonBar->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
-  {
-    TextButton* createButton = new  TextButton(buttonBar);
-    createButton->SetText("Create");
-    createButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
-    
-    ConnectThisTo(createButton, Events::ButtonPressed, OnCreate);
-    
-    Composite* space = new Composite(buttonBar);
-    space->SetSizing(SizeAxis::X, SizePolicy::Flex, 1);
+  
+    mPathSelectButton = new TextButton(pathRow);
+    mPathSelectButton->SetText("...");
+    mPathSelectButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(40));
+    mPathSelectButton->SetInteractive(false);
+    ConnectThisTo(mPathSelectButton, Events::ButtonPressed, OnSelectPath);
 
-    TextButton* cancelButton = new  TextButton(buttonBar);
-    cancelButton->SetText("Cancel");
-    cancelButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
-    ConnectThisTo(cancelButton, Events::ButtonPressed, OnCancel);
-  }
+    Composite* pathCheckboxRow = new Composite(this);
+    pathCheckboxRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
+
+    mSetIndependentPathCheckbox = new TextCheckBox(pathCheckboxRow);
+    mSetIndependentPathCheckbox->SetCheckedDirect(false);
+    mSetIndependentPathCheckbox->SetText(" Enable Manual Library Path Editing");
+    ConnectThisTo(mSetIndependentPathCheckbox, Events::LeftClick, OnToggleEditablePath);
   
-  Cog* projectCog = PL::gEditor->mProject;
-  
-  if(projectCog != nullptr)
-  {
-    ProjectSettings* projectSettings = projectCog->has(ProjectSettings);
-    
-    if(projectSettings != nullptr)
+    Composite* buttonBar = new Composite(this);
+
+    buttonBar->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
     {
-      mLibraryPath->SetText(FilePath::Combine(projectSettings->ProjectFolder, mNewLibraryName->GetText()));
+        Composite* space = new Composite(buttonBar);
+        space->SetSizing(SizeAxis::X, SizePolicy::Flex, 1);
+
+        TextButton* createButton = new  TextButton(buttonBar);
+        createButton->SetText("Create");
+        createButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
+    
+        ConnectThisTo(createButton, Events::ButtonPressed, OnCreate);
+
+        TextButton* cancelButton = new  TextButton(buttonBar);
+        cancelButton->SetText("Cancel");
+        cancelButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
+        ConnectThisTo(cancelButton, Events::ButtonPressed, OnCancel);
     }
-  }
+  
+    Cog* projectCog = PL::gEditor->mProject;
+
+    if (projectCog != nullptr)
+    {
+        ProjectSettings* projectSettings = projectCog->has(ProjectSettings);
+
+        if (projectSettings != nullptr)
+        {
+            mLibraryPath->SetText(FilePath::Combine(projectSettings->ProjectFolder, mNewLibraryName->GetText()));
+        }
+    }
+
+    UpdateLibraryPath();
+
+    ConnectThisTo(this, Events::KeyUp, OnKeyUp);
 }
 
 AddLibraryUI::~AddLibraryUI()
@@ -314,7 +329,7 @@ void AddLibraryUI::OnCreate(Event* e)
 {
   if(!mCanCreateLibrary)
   {
-    DoNotify("Error", "Library with that name already exists", "Warning");
+    DoNotify("Error", "Library with that name already exists, or name/path is invalid.", "Warning");
     return;
   }
   Status s;
@@ -371,6 +386,22 @@ void AddLibraryUI::OnCreate(Event* e)
   CloseTabContaining(this);
 }
 
+void AddLibraryUI::OnToggleEditablePath(Event* e)
+{
+    bool isChecked = mSetIndependentPathCheckbox->GetChecked();
+    if (mLibraryPath->mInteractive != isChecked)
+    {
+        mLibraryPath->SetInteractive(isChecked);
+        mLibraryPath->SetEditable(isChecked);
+        mLibraryPath->MarkAsNeedsUpdate();
+        mPathSelectButton->SetInteractive(isChecked);
+        mPathSelectButton->MarkAsNeedsUpdate();
+
+        if (!isChecked)
+            UpdateLibraryPath();
+    }
+}
+
 void AddLibraryUI::OnSelectPath(Event* e)
 {
   // Set up the callback for when library path is selected
@@ -410,9 +441,11 @@ void AddLibraryUI::OnFolderSelected(OsFileSelection* e)
       forRange (String library, projectSettings->ExtraLibraries.All())
       {
         String name = mNewLibraryName->GetText().ToLower();
-        if(name.CompareTo(library.ToLower()))
+
+        if(name == library)
         {
           valid = false;
+          break;
         }
       }
     }
@@ -424,6 +457,38 @@ void AddLibraryUI::OnFolderSelected(OsFileSelection* e)
 void AddLibraryUI::OnCancel(Event* e)
 {
   CloseTabContaining(this);
+}
+
+void AddLibraryUI::OnKeyUp(KeyboardEvent* event) {
+
+    if (event->Key == Keys::Enter && !mLibraryPath->GetText().Empty() && !mNewLibraryName->GetText().Empty())
+    {
+        OnCreate(nullptr);
+    }
+    else if (event->Key == Keys::Escape)
+    {
+        OnCancel(nullptr);
+    }
+    else if(!mSetIndependentPathCheckbox->GetChecked())
+    {
+        UpdateLibraryPath();
+    }
+}
+
+void AddLibraryUI::UpdateLibraryPath()
+{
+    Cog* projectCog = PL::gEditor->mProject;
+
+    if (projectCog != nullptr)
+    {
+        ProjectSettings* projectSettings = projectCog->has(ProjectSettings);
+
+        if (projectSettings != nullptr)
+        {
+            mLibraryPath->SetText(FilePath::Combine(projectSettings->ProjectFolder, mNewLibraryName->GetText()));
+            mLibraryPath->MarkAsNeedsUpdate();
+        }
+    }
 }
 
 LightningDefineType(LibraryView, builder, type)
@@ -526,6 +591,7 @@ LibraryView::LibraryView(Composite* parent) : Composite(parent), mResourceLibrar
   ConnectThisTo(PL::gResources, Events::ResourcesLoaded, OnResourcesModified);
   ConnectThisTo(PL::gResources, Events::ResourcesUnloaded, OnResourcesModified);
   ConnectThisTo(PL::gResources, Events::ResourceTagsModified, OnResourcesModified);
+  ConnectThisTo(PL::gResources, Events::ResourceModified, OnResourcesModified);
 
   ConnectThisTo(mTreeView, Events::MouseScroll, OnMouseScroll);
 
@@ -862,58 +928,68 @@ void LibraryView::OnTileViewRightClick(TileViewEvent* event)
 
 void LibraryView::OnRightClickObject(Composite* objectToAttachTo, DataIndex index)
 {
-  mCommandIndices.Clear();
+    mCommandIndices.Clear();
 
-  ContextMenu* menu = new ContextMenu(objectToAttachTo);
-  Mouse* mouse = PL::gMouse;
+    ContextMenu* menu = new ContextMenu(objectToAttachTo);
+    Mouse* mouse = PL::gMouse;
 
-  mDataSelection->GetSelected(mCommandIndices);
-  mPrimaryCommandIndex = index;
-  LibDataEntry* entry = (LibDataEntry*)mSource->ToEntry(mPrimaryCommandIndex);
+    mDataSelection->GetSelected(mCommandIndices);
+    mPrimaryCommandIndex = index;
+    LibDataEntry* entry = (LibDataEntry*)mSource->ToEntry(mPrimaryCommandIndex);
 
-  Resource* resource = entry->mResource;
-  if (resource)
-  {
-    ConnectMenu(menu, "Edit", OnEdit, true);
-    ConnectMenu(menu, "Rename", OnRename, false);
-    ConnectMenu(menu, "Edit Content Meta", OnEditMeta, false);
-    ConnectMenu(menu, "Edit Tags", OnEditTags, false);
-    ConnectMenu(menu, "Remove", OnRemove, false);
-
-    if (resource && resource->mManager->mCanDuplicate)
+    Resource* resource = entry->mResource;
+    if (resource)
     {
-      ConnectMenu(menu, "Duplicate", OnDuplicate, false);
+        ConnectMenu(menu, "Edit", OnEdit, true);
+        ConnectMenu(menu, "Rename", OnRename, false);
+        ConnectMenu(menu, "Edit Content Meta", OnEditMeta, false);
+        ConnectMenu(menu, "Edit Tags", OnEditTags, false);
+        
+        if (mContentLibrary->GetWritable())
+        {
+            menu->AddDivider();
+            
+            if (resource) {
+                ConnectMenu(menu, "Move", OnMoveResourcePress, false);
+            }
+            
+            if (resource && resource->mManager->mCanDuplicate)
+            {
+                ConnectMenu(menu, "Duplicate", OnDuplicate, false);
+            }
+            
+            ConnectMenu(menu, "Remove", OnRemove, false);
+        }
+
+        BoundType* resourceType = LightningVirtualTypeId(resource);
+
+        // Add composing and translation test functions for materials
+        if (resourceType->IsA(LightningTypeId(Material)))
+        {
+            ConnectMenu(menu, "ComposeLightningMaterial", OnComposeLightningMaterial, false);
+            ConnectMenu(menu, "TranslateLightningPixelMaterial", OnTranslateLightningPixelMaterial, false);
+            ConnectMenu(menu, "TranslateLightningGeometryMaterial", OnTranslateLightningGeometryMaterial, false);
+            ConnectMenu(menu, "TranslateLightningVertexMaterial", OnTranslateLightningVertexMaterial, false);
+        }
+        // Add a translation tests function for fragments
+        if (resourceType->IsA(LightningTypeId(LightningFragment)))
+        {
+            ConnectMenu(menu, "TranslateFragment", OnTranslateFragment, false);
+        }
+
+        AddResourceOptionsToMenu(menu, resourceType->Name, true);
+    }
+    else
+    {
+        // When right clicking on a resource tag show an "Add 'resourceType'" option
+        // if the user can add this type of resource
+        if (AddResourceOptionsToMenu(menu, entry->mTag))
+            menu->AddDivider();
+        ConnectMenu(menu, "Add Tag To Search", OnAddTagToSearch, true);
     }
 
-    BoundType* resourceType = LightningVirtualTypeId(resource);
-
-    // Add composing and translation test functions for materials
-    if (resourceType->IsA(LightningTypeId(Material)))
-    {
-      ConnectMenu(menu, "ComposeLightningMaterial", OnComposeLightningMaterial, false);
-      ConnectMenu(menu, "TranslateLightningPixelMaterial", OnTranslateLightningPixelMaterial, false);
-      ConnectMenu(menu, "TranslateLightningGeometryMaterial", OnTranslateLightningGeometryMaterial, false);
-      ConnectMenu(menu, "TranslateLightningVertexMaterial", OnTranslateLightningVertexMaterial, false);
-    }
-    // Add a translation tests function for fragments
-    if (resourceType->IsA(LightningTypeId(LightningFragment)))
-    {
-      ConnectMenu(menu, "TranslateFragment", OnTranslateFragment, false);
-    }
-
-    AddResourceOptionsToMenu(menu, resourceType->Name, true);
-  }
-  else
-  {
-    // When right clicking on a resource tag show an "Add 'resourceType'" option
-    // if the user can add this type of resource
-    if (AddResourceOptionsToMenu(menu, entry->mTag))
-      menu->AddDivider();
-    ConnectMenu(menu, "Add Tag To Search", OnAddTagToSearch, true);
-  }
-
-  menu->SizeToContents();
-  menu->ShiftOntoScreen(ToVector3(mouse->GetClientPosition()));
+    menu->SizeToContents();
+    menu->ShiftOntoScreen(ToVector3(mouse->GetClientPosition()));
 }
 
 void LibraryView::OnRightMouseUp(MouseEvent* event)
@@ -935,9 +1011,12 @@ void LibraryView::OnRightMouseUp(MouseEvent* event)
     }
   }
 
-  // If a specific resource is not found pop up the generic add resources menu
-  menu->AddPlasmaContextMenu("Resources");
-  menu->ShiftOntoScreen(ToVector3(event->Position));
+  // If a specific resource is not found and the current library is writeable, pop up the generic add resources menu
+  if (mContentLibrary->GetWritable())
+  {
+      menu->AddPlasmaContextMenu("Resources");
+      menu->ShiftOntoScreen(ToVector3(event->Position));
+  }
 }
 
 void LibraryView::OnKeyDown(KeyboardEvent* event)
@@ -1264,25 +1343,7 @@ void LibraryView::OnMessageBox(MessageBoxEvent* event)
 {
   if (event->ButtonIndex == MessageResult::Yes)
   {
-    Array<Resource*> resourcesToRemove;
-    // content items with an associated resource that will be deleted
-    HashSet<ContentItem*> contentItems;
-
-    for (uint i = 0; i < mCommandIndices.Size(); ++i)
-    {
-      DataIndex currIndex = mCommandIndices[i];
-      LibDataEntry* treeNode = (LibDataEntry*)mSource->ToEntry(currIndex);
-      if (Resource* resource = treeNode->mResource)
-      {
-        // only delete 1 resource for a content item as removing one removes all
-        // associated resources
-        if (!contentItems.Contains(resource->mContentItem))
-        {
-          resourcesToRemove.PushBack(resource);
-          contentItems.Insert(resource->mContentItem);
-        }
-      }
-    }
+    Array<Resource*> resourcesToRemove = GetSelectedResources();
 
     forRange (Resource* resource, resourcesToRemove.All())
     {
@@ -1303,6 +1364,19 @@ void LibraryView::OnDuplicate(Event* event)
   LibDataEntry* treeNode = (LibDataEntry*)mSource->ToEntry(mPrimaryCommandIndex);
   if (Resource* resource = treeNode->mResource)
     DuplicateResource(resource);
+}
+
+void LibraryView::OnMoveResourcePress(Event* e)
+{
+    Window* window = new Window(PL::gEditor);
+    MoveItemUI* moveItemUI = new MoveItemUI(window, this);
+
+    window->SizeToContents();
+    window->SetTitle("Move Resource");
+    window->SetDockMode(DockMode::DockNone);
+
+    CenterToWindow(PL::gEditor, window, false);
+    window->MoveToFront();
 }
 
 void LibraryView::OnComposeLightningMaterial(Event* event)
@@ -1384,7 +1458,7 @@ bool LibraryView::AddResourceOptionsToMenu(ContextMenu* menu, StringParam resouc
   if (boundType && boundType->IsA(LightningTypeId(Resource)))
   {
     ResourceManager* manager = PL::gResources->GetResourceManager(boundType);
-    if (manager->mCanAddFile || manager->mCanCreateNew)
+    if ((manager->mCanAddFile || manager->mCanCreateNew) && mContentLibrary->GetWritable())
     {
       if (addDivider)
         menu->AddDivider();
@@ -1667,5 +1741,171 @@ void LibraryView::OnCreateLibraryPress(Event* e)
   CenterToWindow(PL::gEditor, window, false);
   window->MoveToFront();
 }
+
+Array<Resource*> LibraryView::GetSelectedResources()
+{
+    Array<Resource*> selectedResources;
+    // content items with an associated resource will be selected
+    HashSet<ContentItem*> contentItems;
+
+    for (uint i = 0; i < mCommandIndices.Size(); ++i)
+    {
+        DataIndex currIndex = mCommandIndices[i];
+        LibDataEntry* treeNode = (LibDataEntry*)mSource->ToEntry(currIndex);
+        if (Resource* resource = treeNode->mResource)
+        {
+            if (!contentItems.Contains(resource->mContentItem))
+            {
+                selectedResources.PushBack(resource);
+                contentItems.Insert(resource->mContentItem);
+            }
+        }
+    }
+
+    return selectedResources;
+}
+
+String LibraryView::GetSelectedLibraryName()
+{
+    return mContentLibrary != nullptr ? mContentLibrary->Name : "";
+}
+
+MoveItemUI::MoveItemUI(Composite* parent, LibraryView* libraryView): Composite(parent), mLibraryView(libraryView)
+{
+    this->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Pixels(5, 2), Thickness::cZero));
+
+    mLibrariesRow = new Composite(this);
+    mLibrariesRow->SetSizing(SizeAxis::Y, SizePolicy::Flex, Pixels(0));
+    mLibrariesRow->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Pixels(5, 0), Thickness(1, 0, 2, 0)));
+    {
+        new Label(mLibrariesRow, "Text", "Library: ");
+
+        mContentLibraries = new StringComboBox(mLibrariesRow);
+        mContentLibraries->SetSizing(SizeAxis::X, SizePolicy::Flex, Pixels(18));
+        BuildContentLibraryList();
+
+        mResourcesToMove = mLibraryView->GetSelectedResources();
+    }
+
+    Composite* textBar = new Composite(this);
+
+    textBar->SetLayout(CreateStackLayout(LayoutDirection::TopToBottom, Vec2::cZero, Thickness(1,4,1,4)));
+    {
+        Text* moveText = new Text(textBar, "NotoSans-Regular", 11);
+        moveText->SetText("Selected resources to move are:");
+
+        Widget* divider1 = new ContextMenuDivider(textBar, MenuUi::GutterColor);
+
+        int numberOfNamesPerLine = 5;
+        // This breaks up the display of the names of resources so that if a user has like 30 items selected, it won't extend off the screen
+        for (int i = 0; i < mResourcesToMove.Size(); i += numberOfNamesPerLine)
+        {
+            String resourcesToMove;
+            int nextNumberToStopAt = mResourcesToMove.Size() - i >= numberOfNamesPerLine ? (i + numberOfNamesPerLine) : mResourcesToMove.Size();
+
+            for (int j = i; j < nextNumberToStopAt; j++)
+            {
+                resourcesToMove = resourcesToMove + mResourcesToMove[j]->Name + ", ";
+            }
+
+            Text* resourceText = new Text(textBar, "NotoSans-Regular", 11);
+            resourceText->SetText(resourcesToMove);
+        }
+
+        Widget* divider2 = new ContextMenuDivider(textBar, MenuUi::GutterColor);
+        
+        Text* warningText1 = new Text(textBar, "NotoSans-Regular", 11);
+        warningText1->SetText("This operation cannot be undone, and may possibly break dependent assets.");
+        
+        Text* warningText2 = new Text(textBar, "NotoSans-Regular", 11); 
+        warningText2->SetText("Please be sure to double check the selected resources.");
+
+
+    }
+
+    Composite* buttonBar = new Composite(this);
+
+    buttonBar->SetLayout(CreateStackLayout(LayoutDirection::LeftToRight, Vec2::cZero, Thickness::cZero));
+    {
+        Composite* space = new Composite(buttonBar);
+        space->SetSizing(SizeAxis::X, SizePolicy::Flex, 1);
+
+        TextButton* createButton = new  TextButton(buttonBar);
+        createButton->SetText("Move");
+        createButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
+
+        ConnectThisTo(createButton, Events::ButtonPressed, OnMove);
+
+        TextButton* cancelButton = new  TextButton(buttonBar);
+        cancelButton->SetText("Cancel");
+        cancelButton->SetSizing(SizeAxis::X, SizePolicy::Fixed, Pixels(80));
+        ConnectThisTo(cancelButton, Events::ButtonPressed, OnCancel);
+    }
+}
+
+MoveItemUI::~MoveItemUI()
+{
+}
+
+void MoveItemUI::BuildContentLibraryList()
+{
+    mContentLibraries->ClearItems();
+    mLibrariesRow->SetActive(false);
+
+    forRange(ContentLibrary * library, PL::gContentSystem->Libraries.Values())
+    {
+        if (library == nullptr || library->GetReadOnly())
+            continue;
+
+        // Only show the library if a resource library was built from it and if it's writeable
+        if (PL::gResources->GetResourceLibrary(library->Name))
+            mContentLibraries->AddItem(library->Name);
+
+    }
+
+    if (mContentLibraries->GetCount() >= 1)
+    {
+        mContentLibraries->SetSelectedItem(0, false);
+    }
+
+    // Enable dropdown selection menu for multiple libraries
+    if (mContentLibraries->GetCount() > 1)
+    {
+        mLibrariesRow->SetActive(true);
+    }
+}
+
+void MoveItemUI::OnMove(Event* e)
+{
+    if (PL::gEngine->IsReadOnly())
+    {
+        DoNotifyWarning("Resources", "Cannot move resources in read-only mode");
+        return;
+    }
+
+    ContentLibrary* targetContentLibrary = PL::gContentSystem->Libraries.FindValue(mContentLibraries->GetSelectedString(), nullptr);
+    ResourceLibrary* targetResourceLibrary = PL::gResources->GetResourceLibrary(mContentLibraries->GetSelectedString());
+    
+    forRange(Resource* resource, mResourcesToMove)
+    {
+        
+        // execute the move func
+        if (MoveResource(resource, targetContentLibrary, targetResourceLibrary))
+        {
+            mLibraryView->MarkAsNeedsUpdate();
+        }
+        else
+        {
+            DoNotifyWarning("Resources", "Moving resource " + resource->Name + " failed.");
+        }
+    }
+    
+    OnCancel(nullptr);
+}
   
+void MoveItemUI::OnCancel(Event* e)
+{
+    CloseTabContaining(this);
+}
+
 } // namespace Plasma

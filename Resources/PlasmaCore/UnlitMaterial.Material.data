@@ -1,0 +1,18 @@
+[Version:1]
+Material 
+{
+	var RenderGroups = Array
+	{
+		"612904579a5ab10e:Unlit"
+		"580269d9a1d6b870:ShadowCasters"
+	}
+	AlbedoMap 
+	{
+		var AlbedoMap = "5827bc9481103535:PlasmaAlbedo"
+		var InvertAlpha = false
+	}
+	AlphaValue 
+	{
+		var AlphaValue = 0
+	}
+}

@@ -46,6 +46,7 @@ LightningDefineType(ButtonBase, builder, type)
 
 ButtonBase::ButtonBase(Composite* parent, StringParam styleClass) : Composite(parent)
 {
+  ZoneScoped;
   mDefSet = mDefSet->GetDefinitionSet(styleClass);
 
   mBackground = CreateAttached<Element>(cWhiteSquare);
@@ -87,6 +88,7 @@ void ButtonBase::AddCommand(Command* command)
 
 void ButtonBase::UpdateTransform()
 {
+  ZoneScoped;
   mBackground->SetSize(mSize);
   mBorder->SetSize(mSize);
   mFocusBorder->SetSize(mSize);
@@ -213,6 +215,7 @@ LightningDefineType(TextButton, builder, type)
 
 TextButton::TextButton(Composite* parent, StringParam textStyle) : ButtonBase(parent, "TextButton")
 {
+  ZoneScoped;
   mButtonText = new Text(this, textStyle);
 
   mStyle = TextButtonStyle::Classic;
@@ -224,6 +227,7 @@ TextButton::TextButton(Composite* parent, StringParam textStyle) : ButtonBase(pa
 
 TextButton::TextButton(Composite* parent, StringParam fontName, uint fontSize) : ButtonBase(parent, "TextButton")
 {
+  ZoneScoped;
   mButtonText = new Text(this, fontName, fontSize);
 
   mStyle = TextButtonStyle::Classic;
@@ -253,6 +257,7 @@ void TextButton::SetText(StringParam newValue)
 
 void TextButton::UpdateTransform()
 {
+  ZoneScoped;
   /// Only update the text color in the modern style
   if (mStyle == TextButtonStyle::Modern)
   {
@@ -316,6 +321,7 @@ LightningDefineType(IconButton, builder, type)
 
 IconButton::IconButton(Composite* parent) : ButtonBase(parent, "TextButton")
 {
+  ZoneScoped;
   mIcon = NULL;
   mPadding = Thickness(IconButtonUi::Padding);
 
@@ -366,6 +372,7 @@ Vec2 IconButton::GetMinSize()
 
 void IconButton::UpdateTransform()
 {
+  ZoneScoped;
   mBackground->SetSize(mSize);
   WidgetRect rect = RemoveThicknessRect(mPadding, mSize);
 
@@ -421,6 +428,7 @@ LightningDefineType(ToggleIconButton, builder, type)
 
 ToggleIconButton::ToggleIconButton(Composite* parent) : IconButton(parent)
 {
+  ZoneScoped;
   ConnectThisTo(this, Events::ButtonPressed, OnButtonPressed);
 
   mEnabled = true;
@@ -473,6 +481,7 @@ void ToggleIconButton::UpdateIconColor()
 
 void ToggleIconButton::UpdateIcon()
 {
+  ZoneScoped;
   if (mEnabled)
     SetIcon(mEnabledIcon);
   else

@@ -35,65 +35,24 @@ bool EditorMain::LoadPackage(Cog* projectCog, ContentLibrary* library, ResourceP
 
   ResourceSystem* resourceSystem = PL::gResources;
 
-  if (project->ProjectContentLibrary == library)
-  {
-    // Load all packages
-    forRange (ResourcePackage* dependentPackage, PackagesToLoad.All())
-    {
-      Status status;
-      ResourceLibrary* library = resourceSystem->LoadPackage(status, dependentPackage);
-      if (!status)
-        DoNotifyError("Failed to load resource package.", status.Message);
+  ContentLibrary* originalProjectLibrary = mProjectLibrary;
 
-      project->SharedResourceLibraries.PushBack(library);
-      delete dependentPackage;
-    }
-    PackagesToLoad.Clear();
+  // Set the content library so Loading may try to create new content for
+  // fixing old content elements.
+  mProjectLibrary = library;
 
-    // Set the content library so Loading may try to create new content for
-    // fixing old content elements.
-    mProjectLibrary = library;
+  Status status;
+  project->ProjectResourceLibrary = resourceSystem->LoadPackage(status, package);
+  if (!status)
+    DoNotifyError("Failed to load resource package.", status.Message);
 
-    Status status;
-    project->ProjectResourceLibrary = resourceSystem->LoadPackage(status, package);
-    if (!status)
-      DoNotifyError("Failed to load resource package.", status.Message);
+  DoEditorSideImporting(package, nullptr);
+  PL::gEditor->SetExploded(false, true);
 
-    DoEditorSideImporting(package, nullptr);
-    PL::gEditor->SetExploded(false, true);
-    return true;
-  }
-  else if(project->ExtraContentLibraries.Contains(library))
-  {
-    // Load all packages
-    forRange (ResourcePackage* dependentPackage, PackagesToLoad.All())
-    {
-      Status status;
-      ResourceLibrary* lib = resourceSystem->LoadPackage(status, dependentPackage);
-      if (!status)
-        DoNotifyError("Failed to load resource package.", status.Message);
+  // restore original mProjectLibrary value
+  mProjectLibrary = originalProjectLibrary;
 
-      project->SharedResourceLibraries.PushBack(lib);
-      delete dependentPackage;
-    }
-    PackagesToLoad.Clear();
-
-    Status status;
-    project->ProjectResourceLibrary = resourceSystem->LoadPackage(status, package);
-    if (!status)
-      DoNotifyError("Failed to load resource package.", status.Message);
-
-    DoEditorSideImporting(package, nullptr);
-
-    PL::gEditor->SetExploded(false, true);
-    return true;
-  }
-  else
-  {
-    PackagesToLoad.PushBack(package);
-  }
-
-  return false;
+  return true;
 }
 
 void EditorMain::OnEngineUpdate(UpdateEvent* event)

@@ -50,8 +50,12 @@ void LauncherStartup::UserInitialize()
 void LauncherStartup::UserStartup()
 {
   Array<String> coreLibs;
+
+  coreLibs.PushBack("FragmentCore");
+  coreLibs.PushBack("Loading");
   coreLibs.PushBack("PlasmaCore");
   coreLibs.PushBack("PlasmaLauncherResources");
+
   LoadCoreContent(coreLibs);
 }
 

@@ -163,6 +163,8 @@ public:
   type* Has();
   /// Finds a component of the given type.
   Component* QueryComponentType(BoundType* componentType);
+  /// Finds a component that derives from a base type.
+  Component* FindComponentByBaseTypeName(StringParam baseTypeName);
   /// Finds the Components with the given type name.
   Component* GetComponentByName(StringParam componentTypeName);
   /// Returns the Component at the given index.
