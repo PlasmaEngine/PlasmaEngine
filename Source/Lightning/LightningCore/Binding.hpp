@@ -49,7 +49,7 @@ public:
  * ************************************/
 
 // Helper macros for accessing these types
-#  define LightningStaticType(Type) LS::TypeBinding::StaticTypeId<Type>
+#  define LightningStaticType(Type) Lightning::TypeBinding::StaticTypeId<Type>
 #  define LightningTypeId(Type) (LightningStaticType(Type)::GetType())
 #  define LightningBindingType(Type) typename LightningStaticType(Type)::BindingType
 

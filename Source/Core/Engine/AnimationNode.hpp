@@ -31,7 +31,7 @@ AnimationNode* BuildBasic(AnimationGraph* animGraph, Animation* animation, float
 struct BlendTrack
 {
   uint Index;
-  Property* Property;
+  ::Lightning::Property* Property;
   Handle Object;
 };
 

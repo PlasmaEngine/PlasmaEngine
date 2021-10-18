@@ -25,7 +25,7 @@ public:
     return static_cast<float>(BasePriorities::None);
   }
 
-  virtual void Resolve(LightningSpirVFrontEnd* translator, Lightning::SyntaxNode* node, LightningShaderIRType* shaderType, ShaderIRAttributeList& attributes, ShaderIRAttribute& attribute) abstract;
+  virtual void Resolve(LightningSpirVFrontEnd* translator, Lightning::SyntaxNode* node, LightningShaderIRType* shaderType, ShaderIRAttributeList& attributes, ShaderIRAttribute& attribute) = 0;
 };
 
 }//namespace Plasma 

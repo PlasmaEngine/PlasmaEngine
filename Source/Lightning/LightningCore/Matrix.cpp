@@ -968,18 +968,18 @@ void CreateMatrixTypes(LibraryBuilder& builder)
   {
     // Real2x2
     LightningFullBindMethod(
-        builder, core.MathType, Math::Matrix2::GenerateScale, LightningNoOverload, "GenerateScaleMatrix2x2", "scale")
+        builder, core.MathType, &Math::Matrix2::GenerateScale, LightningNoOverload, "GenerateScaleMatrix2x2", "scale")
         ->Description = LightningDocumentString("Generates a two-dimensional scale matrix.");
     LightningFullBindMethod(builder,
                         core.MathType,
-                        Math::Matrix2::GenerateRotation,
+                        &Math::Matrix2::GenerateRotation,
                         LightningNoOverload,
                         "GenerateRotationMatrix2x2",
                         "radians")
         ->Description = LightningDocumentString("Generates a two-dimensional rotation matrix.");
     LightningFullBindMethod(builder,
                         core.MathType,
-                        Math::Matrix2::GenerateTransform,
+                        &Math::Matrix2::GenerateTransform,
                         LightningNoOverload,
                         "GenerateTransformMatrix2x2",
                         "radians, scale")

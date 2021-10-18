@@ -9,7 +9,7 @@ struct HeightMapCell;
 
 struct ModifiedHeightMapCell
 {
-  PatchIndex PatchIndex;
+  ::Plasma::PatchIndex PatchIndex;
 
   CellIndex Index;
   float OriginalHeight;
@@ -88,7 +88,7 @@ public:
 
 struct ModifiedWeightMapPixel
 {
-  PatchIndex PatchIndex;
+  ::Plasma::PatchIndex PatchIndex;
 
   IntVec2 Coord;
   ByteColor OriginalWeight;

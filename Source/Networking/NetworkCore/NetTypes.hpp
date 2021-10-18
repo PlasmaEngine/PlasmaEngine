@@ -85,6 +85,11 @@ struct ComponentPropertyInstanceData
   // Data
   String mPropertyName;
   Component* mComponent;
+
+  friend bool operator==(const ComponentPropertyInstanceData& a, const ComponentPropertyInstanceData& b)
+  {
+    return a.mPropertyName == b.mPropertyName && a.mComponent == b.mComponent;
+  }
 };
 
 //

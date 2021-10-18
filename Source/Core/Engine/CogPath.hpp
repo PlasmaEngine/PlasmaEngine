@@ -241,6 +241,11 @@ public:
   static Cog* Resolve(Status& status, Cog* startFrom, const CogPathCompiled& path, bool ambiguityIsError);
 
   HandleOf<CogPathNode> mSharedNode;
+
+  friend bool operator==(const CogPath& a, const CogPath& b)
+  {
+    return a.mSharedNode == b.mSharedNode;
+  }
 };
 
 template <typename type>

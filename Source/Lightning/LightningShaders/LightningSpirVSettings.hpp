@@ -1,7 +1,7 @@
 // MIT Licensed (see LICENSE.md).
 #pragma once
 
-#include "SpirvDefinitions.hpp"
+#include "SpirVDefinitions.hpp"
 
 namespace Plasma
 {

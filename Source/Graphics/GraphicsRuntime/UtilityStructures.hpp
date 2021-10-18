@@ -10,7 +10,7 @@ class BoneTransform
 {
 public:
   Cog* Object;
-  Transform* Transform;
+  ::Plasma::Transform* Transform;
   uint SkeletonIndex;
 };
 

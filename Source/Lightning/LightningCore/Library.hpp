@@ -154,7 +154,7 @@ public:
   bool TolerantMode;
 
   // If we loaded a plugin that created this library (otherwise null)
-  Plugin* Plugin;
+  ::Lightning::Plugin* Plugin;
 
 private:
   // Constructor

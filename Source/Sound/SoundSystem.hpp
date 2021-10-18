@@ -154,51 +154,51 @@ public:
   int GetOutputChannels();
 
   /// Creates a new VolumeNode object
-  static VolumeNode* VolumeNode();
+  static ::Plasma::VolumeNode* VolumeNode();
   /// Creates a new PanningNode object
-  static PanningNode* PanningNode();
+  static ::Plasma::PanningNode* PanningNode();
   /// Creates a new PitchNode object
-  static PitchNode* PitchNode();
+  static ::Plasma::PitchNode* PitchNode();
   /// Creates a new LowPassNode object
-  static LowPassNode* LowPassNode();
+  static ::Plasma::LowPassNode* LowPassNode();
   /// Creates a new HighPassNode object
-  static HighPassNode* HighPassNode();
+  static ::Plasma::HighPassNode* HighPassNode();
   /// Creates a new BandPassNode object
-  static BandPassNode* BandPassNode();
+  static ::Plasma::BandPassNode* BandPassNode();
   /// Creates a new EqualizerNode object
-  static EqualizerNode* EqualizerNode();
+  static ::Plasma::EqualizerNode* EqualizerNode();
   /// Creates a new ReverbNode object
-  static ReverbNode* ReverbNode();
+  static ::Plasma::ReverbNode* ReverbNode();
   /// Creates a new DelayNode object
-  static DelayNode* DelayNode();
+  static ::Plasma::DelayNode* DelayNode();
   /// Creates a new FlangerNode object
-  static FlangerNode* FlangerNode();
+  static ::Plasma::FlangerNode* FlangerNode();
   /// Creates a new ChorusNode object
-  static ChorusNode* ChorusNode();
+  static ::Plasma::ChorusNode* ChorusNode();
   /// Creates a new CompressorNode object
-  static CompressorNode* CompressorNode();
+  static ::Plasma::CompressorNode* CompressorNode();
   /// Creates a new ExpanderNode object
-  static ExpanderNode* ExpanderNode();
+  static ::Plasma::ExpanderNode* ExpanderNode();
   /// Creates a new CustomAudioNode object
-  static CustomAudioNode* CustomAudioNode();
+  static ::Plasma::CustomAudioNode* CustomAudioNode();
   /// Creates a new SoundBuffer object
-  static SoundBuffer* SoundBuffer();
+  static ::Plasma::SoundBuffer* SoundBuffer();
   /// Creates a new GeneratedWaveNode object
-  static GeneratedWaveNode* GeneratedWaveNode();
+  static ::Plasma::GeneratedWaveNode* GeneratedWaveNode();
   /// Creates a new RecordingNode object
-  static RecordingNode* RecordingNode();
+  static ::Plasma::RecordingNode* RecordingNode();
   /// Creates a new AddNoiseNode object
-  static AddNoiseNode* AddNoiseNode();
+  static ::Plasma::AddNoiseNode* AddNoiseNode();
   /// Creates a new AdditiveSynthNode object
-  static AdditiveSynthNode* AdditiveSynthNode();
+  static ::Plasma::AdditiveSynthNode* AdditiveSynthNode();
   /// Creates a new ModulationNode object
-  static ModulationNode* ModulationNode();
+  static ::Plasma::ModulationNode* ModulationNode();
   /// Creates a new MicrophoneInputNode object
-  static MicrophoneInputNode* MicrophoneInputNode();
+  static ::Plasma::MicrophoneInputNode* MicrophoneInputNode();
   /// Creates a new SaveAudioNode object
-  static SaveAudioNode* SaveAudioNode();
+  static ::Plasma::SaveAudioNode* SaveAudioNode();
   /// Creates a new GranularSynthNode object
-  static GranularSynthNode* GranularSynthNode();
+  static ::Plasma::GranularSynthNode* GranularSynthNode();
 
   /// If true, the random number generator used by audio objects in this
   /// SoundSpace will be seeded randomly.
