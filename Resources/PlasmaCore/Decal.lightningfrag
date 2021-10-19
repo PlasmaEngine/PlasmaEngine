@@ -77,18 +77,18 @@ struct Decal
     var alpha = Math.Saturate((this.AlphaMap.Sample(texCoord).X + this.AlphaModifyer) * this.AlphaMultiplier);
     
     var metallic = this.MetallicMap.Sample(texCoord).X + this.MetallicModifyer;
-    metallic = Math.Saturate(metallic);
+    metallic = Math.Clamp(metallic, 0.00001, 1);
     
     var roughness = this.RoughnessMap.Sample(texCoord).X + this.RoughnessModifyer;
-    roughness = Math.Saturate(roughness);
+    roughness = Math.Clamp(roughness, 0.001, 1);
     
     if(this.InvertAlpha)
       alpha = 1.0 - alpha;
 
-    this.Albedo = albedo.XYZ;
+    this.Albedo = albedo.XYZ * alpha * this.UseAlbedo as Real;
     this.Alpha = alpha;
     this.Metallic = metallic * alpha * this.UseMetallic as Real;
-    this.Roughness = roughness * alpha * this.UseRoughness as Real;
+    this.Roughness = roughness * alpha * this.UseRoughness as Real ;
 
   }
 }

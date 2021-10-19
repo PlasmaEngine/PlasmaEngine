@@ -75,7 +75,7 @@ class DeferredRenderer : LightningComponent
   var GBuffer2 : RenderTarget; // XY = Unused , Z = EmissivePower, A = AO
   var GBuffer3 : RenderTarget; // XY = Unused , Z = EmissivePower, A = AO
   
-  var DBuffer0 : RenderTarget; // XY = Normal,  A = Roughness
+  var DBuffer0 : RenderTarget; // XYZ = Normal,  A = Roughness
   var DBuffer1 : RenderTarget; // XYZ = Albedo,  A = Metallic
   var DBuffer2 : RenderTarget; // XYZ = SpecularColor, Z = AO
   var DBuffer3 : RenderTarget; // X = Specular, Y= EmissivePower, Z = BlendMode
@@ -120,7 +120,7 @@ class DeferredRenderer : LightningComponent
     
     this.DBuffer0 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
     this.DBuffer1 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
-    this.DBuffer2 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
+    this.DBuffer2 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f); 
     this.DBuffer3 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
     
     this.Depth = event.GetRenderTarget(viewportSize, TextureFormat.Depth24Stencil8);
@@ -234,20 +234,21 @@ class DeferredRenderer : LightningComponent
       //{
       //  this.LinearToGamma(event, this.DBuffer1, this.FinalOutput);
         
-      //this.DrawDebugObjects(event, this.FinalOutput, this.Depth);
+      //  this.DrawDebugObjects(event, this.FinalOutput, this.Depth);
       //  return;
       //}
       
       var mergePassRoughness = DecalMergeNormalRoughness();
       mergePassRoughness.DBuffer0 = this.DBuffer0.Texture;
       mergePassRoughness.GBuffer0 = this.GBuffer0.Texture;
-      mergePassRoughness.DBuffer1 = this.DBuffer1.Texture;
+      mergePassRoughness.DBuffer3 = this.DBuffer3.Texture;
       event.AddRenderTaskPostProcess(this.GBuffer0, mergePassRoughness, "DecalMergeRoughness");
 
       
       var mergePassAlbedo = DecalMergeAlbedo();
       mergePassAlbedo.DBuffer1 = this.DBuffer1.Texture;
       mergePassAlbedo.GBuffer1 = this.GBuffer1.Texture;
+      mergePassAlbedo.DBuffer3 = this.DBuffer3.Texture;
       event.AddRenderTaskPostProcess(this.GBuffer1, mergePassAlbedo, "DecalMergeAlbedo"); 
       
  
