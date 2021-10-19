@@ -92,6 +92,7 @@ void RunGroupImport(ImportOptions& options)
 
     // Add the content item
     AddContentItemInfo addContent;
+    addContent.FullPath = FilePath::Combine(library->SourcePath, filename);
     addContent.FileName = filename;
     addContent.Library = library;
     addContent.ExternalFile = fullPath;
