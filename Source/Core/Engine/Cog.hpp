@@ -478,7 +478,7 @@ public:
     other.mChildId = PolymorphicNode::cInvalidUniqueNodeId;
   }
 
-private:
+protected:
   /// Compositions can not be copied.
   Cog(const Cog&);
   void operator=(const Cog&);
