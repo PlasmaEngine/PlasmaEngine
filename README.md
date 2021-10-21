@@ -24,7 +24,7 @@ This is as simple as grabbing the Plasma Launcher from [https://plasmagameengine
 #### For Debug build and sln(debug only):
    - run build_vs2019_x64.bat
 
-#### Building on Linux:
+### Building on Linux:
    - In Development
 
 ## Screenshots
