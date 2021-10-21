@@ -40,6 +40,8 @@ Building on Linux:
   - Josh (Engine Developer)
   - Jesco (Engine Developer)
   - Dave (Engine Contributer)
+  - openglfreak (Initial Linux Work)
+  - AliFurkan (Linux Work)
   - [AdvancedInstaller](https://www.advancedinstaller.com/) (Providing open source license for launcher installer)
   - Digipen and everyone who worked on Zero
   - WelderFoundation (Useful addition to Zero and thirdparty repos)
