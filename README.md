@@ -12,15 +12,17 @@ This is as simple as grabbing the Plasma Launcher from [https://plasmagameengine
 
 ## Building the engine
   
-Building on Windows:
-  For Development:
-   - Open folder with VS2019+
-   - (Optional) Manage Configuration to add Release configuration
-   - Build
-  For Release Build
-   - run build_vs2019_ninja.bat
-  For Debug build and sln(debug only):
-   - run build_vs2019_x64.bat
+#### Building on Windows:
+For Development:
+    - Open folder with VS2019+
+    - (Optional) Manage Configuration to add Release configuration
+    - Build
+
+For Release Build
+    - run build_vs2019_ninja.bat
+
+For Debug build and sln(debug only):
+    - run build_vs2019_x64.bat
 
 Building on Linux:
  - In Development
