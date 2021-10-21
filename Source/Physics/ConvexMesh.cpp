@@ -1,5 +1,5 @@
 #include "Precompiled.hpp"
-#include "Core\Geometry\QuickHull3D.hpp"
+#include "Core/Geometry/QuickHull3D.hpp"
 
 namespace Plasma
 {

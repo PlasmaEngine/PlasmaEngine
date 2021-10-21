@@ -41,7 +41,7 @@ public:
   // Result String to display as tool tip
   String Result;
   // For dropping property values
-  Property* Property;
+  ::Lightning::Property* Property;
 
   MouseEvent* mMouseEvent;
   ViewportMouseEvent* mViewportMouseEvent;

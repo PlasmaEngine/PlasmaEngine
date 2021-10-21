@@ -39,7 +39,7 @@ public:
   Constant(Real value);
   Constant(DoubleReal value);
   Constant(Boolean value);
-  Constant(Type* value);
+  Constant(Lightning::Type* value);
   explicit Constant(NullPointerType value);
 
   // Clears the constant back to Null and resets all values to default

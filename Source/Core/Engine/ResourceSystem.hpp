@@ -78,9 +78,6 @@ public:
   // Map of dependent resource library names to their respective resource libraries
   typedef OrderedHashMap<String, ResourceLibrary*> LoadedSetMap;
   LoadedSetMap LoadedDependencyLibraries;
-
-  // Map of resource library names to resource libraries
-  typedef OrderedHashMap<String, ResourceLibrary*> LoadedSetMap;
   LoadedSetMap LoadedResourceLibraries;
 
   // Map of resource type names to managers

@@ -15,7 +15,7 @@ struct PropertyWidgetInitializer
   /// A pointer back the property grid.
   PropertyView* Grid;
   /// The property this widget is editing (if it's a property node).
-  Property* Property;
+  ::Lightning::Property* Property;
   /// The interface used to set/get properties.
   PropertyInterface* CurrentInterface;
   /// The object instance.

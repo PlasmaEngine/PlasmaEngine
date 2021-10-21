@@ -156,7 +156,7 @@ public:
 
   struct TilePlacement
   {
-    Widget* Widget;
+    ::Plasma::Widget* Widget;
     Vec2 Size;
     Vec2 Position;
     bool Overlaps(const TilePlacement& rhs);

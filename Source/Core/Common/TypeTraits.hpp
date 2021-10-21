@@ -776,6 +776,11 @@ struct MoveReference
     return &mReference;
   }
 
+  operator T&() const
+  {
+    return mReference;
+  }
+
   // #ifdef SupportsMoveSemantics
   //   /// Conversion Operator
   //   operator T&&()

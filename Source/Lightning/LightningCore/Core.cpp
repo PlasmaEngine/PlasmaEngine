@@ -4524,10 +4524,10 @@ void Core::SetupBindingMath(LibraryBuilder& builder)
                           "WhiteNoise",
                           "x, y")
       ->Description = LightningDocumentString("Returns a point from a 2D White Noise Texture");
-  LightningFullBindMethod(builder, 
-                          math, 
-                          &Math::WhiteNoise, 
-                          (Real(*)(Integer)), 
+  LightningFullBindMethod(builder,
+                          math,
+                          &Math::WhiteNoise,
+                          (Real(*)(Integer)),
                           "WhiteNoise",
                           "x")
       ->Description = LightningDocumentString("Returns a point from a 1D White Noise Texture");
@@ -5002,7 +5002,7 @@ void Core::SetupBindingMath(LibraryBuilder& builder)
     f = builder.AddBoundFunction(
         math,
         "SmoothStep",
-        LightningFullThreeParameterSplatBinder(Real, Real, Real, Real, 1, 1, 1, Math::SmoothStep<Real>),
+        LightningFullThreeParameterSplatBinder(Real, Real, Real, Real, 1, 1, 1, &Math::SmoothStep<Real>),
         ThreeParameters(boundType, "min", boundType, "max", boundType, "x"),
         boundType,
         FunctionOptions::Static);
@@ -5017,7 +5017,7 @@ void Core::SetupBindingMath(LibraryBuilder& builder)
       f = builder.AddBoundFunction(
           math,
           "SmoothStep",
-          LightningFullThreeParameterSplatBinder(Real, Real, Real, Real, 1, 1, 0, Math::SmoothStep<Real>),
+          LightningFullThreeParameterSplatBinder(Real, Real, Real, Real, 1, 1, 0, &Math::SmoothStep<Real>),
           ThreeParameters(boundType, "min", boundType, "max", realType, "t"),
           boundType,
           FunctionOptions::Static);

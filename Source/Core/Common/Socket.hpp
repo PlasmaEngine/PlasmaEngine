@@ -501,6 +501,11 @@ public:
   /// Is this socket set in blocking mode?
   bool mIsBlocking;
 
+  Socket& operator=(Socket&& other)
+  {
+    return this->operator=(MoveReference<Socket>(other));
+  }
+
 private:
   /// No Copy Constructor
   Socket(const Socket&);

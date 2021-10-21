@@ -24,7 +24,7 @@ public:
     return HashString(mFilename.c_str(), mFilename.SizeInBytes());
   }
 
-  bool operator!=(const TrackedFile& rhs)
+  bool operator!=(const TrackedFile& rhs) const
   {
     if (mFilename != rhs.mFilename)
       return false;
@@ -36,6 +36,11 @@ public:
       return false;
 
     return true;
+  }
+
+  bool operator==(const TrackedFile& rhs) const
+  {
+    return !(*this != rhs);
   }
 
   String mFilename;
