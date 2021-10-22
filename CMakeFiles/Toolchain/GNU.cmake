@@ -1,1 +1,1 @@
-include(GCC.cmake)
+GCC.cmake
