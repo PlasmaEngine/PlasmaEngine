@@ -27,10 +27,16 @@ Building on Windows:
   - Open and Build the .sln file located in `Build\Active`
 
 Building on Linux:
-  Requires Clang 7.0
-  (Note: Dependencies not listed yet)
-  - Open terminal in project root
-  - run ' node index.js all --alias=Linux '
+  Requires Clang 7.0 or GCC 6
+  - Get the repository `git clone https://github.com/PlasmaEngine/PlasmaEngine --recursive && cd PlasmaEngine`
+  - Install dependencies and build tools `sudo apt install build-essential cmake libssl-dev libx11-dev mesa-common-dev` (tested on Ubuntu 21.10 Impish)
+  - Start building
+  ```sh
+  mkdir build
+  cd build
+  cmake ..
+  make -j<number of threads of your CPU>
+  ```
 
 ## Screenshots
 ![Image of Plasma Engine 3D](https://raw.githubusercontent.com/PlasmaEngine/PlasmaEngine/master/GithubMedia/PlasmaEngine1.PNG)
