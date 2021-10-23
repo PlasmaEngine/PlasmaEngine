@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "Decal"
+		var ResourceId = 0x6113940af2e2a63c
+		var LoaderType = "Cog"
+		var Version = 0
+	}
+}

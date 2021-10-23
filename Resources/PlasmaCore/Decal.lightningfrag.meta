@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "Decal"
+		var ResourceId = 0x611c414d33f0fc3c
+	}
+}
