@@ -22,6 +22,7 @@ struct Decal
   [FragmentInput][StageInput] var Uv : Real2;
   
 	[AppBuiltInInput] var ViewToLocal : Real4x4;
+	[AppBuiltInInput] var ViewToWorld : Real4x4;
   
   [FragmentInput][StageInput] var GeometryBuffer0 : SampledImage2d;
   [Input][Output] var AlphaMap : SampledImage2d;
@@ -31,6 +32,10 @@ struct Decal
   
   [Input] var UseAlbedo : Boolean = true;
   [Input] var AlbedoMap : SampledImage2d;
+  
+  [Input] var UseNormal : Boolean = false;
+  [Input] var NormalMap : SampledImage2d;
+  [Input] var Bumpiness : Real = 1.0;
   
   [Input] var UseMetallic : Boolean = true;
   [Input] var MetallicMap : SampledImage2d;
@@ -51,6 +56,7 @@ struct Decal
   [StageInput] var ViewBitangent : Real3;
   
   [Output] var Alpha : Real;
+  [Output] var Normal : Real2;
   
   [FragmentInput][StageInput] var ViewPosition : Real3;
   
@@ -61,6 +67,7 @@ struct Decal
     var screenCoord = Utility.NdcToScreenUv(this.PerspectivePosition.XY / this.PerspectivePosition.W);
     var gbufferSample = this.GeometryBuffer0.Sample(screenCoord);
     
+    var gbufferNormal = gbufferSample.XY;
     var depth = GeometryPass.GetDepth(gbufferSample);
     
     this.ViewPosition = this.ViewPosition.XYZ * (this.FarPlane / - this.ViewPosition.Z);
@@ -73,6 +80,22 @@ struct Decal
       ShaderIntrinsics.Kill();
       
     var texCoord = worldPos.XY + Real2(0.5);
+    
+    // Normalize basis vectors
+    var normal = gbufferNormal;
+    
+    // Remap sample from [0, 1] to [-1, 1]
+    var normalSample = this.NormalMap.Sample(texCoord).XY;
+    // Does not exactly map to +/-1, but we want byte values of 128 to exactly map to 0
+    normalSample = (normalSample - Real2(128.0 / 255.0)) * 2.0;
+
+    // Add tangent directions to perturb the surface normal
+    normalSample = Real2(normalSample.X, normalSample.Y) * this.Bumpiness;
+    
+    
+    normal.XY = normalSample;
+    //normal = Math.MultiplyNormal(this.ViewToLocal, normal);
+    
     var albedo = this.AlbedoMap.Sample(texCoord);
     var alpha = Math.Saturate((this.AlphaMap.Sample(texCoord).X + this.AlphaModifyer) * this.AlphaMultiplier);
     
@@ -86,6 +109,7 @@ struct Decal
       alpha = 1.0 - alpha;
 
     this.Albedo = albedo.XYZ * alpha * this.UseAlbedo as Real;
+    this.Normal = normal * alpha * this.UseNormal as Real;
     this.Alpha = alpha;
     this.Metallic = metallic * alpha * this.UseMetallic as Real;
     this.Roughness = roughness * alpha * this.UseRoughness as Real ;

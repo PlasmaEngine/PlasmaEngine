@@ -10,6 +10,7 @@ struct DBufferPass
   [Input] var Color : Real4 = Real4(1.0, 0.0, 0.0, 1.0);
   
   [Input] var Albedo : Real3;
+  [Input] var Normal : Real2;
   [Input] var Alpha : Real;
   [Input] var Metallic : Real;
   [Input] var Roughness : Real;
@@ -25,6 +26,7 @@ struct DBufferPass
 
   function Main()
   {
+    this.Target0.XY = this.Normal; 
     this.Target0.W = this.Roughness;
     this.Target1.XYZ = this.Albedo.XYZ;
     this.Target1.W = this.Metallic;
@@ -54,17 +56,13 @@ struct DecalMergeNormalRoughness
     
     var zSign = 1.0 - 2.0 * Math.Step(gbuffer.W, 0.0);
     
-    this.Target1.XYZ = gbuffer.XYZ;
+    this.Target1.Z = gbuffer.Z;
     
-    if(dbuffer.W == 0)
-    {
-      this.Target1.W = gbuffer.W * zSign;
-    }
-    else
-    {
-      // This is very strange, lerp should be 1.0 - alpha but this requires 1.0 + alpha.
-      this.Target1.W = Math.Clamp((gbuffer.W * zSign )* (1.0 + alpha) + dbuffer.W * alpha , 0.001, 1);
-    }
+    this.Target1.XY = Math.Lerp(gbuffer.XY, gbuffer.XY + dbuffer.XY, alpha);
+    
+    // This is very strange, lerp should be 1.0 - alpha but this requires 1.0 + alpha.
+    this.Target1.W = Math.Clamp((gbuffer.W * zSign )* (1.0 + alpha) + dbuffer.W * alpha , 0.001, 1);
+
   }
 }
 
@@ -88,7 +86,7 @@ struct DecalMergeAlbedo
     var gbuffer = this.GBuffer1.Sample(this.Uv);
     var alpha = this.DBuffer3.Sample(this.Uv).W;
     
-    this.Target1.XYZ = gbuffer.XYZ* (1.0 + alpha) + dbuffer.XYZ * alpha;// Math.Lerp(gbuffer.XYZ, dbuffer.XYZ, alpha);
+    this.Target1.XYZ = gbuffer.XYZ* (1.0 + alpha) + dbuffer.XYZ * alpha;
     
     if(dbuffer.W == 0)
     {
