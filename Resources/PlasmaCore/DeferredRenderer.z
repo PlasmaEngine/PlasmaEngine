@@ -118,10 +118,10 @@ class DeferredRenderer : LightningComponent
     this.GBuffer2 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
     this.GBuffer3 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
     
-    this.DBuffer0 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
-    this.DBuffer1 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
-    this.DBuffer2 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f); 
-    this.DBuffer3 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
+    this.DBuffer0 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
+    this.DBuffer1 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
+    this.DBuffer2 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f); 
+    this.DBuffer3 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
     
     this.Depth = event.GetRenderTarget(viewportSize, TextureFormat.Depth24Stencil8);
     
@@ -242,9 +242,15 @@ class DeferredRenderer : LightningComponent
       mergePassAlbedo.DBuffer3 = this.DBuffer3.Texture;
       event.AddRenderTaskPostProcess(this.GBuffer1, mergePassAlbedo, "DecalMergeAlbedo"); 
 
+      var mergePassSpecAO = DecalMergeSpecAO();
+      mergePassSpecAO.DBuffer2 = this.DBuffer2.Texture;
+      mergePassSpecAO.GBuffer2 = this.GBuffer2.Texture;
+      mergePassSpecAO.DBuffer3 = this.DBuffer3.Texture;
+      event.AddRenderTaskPostProcess(this.GBuffer2, mergePassSpecAO, "DecalMergeSpecAO"); 
+
       //if(true)
       //{
-      //  this.LinearToGamma(event, this.GBuffer0, this.FinalOutput);
+      //  this.LinearToGamma(event, this.GBuffer1, this.FinalOutput);
         
       //  this.DrawDebugObjects(event, this.FinalOutput, this.Depth);
       //  return;

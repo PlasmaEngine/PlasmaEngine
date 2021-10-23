@@ -30,6 +30,7 @@ struct DBufferPass
     this.Target0.W = this.Roughness;
     this.Target1.XYZ = this.Albedo.XYZ;
     this.Target1.W = this.Metallic;
+    this.Target2.XYZ = this.Albedo;
     this.Target3.XYZ = Real3.Zero;
     this.Target3.W = this.Alpha;
   }
@@ -84,18 +85,37 @@ struct DecalMergeAlbedo
   {
     var dbuffer = this.DBuffer1.Sample(this.Uv);
     var gbuffer = this.GBuffer1.Sample(this.Uv);
-    var alpha = this.DBuffer3.Sample(this.Uv).W;
+    var alpha = Math.Abs(this.DBuffer3.Sample(this.Uv).W);
     
-    this.Target1.XYZ = gbuffer.XYZ* (1.0 + alpha) + dbuffer.XYZ * alpha;
+    this.Target1.XYZ = Math.Lerp(gbuffer.XYZ, -dbuffer.XYZ, alpha);// gbuffer.XYZ* (1.0 - alpha) + dbuffer.XYZ * alpha;
     
-    if(dbuffer.W == 0)
-    {
-      this.Target1.W = gbuffer.W;
-    }
-    else
-    {
-      // This is very strange, lerp should be 1.0 - alpha but this requires 1.0 + alpha.
-      this.Target1.W = Math.Clamp((gbuffer.W)* (1.0 + alpha) + dbuffer.W * alpha , 0.001, 1);
-    }
+    // This is very strange, lerp should be 1.0 - alpha but this requires 1.0 + alpha.
+    this.Target1.W = Math.Clamp(Math.Lerp(gbuffer.W, -dbuffer.W, alpha), 0.001, 1);
+  }
+}
+
+[Pixel][PostProcess]
+struct DecalMergeSpecAO
+{
+  
+  [Input] var DBuffer2 : SampledImage2d;
+  [Input] var GBuffer2 : SampledImage2d;
+  [Input] var DBuffer3 : SampledImage2d;
+  
+  
+  [FragmentInput][StageInput] var Uv : Real2;
+  
+  [Output] var Target1 : Real4;
+      
+  function Main()
+  {
+    var dbuffer = this.DBuffer2.Sample(this.Uv);
+    var gbuffer = this.GBuffer2.Sample(this.Uv);
+    var alpha = Math.Abs(this.DBuffer3.Sample(this.Uv).W);
+    
+    this.Target1.XYZ = Math.Lerp(gbuffer.XYZ, -dbuffer.XYZ, alpha);
+    
+    // This is very strange, lerp should be 1.0 - alpha but this requires 1.0 + alpha.
+    this.Target1.W = Math.Clamp(Math.Lerp(gbuffer.W,0, alpha), 0, 1);
   }
 }
