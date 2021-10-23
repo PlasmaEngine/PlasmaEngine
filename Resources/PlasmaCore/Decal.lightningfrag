@@ -108,7 +108,7 @@ struct Decal
     if(this.InvertAlpha)
       alpha = 1.0 - alpha;
 
-    this.Albedo = albedo.XYZ * alpha * this.UseAlbedo as Real;
+    this.Albedo = albedo.XYZ * this.UseAlbedo as Real;
     this.Normal = normal * alpha * this.UseNormal as Real;
     this.Alpha = alpha;
     this.Metallic = metallic * alpha * this.UseMetallic as Real;
