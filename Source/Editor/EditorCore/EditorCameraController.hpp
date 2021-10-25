@@ -18,7 +18,7 @@ DeclareEnum13(ControllerButton,
               OrbitMove,
               ZoomMove,
               NumButtons);
-
+class GamepadEvent;
 class KeyboardEvent;
 class UpdateEvent;
 class Camera;
@@ -147,6 +147,7 @@ private:
   void Draw();
   // Control variables
   Camera* mCamera;
+  Gamepad* mGamepad;
   ControlMode::Enum mControlMode;
   ControlMode::Enum mPrevious3DMode;
   float mMoveSensitivity;
@@ -156,12 +157,16 @@ private:
   Vec3 mCameraRight;
   Vec3 mCameraUp;
   float mRotateSensitivity;
+
+  float mGamepadRotateSensitivity;
+  float mGamepadMoveSensitivity;
   float mLookDistance;
   float mMinLookDistance;
   Transform* mTransform;
   float mVerticalAngle;
   float mHorizontalAngle;
   byte mMovement[ControllerButton::NumButtons];
+  bool mInvertGamepadPitch;
   bool mMoving;
   bool mMouseDragging;
   uint mDragMode;
