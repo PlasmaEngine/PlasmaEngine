@@ -55,7 +55,9 @@ Menus menus =
 		  "CreateSpotLight",
 		  "CreateSpotLightShadows",
 		  "Divider",
-		  "CreateSpriteParticles"
+		  "CreateSpriteParticles",
+		  "Divider",
+		  "CreateDecal"
 		]
 	},
 	

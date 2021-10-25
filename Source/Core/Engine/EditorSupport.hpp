@@ -149,6 +149,7 @@ extern const String EmptyTile;
 extern const String ViewCube;
 extern const String Wedge;
 extern const String Animation;
+extern const String Decal;
 } // namespace CoreArchetypes
 
 } // namespace Plasma

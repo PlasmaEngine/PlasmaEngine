@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "Decal"
+		var ResourceId = 0x611c473b923dbe5a
+		var LoaderType = "RenderGroup"
+		var Version = 0
+	}
+}

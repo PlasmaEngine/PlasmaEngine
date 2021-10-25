@@ -332,6 +332,7 @@ void BindCreationCommands(Cog* configCog, CommandManager* commands)
   // Creation commands
   commands->AddCommand("CreateTransform", new EditorCreateObjectCommand(CoreArchetypes::Transform));
   commands->AddCommand("CreateCamera", new EditorCreateObjectCommand(CoreArchetypes::Camera));
+  commands->AddCommand("CreateDecal", new EditorCreateObjectCommand(CoreArchetypes::Decal));
   commands->AddCommand("CreateDirectionalLight", new EditorCreateObjectCommand(CoreArchetypes::DirectionalLight));
   commands->AddCommand("CreateDirectionalLightShadows",
                        new EditorCreateObjectCommand(CoreArchetypes::DirectionalLightShadows));
