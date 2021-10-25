@@ -81,9 +81,7 @@ struct Decal
       
     var texCoord = worldPos.XY + Real2(0.5);
     
-    // Normalize basis vectors
-    var normal = gbufferNormal;
-    
+
     // Remap sample from [0, 1] to [-1, 1]
     var normalSample = this.NormalMap.Sample(texCoord).XY;
     // Does not exactly map to +/-1, but we want byte values of 128 to exactly map to 0
@@ -93,7 +91,7 @@ struct Decal
     normalSample = Real2(normalSample.X, normalSample.Y) * this.Bumpiness;
     
     
-    normal.XY = normalSample;
+    var normal = normalSample;
     //normal = Math.MultiplyNormal(this.ViewToLocal, normal);
     
     var albedo = this.AlbedoMap.Sample(texCoord);

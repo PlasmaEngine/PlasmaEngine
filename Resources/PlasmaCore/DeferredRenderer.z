@@ -114,7 +114,7 @@ class DeferredRenderer : LightningComponent
     this.FinalOutput = event.GetFinalTarget(viewportSize, TextureFormat.RGBA8);
     
     this.GBuffer0 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
-    this.GBuffer1 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
+    this.GBuffer1 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA8);
     this.GBuffer2 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
     this.GBuffer3 = event.GetRenderTarget(viewportSize, TextureFormat.RGBA32f);
     

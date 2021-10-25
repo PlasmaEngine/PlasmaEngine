@@ -39,30 +39,47 @@ struct DBufferPass
 [Pixel][PostProcess]
 struct DecalMergeNormalRoughness
 {
-  
+  [AppBuiltInInput] var FarPlane : Real;
+ 
   [Input] var DBuffer0 : SampledImage2d;
   [Input] var GBuffer0 : SampledImage2d;
   [Input] var DBuffer3 : SampledImage2d;
   
+  [StageInput] var PerspectivePosition : Real4;
+	[AppBuiltInInput] var PerspectiveToView : Real4x4;
   
   [FragmentInput][StageInput] var Uv : Real2;
   
   [Output] var Target1 : Real4;
       
+  function ReconstructPos ( uv : Real2, depth : Real, perspectiveToView : Real4x4) : Real3
+  {
+    var x = uv.X * 2.0 - 1.0;
+    var y = (1.0 - uv.Y) * 2.0 - 1.0;
+    var posS = Real4(x,y,depth,1.0);
+    var posV = Math.Multiply(perspectiveToView, posS);
+    return posV.XYZ / posV.W;
+  }
+    
   function Main()
   {
     var dbuffer = this.DBuffer0.Sample(this.Uv);
     var gbuffer = this.GBuffer0.Sample(this.Uv);
-    var alpha = this.DBuffer3.Sample(this.Uv).W;
+    var alpha = Math.Abs(this.DBuffer3.Sample(this.Uv).W);
+    
+    
+    var viewPosition = GeometryPass.ReconstructViewPosition(gbuffer, this.PerspectiveToView, this.PerspectivePosition, this.FarPlane);
+ 
+    var normal = Math.Normalize(Math.Cross(ShaderIntrinsics.Ddx(viewPosition), ShaderIntrinsics.Ddy(viewPosition)));
     
     var zSign = 1.0 - 2.0 * Math.Step(gbuffer.W, 0.0);
     
     this.Target1.Z = gbuffer.Z;
     
-    this.Target1.XY = Math.Lerp(gbuffer.XY, gbuffer.XY + dbuffer.XY, alpha);
+    this.Target1.XY = Math.Lerp(gbuffer.XY, normal.XY + -dbuffer.XY, alpha);
     
     // This is very strange, lerp should be 1.0 - alpha but this requires 1.0 + alpha.
-    this.Target1.W = Math.Clamp((gbuffer.W * zSign )* (1.0 + alpha) + dbuffer.W * alpha , 0.001, 1);
+    this.Target1.W =  Math.Lerp(gbuffer.W,  -dbuffer.W, alpha);
 
   }
 }
