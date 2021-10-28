@@ -1,0 +1,138 @@
+// MIT Licensed (see LICENSE.md).
+
+// RenderPass fragments are intended to be constructed in script
+// and passed directly to the AddRenderTaskRenderPass method.
+// RenderPass fragment code is implicitely appended to the end
+// of Materials in the compositing of the final shaders programs.
+[Pixel][RenderPass]
+struct DBufferPass
+{
+  [Input] var Color : Real4 = Real4(1.0, 0.0, 0.0, 1.0);
+  
+  [Input] var Albedo : Real3;
+  [Input] var Normal : Real2;
+  [Input] var Alpha : Real;
+  [Input] var Metallic : Real;
+  [Input] var Roughness : Real;
+
+  // Normal,  Roughness
+  [Output] var Target0 : Real4;
+  // Albedo, Metallic
+  [Output] var Target1 : Real4;
+  // SpecColor, AO
+  [Output] var Target2 : Real4;
+  // Specular, EmissivePower, BlendMode, Alpha
+  [Output] var Target3 : Real4;
+
+  function Main()
+  {
+    this.Target0.XY = this.Normal; 
+    this.Target0.W = this.Roughness;
+    this.Target1.XYZ = this.Albedo.XYZ;
+    this.Target1.W = this.Metallic;
+    this.Target2.XYZ = this.Albedo;
+    this.Target3.XYZ = Real3.Zero;
+    this.Target3.W = this.Alpha;
+  }
+}
+
+[Pixel][PostProcess]
+struct DecalMergeNormalRoughness
+{
+  [AppBuiltInInput] var FarPlane : Real;
+ 
+  [Input] var DBuffer0 : SampledImage2d;
+  [Input] var GBuffer0 : SampledImage2d;
+  [Input] var DBuffer3 : SampledImage2d;
+  
+  [StageInput] var PerspectivePosition : Real4;
+	[AppBuiltInInput] var PerspectiveToView : Real4x4;
+  
+  [FragmentInput][StageInput] var Uv : Real2;
+  
+  [Output] var Target1 : Real4;
+      
+  function ReconstructPos ( uv : Real2, depth : Real, perspectiveToView : Real4x4) : Real3
+  {
+    var x = uv.X * 2.0 - 1.0;
+    var y = (1.0 - uv.Y) * 2.0 - 1.0;
+    var posS = Real4(x,y,depth,1.0);
+    var posV = Math.Multiply(perspectiveToView, posS);
+    return posV.XYZ / posV.W;
+  }
+    
+  function Main()
+  {
+    var dbuffer = this.DBuffer0.Sample(this.Uv);
+    var gbuffer = this.GBuffer0.Sample(this.Uv);
+    var alpha = Math.Abs(this.DBuffer3.Sample(this.Uv).W);
+    
+    
+    var viewPosition = GeometryPass.ReconstructViewPosition(gbuffer, this.PerspectiveToView, this.PerspectivePosition, this.FarPlane);
+ 
+    var normal = Math.Normalize(Math.Cross(ShaderIntrinsics.Ddx(viewPosition), ShaderIntrinsics.Ddy(viewPosition)));
+    
+    var zSign = 1.0 - 2.0 * Math.Step(gbuffer.W, 0.0);
+    
+    this.Target1.Z = gbuffer.Z;
+    
+    this.Target1.XY = Math.Lerp(gbuffer.XY, normal.XY + -dbuffer.XY, alpha);
+    
+    // This is very strange, lerp should be 1.0 - alpha but this requires 1.0 + alpha.
+    this.Target1.W =  Math.Lerp(gbuffer.W,  -dbuffer.W, alpha);
+
+  }
+}
+
+
+[Pixel][PostProcess]
+struct DecalMergeAlbedo
+{
+  
+  [Input] var DBuffer1 : SampledImage2d;
+  [Input] var GBuffer1 : SampledImage2d;
+  [Input] var DBuffer3 : SampledImage2d;
+  
+  
+  [FragmentInput][StageInput] var Uv : Real2;
+  
+  [Output] var Target1 : Real4;
+      
+  function Main()
+  {
+    var dbuffer = this.DBuffer1.Sample(this.Uv);
+    var gbuffer = this.GBuffer1.Sample(this.Uv);
+    var alpha = Math.Abs(this.DBuffer3.Sample(this.Uv).W);
+    
+    this.Target1.XYZ = Math.Lerp(gbuffer.XYZ, -dbuffer.XYZ, alpha);// gbuffer.XYZ* (1.0 - alpha) + dbuffer.XYZ * alpha;
+    
+    // This is very strange, lerp should be 1.0 - alpha but this requires 1.0 + alpha.
+    this.Target1.W = Math.Clamp(Math.Lerp(gbuffer.W, -dbuffer.W, alpha), 0.001, 1);
+  }
+}
+
+[Pixel][PostProcess]
+struct DecalMergeSpecAO
+{
+  
+  [Input] var DBuffer2 : SampledImage2d;
+  [Input] var GBuffer2 : SampledImage2d;
+  [Input] var DBuffer3 : SampledImage2d;
+  
+  
+  [FragmentInput][StageInput] var Uv : Real2;
+  
+  [Output] var Target1 : Real4;
+      
+  function Main()
+  {
+    var dbuffer = this.DBuffer2.Sample(this.Uv);
+    var gbuffer = this.GBuffer2.Sample(this.Uv);
+    var alpha = Math.Abs(this.DBuffer3.Sample(this.Uv).W);
+    
+    this.Target1.XYZ = Math.Lerp(gbuffer.XYZ, -dbuffer.XYZ, alpha);
+    
+    // This is very strange, lerp should be 1.0 - alpha but this requires 1.0 + alpha.
+    this.Target1.W = Math.Clamp(Math.Lerp(gbuffer.W,0, alpha), 0, 1);
+  }
+}

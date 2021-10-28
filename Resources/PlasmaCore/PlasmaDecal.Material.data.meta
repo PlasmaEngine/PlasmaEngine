@@ -1,0 +1,26 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "PlasmaDecal"
+		var ResourceId = 0x6113aaa179c81da7
+		var LoaderType = "Material"
+		var Version = 0
+	}
+	ContentTags 
+	{
+		var Tags = Array
+		{
+			"Material"
+		}
+	}
+	ResourceTemplate 
+	{
+		var DisplayName = "PlasmaDecal"
+		var Description = "Used for decal rendering"
+		var SortWeight = 0
+		var Category = "Decal"
+		var CategorySortWeight = 130
+	}
+}
