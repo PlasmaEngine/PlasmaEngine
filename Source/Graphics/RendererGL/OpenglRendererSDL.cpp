@@ -50,7 +50,7 @@ OpenglRendererSDL::~OpenglRendererSDL()
   SDL_GL_DeleteContext((SDL_GLContext)mDeviceContext);
 }
 
-Renderer* CreateRendererOpenGL(OsHandle windowHandle, String& error)
+Renderer* CreateRenderer(OsHandle windowHandle, String& error)
 {
   return new OpenglRendererSDL(windowHandle, error);
 }
