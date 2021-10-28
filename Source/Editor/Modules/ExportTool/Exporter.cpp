@@ -456,6 +456,7 @@ void ExportUI::OnExportApplication(Event* e)
     // Export to all to selected targets
     HashSet<String> activeTargets = targetList->GetActiveTargets();
     SaveActiveTargets(activeTargets);
+	exporter->ExportContent(activeTargets);
     exporter->ExportApplication(activeTargets);
     // Close the export window
     CloseTabContaining(this);

@@ -86,8 +86,8 @@ void WindowsExportTarget::ExportApplication()
     String tempFile = FilePath::Combine(GetTemporaryDirectory(), tempName);
 
     // Alright time to create the exe
-    CopyFile(tempFile, FilePath::Combine(appDirectory, "PlasmaEditor.exe"));
-
+    CopyFile(tempFile, FilePath::Combine(appDirectory, "PlasmaPlayerWindows.exe"));
+    
     // Embed package as resource section. This is generally more windows
     // friendly than appending the data on the End() of the exe since opening
     // the exe for reading is unreliable. The resource data section IDR_PACK is
@@ -143,9 +143,9 @@ void WindowsExportTarget::ExportApplication()
     }
 
     CopyFile(applicationOutputPath, tempFile);
+    DeleteFile(tempFile);
   }
 
-  ExportContentFolders(mExporter->mProjectCog);
 
   DoNotify("Exported", "Project has been exported for Windows.", "Disk");
 
@@ -168,18 +168,6 @@ void WindowsExportTarget::ExportContentFolders(Cog* projectCog)
   {
     DoNotifyWarning("WindowsExportTarget", copyStatus.Message);
     return;
-  }
-
-  // Copy the executable
-  String outputExe = FilePath::CombineWithExtension(outputDirectory, mExporter->mApplicationName,".exe");
-  CopyFile(outputExe, GetApplication());
-
-  // Scope the ExecutableResourceUpdater so it writes out at the end
-  {
-    Status status;
-    ExecutableResourceUpdater updater(status, outputExe.c_str());
-    if (status.Succeeded())
-      mExporter->UpdateIcon(project, updater);
   }
 
   Os::ShellOpenDirectory(outputDirectory);
