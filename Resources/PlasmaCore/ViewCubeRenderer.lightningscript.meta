@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningScriptBuilder 
+	{
+		var Name = "ViewCubeRenderer"
+		var ResourceId = 0x6155f081c40bf21c
+	}
+}

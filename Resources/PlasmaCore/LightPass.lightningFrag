@@ -38,7 +38,10 @@ struct LightPass
   function Main()
   {
     if(this.GeoEmissive > 0)
+    {
+      this.Target0 = Real4(this.GeoAlbedo * this.GeoEmissive, 1.0);
       return;
+    }
     
     var screenUv = Utility.NdcToScreenUv(this.PerspectivePosition.XY / this.PerspectivePosition.W);
     
