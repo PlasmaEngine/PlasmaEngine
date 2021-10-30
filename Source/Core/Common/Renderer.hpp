@@ -134,13 +134,28 @@ namespace Plasma
     // 1.375MB per block at 44 bytes per StreamedVertex.
     typedef PodBlockArray<StreamedVertex, 15> StreamedVertexArray;
 
+    /// Graphics features, used to check capability of the GPU
+    DeclareBitField12(GraphicsCapability,
+        Tessellation,
+        ConserativeRasterization,
+        RasterizeOrderedViews,
+        UavLoadFormatCommon,
+        UAVLoadFormatR11G11B10F,
+        RenderTargetAndViewportArrayIndexWithoutGS,
+        VariableRateShading,
+        VariableRateShadingTier2,
+        MeshShading,
+        RayTracing,
+        Prediction,
+        SamplerMinMax);
+
     /// Type of the texture, must match sampler type in shaders
     /// Texture2D - Standard 2 dimensional texture
     /// TextureCube - Uses texture as a cubemap
     ///   Faces are extracted from the image using aspect ratio to determine layout
     DeclareEnum3(TextureType, Texture2D, TextureCube, Texture3D);
 
-    DeclareEnum25(TextureFormat,
+    DeclareEnum26(TextureFormat,
                   None,
                   R8,
                   RG8,
@@ -158,6 +173,7 @@ namespace Plasma
                   RG32f,
                   RGB32f,
                   RGBA32f, // float
+                  R11G11B10f,
                   SRGB8,
                   SRGB8A8, // gamma
                   Depth16,
@@ -494,6 +510,11 @@ namespace Plasma
 
         virtual void DoRenderTasks(RenderTasks* renderTasks, RenderQueues* renderQueues) = 0;
 
+        inline bool CheckCapability(GraphicsCapability::Enum capability) const 
+        {
+            return mCapabilities & capability;
+        }
+
         GraphicsDriverSupport mDriverSupport;
 
         // Thread lock for the main thread to set any critical control flags.
@@ -502,6 +523,12 @@ namespace Plasma
         // certain window style flags set. Flag is set to false when the window is
         // minimized.
         bool mBackBufferSafe;
+
+        uint32 mCapabilities = 0;
+
+        size_t mShaderIdentifierSize = 0;
+        size_t mTopLebelAccelerationStructureInstanceSize = 0;
+        uint32 mVariableRateShadingTileSize = 0;
     };
 
     class HandleIdInfo
