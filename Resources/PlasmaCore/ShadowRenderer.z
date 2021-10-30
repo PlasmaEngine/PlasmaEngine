@@ -4,6 +4,9 @@
 [RunInEditor]
 class ShadowRenderer : LightningComponent
 {
+  [Property] var Static : Boolean = false;
+  var NeedsRender : Boolean = true;
+  
   // Preset sizes for the shadow map's texture size.
   [Editable] var Resolution : ShadowResolution
   {
@@ -25,12 +28,30 @@ class ShadowRenderer : LightningComponent
   
   function Initialize(init : CogInitializer)
   {
+    this.NeedsRender = true;
     this.SetShadowResolution();
     Plasma.Connect(this.Owner, Events.RenderTasksUpdate, this.OnRenderTasksUpdate);
+    Plasma.Connect(this.Owner, Events.PropertyModified, this.OnPropertiesChanged);
+    Plasma.Connect(this.Owner, Events.TransformUpdated, this.OnTransformUpdated);
+  }
+  
+  function OnTransformUpdated(event : ObjectEvent)
+  {
+    this.NeedsRender = true;
+  }
+  
+  function OnPropertiesChanged(event : PropertyEvent)
+  {
+    this.NeedsRender = true;
   }
 
   function OnRenderTasksUpdate(event : RenderTasksEvent)
   {
+    if(this.Static && !this.NeedsRender)
+    {
+      return;
+    }
+    
     this.LightTransform = event.CameraViewportCog.CameraViewport.WorldToPerspective;
     this.ShadowBuffer = event.CameraViewportCog.CameraViewport.FinalTexture;
     
@@ -48,6 +69,8 @@ class ShadowRenderer : LightningComponent
     
     event.AddRenderTaskClearTarget(depth, 1.0);
     event.AddRenderTaskRenderPass(shadowSettings, RenderGroup.ShadowCasters, NoPixelOutput(), "Shadows");
+    
+    this.NeedsRender = false;
   }
   
   function SetShadowResolution()
