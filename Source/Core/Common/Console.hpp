@@ -22,6 +22,7 @@ enum Enum
   PerformanceFilter = 0x0040, // Filter for performance (Framerate, etc)
   PhysicsFilter = 0x0080,     // Filter for Physics
   ArchiveFilter = 0x0100,     // Filter for Archival operations
+  RenderingFilter = 0x0200    // Filter for renderer
 };
 } // namespace Filter
 

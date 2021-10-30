@@ -6,6 +6,7 @@ namespace Plasma
     {
     public:
         RendererVK(OsHandle windowHandle, String& error);
+        void CreateDevice(VkResult& result);
         ~RendererVK() override;
 
         virtual void BuildOrthographicTransform(Mat4Ref matrix, float size, float aspect, float nearPlane, float farPlane);
@@ -44,8 +45,42 @@ namespace Plasma
     private:
         void CreateInstance(VkApplicationInfo& appInfo, Plasma::Array<const char*>& instanceLayers, Plasma::Array<const char*>& instanceExtensions);
 
+        bool CheckExtensionSupported(const char* extension, const Array<VkExtensionProperties>& avalibleExtensions);
+
         bool mDebugUtils = false;
         VkInstance mInstance = VK_NULL_HANDLE;
+        VkPhysicalDevice mPhysicalDevice = VK_NULL_HANDLE;
+        VkDevice mDevice = VK_NULL_HANDLE;
+
+        Array<VkQueueFamilyProperties> mQueueFamilies;
+        uint32 mGraphicsFamily = VK_QUEUE_FAMILY_IGNORED;
+        uint32 mComputeFamily = VK_QUEUE_FAMILY_IGNORED;
+        uint32 mCopyFamily = VK_QUEUE_FAMILY_IGNORED;
+        Array<uint32> mFamilies;
+        VkQueue mGraphicsQueue = VK_NULL_HANDLE;
+        VkQueue mComputeQueue = VK_NULL_HANDLE;
+        VkQueue mCopyQueue = VK_NULL_HANDLE;
+
+        VkPhysicalDeviceFeatures2 mFeatures2 = {};
+        VkPhysicalDeviceVulkan11Features mFeatures_1_1 = {};
+        VkPhysicalDeviceVulkan12Features mFeatures_1_2 = {};
+        VkPhysicalDeviceAccelerationStructureFeaturesKHR mAccelerationStructureFeatures = {};
+        VkPhysicalDeviceRayTracingPipelineFeaturesKHR mRayTracingFeatures = {};
+        VkPhysicalDeviceRayQueryFeaturesKHR mRayQueryFeatures = {};
+        VkPhysicalDeviceFragmentShadingRateFeaturesKHR mFragmentShadingRateFeatures = {};
+        VkPhysicalDeviceMeshShaderFeaturesNV mMeshShaderFeatures = {};
+        VkPhysicalDeviceConditionalRenderingFeaturesEXT mConditionalRenderingFeatures = {};
+        VkPhysicalDeviceDepthClipEnableFeaturesEXT mDepthClipEnableFeatures = {};
+
+        VkPhysicalDeviceProperties2 mProperties2 = {};
+        VkPhysicalDeviceVulkan11Properties mProperties_1_1 = {};
+        VkPhysicalDeviceVulkan12Properties mProperties_1_2 = {};
+        VkPhysicalDeviceSamplerFilterMinmaxProperties mSamplerMinMaxProperties = {};
+        VkPhysicalDeviceAccelerationStructurePropertiesKHR mAccelerationStructureProperties = {};
+        VkPhysicalDeviceRayTracingPipelinePropertiesKHR mRayTracingProperties = {};
+        VkPhysicalDeviceFragmentShadingRatePropertiesKHR mFragmentShadingRateProperties = {};
+        VkPhysicalDeviceMeshShaderPropertiesNV mMeshShaderProperties = {};
+
     };
 
     Renderer* CreateRenderer(OsHandle windowHandle, String& error)
