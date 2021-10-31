@@ -271,6 +271,12 @@ void PlasmaStartup::Startup()
   {
     size = osShell->GetPrimaryMonitorSize();
   }
+
+  // Start window 4/5ths of the screen size in windowed mode.
+  // The size is arbitrary but starting the window less than the main monitor size -
+  // - prevents a windowing bug that prevents the window from being moved and just causes flickering.
+  size -= size / 5;
+
   WindowState::Enum state = mWindowState;
 
   String name = BuildString(GetOrganization(), " ", GetApplicationName());
@@ -295,7 +301,7 @@ void PlasmaStartup::Startup()
   // On Emscripten, the window full screen can only be done by a user
   // action. Setting it on startup causes an abrupt change the first time
   // the user click or hits a button.
-#if !defined(PlasmaTargetOsEmscripten)
+#if defined(PlasmaTargetOsEmscripten)
   if (state == WindowState::Fullscreen)
     state = WindowState::Maximized;
 #endif

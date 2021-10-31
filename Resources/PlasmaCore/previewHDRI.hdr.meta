@@ -5,8 +5,8 @@ ImageContent
 	{
 		var FileType = "hdr"
 		var LoadFormat = "RGB32f"
-		var Dimensions = "1024 x 1024"
-		var Size = "8.000 MB"
+		var Dimensions = "256 x 256"
+		var Size = "0.500 MB"
 	}
 	TextureBuilder 
 	{
@@ -19,7 +19,7 @@ ImageContent
 		var Filtering = TextureFiltering.Trilinear
 		var Anisotropy = TextureAnisotropy.x16
 		var MipMapping = TextureMipMapping.PreGenerated
-		var HalfScaleCount = 0
+		var HalfScaleCount = 2
 		var PremultipliedAlpha = false
 		var GammaCorrection = false
 	}

@@ -49,11 +49,11 @@ protected:
   // If changes are ever made to these flags (especially mWindowStyle), ALL platforms and programs
   // (Editor/Game/Launcher) must be considered.
   bool mLoadContent = true;
-  WindowState::Enum mWindowState = WindowState::Maximized;
+  WindowState::Enum mWindowState = WindowState::Windowed;
   // If this value is IntVec2::cZero, the primary monitor usable size will be used.
   IntVec2 mWindowSize = IntVec2::cZero;
   IntVec2 mMinimumWindowSize = cMinimumMonitorSize;
-  bool mWindowCentered = false;
+  bool mWindowCentered = true;
   WindowStyleFlags::Enum mWindowStyle =
       (WindowStyleFlags::Enum)(WindowStyleFlags::MainWindow | WindowStyleFlags::OnTaskBar | WindowStyleFlags::TitleBar |
                                WindowStyleFlags::Resizable | WindowStyleFlags::Close | WindowStyleFlags::ClientOnly);
