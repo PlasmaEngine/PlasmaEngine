@@ -19,6 +19,8 @@ target_sources(RendererVK
       ${CMAKE_CURRENT_LIST_DIR}/VulkanCommandPool.cpp
       ${CMAKE_CURRENT_LIST_DIR}/VulkanSyncronization.cpp
       ${CMAKE_CURRENT_LIST_DIR}/VulkanSyncronization.hpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanMemory.cpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanMemory.hpp
 )
 
 plasma_target_includes(RendererVK
