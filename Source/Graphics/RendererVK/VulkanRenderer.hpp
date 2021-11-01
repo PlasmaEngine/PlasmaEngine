@@ -4,11 +4,6 @@ namespace Plasma
 {
     class RendererVK;
 
-    struct SyncObjects
-    {
-        Array<VkSemaphore> mImageAvailableSemaphores;
-    };
-
     struct VulkanDeviceData
     {
         VkPhysicalDeviceFeatures2 mFeatures2 = {};
@@ -110,6 +105,8 @@ namespace Plasma
         void CreateSurface(OsHandle windowHandle);
         void SelectPhysicalDevice();
         void CreateLogicalDevice();
+        void CreateCommandPool();
+        void CreateSyncObjects();
 
         bool IsDeviceSuitable(VkPhysicalDevice physicalDevice, DeviceSuitabilityData* data);
         QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);

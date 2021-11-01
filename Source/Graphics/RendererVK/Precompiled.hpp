@@ -51,5 +51,6 @@ static std::string ResultToError(VkResult errorCode)
 
 #include "VulkanValidationLayers.hpp"
 #include "VulkanDevice.hpp"
+#include "VulkanSyncronization.hpp"
 
 #include "VulkanRenderer.hpp"

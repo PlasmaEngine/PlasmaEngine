@@ -7,16 +7,13 @@ namespace Plasma
 {
     RendererVK::RendererVK(OsHandle windowHandle, String& error)
     {
-        PlasmaPrint("-------- Vulkan Initialize --------\n");
 
         VkResult result;
         result = volkInitialize();
         Assert(result == VK_SUCCESS);
         PlasmaPrint("[Vulkan] Vok Initialized \n");
 
-       
-
-        PlasmaTodo("Add Vulkan debug layer");
+        PlasmaPrint("-------- Vulkan Initialize --------\n");
 
         CreateInstance();
         PlasmaPrint("[Vulkan] Vulkan Instance Created \n");
@@ -26,6 +23,10 @@ namespace Plasma
         PlasmaPrint("[Vulkan] Vulkan Physcial Device Selected\n");
         CreateLogicalDevice();
         PlasmaPrint("[Vulkan] Vulkan Logcal Device Created\n");
+        CreateCommandPool();
+        PlasmaPrint("[Vulkan] Vulkan Command Pool Created\n");
+        CreateSyncObjects();
+        PlasmaPrint("[Vulkan] Vulkan Semaphores Created\n");
 
         
 
