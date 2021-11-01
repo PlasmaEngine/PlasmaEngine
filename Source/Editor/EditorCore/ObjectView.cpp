@@ -599,7 +599,7 @@ public:
 
     // Removed entries will never have children, so this should only ever be
     // called for Cogs.
-    ReturnIf(Type::DynamicCast<Cog*>(parentObject) == nullptr, false, "This should always be a Cog");
+    ReturnIf(Type::DynamicCast<Cog*>(parentObject) == nullptr, nullptr, "This should always be a Cog");
 
     if (dataEntry == mSpace)
     {
@@ -658,7 +658,7 @@ public:
         RemovedEntry* previousRemovedEntry = (RemovedEntry*)prev;
         ObjectState* state = modifications->GetObjectState(parentCog->has(Hierarchy));
         ReturnIf(state == nullptr,
-                 false,
+                 nullptr,
                  "We've already returned a removed child, the object "
                  "state should still be alive.");
 
