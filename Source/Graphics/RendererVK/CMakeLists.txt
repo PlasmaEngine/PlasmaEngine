@@ -11,6 +11,11 @@ target_sources(RendererVK
       ${CMAKE_CURRENT_LIST_DIR}/Precompiled.cpp
       ${CMAKE_CURRENT_LIST_DIR}/RendererVKStandard.hpp
       ${CMAKE_CURRENT_LIST_DIR}/RendererVKStandard.cpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanValidationLayers.hpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanInstance.cpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanSurface.cpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanDevice.cpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanDevice.hpp
 )
 
 plasma_target_includes(RendererVK

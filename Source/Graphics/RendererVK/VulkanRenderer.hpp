@@ -2,11 +2,73 @@
 
 namespace Plasma
 {
+    class RendererVK;
+
+    struct SyncObjects
+    {
+        Array<VkSemaphore> mImageAvailableSemaphores;
+    };
+
+    struct VulkanDeviceData
+    {
+        VkPhysicalDeviceFeatures2 mFeatures2 = {};
+        VkPhysicalDeviceVulkan11Features mFeatures_1_1 = {};
+        VkPhysicalDeviceVulkan12Features mFeatures_1_2 = {};
+        VkPhysicalDeviceAccelerationStructureFeaturesKHR mAccelerationStructureFeatures = {};
+        VkPhysicalDeviceRayTracingPipelineFeaturesKHR mRayTracingFeatures = {};
+        VkPhysicalDeviceRayQueryFeaturesKHR mRayQueryFeatures = {};
+        VkPhysicalDeviceFragmentShadingRateFeaturesKHR mFragmentShadingRateFeatures = {};
+        VkPhysicalDeviceMeshShaderFeaturesNV mMeshShaderFeatures = {};
+        VkPhysicalDeviceConditionalRenderingFeaturesEXT mConditionalRenderingFeatures = {};
+        VkPhysicalDeviceDepthClipEnableFeaturesEXT mDepthClipEnableFeatures = {};
+
+        VkPhysicalDeviceProperties2 mProperties2 = {};
+        VkPhysicalDeviceVulkan11Properties mProperties_1_1 = {};
+        VkPhysicalDeviceVulkan12Properties mProperties_1_2 = {};
+        VkPhysicalDeviceSamplerFilterMinmaxProperties mSamplerMinMaxProperties = {};
+        VkPhysicalDeviceAccelerationStructurePropertiesKHR mAccelerationStructureProperties = {};
+        VkPhysicalDeviceRayTracingPipelinePropertiesKHR mRayTracingProperties = {};
+        VkPhysicalDeviceFragmentShadingRatePropertiesKHR mFragmentShadingRateProperties = {};
+        VkPhysicalDeviceMeshShaderPropertiesNV mMeshShaderProperties = {};
+    };
+
+    struct VulkanQueueData
+    {
+        VkQueue mGraphicsQueue = VK_NULL_HANDLE;
+        VkQueue mPresentQueue = VK_NULL_HANDLE;
+        VkQueue mComputeQueue = VK_NULL_HANDLE;
+        VkQueue mCopyQueue = VK_NULL_HANDLE;
+    };
+
+    struct VulkanRuntimeData
+    {
+        const Array<const char*> mRequiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+        Array<const char*> mDeviceExtensions;
+        static constexpr size_t mMaxFramesInFlight = 2;
+
+        VkInstance mInstance = VK_NULL_HANDLE;
+        VkDebugUtilsMessengerEXT mDebugMessenger = VK_NULL_HANDLE;
+        VkSurfaceKHR mSurface;
+        VulkanDeviceData mDeviceData;
+        VkPhysicalDevice mPhysicalDevice = VK_NULL_HANDLE;
+        PhyscialDeviceLimits mDeviceLimits;
+        VkDevice mDevice = VK_NULL_HANDLE;
+        VkCommandPool mCommandPool;
+        SyncObjects mSyncObjects;
+
+        VulkanQueueData mQueueData;
+        VkRenderPass mRenderPass;
+        VkPipelineLayout mPipelineLayout;
+        VkPipeline mGraphicsPipeline;
+
+        RendererVK* mRenderer = nullptr;
+        
+    };
+
     class RendererVK : public Renderer
     {
     public:
         RendererVK(OsHandle windowHandle, String& error);
-        void CreateDevice(VkResult& result);
         ~RendererVK() override;
 
         virtual void BuildOrthographicTransform(Mat4Ref matrix, float size, float aspect, float nearPlane, float farPlane);
@@ -42,45 +104,22 @@ namespace Plasma
 
         virtual void DoRenderTasks(RenderTasks* renderTasks, RenderQueues* renderQueues);
 
+
     private:
-        void CreateInstance(VkApplicationInfo& appInfo, Plasma::Array<const char*>& instanceLayers, Plasma::Array<const char*>& instanceExtensions);
+        void CreateInstance();
+        void CreateSurface(OsHandle windowHandle);
+        void SelectPhysicalDevice();
+        void CreateLogicalDevice();
 
-        bool CheckExtensionSupported(const char* extension, const Array<VkExtensionProperties>& avalibleExtensions);
+        bool IsDeviceSuitable(VkPhysicalDevice physicalDevice, DeviceSuitabilityData* data);
+        QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
 
-        bool mDebugUtils = false;
-        VkInstance mInstance = VK_NULL_HANDLE;
-        VkPhysicalDevice mPhysicalDevice = VK_NULL_HANDLE;
-        VkDevice mDevice = VK_NULL_HANDLE;
+        bool CheckExtensionSupported(VkPhysicalDevice device, const Array<const char*>& deviceExtensions);
+        SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);
+        void QueryPhysicalDeviceLimits(VkPhysicalDevice device, PhyscialDeviceLimits& results);
+        void LogDeviceInfo(VkPhysicalDevice device);
 
-        Array<VkQueueFamilyProperties> mQueueFamilies;
-        uint32 mGraphicsFamily = VK_QUEUE_FAMILY_IGNORED;
-        uint32 mComputeFamily = VK_QUEUE_FAMILY_IGNORED;
-        uint32 mCopyFamily = VK_QUEUE_FAMILY_IGNORED;
-        Array<uint32> mFamilies;
-        VkQueue mGraphicsQueue = VK_NULL_HANDLE;
-        VkQueue mComputeQueue = VK_NULL_HANDLE;
-        VkQueue mCopyQueue = VK_NULL_HANDLE;
-
-        VkPhysicalDeviceFeatures2 mFeatures2 = {};
-        VkPhysicalDeviceVulkan11Features mFeatures_1_1 = {};
-        VkPhysicalDeviceVulkan12Features mFeatures_1_2 = {};
-        VkPhysicalDeviceAccelerationStructureFeaturesKHR mAccelerationStructureFeatures = {};
-        VkPhysicalDeviceRayTracingPipelineFeaturesKHR mRayTracingFeatures = {};
-        VkPhysicalDeviceRayQueryFeaturesKHR mRayQueryFeatures = {};
-        VkPhysicalDeviceFragmentShadingRateFeaturesKHR mFragmentShadingRateFeatures = {};
-        VkPhysicalDeviceMeshShaderFeaturesNV mMeshShaderFeatures = {};
-        VkPhysicalDeviceConditionalRenderingFeaturesEXT mConditionalRenderingFeatures = {};
-        VkPhysicalDeviceDepthClipEnableFeaturesEXT mDepthClipEnableFeatures = {};
-
-        VkPhysicalDeviceProperties2 mProperties2 = {};
-        VkPhysicalDeviceVulkan11Properties mProperties_1_1 = {};
-        VkPhysicalDeviceVulkan12Properties mProperties_1_2 = {};
-        VkPhysicalDeviceSamplerFilterMinmaxProperties mSamplerMinMaxProperties = {};
-        VkPhysicalDeviceAccelerationStructurePropertiesKHR mAccelerationStructureProperties = {};
-        VkPhysicalDeviceRayTracingPipelinePropertiesKHR mRayTracingProperties = {};
-        VkPhysicalDeviceFragmentShadingRatePropertiesKHR mFragmentShadingRateProperties = {};
-        VkPhysicalDeviceMeshShaderPropertiesNV mMeshShaderProperties = {};
-
+        VulkanRuntimeData mVulkanRuntimeData;
     };
 
     Renderer* CreateRenderer(OsHandle windowHandle, String& error)

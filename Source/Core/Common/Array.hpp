@@ -306,11 +306,19 @@ public:
   {
     return mSize == 0;
   }
+  bool empty() const
+  {
+      return Empty();
+  }
 
   /// Returns the number of elements in the array
   size_type Size() const
   {
     return mSize;
+  }
+  size_type size() const
+  {
+      return Size();
   }
 
   //
@@ -362,6 +370,14 @@ public:
   {
     return const_cast<Array*>(this)->All();
   }
+  range all()
+  {
+      return All();
+  }
+  range all() const
+  {
+      return All();
+  }
 
   /// Returns a pointer to the underlying data array
   pointer Data()
@@ -371,6 +387,14 @@ public:
   const_pointer Data() const
   {
     return mData;
+  }
+  pointer data()
+  {
+      return Data();
+  }
+  const_pointer data() const
+  {
+      return Data();
   }
 
   /// Returns the range of elements from index to index + length
@@ -407,6 +431,14 @@ public:
     ErrorIf(mSize == 0, "Empty array, no front element.");
     return mData[0];
   }
+  reference front()
+  {
+      return Front();
+  }
+  const_reference front() const
+  {
+      return Front();
+  }
 
   /// Returns a reference to the element at the back of the array
   reference Back()
@@ -418,6 +450,14 @@ public:
   {
     ErrorIf(mSize == 0, "Empty array, no back element.");
     return mData[mSize - 1];
+  }
+  reference back()
+  {
+      return Back();
+  }
+  const_reference back() const
+  {
+      return Back();
   }
 
   //
@@ -466,6 +506,11 @@ public:
     ++mSize;
   }
 
+  void push_back(const_reference item)
+  {
+      PushBack(item);
+  }
+
   /// Moves an element to the back of the array
   void PushBack(MoveReference<value_type> item)
   {
@@ -491,10 +536,19 @@ public:
     ++mSize;
   }
 
+  void push_back(MoveReference<value_type> item)
+  {
+      PushBack(item);
+  }
+
   /// Removes the element at the front of the array
   void PopFront()
   {
     Erase(mData);
+  }
+  void pop_front()
+  {
+      PopFront();
   }
 
   /// Removes the element at the back of the array
@@ -503,6 +557,10 @@ public:
     ErrorIf(mSize == 0, "Empty array, can not pop back element.");
     Destroy(mData + mSize - 1, typePodDes());
     --mSize;
+  }
+  void pop_back()
+  {
+      PopBack();
   }
 
   /// Changes the number of elements stored in the array
@@ -530,6 +588,10 @@ public:
     }
     mSize = newSize;
   }
+  void resize(size_type newSize)
+  {
+      Resize(newSize);
+  }
 
   /// Changes the number of elements stored in the array
   /// Removes or copy constructs elements at the back of the array as necessary
@@ -555,6 +617,10 @@ public:
     }
     mSize = newSize;
   }
+  void resize(size_type newSize, const_reference defaultValue)
+  {
+      Resize(newSize, defaultValue);
+  }
 
   /// Clears all elements from the array
   /// Effectively resizes the array to plasma
@@ -562,6 +628,11 @@ public:
   {
     DestroyElements(mData, mSize, typePodDes());
     mSize = 0;
+  }
+
+  void clear()
+  {
+      Clear();
   }
 
   /// Reserves at least the specified element capacity

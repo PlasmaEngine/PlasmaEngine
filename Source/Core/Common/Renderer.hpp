@@ -149,6 +149,8 @@ namespace Plasma
         Prediction,
         SamplerMinMax);
 
+    DeclareEnum2(QueueType, Graphics, Compute);
+
     /// Type of the texture, must match sampler type in shaders
     /// Texture2D - Standard 2 dimensional texture
     /// TextureCube - Uses texture as a cubemap
