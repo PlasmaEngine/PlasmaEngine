@@ -3,11 +3,6 @@ add_library(Platform)
 plasma_setup_library(Platform ${CMAKE_CURRENT_LIST_DIR} TRUE)
 plasma_use_precompiled_header(Platform ${CMAKE_CURRENT_LIST_DIR})
 
-target_compile_definitions(Platform
-  PUBLIC
-    main=SDL_main
-)
-
 target_sources(Platform
   PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/../Curl/WebRequest.cpp

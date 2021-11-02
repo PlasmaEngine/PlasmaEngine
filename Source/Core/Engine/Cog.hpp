@@ -451,36 +451,6 @@ public:
   /// Link for all game objects in space.
   Link<Cog> SpaceLink;
   Link<Cog> NameLink;
-
-  friend bool operator==(const Cog& a, const Cog& b)
-  {
-    // TODO: fix
-    return !memcmp(&a, &b, sizeof(a));
-  }
-
-  Cog(Cog&& other)
-  {
-    mObjectId = other.mObjectId;
-    other.mObjectId = cInvalidCogId;
-    mSpace = other.mSpace;
-    other.mSpace = nullptr;
-    mFlags = other.mFlags;
-    other.mFlags = 0;
-    mActionList = other.mActionList;
-    other.mActionList = nullptr;
-    mArchetype = other.mArchetype;
-    other.mArchetype = nullptr;
-    mHierarchyParent = other.mHierarchyParent;
-    other.mHierarchyParent = nullptr;
-    mSubContextId = other.mSubContextId;
-    other.mSubContextId = 0;
-    mChildId = other.mChildId;
-    other.mChildId = PolymorphicNode::cInvalidUniqueNodeId;
-  }
-
-  /// Compositions can not be copied.
-  Cog(const Cog&);
-  void operator=(const Cog&);
 };
 
 String CogDisplayName(HandleParam object);

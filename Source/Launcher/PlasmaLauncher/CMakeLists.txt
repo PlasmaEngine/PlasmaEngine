@@ -52,45 +52,89 @@ target_sources(PlasmaLauncher
     ${CMAKE_CURRENT_LIST_DIR}/RC/PlasmaLauncher.rc
 )
 
+if(PLASMA_PLATFORM_LINUX)
 target_link_libraries(PlasmaLauncher
   PUBLIC
-    assimp
-    CodeTranslator
-    Common
-    Content
-    EditorCore
-    ExportTool
-    Engine
-    FreeType
-    Gameplay
-    Geometry
-    GraphicsRuntime
-    RendererGL
-    Libpng
-    Meta
-    NetworkCore
-    Nvtt
-    Opus
-    Physics
-    Platform
-    Replication
-    Scintilla
-    Serialization
-    Sound
-    SpatialPartition
-    SpirvCross
-    SpirvHeaders
-    SpirvTools
-    Startup
-    Support
-    UiWidget
-    Widget
-    ZLib
-    LightningCore
-    LightningScript
-    LightningShaders
-    tracy
+  assimp
+  CodeTranslator
+  Common
+  Content
+  EditorCore
+  ExportTool
+  Engine
+  FreeType
+  Gameplay
+  Geometry
+  GraphicsRuntime
+  RendererGL
+  Libpng
+  Meta
+  NetworkCore
+  Nvtt
+  Opus
+  Physics
+  Platform
+  Replication
+  Scintilla
+  Serialization
+  Sound
+  SpatialPartition
+  SpirvCross
+  SpirvHeaders
+  SpirvTools
+  Startup
+  Support
+  UiWidget
+  Widget
+  ZLib
+  LightningCore
+  LightningScript
+  LightningShaders
+  tracy
+  stdc++fs
 )
+
+else()
+target_link_libraries(PlasmaLauncher
+  PUBLIC
+  assimp
+  CodeTranslator
+  Common
+  Content
+  EditorCore
+  ExportTool
+  Engine
+  FreeType
+  Gameplay
+  Geometry
+  GraphicsRuntime
+  RendererGL
+  Libpng
+  Meta
+  NetworkCore
+  Nvtt
+  Opus
+  Physics
+  Platform
+  Replication
+  Scintilla
+  Serialization
+  Sound
+  SpatialPartition
+  SpirvCross
+  SpirvHeaders
+  SpirvTools
+  Startup
+  Support
+  UiWidget
+  Widget
+  ZLib
+  LightningCore
+  LightningScript
+  LightningShaders
+  tracy
+)
+endif()
 
 target_compile_definitions(PlasmaLauncher PUBLIC TRACY_IMPORTS)
 
