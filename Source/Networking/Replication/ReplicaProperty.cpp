@@ -311,7 +311,7 @@ Variant ReplicaProperty::GetValue() const
   }
 
   // Return current property value
-  return PlasmaMove(value);
+  return value;
 }
 
 const Variant& ReplicaProperty::GetPropertyData() const

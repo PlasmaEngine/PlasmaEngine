@@ -1,9 +1,10 @@
 add_definitions(-DPlasmaCompilerClang=1 -DPlasmaCompilerName="Clang")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 set(PLASMA_C_CXX_FLAGS "\
   -Wno-address-of-packed-member\
   -Wno-empty-body\
+  -Wno-error\
   -fexceptions\
   -frtti\
   -fno-vectorize\

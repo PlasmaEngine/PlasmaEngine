@@ -2539,7 +2539,7 @@ BitStream NetPeer::GetBasicNetHostInfo()
   owner->DispatchEvent(Events::AcquireBasicNetHostInfo, &event);
 
   // Write host info
-  BitStream bitStream = PlasmaMove(event.mReturnHostInfo.GetBitStream());
+  BitStream bitStream = event.mReturnHostInfo.GetBitStream();
 
   // Invalid host info size?
   if (bitStream.GetBytesWritten() > BasicNetHostInfoMaxSize)
@@ -2567,7 +2567,7 @@ BitStream NetPeer::GetExtraNetHostInfo()
   owner->DispatchEvent(Events::AcquireExtraNetHostInfo, &event);
 
   // Write host info
-  BitStream bitStream = PlasmaMove(event.mReturnHostInfo.GetBitStream());
+  BitStream bitStream = event.mReturnHostInfo.GetBitStream();
 
   if (bitStream.GetBytesWritten() > MaxMessageWholeDataBytes)
   {
@@ -4811,7 +4811,7 @@ Pair<bool, BitStream> NetPeer::ServerOnConnectRequest(ReplicatorLink* link, Conn
   // Return accept decision and extra data
   Pair<bool, BitStream> result(event.mReturnOurConnectResponse,
                                PlasmaMove(event.mReturnOurResponseBundle.GetBitStream()));
-  return PlasmaMove(result);
+  return result;
 }
 void NetPeer::ServerOnConnectResponse(ReplicatorLink* link, ConnectResponseData& connectResponseData)
 {
