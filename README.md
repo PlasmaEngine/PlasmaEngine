@@ -11,26 +11,21 @@ Plasma Game engine is a C++ powered 2D and 3D game engine that is designed to be
 This is as simple as grabbing the Plasma Launcher from [https://plasmagameengine.com/](https://plasmagameengine.com/)
 
 ## Building the engine
-Building on Windows Easy (may hit PowerShell permissions issue):
-  - Have Visual Studio 2019
-  - Download [Bootstrap File](https://github.com/PlasmaEngine/PlasmaEngine/releases/download/NA/Bootstrap.ps1)
-  - Place Bootstap in the folder you want Plasma
-  - Open PowerShell as Admin and navigate to folder
-  - Execute Boostrap
-  - Follow Instructions
   
-Building on Windows:
-  - Install CMake 
-  - Install Node.js
-  - Do a recusive clone of the git repo
-  - Run build_vs2019_x64.bat
-  - Open and Build the .sln file located in `Build\Active`
+### Building on Windows:
+#### For Development:
+   - Open folder with VS2019+
+   - (Optional) Manage Configuration to add Release configuration
+   - Build
 
-Building on Linux:
-  Requires Clang 7.0
-  (Note: Dependencies not listed yet)
-  - Open terminal in project root
-  - run ' node index.js all --alias=Linux '
+#### For Release Build
+   - run build_vs2019_ninja.bat
+
+#### For Debug build and sln(debug only):
+   - run build_vs2019_x64.bat
+
+### Building on Linux:
+   - In Development
 
 ## Screenshots
 ![Image of Plasma Engine 3D](https://raw.githubusercontent.com/PlasmaEngine/PlasmaEngine/master/GithubMedia/PlasmaEngine1.PNG)

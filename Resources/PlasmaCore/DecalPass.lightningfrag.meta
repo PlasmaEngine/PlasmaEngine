@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "DecalPass"
+		var ResourceId = 0x611c42ad077c98e9
+	}
+}

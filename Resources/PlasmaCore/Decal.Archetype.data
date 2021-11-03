@@ -1,0 +1,32 @@
+[Version:1]
+Cog 
+{
+	var Name = "Decal"
+	Transform 
+	{
+		var Translation = Real3{0, 0, 0}
+		var Scale = Real3{5, 5, 5}
+		var Rotation = Quaternion{0, 0, 0, 1}
+	}
+	SelectionIcon 
+	{
+		var Visible = true
+		var VisibilityEvents = true
+		var Material = "56581e2bb81777be:DebugDrawOnTop"
+		var SpriteSource = "6113ab2819af7084:Decal"
+		var ViewScale = 2
+		var OverrideSelections = true
+	}
+	Model 
+	{
+		var Visible = true
+		var ViewCulling = true
+		var VisibilityEvents = true
+		var OverrideBoundingBox = false
+		var LocalAabbCenter = Real3{0, 0, 0}
+		var LocalAabbHalfExtents = Real3{1, 1, 1}
+		var GroupSortValue = 0
+		var Material = "6113aaa179c81da7:PlasmaDecal"
+		var Mesh = "4de0354322b345ae:Cube"
+	}
+}

@@ -16,7 +16,7 @@ OrientationGizmoViewport::OrientationGizmoViewport(EditorViewport* editorViewpor
   mCamera = mViewCubeSpace->CreateAt(CoreArchetypes::ViewPreviewCamera, Vec3(0, 0, 2.5));
   mCamera->ClearArchetype();
 
-  Component* renderer = mCamera->GetComponentByName("ForwardRenderer");
+  Component* renderer = mCamera->GetComponentByName("ViewCubeRenderer");
   if (renderer != nullptr)
   {
     Any clearColor(Vec4::cZero);
