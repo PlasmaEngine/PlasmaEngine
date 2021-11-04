@@ -21,7 +21,12 @@ target_sources(RendererVK
       ${CMAKE_CURRENT_LIST_DIR}/VulkanSyncronization.hpp
       ${CMAKE_CURRENT_LIST_DIR}/VulkanMemory.cpp
       ${CMAKE_CURRENT_LIST_DIR}/VulkanMemory.hpp
-)
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanImage.cpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanImage.hpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanBuffer.cpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanBuffer.hpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanType.hpp
+      )
 
 plasma_target_includes(RendererVK
   PUBLIC

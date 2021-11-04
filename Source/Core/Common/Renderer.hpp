@@ -28,6 +28,10 @@ namespace Plasma
     {
     };
 
+    class BufferRenderData
+    {
+    };
+
     class RenderTasks;
     class RenderQueues;
 

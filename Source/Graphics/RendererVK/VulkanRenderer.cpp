@@ -20,17 +20,17 @@ namespace Plasma
         CreateSurface(windowHandle);
         PlasmaPrint("[Vulkan] Vulkan Surface Created \n");
         SelectPhysicalDevice();
-        PlasmaPrint("[Vulkan] Vulkan Physcial Device Selected\n");
+        PlasmaPrint("[Vulkan] Vulkan Physcial Device Selected \n");
         CreateLogicalDevice();
-        PlasmaPrint("[Vulkan] Vulkan Logcal Device Created\n");
+        PlasmaPrint("[Vulkan] Vulkan Logcal Device Created \n");
         CreateCommandPool();
-        PlasmaPrint("[Vulkan] Vulkan Command Pool Created\n");
+        PlasmaPrint("[Vulkan] Vulkan Command Pool Created \n");
         CreateSyncObjects();
-        PlasmaPrint("[Vulkan] Vulkan Semaphores Created\n");
+        PlasmaPrint("[Vulkan] Vulkan Semaphores Created \n");
+        CreateMemoryAllocator();
+        PlasmaPrint("[Vulkan] Vulkan Memory Allocator Created \n");
 
-        
-
-        PlasmaPrint("-------- Vulkan Initialize End --------\n");
+        PlasmaPrint("-------- Vulkan Initialize End -------- \n");
     }
 
     RendererVK::~RendererVK()
