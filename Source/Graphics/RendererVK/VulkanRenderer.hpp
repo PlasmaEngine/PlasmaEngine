@@ -50,6 +50,7 @@ namespace Plasma
         VkDevice mDevice = VK_NULL_HANDLE;
         VkCommandPool mCommandPool;
         SyncObjects mSyncObjects;
+        VulkanMemoryAllocator* mAllocator;
 
         VulkanQueueData mQueueData;
         VkRenderPass mRenderPass;
@@ -107,6 +108,7 @@ namespace Plasma
         void CreateLogicalDevice();
         void CreateCommandPool();
         void CreateSyncObjects();
+        void CreateMemoryAllocator();
 
         bool IsDeviceSuitable(VkPhysicalDevice physicalDevice, DeviceSuitabilityData* data);
         QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);

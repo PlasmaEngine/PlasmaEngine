@@ -13,7 +13,6 @@
 #define VK_NO_PROTOTYPES
 #include "VulkanHeaders/vulkan.h"
 #include "Volk/volk.h"
-#include "VKMemory/vk_mem_alloc.h"
 
 static std::string ResultToError(VkResult errorCode)
 {
@@ -53,5 +52,7 @@ static std::string ResultToError(VkResult errorCode)
 #include "VulkanDevice.hpp"
 #include "VulkanSyncronization.hpp"
 #include "VulkanMemory.hpp"
+#include "VulkanImage.hpp"
+#include "VulkanBuffer.hpp"
 
 #include "VulkanRenderer.hpp"

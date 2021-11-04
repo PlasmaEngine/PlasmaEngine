@@ -82,6 +82,7 @@ class TextureData;
 class TextureLoader;
 class TextureManager;
 class TextureRenderData;
+class BufferRenderData;
 class ViewBlock;
 class ViewNode;
 class ViewportInterface;
