@@ -25,6 +25,12 @@ target_sources(RendererVK
       ${CMAKE_CURRENT_LIST_DIR}/VulkanImage.hpp
       ${CMAKE_CURRENT_LIST_DIR}/VulkanBuffer.cpp
       ${CMAKE_CURRENT_LIST_DIR}/VulkanBuffer.hpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanRenderPass.cpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanRenderPass.hpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanImageView.cpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanImageView.hpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanRenderPassCache.cpp
+      ${CMAKE_CURRENT_LIST_DIR}/VulkanRenderPassCache.hpp
       ${CMAKE_CURRENT_LIST_DIR}/VulkanType.hpp
       )
 

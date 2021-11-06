@@ -61,6 +61,8 @@ target_sources(Common
         ${CMAKE_CURRENT_LIST_DIR}/Console.hpp
         ${CMAKE_CURRENT_LIST_DIR}/ContainerCommon.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ContainerCommon.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/Cookie.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Cookie.hpp
         ${CMAKE_CURRENT_LIST_DIR}/CrashHandler.hpp
         ${CMAKE_CURRENT_LIST_DIR}/Curve.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Curve.hpp
@@ -106,6 +108,8 @@ target_sources(Common
         ${CMAKE_CURRENT_LIST_DIR}/Graph.hpp
         ${CMAKE_CURRENT_LIST_DIR}/Guid.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Guid.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/Hasher.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Hasher.hpp
         ${CMAKE_CURRENT_LIST_DIR}/HalfFloat.cpp
         ${CMAKE_CURRENT_LIST_DIR}/HalfFloat.hpp
         ${CMAKE_CURRENT_LIST_DIR}/HashedContainer.hpp
