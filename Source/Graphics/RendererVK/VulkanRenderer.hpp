@@ -52,6 +52,8 @@ namespace Plasma
         SyncObjects mSyncObjects;
         VulkanMemoryAllocator* mAllocator;
 
+        RenderPassCache* mRenderPassCache = nullptr;
+
         VulkanQueueData mQueueData;
         VkRenderPass mRenderPass;
         VkPipelineLayout mPipelineLayout;
@@ -109,6 +111,7 @@ namespace Plasma
         void CreateCommandPool();
         void CreateSyncObjects();
         void CreateMemoryAllocator();
+        void CreateCache();
 
         bool IsDeviceSuitable(VkPhysicalDevice physicalDevice, DeviceSuitabilityData* data);
         QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);

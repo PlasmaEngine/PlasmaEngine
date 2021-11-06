@@ -29,6 +29,8 @@ namespace Plasma
         PlasmaPrint("[Vulkan] Vulkan Semaphores Created \n");
         CreateMemoryAllocator();
         PlasmaPrint("[Vulkan] Vulkan Memory Allocator Created \n");
+        CreateCache();
+        PlasmaPrint("[Vulkan] Render Cache Created \n");
 
         PlasmaPrint("-------- Vulkan Initialize End -------- \n");
     }
@@ -43,6 +45,11 @@ namespace Plasma
     
     void RendererVK::BuildPerspectiveTransform(Mat4Ref matrix, float fov, float aspect, float nearPlane, float farPlane)
     {
+    }
+
+    void RendererVK::CreateCache()
+    {
+        mVulkanRuntimeData.mRenderPassCache = new RenderPassCache(mVulkanRuntimeData.mDevice);
     }
     
     MaterialRenderData* RendererVK::CreateMaterialRenderData()

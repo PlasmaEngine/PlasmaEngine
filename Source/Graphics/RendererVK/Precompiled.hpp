@@ -54,5 +54,8 @@ static std::string ResultToError(VkResult errorCode)
 #include "VulkanMemory.hpp"
 #include "VulkanImage.hpp"
 #include "VulkanBuffer.hpp"
+#include "VulkanRenderPass.hpp"
+#include "VulkanImageView.hpp"
+#include "VulkanRenderPassCache.hpp"
 
 #include "VulkanRenderer.hpp"

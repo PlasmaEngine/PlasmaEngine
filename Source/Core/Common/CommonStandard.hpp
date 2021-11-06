@@ -91,6 +91,7 @@ typedef double MaxAlignmentType;
 #include "Array.hpp"
 #include "BitStream.hpp"
 #include "ContainerCommon.hpp"
+#include "Hasher.hpp"
 #include "Hashing.hpp"
 #include "HashMap.hpp"
 #include "HashSet.hpp"
@@ -147,6 +148,7 @@ typedef double MaxAlignmentType;
 #include "Stream.hpp"
 #include "Singleton.hpp"
 #include "BuildVersion.hpp"
+#include "Cookie.hpp"
 
 namespace Math
 {
