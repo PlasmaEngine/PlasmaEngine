@@ -20,11 +20,13 @@ LightningDefineType(Texture, builder, type)
   PlasmaBindDocumented();
 
   LightningBindMethod(CreateRuntime);
+  LightningBindMethod(CreateRuntime3D);
 
   LightningBindFieldGetter(mType);
   LightningBindFieldGetter(mCompression);
   LightningBindFieldGetter(mWidth);
   LightningBindFieldGetter(mHeight);
+  LightningBindFieldGetter(mDepth);
   LightningBindGetterProperty(Size);
   LightningBindGetterProperty(Format);
   LightningBindGetterSetterProperty(AddressingX);
@@ -48,6 +50,18 @@ HandleOf<Texture> Texture::CreateRuntime()
 
   PL::gEngine->has(GraphicsEngine)->AddTexture(texture);
   return texture;
+}
+
+HandleOf<Texture> Texture::CreateRuntime3D()
+{
+    Texture* texture = TextureManager::CreateRuntime();
+
+    texture->mType = TextureType::Texture3D;
+    texture->mProtected = false;
+
+    PL::gEngine->has(GraphicsEngine)->AddTexture(texture);
+
+    return texture;
 }
 
 Texture::Texture() : mRenderData(nullptr)

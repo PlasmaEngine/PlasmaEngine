@@ -426,6 +426,7 @@ namespace Plasma
         TextureFormat::Enum mFormat;
         uint mWidth;
         uint mHeight;
+        uint mDepth;
         byte* mImage;
     };
 

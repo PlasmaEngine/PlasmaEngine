@@ -214,7 +214,7 @@ namespace Plasma
         // Build a lookup map to deal with opaque shader types
         HashMap<String, String> lookupMap;
         lookupMap["SampledImage2d"] = "Texture";
-        lookupMap["SampledImage3d"] = "Texture3d";
+        lookupMap["SampledImage3d"] = "Texture";
         lookupMap["SampledImageCube"] = "Texture";
         lookupMap["SampledDepthImage2d"] = "Texture";
 

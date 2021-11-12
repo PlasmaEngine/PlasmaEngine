@@ -68,6 +68,7 @@ public:
   TextureFormat::Enum mFormat;
   uint mWidth;
   uint mHeight;
+  uint mDepth;
   u32 mSamplerSettings;
 };
 

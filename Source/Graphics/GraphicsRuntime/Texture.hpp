@@ -15,6 +15,7 @@ public:
   /// Makes an anonymous Texture resource that can be defined by script and
   /// uploaded to the gpu.
   static HandleOf<Texture> CreateRuntime();
+  static HandleOf<Texture> CreateRuntime3D();
 
   Texture();
 
