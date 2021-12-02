@@ -1,8 +1,6 @@
 // MIT Licensed (see LICENSE.md).
 
 #pragma once
-#ifndef LIGHTNING_ANY_HPP
-#  define LIGHTNING_ANY_HPP
 
 namespace Lightning
 {
@@ -266,5 +264,3 @@ PlasmaSharedTemplate void CopyFromAnyOrActualType(const T& value, byte* to)
 template <>
 PlasmaShared void CopyFromAnyOrActualType<Any>(const Any& any, byte* to);
 } // namespace Lightning
-
-#endif

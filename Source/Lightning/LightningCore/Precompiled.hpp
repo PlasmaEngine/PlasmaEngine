@@ -6,13 +6,13 @@
 #  define LIGHTNING_PRECOMPILED_HPP
 
 // Plasma includes
-#  include "Core/Common/CommonStandard.hpp"
-#  include "PlatformStandard.hpp"
+#include "CommonStandard.hpp"
+#include "PlatformStandard.hpp"
 
 // This needs to be included before anything else
 // since it disables warnings and defines macros we use
-#  include "LocalBuild.hpp"
-#  include "General.hpp"
+#include "LocalBuild.hpp"
+#include "General.hpp"
 
 // Bring Plasma primitives into the Lightning namespace
 namespace Lightning
@@ -118,14 +118,14 @@ using std::numeric_limits;
 } // namespace Lightning
 
 // Special macros
-#  define LightningForEach(VariableName, Range) forRange (VariableName, Range)
-#  define LightningRefForEach(VariableName, Range) forRangeRef (VariableName, Range)
-#  define LightningForRange(VariableName, RangeName, Range) PlasmaForRangeVar (VariableName, RangeName, Range)
-#  define LightningRefForRange(VariableName, RangeName, Range) PlasmaForRangeRefVar (VariableName, RangeName, Range)
+#define LightningForEach(VariableName, Range) forRange (VariableName, Range)
+#define LightningRefForEach(VariableName, Range) forRangeRef (VariableName, Range)
+#define LightningForRange(VariableName, RangeName, Range) PlasmaForRangeVar (VariableName, RangeName, Range)
+#define LightningRefForRange(VariableName, RangeName, Range) PlasmaForRangeRefVar (VariableName, RangeName, Range)
 
 // Lightning Includes
-#  include "ForwardDeclarations.hpp"
-#  include "SharedReference.hpp"
+#include "ForwardDeclarations.hpp"
+#include "SharedReference.hpp"
 
 // Standard Lightning Type-defines
 namespace Lightning
@@ -249,67 +249,67 @@ String GetDocumentationCStringOrEmpty(cstr string);
 // To speed up compilation, we also put all of our includes here rather than
 // being inside any of the headers NOTE: These headers must be sorted in order
 // of dependencies (e.g. Delegate has a Handle, so Handle must come first)
-#  include "Handle.hpp"
-#  include "Delegate.hpp"
-#  include "Traits.hpp"
-#  include "Binding.hpp"
-#  include "CodeLocation.hpp"
-#  include "Range.hpp"
-#  include "UntypedBlockArray.hpp"
-#  include "DestructibleBuffer.hpp"
-#  include "Composition.hpp"
-#  include "Members.hpp"
-#  include "Opcode.hpp"
-#  include "StringConstants.hpp"
-#  include "Function.hpp"
-#  include "Type.hpp"
-#  include "MultiPrimitive.hpp"
-#  include "StringBuilderClass.hpp"
-#  include "Documentation.hpp"
-#  include "Library.hpp"
-#  include "StaticLibrary.hpp"
-#  include "Core.hpp"
-#  include "SyntaxTreeHelpers.hpp"
-#  include "GrammarConstants.hpp"
-#  include "Shared.hpp"
-#  include "Token.hpp"
-#  include "SyntaxTree.hpp"
-#  include "Events.hpp"
-#  include "ArrayClass.hpp"
-#  include "CodeGenerator.hpp"
-#  include "ErrorDatabase.hpp"
-#  include "CompilationErrors.hpp"
-#  include "ConsoleClass.hpp"
-#  include "WebSocket.hpp"
-#  include "Debugging.hpp"
-#  include "HandleManager.hpp"
-#  include "Timer.hpp"
-#  include "ExecutableState.hpp"
-#  include "Any.hpp"
-#  include "FilePathClass.hpp"
-#  include "StreamInterface.hpp"
-#  include "FileStreamClass.hpp"
-#  include "Formatter.hpp"
-#  include "HashContainer.hpp"
-#  include "Json.hpp"
-#  include "Matrix.hpp"
-#  include "OverloadResolver.hpp"
-#  include "Parser.hpp"
-#  include "Plugin.hpp"
-#  include "Project.hpp"
-#  include "RandomClass.hpp"
-#  include "Setup.hpp"
-#  include "Sha1.hpp"
-#  include "StubCode.hpp"
-#  include "Syntaxer.hpp"
-#  include "TemplateBinding.hpp"
-#  include "RangeBinding.hpp"
-#  include "Tokenizer.hpp"
-#  include "VirtualMachine.hpp"
-#  include "Base64.hpp"
-#  include "DataDrivenLexer.hpp"
-#  include "Wrapper.hpp"
-#  include "ProcessClass.hpp"
-#  include "Color.hpp"
+#include "Handle.hpp"
+#include "Delegate.hpp"
+#include "Traits.hpp"
+#include "Binding.hpp"
+#include "CodeLocation.hpp"
+#include "Range.hpp"
+#include "UntypedBlockArray.hpp"
+#include "DestructibleBuffer.hpp"
+#include "Composition.hpp"
+#include "Members.hpp"
+#include "Opcode.hpp"
+#include "StringConstants.hpp"
+#include "Function.hpp"
+#include "Type.hpp"
+#include "MultiPrimitive.hpp"
+#include "StringBuilderClass.hpp"
+#include "Documentation.hpp"
+#include "Library.hpp"
+#include "StaticLibrary.hpp"
+#include "Core.hpp"
+#include "SyntaxTreeHelpers.hpp"
+#include "GrammarConstants.hpp"
+#include "Shared.hpp"
+#include "Token.hpp"
+#include "SyntaxTree.hpp"
+#include "Events.hpp"
+#include "ArrayClass.hpp"
+#include "CodeGenerator.hpp"
+#include "ErrorDatabase.hpp"
+#include "CompilationErrors.hpp"
+#include "ConsoleClass.hpp"
+#include "WebSocket.hpp"
+#include "Debugging.hpp"
+#include "HandleManager.hpp"
+#include "Timer.hpp"
+#include "ExecutableState.hpp"
+#include "Any.hpp"
+#include "FilePathClass.hpp"
+#include "StreamInterface.hpp"
+#include "FileStreamClass.hpp"
+#include "Formatter.hpp"
+#include "HashContainer.hpp"
+#include "Json.hpp"
+#include "Matrix.hpp"
+#include "OverloadResolver.hpp"
+#include "Parser.hpp"
+#include "Plugin.hpp"
+#include "Project.hpp"
+#include "RandomClass.hpp"
+#include "Setup.hpp"
+#include "Sha1.hpp"
+#include "StubCode.hpp"
+#include "Syntaxer.hpp"
+#include "TemplateBinding.hpp"
+#include "RangeBinding.hpp"
+#include "Tokenizer.hpp"
+#include "VirtualMachine.hpp"
+#include "Base64.hpp"
+#include "DataDrivenLexer.hpp"
+#include "Wrapper.hpp"
+#include "ProcessClass.hpp"
+#include "Color.hpp"
 
 #endif

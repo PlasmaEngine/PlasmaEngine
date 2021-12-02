@@ -14,7 +14,7 @@ enum Enum
   Invalid = -1,
 
 // Include the generated error enumeration values
-#  include "ErrorDatabaseEnum.inl"
+#include "ErrorDatabaseEnum.inl"
 
   Count
 };

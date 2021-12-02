@@ -1,8 +1,6 @@
 // MIT Licensed (see LICENSE.md).
 
 #pragma once
-#ifndef LIGHTNING_ARRAY_HPP
-#  define LIGHTNING_ARRAY_HPP
 
 namespace Lightning
 {
@@ -96,5 +94,3 @@ LightningDeclareDefineValueArray(DoubleReal, PlasmaShared);
 LightningDeclareDefineValueArray(Any, PlasmaShared);
 LightningDeclareDefineHandleArray(String, PlasmaShared);
 } // namespace Lightning
-
-#endif

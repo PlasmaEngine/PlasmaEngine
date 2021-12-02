@@ -1,0 +1,9 @@
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\LightningToOneCpp\bin\Release\LightningToOneCpp.exe
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\LightningToOneCpp\bin\Release\LightningToOneCpp.pdb
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\LightningToOneCpp\bin\Release\AllToOneCpp.dll
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\LightningToOneCpp\bin\Release\AllToOneCpp.pdb
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\LightningToOneCpp\obj\x86\Release\LightningToOneCpp.csproj.AssemblyReference.cache
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\LightningToOneCpp\obj\x86\Release\LightningToOneCpp.csproj.CoreCompileInputs.cache
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\LightningToOneCpp\obj\x86\Release\LightningToOneCpp.csproj.CopyComplete
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\LightningToOneCpp\obj\x86\Release\LightningToOneCpp.exe
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\LightningToOneCpp\obj\x86\Release\LightningToOneCpp.pdb

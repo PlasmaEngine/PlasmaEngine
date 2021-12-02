@@ -125,6 +125,6 @@ template <>
 void DataDrivenLexer::AddTokenLiteralNode<Token>(StringParam string, Array<GrammarNode<Token>*>& nodes);
 } // namespace Lightning
 
-#  include "DataDrivenLexer.inl"
+#include "DataDrivenLexer.inl"
 
 #endif
