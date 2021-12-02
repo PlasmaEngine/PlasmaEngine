@@ -16,9 +16,9 @@ typedef int AlignedEnum;
 
 enum Enum
 {
-#  define LightningEnumValue(value) value,
-#  include "InstructionsEnum.inl"
-#  undef LightningEnumValue
+#define LightningEnumValue(value) value,
+#include "InstructionsEnum.inl"
+#undef LightningEnumValue
   Count
 };
 

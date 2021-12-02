@@ -1,0 +1,6 @@
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\AllToOneCpp\bin\Debug\AllToOneCpp.dll
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\AllToOneCpp\bin\Debug\AllToOneCpp.pdb
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\AllToOneCpp\obj\x86\Debug\AllToOneCpp.csproj.AssemblyReference.cache
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\AllToOneCpp\obj\x86\Debug\AllToOneCpp.csproj.CoreCompileInputs.cache
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\AllToOneCpp\obj\x86\Debug\AllToOneCpp.dll
+D:\Projects\PlasmaEngine\Source\Lightning\LightningAdditions\ToOneCpp\AllToOneCpp\obj\x86\Debug\AllToOneCpp.pdb

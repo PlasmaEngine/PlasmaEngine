@@ -3,13 +3,13 @@
 #pragma once
 
 #ifndef UseMemoryGraph
-#  define UseMemoryGraph 1
+    #define UseMemoryGraph 1
 #endif
 
 #if UseMemoryGraph
 
-#  include "Graph.hpp"
-#  include "Heap.hpp"
+#include "Graph.hpp"
+#include "Heap.hpp"
 
 #else
 

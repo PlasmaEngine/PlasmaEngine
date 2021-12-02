@@ -610,7 +610,7 @@ public:
     // Checks if the function we were testing was virtual or not
     void AssertIfNotVirtual();
 
-#  include "VirtualTableBinding.inl"
+#include "VirtualTableBinding.inl"
   };
 
   // The signature / size that this compiler uses for function pointers in a
