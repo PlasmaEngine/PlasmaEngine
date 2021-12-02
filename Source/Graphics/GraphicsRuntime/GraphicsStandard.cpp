@@ -147,6 +147,7 @@ LightningDefineStaticLibrary(GraphicsLibrary)
   LightningInitializeType(SubRenderGroupPass);
   LightningInitializeType(TextDefinition);
   LightningInitializeType(Texture);
+  LightningInitializeType(Texture3D);
   LightningInitializeType(TextureData);
   LightningInitializeType(VertexBuffer);
   LightningInitializeType(ViewportInterface);
@@ -190,6 +191,7 @@ void GraphicsLibrary::Initialize()
   InitializeResourceManager(RenderGroupManager);
   InitializeResourceManager(SpriteSourceManager);
   InitializeResourceManager(TextureManager);
+  InitializeResourceManager(Texture3DManager);
   InitializeResourceManager(LightningFragmentManager);
 
   ResourceLibrary::sFragmentType = LightningTypeId(LightningFragment);

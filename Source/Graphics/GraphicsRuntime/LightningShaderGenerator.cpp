@@ -214,7 +214,7 @@ namespace Plasma
         // Build a lookup map to deal with opaque shader types
         HashMap<String, String> lookupMap;
         lookupMap["SampledImage2d"] = "Texture";
-        lookupMap["SampledImage3d"] = "Texture";
+        lookupMap["SampledImage3d"] = "Texture3D";
         lookupMap["SampledImageCube"] = "Texture";
         lookupMap["SampledDepthImage2d"] = "Texture";
 
@@ -272,7 +272,7 @@ namespace Plasma
                             size_t fieldSize;
                             const size_t byteAlignment = sizeof(MaxAlignmentType);
 
-                            if (type->IsA(LightningTypeId(Texture)))
+                            if (type->IsA(LightningTypeId(Texture)) || type->IsA(LightningTypeId(Texture3D)))
                             {
                                 // Textures are stored by their ID's.
                                 fieldSize = sizeof(u64);

@@ -15,7 +15,6 @@ public:
   /// Makes an anonymous Texture resource that can be defined by script and
   /// uploaded to the gpu.
   static HandleOf<Texture> CreateRuntime();
-  static HandleOf<Texture> CreateRuntime3D();
 
   Texture();
 
@@ -124,12 +123,31 @@ public:
   bool mDirty;
 };
 
+class Texture3D : public Texture 
+{
+public:
+    LightningDeclareType(Texture3D, TypeCopyMode::ReferenceType);
+
+    /// Makes an anonymous Texture resource that can be defined by script and
+    /// uploaded to the gpu.
+    static HandleOf<Texture3D> CreateRuntime();
+
+    Texture3D();
+};
+
 /// Resource Manager for Textures.
 class TextureManager : public ResourceManager
 {
 public:
   DeclareResourceManager(TextureManager, Texture);
   TextureManager(BoundType* resourceType);
+};
+
+class Texture3DManager : public ResourceManager
+{
+public:
+    DeclareResourceManager(Texture3DManager, Texture3D);
+    Texture3DManager(BoundType* resourceType);
 };
 
 } // namespace Plasma
