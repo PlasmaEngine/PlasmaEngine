@@ -241,6 +241,8 @@ namespace Plasma
 			{
 				if (spirVType.image.dim == spv::Dim2D)
 					reflectionData.mTypeName = LightningTypeId(Lightning::Image2d)->ToString();
+				else if (spirVType.image.dim == spv::Dim3D)
+					reflectionData.mTypeName = LightningTypeId(Lightning::Image3d)->ToString();
 				else if (spirVType.image.dim == spv::DimCube)
 					reflectionData.mTypeName = LightningTypeId(Lightning::ImageCube)->ToString();
 			}

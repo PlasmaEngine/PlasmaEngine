@@ -135,15 +135,15 @@ public:
   }
 
 // Define instruction functions for all of our opcodes
-#  define LightningEnumValue(Name)                                                                                         \
+#define LightningEnumValue(Name)                                                                                         \
     static void Instruction##Name(ExecutableState* state,                                                              \
                                   Call& call,                                                                          \
                                   ExceptionReport& report,                                                             \
                                   size_t& programCounter,                                                              \
                                   PerFrameData* ourFrame,                                                              \
                                   const Opcode& opcode);
-#  include "InstructionsEnum.inl"
-#  undef LightningEnumValue
+#include "InstructionsEnum.inl"
+#undef LightningEnumValue
 };
 
 // Note: These HAVE to be declared in namespace scope according to the C++ spec

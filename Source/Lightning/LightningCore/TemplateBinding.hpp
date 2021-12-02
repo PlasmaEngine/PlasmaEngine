@@ -33,9 +33,9 @@ public:
   static BoundType* ValidateConstructorBinding(BoundType* type);
 
 // Include all the binding code
-#  include "MethodBinding.inl"
-#  include "VirtualMethodBinding.inl"
-#  include "ConstructorBinding.inl"
+#include "MethodBinding.inl"
+#include "VirtualMethodBinding.inl"
+#include "ConstructorBinding.inl"
 
   //*** BOUND DESTRUCTOR ***// Wraps a destructor call with the Lightning signature
   template <typename Class>

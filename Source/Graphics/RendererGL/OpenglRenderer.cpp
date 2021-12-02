@@ -1422,15 +1422,40 @@ namespace Plasma
                                                    mipHeader->mDataSize,
                                                    mipData);
                         else
-                            glTexImage2D(GlTextureFace(static_cast<TextureFace::Enum>(mipHeader->mFace)),
-                                         mipHeader->mLevel,
-                                         glEnums.mInternalFormat,
-                                         mipHeader->mWidth,
-                                         mipHeader->mHeight,
-                                         0,
-                                         glEnums.mFormat,
-                                         glEnums.mType,
-                                         mipData);
+                        {
+                            switch (info->mType)
+                            {
+                            //TODO: add mip support to 3d textures
+                            case TextureType::Texture3D:
+                                glTexImage3D(GL_TEXTURE_3D,
+                                    0,
+                                    glEnums.mInternalFormat,
+                                    info->mWidth,
+                                    info->mHeight,
+                                    info->mDepth,
+                                    0,
+                                    glEnums.mFormat,
+                                    glEnums.mType,
+                                    nullptr);
+                                break;
+                            case TextureType::TextureCube:
+                            case TextureType::Texture2D:
+                                // Intentional fall through.
+                            default:
+                            {
+                                glTexImage2D(GlTextureFace(static_cast<TextureFace::Enum>(mipHeader->mFace)),
+                                    mipHeader->mLevel,
+                                    glEnums.mInternalFormat,
+                                    mipHeader->mWidth,
+                                    mipHeader->mHeight,
+                                    0,
+                                    glEnums.mFormat,
+                                    glEnums.mType,
+                                    mipData);
+                                break;
+                            }
+                            }
+                        }
                     }
                 }
             }
@@ -1459,6 +1484,7 @@ namespace Plasma
         renderData->mFormat = info->mFormat;
         renderData->mWidth = info->mWidth;
         renderData->mHeight = info->mHeight;
+        renderData->mDepth = info->mDepth;
 
         renderData->mSamplerSettings = 0;
         renderData->mSamplerSettings |= SamplerSettings::AddressingX(info->mAddressingX);
@@ -1555,7 +1581,8 @@ namespace Plasma
 
         info->mWidth = renderData->mWidth;
         info->mHeight = renderData->mHeight;
-        if (info->mWidth == 0 || info->mHeight == 0)
+        info->mDepth = renderData->mDepth;
+        if (info->mWidth == 0 || info->mHeight == 0 || info->mDepth == 0)
             return;
 
         if (IsFloatColorFormat(renderData->mFormat))
@@ -1567,11 +1594,15 @@ namespace Plasma
 
         SetSingleRenderTargets(mSingleTargetFbo, &info->mRenderData, nullptr);
 
-        uint imageSize = info->mWidth * info->mHeight * GetPixelSize(info->mFormat);
+        uint imageSize = info->mWidth * info->mHeight * info->mDepth * GetPixelSize(info->mFormat);
         info->mImage = new byte[imageSize];
 
         GlTextureEnums textureEnums = gTextureEnums[info->mFormat];
-        glReadPixels(0, 0, info->mWidth, info->mHeight, textureEnums.mFormat, textureEnums.mType, info->mImage);
+
+        if(info->mDepth > 1)
+            glGetTextureSubImage(mSingleTargetFbo, 0, 0, 0, 0, info->mWidth, info->mHeight, info->mDepth, textureEnums.mFormat, textureEnums.mType, imageSize, info->mImage);
+        else
+            glReadPixels(0, 0, info->mWidth, info->mHeight, textureEnums.mFormat, textureEnums.mType, info->mImage);
 
         YInvertNonCompressed(info->mImage, info->mWidth, info->mHeight, GetPixelSize(info->mFormat));
 

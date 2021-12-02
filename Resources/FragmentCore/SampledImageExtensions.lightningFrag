@@ -96,3 +96,21 @@ struct SampledImageCubeExtensions
     return ShaderIntrinsics.ImageQuerySize(*this, lod);
   }
 }
+
+struct SampledImage3dExtensions
+{
+  [Extension(typeid(SampledImage3d))]
+  function Sample(uv : Real3) : Real4
+  {
+    uv = SamplerHelper.ConvertUvCoordinate(uv);
+    return ShaderIntrinsics.SampleImplicitLod(*this, uv);
+  }
+  
+  [Extension(typeid(SampledImage3d))]
+  function SampleLod(uv : Real3, lod : Real) : Real4
+  {
+    uv = SamplerHelper.ConvertUvCoordinate(uv);
+    return ShaderIntrinsics.SampleExplicitLod(*this, uv, lod);
+  }
+}
+

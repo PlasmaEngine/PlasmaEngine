@@ -25,6 +25,7 @@ LightningDefineType(Texture, builder, type)
   LightningBindFieldGetter(mCompression);
   LightningBindFieldGetter(mWidth);
   LightningBindFieldGetter(mHeight);
+  LightningBindFieldGetter(mDepth);
   LightningBindGetterProperty(Size);
   LightningBindGetterProperty(Format);
   LightningBindGetterSetterProperty(AddressingX);
@@ -37,6 +38,13 @@ LightningDefineType(Texture, builder, type)
 
   LightningBindOverloadedMethod(Upload, LightningInstanceOverload(void, TextureData&));
   LightningBindOverloadedMethod(SubUpload, LightningInstanceOverload(void, TextureData&, int, int));
+}
+
+LightningDefineType(Texture3D, builder, type)
+{
+    PlasmaBindDocumented();
+
+    LightningBindMethod(CreateRuntime);
 }
 
 HandleOf<Texture> Texture::CreateRuntime()
@@ -364,6 +372,61 @@ TextureManager::TextureManager(BoundType* resourceType) : ResourceManager(resour
   mCategory = "Graphics";
   mCanReload = true;
   mPreview = true;
+}
+
+HandleOf<Texture3D> Texture3D::CreateRuntime()
+{
+    Texture3D* texture = Texture3DManager::CreateRuntime();
+
+    // Allow change of settings on runtime textures
+    texture->mProtected = false;
+
+    PL::gEngine->has(GraphicsEngine)->AddTexture(texture);
+    return texture;
+}
+
+Texture3D::Texture3D()
+{
+    mResourceIconName = cGraphicsIcon;
+    mType = TextureType::Texture3D;
+    mCompression = TextureCompression::None;
+
+    mWidth = 0;
+    mHeight = 0;
+    mDepth = 0;
+
+    mFormat = TextureFormat::None;
+    mAddressingX = TextureAddressing::Clamp;
+    mAddressingY = TextureAddressing::Clamp;
+    mFiltering = TextureFiltering::Nearest;
+    mAnisotropy = TextureAnisotropy::x1;
+    mMipMapping = TextureMipMapping::None;
+    mMaxMipOverride = 0;
+    mCompareMode = TextureCompareMode::Disabled;
+    mCompareFunc = TextureCompareFunc::Never;
+
+    mMipCount = 0;
+    mTotalDataSize = 0;
+    mMipHeaders = nullptr;
+    mImageData = nullptr;
+
+    mProtected = true;
+    mDirty = false;
+}
+
+ImplementResourceManager(Texture3DManager, Texture3D);
+
+Texture3DManager::Texture3DManager(BoundType* resourceType) : ResourceManager(resourceType)
+{
+    //TODO : 3D Texture Loader
+    AddLoader(PTexLoader, new TextureLoader());
+
+    DefaultResourceName = "Grey";
+    mCanAddFile = true;
+    BuildImageFileDialogFilters(mOpenFileFilters);
+    mCategory = "Graphics";
+    mCanReload = true;
+    mPreview = true;
 }
 
 } // namespace Plasma

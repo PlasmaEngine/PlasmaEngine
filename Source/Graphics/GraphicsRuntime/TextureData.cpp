@@ -10,21 +10,30 @@ LightningDefineType(TextureData, builder, type)
   PlasmaBindDocumented();
 
   LightningBindConstructor(TextureFormat::Enum, int, int);
+  LightningBindConstructor(TextureFormat::Enum, int, int, int);
   LightningBindDestructor();
   type->CreatableInScript = true;
 
   LightningBindFieldGetter(mFormat);
   LightningBindFieldGetter(mWidth);
   LightningBindFieldGetter(mHeight);
+  LightningBindFieldGetter(mDepth);
   LightningBindFieldGetter(mPixelCount);
 
   LightningBindOverloadedMethod(Get, LightningInstanceOverload(Vec4, uint));
   LightningBindOverloadedMethod(Get, LightningInstanceOverload(Vec4, uint, uint));
+  LightningBindOverloadedMethod(Get, LightningInstanceOverload(Vec4, uint, uint, uint));
   LightningBindOverloadedMethod(Set, LightningInstanceOverload(void, uint, Vec4));
   LightningBindOverloadedMethod(Set, LightningInstanceOverload(void, uint, uint, Vec4));
+  LightningBindOverloadedMethod(Set, LightningInstanceOverload(void, uint, uint, uint, Vec4));
 }
 
-TextureData::TextureData(TextureFormat::Enum format, int width, int height) : mPixelCount(0), mData(nullptr)
+TextureData::TextureData(TextureFormat::Enum format, int width, int height)
+{
+    TextureData(format, width, height, 1);
+}
+
+TextureData::TextureData(TextureFormat::Enum format, int width, int height, int depth) : mPixelCount(0), mData(nullptr)
 {
   if (IsColorFormat(format) == false)
   {
@@ -34,11 +43,13 @@ TextureData::TextureData(TextureFormat::Enum format, int width, int height) : mP
 
   width = Math::Clamp(width, 1, 4096);
   height = Math::Clamp(height, 1, 4096);
+  depth = Math::Clamp(height, 1, 4096);
 
   mFormat = format;
   mWidth = width;
   mHeight = height;
-  mPixelCount = width * height;
+  mDepth = depth;
+  mPixelCount = width * height * depth;
 
   mPixelSize = GetPixelSize(format);
   mDataSize = mPixelCount * mPixelSize;
@@ -69,13 +80,21 @@ Vec4 TextureData::Get(uint index)
 
 Vec4 TextureData::Get(uint x, uint y)
 {
-  if (x >= mWidth || y >= mHeight)
+    return Get(x, y, 1);
+}
+
+Vec4 TextureData::Get(uint x, uint y, uint z)
+{
+  if (x >= mWidth || y >= mHeight || z >= mDepth)
   {
     DoNotifyException("Error", "Index out of range.");
     return Vec4::cZero;
   }
 
-  return Get(x + y * mWidth);
+  if(mDepth > 1)
+      return Get(x + y * mWidth + z * mHeight);
+  else
+      return Get(x + y * mWidth);
 }
 
 void TextureData::Set(uint index, Vec4 value)
@@ -92,13 +111,22 @@ void TextureData::Set(uint index, Vec4 value)
 
 void TextureData::Set(uint x, uint y, Vec4 value)
 {
-  if (x >= mWidth || y >= mHeight)
+    Set(x, y, 0, value);
+}
+
+void TextureData::Set(uint x, uint y, uint z, Vec4 value)
+{
+  if (x >= mWidth || y >= mHeight || z >= mDepth)
   {
     DoNotifyException("Error", "Index out of range.");
     return;
   }
 
-  Set(x + y * mWidth, value);
+  if(mDepth > 1)
+      Set(x + y * mWidth + z * mHeight, value);
+  else
+      Set(x + y * mWidth, value);
+
 }
 
 } // namespace Plasma
