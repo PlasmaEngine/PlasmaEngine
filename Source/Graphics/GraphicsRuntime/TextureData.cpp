@@ -75,7 +75,10 @@ Vec4 TextureData::Get(uint x, uint y)
     return Vec4::cZero;
   }
 
-  return Get(x + y * mWidth);
+  if(mDepth > 1)
+      return Get(x + y * mWidth + z * mHeight);
+  else
+      return Get(x + y * mWidth);
 }
 
 void TextureData::Set(uint index, Vec4 value)
@@ -98,7 +101,11 @@ void TextureData::Set(uint x, uint y, Vec4 value)
     return;
   }
 
-  Set(x + y * mWidth, value);
+  if(mDepth > 1)
+      Set(x + y * mWidth + z * mHeight, value);
+  else
+      Set(x + y * mWidth, value);
+
 }
 
 } // namespace Plasma
