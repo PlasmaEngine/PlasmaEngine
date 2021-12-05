@@ -65,7 +65,7 @@ target_link_libraries(PlasmaLauncher
     Gameplay
     Geometry
     GraphicsRuntime
-    RendererGL
+    RendererBGFX
     Libpng
     Meta
     NetworkCore

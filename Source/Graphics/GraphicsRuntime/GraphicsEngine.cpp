@@ -701,6 +701,8 @@ void GraphicsEngine::CreateRenderer(OsWindow* mainWindow)
 
   CreateRendererJob* rendererJob = new CreateRendererJob();
   rendererJob->mMainWindowHandle = mainWindowHandle;
+  rendererJob->mSize = mainWindow->GetClientSize();
+  rendererJob->mAPI = RenderAPI::DX12;
   AddRendererJob(rendererJob);
   rendererJob->WaitOnThisJob();
 

@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "Sandtrap_Ext_Ring_Terrain"
+		var ResourceId = 0x607377a27b651175
+		var LoaderType = "Cog"
+		var Version = 0
+	}
+}

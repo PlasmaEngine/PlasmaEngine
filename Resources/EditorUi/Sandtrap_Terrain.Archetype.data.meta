@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "Sandtrap_Terrain"
+		var ResourceId = 0x607306ef3fa57d9a
+		var LoaderType = "Cog"
+		var Version = 0
+	}
+}

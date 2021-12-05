@@ -28,7 +28,7 @@ target_link_libraries(PlasmaEditor
     Gameplay
     Geometry
     GraphicsRuntime
-    RendererGL
+    RendererBGFX
     Libpng
     Meta
     NetworkCore
