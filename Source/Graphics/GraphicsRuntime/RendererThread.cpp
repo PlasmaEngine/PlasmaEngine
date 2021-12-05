@@ -103,13 +103,13 @@ void CreateRendererJob::Execute()
     }
     case RenderAPI::OpenGL:
     {
-      PL::gRenderer = CreateRenderer(mMainWindowHandle, mError);
+      PL::gRenderer = CreateRenderer(mMainWindowHandle, mSize, mAPI, mError);
       break;
     }
     default:
     {
       // OpenGL is the default renderer
-      PL::gRenderer = CreateRenderer(mMainWindowHandle, mError);
+      PL::gRenderer = CreateRenderer(mMainWindowHandle, mSize, mAPI, mError);
       break;
     }
   }

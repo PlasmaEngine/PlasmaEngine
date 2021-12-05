@@ -1,0 +1,32 @@
+[Version:1]
+Cog 
+{
+	var Name = "Sandtrap_Terrain"
+	Transform 
+	{
+		var Translation = Real3{9.70266724, -31.4565029, 19.5220699}
+		var Scale = Real3{211.186905, 211.186905, 211.186905}
+		var Rotation = Quaternion{0, 0, 0, 1}
+	}
+	Model 
+	{
+		var Visible = true
+		var ViewCulling = true
+		var VisibilityEvents = true
+		var OverrideBoundingBox = false
+		var LocalAabbCenter = Real3{0, 0, 0}
+		var LocalAabbHalfExtents = Real3{1, 1, 1}
+		var GroupSortValue = 0
+		var Material = "583afb5e7bf75e18:PlasmaMaterial"
+		var Mesh = "607306ef3f9947c2:Sandtrap_Terrain"
+	}
+	ConvexMeshCollider 
+	{
+		var Ghost = false
+		var SendsEvents = true
+		var Material = "4de020863e872da8:DefaultPhysicsMaterial"
+		var CollisionGroup = "4e740859314e5515:DefaultGroup"
+		var Offset = Real3{0, 0, 0}
+		var ConvexMesh = "607306ef3f9947ed:Sandtrap_Terrain"
+	}
+}

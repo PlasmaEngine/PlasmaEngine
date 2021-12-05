@@ -1,0 +1,23 @@
+[Version:1]
+Cog 
+{
+	var Name = "Sandtrap_Ext_Ring_Terrain"
+	Transform 
+	{
+		var Translation = Real3{-1258.84814, -25.2188988, -636.274536}
+		var Scale = Real3{0.99999994, 1, 0.99999994}
+		var Rotation = Quaternion{0, 0.12495219, 0, 0.992162764}
+	}
+	Model 
+	{
+		var Visible = true
+		var ViewCulling = true
+		var VisibilityEvents = true
+		var OverrideBoundingBox = false
+		var LocalAabbCenter = Real3{0, 0, 0}
+		var LocalAabbHalfExtents = Real3{1, 1, 1}
+		var GroupSortValue = 0
+		var Material = "583afb5e7bf75e18:PlasmaMaterial"
+		var Mesh = "607377a27b5d1ddf:Sandtrap_Ext_Ring_Terrain"
+	}
+}

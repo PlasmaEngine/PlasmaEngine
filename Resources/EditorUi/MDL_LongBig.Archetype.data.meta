@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "MDL_LongBig"
+		var ResourceId = 0x60b41b576fecf236
+		var LoaderType = "Cog"
+		var Version = 0
+	}
+}

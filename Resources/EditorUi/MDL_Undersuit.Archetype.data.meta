@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "MDL_Undersuit"
+		var ResourceId = 0x6092fcf06dd007a1
+		var LoaderType = "Cog"
+		var Version = 0
+	}
+}

@@ -7,7 +7,7 @@ namespace Plasma
     // Implemented by api specific renderer (just call C++ delete on the renderer to
     // destroy it)
     class Renderer;
-    Renderer* CreateRenderer(OsHandle windowHandle, String& error);
+    Renderer* CreateRenderer(OsHandle windowHandle, IntVec2 resolution, RenderAPI::Enum api, String& error);
 
     extern const String cPostVertex;
     StringParam GetCoreVertexFragmentName(CoreVertexType::Enum type);

@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "Damnation_Mesh"
+		var ResourceId = 0x604bbab04f28bc1d
+		var LoaderType = "Cog"
+		var Version = 0
+	}
+}
