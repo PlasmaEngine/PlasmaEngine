@@ -2,9 +2,9 @@
 
 namespace Plasma
 {
-	static void DumpCaps()
+	void RendererBGFX::DumpCaps()
 	{
-		PlasmaPrint("\n");
+		PlasmaPrint("----- Renderer Info Begin -----\n");
 
 		const bgfx::Caps* caps = bgfx::getCaps();
 
@@ -17,28 +17,24 @@ namespace Plasma
 			for (uint32_t ii = 0; ii < caps->numGPUs; ++ii)
 			{
 				const bgfx::Caps::GPU& gpu = caps->gpu[ii];
-				UnusedParameter(gpu);
 
-				PlasmaPrint("\t %d: %04x %04x \n"
-					, ii
-					, gpu.deviceId
-					, gpu.vendorId
+                PlasmaPrint("\t %d: %04x %04x \n"
+                    , ii
+                    , gpu.deviceId
+                    , gpu.vendorId
 				);
 			}
 
 			PlasmaPrint("\n");
 		}
 
-
-		PlasmaPrint("\n");
-    
-		PlasmaPrint("Capabilities (renderer %s, vendor 0x%04x, device 0x%04x): \n"
-			, bgfx::getRendererName(caps->rendererType)
-			, caps->vendorId
-			, caps->deviceId
+		PlasmaPrint("Capabilities (renderer %s, vendor %s, device 0x%04x): \n"
+            , bgfx::getRendererName(caps->rendererType)
+            , GetVendorName(caps->vendorId).c_str()
+            , caps->deviceId
 		);
 
-        PlasmaPrint("\n");
+        PlasmaPrint("----- Renderer Info End -----\n");
 	}
 
 
@@ -65,6 +61,19 @@ namespace Plasma
             , 1.0f
             , 0
         );
+
+        m_vertexLayout.begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Bitangent, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::TexCoord1, 2, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Color1, 4, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Indices, 4, bgfx::AttribType::Uint8)
+            .add(bgfx::Attrib::Weight, 4, bgfx::AttribType::Float);
+
     }
 
     bgfx::RendererType::Enum RendererBGFX::PlasmaApiToBGFX(RenderAPI::Enum api)
@@ -153,39 +162,82 @@ namespace Plasma
 
     RendererBGFX::~RendererBGFX()
     {
+        bgfx::shutdown();
     }
 
     void RendererBGFX::BuildOrthographicTransform(Mat4Ref matrix, float size, float aspect, float nearPlane, float farPlane)
     {
+        BuildOrthographicTransformGl(matrix, size, aspect, nearPlane, farPlane);
     }
 
     void RendererBGFX::BuildPerspectiveTransform(Mat4Ref matrix, float fov, float aspect, float nearPlane, float farPlane)
     {
+        BuildPerspectiveTransformGl(matrix, fov, aspect, nearPlane, farPlane);
+    }
+
+    bool RendererBGFX::YInvertImageData(TextureType::Enum type)
+    {
+        return (type != TextureType::TextureCube);
     }
 
     MaterialRenderData* RendererBGFX::CreateMaterialRenderData()
     {
-        return new MaterialRenderData();
+        BGFXMaterialData* materialData = new BGFXMaterialData();
+        materialData->mResourceId = 0;
+        return materialData;
     }
 
     MeshRenderData* RendererBGFX::CreateMeshRenderData()
     {
-        return new MeshRenderData();
+        BGFXMeshData* meshData = new BGFXMeshData();
+        meshData->mVertexBuffer = BGFX_INVALID_HANDLE;
+        meshData->mIndexBuffer = BGFX_INVALID_HANDLE;
+        return meshData;
     }
 
     TextureRenderData* RendererBGFX::CreateTextureRenderData()
     {
         BGFXTextureData* textureData = new BGFXTextureData();
         textureData->mTextureHandle = BGFX_INVALID_HANDLE;
+        textureData->mFormat = TextureFormat::None;
         return textureData;
     }
 
     void RendererBGFX::AddMaterial(AddMaterialInfo* info)
     {
+        BGFXMaterialData* materialData = static_cast<BGFXMaterialData*>(info->mRenderData);
+
+        materialData->mCompositeName = info->mCompositeName;
+        materialData->mResourceId = info->mMaterialId;
     }
 
     void RendererBGFX::AddMesh(AddMeshInfo* info)
     {
+        BGFXMeshData* meshData = static_cast<BGFXMeshData*>(info->mRenderData);
+        if (bgfx::isValid(meshData->mVertexBuffer))
+        {
+            bgfx::destroy(meshData->mVertexBuffer);
+        }
+        if (bgfx::isValid(meshData->mIndexBuffer))
+        {
+            bgfx::destroy(meshData->mIndexBuffer);
+        }
+
+        if (info->mVertexData == nullptr)
+        {
+            meshData->mVertexBuffer = BGFX_INVALID_HANDLE;
+            meshData->mIndexBuffer = BGFX_INVALID_HANDLE;
+            meshData->mPrimitiveType = info->mPrimitiveType;
+            return;
+        }
+
+        meshData->mVertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(info->mVertexData, info->mVertexCount * info->mVertexSize), m_vertexLayout);
+        meshData->mIndexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(info->mIndexData, info->mIndexCount * info->mIndexSize));
+
+        delete[] info->mVertexData;
+        delete[] info->mIndexData;
+
+        meshData->mBones.Assign(info->mBones.All());
     }
 
     void RendererBGFX::AddTexture(AddTextureInfo* info)
@@ -196,24 +248,19 @@ namespace Plasma
         {
             bgfx::destroy(textureData->mTextureHandle);
         }
+        if (bgfx::isValid(textureData->mTextureHandle))
+        {
+            bgfx::destroy(textureData->mTextureHandle);
+        }
+
         switch (info->mType)
         {
         case TextureType::Texture2D:
-        {
-            uint64_t flags = 0;
-            textureData->mTextureHandle = bgfx::createTexture2D(info->mWidth, info->mHeight, info->mMipCount > 0, 1, PlasmaFormatToBGFX(info->mFormat), flags);
-        }
-        break;
-        case TextureType::Texture3D:
-        {
-
-        }
-        break;
+            textureData->mTextureHandle = bgfx::createTexture2D(info->mWidth, info->mHeight, info->mMipCount > 0, 1, PlasmaFormatToBGFX(info->mFormat));
+            break;
         case TextureType::TextureCube:
-        {
-
-        }
-        break;
+            break;
+        case TextureType::Texture3D:
         default:
             break;
         }
@@ -288,5 +335,20 @@ namespace Plasma
 
     void RendererBGFX::DoRenderTasks(RenderTasks* renderTasks, RenderQueues* renderQueues)
     {
+    }
+    String RendererBGFX::GetVendorName(uint16_t id)
+    {
+        if (id == VendorID_AMD)
+        {
+            return "AMD";
+        }
+        else if (id == VendorID_NVIDIA)
+        {
+            return "NVidia";
+        }
+        else
+        {
+            return "Vendor to be added";
+        }
     }
 }
