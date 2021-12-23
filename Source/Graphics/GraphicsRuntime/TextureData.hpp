@@ -15,6 +15,7 @@ public:
   LightningDeclareType(TextureData, TypeCopyMode::ReferenceType);
 
   TextureData(TextureFormat::Enum format, int width, int height);
+  TextureData(TextureFormat::Enum format, int width, int height, int depth);
   ~TextureData();
 
   /// Memory format of the stored pixel data.
@@ -26,6 +27,9 @@ public:
   /// Height of the texture data in pixels.
   uint mHeight;
 
+  /// Depth of the texture data in pixels.
+  uint mDepth;
+
   /// Total number of pixels in texture data.
   uint mPixelCount;
 
@@ -35,11 +39,17 @@ public:
   /// Returns the pixel values at the given index.
   Vec4 Get(uint x, uint y);
 
+  /// Returns the pixel values at the given index.
+  Vec4 Get(uint x, uint y, uint z);
+
   /// Sets the pixel values at the given index.
   void Set(uint index, Vec4 value);
 
   /// Sets the pixel values at the given index.
   void Set(uint x, uint y, Vec4 value);
+
+  /// Sets the pixel values at the given index.
+  void Set(uint x, uint y, uint z, Vec4 value);
 
   // Internal
 

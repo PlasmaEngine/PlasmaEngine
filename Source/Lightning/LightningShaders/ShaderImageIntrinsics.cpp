@@ -835,6 +835,7 @@ void AddImageFunctions(Lightning::LibraryBuilder& builder, Lightning::BoundType*
   // AddImageQuerySize(builder, type, sampler2dDepthSet, int2Type);
   // Image Query Lod
   AddImageQueryLod(builder, type, sampler2dSet, real2Type, real2Type);
+  AddImageQueryLod(builder, type, sampler3dSet, real3Type, real3Type);
   AddImageQueryLod(builder, type, sampler2dDepthSet, real2Type, real2Type);
   AddImageQueryLod(builder, type, samplerCubeSet, real3Type, real2Type);
   // Image Query Levels
