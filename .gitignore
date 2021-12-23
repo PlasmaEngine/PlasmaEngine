@@ -36,6 +36,7 @@ node_modules/
 enc_temp_folder/
 .vs
 .vscode/ipch
+.idea
 
 External/
 
@@ -43,3 +44,4 @@ Source/Core/Common/PlasmaConfig.hpp
 
 Installer/
 CMakeSettings.json
+cmake-build-**/

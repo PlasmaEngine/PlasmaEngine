@@ -36,7 +36,7 @@ DeclareEnum10(
     Shutdown);
 
 // Runs through phases of initialization, allowing platforms that don't support threading
-// to yeild time back to the OS/Browser between updates. This also unifies Editor/Game/Launcher startup.
+// to yield time back to the OS/Browser between updates. This also unifies Editor/Game/Launcher startup.
 class PlasmaStartup
 {
 public:
@@ -68,7 +68,7 @@ protected:
   static int sReturnCode;
 
   // During any point of initialization the user can set this to quit out.
-  // Gracefull shutdown is not guaranteed.
+  // Graceful shutdown is not guaranteed.
   bool mExit = false;
 
   // The order these are declared is the order they will be called.
@@ -102,7 +102,7 @@ private:
   ExecutableState* mState = nullptr;
   LightningSetup* mLightningSetup = nullptr;
 
-  Array<LibraryInitializer*> mLibararyInitializers;
+  Array<LibraryInitializer*> mLibraryInitializers;
 
   // Initialize:
   UniquePointer<DebuggerListener> mDebuggerListener;

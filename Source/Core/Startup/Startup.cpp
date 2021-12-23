@@ -110,15 +110,15 @@ void PlasmaStartup::MainLoopFunction(void* userData)
 
 void PlasmaStartup::Initialize()
 {
-    mLibararyInitializers.PushBack(new TypedLibraryInitializer<EngineLibrary>());
-    mLibararyInitializers.PushBack(new TypedLibraryInitializer<GraphicsLibrary>());
-    mLibararyInitializers.PushBack(new TypedLibraryInitializer<PhysicsLibrary>());
-    mLibararyInitializers.PushBack(new TypedLibraryInitializer<NetworkingLibrary>());
-    mLibararyInitializers.PushBack(new TypedLibraryInitializer<SoundLibrary>());
-    mLibararyInitializers.PushBack(new TypedLibraryInitializer<WidgetLibrary>());
-    mLibararyInitializers.PushBack(new TypedLibraryInitializer<GameplayLibrary>());
-    mLibararyInitializers.PushBack(new TypedLibraryInitializer<EditorLibrary>());
-    mLibararyInitializers.PushBack(new TypedLibraryInitializer<UiWidgetLibrary>());
+    mLibraryInitializers.PushBack(new TypedLibraryInitializer<EngineLibrary>());
+    mLibraryInitializers.PushBack(new TypedLibraryInitializer<GraphicsLibrary>());
+    mLibraryInitializers.PushBack(new TypedLibraryInitializer<PhysicsLibrary>());
+    mLibraryInitializers.PushBack(new TypedLibraryInitializer<NetworkingLibrary>());
+    mLibraryInitializers.PushBack(new TypedLibraryInitializer<SoundLibrary>());
+    mLibraryInitializers.PushBack(new TypedLibraryInitializer<WidgetLibrary>());
+    mLibraryInitializers.PushBack(new TypedLibraryInitializer<GameplayLibrary>());
+    mLibraryInitializers.PushBack(new TypedLibraryInitializer<EditorLibrary>());
+    mLibraryInitializers.PushBack(new TypedLibraryInitializer<UiWidgetLibrary>());
 
   // Set the log and error handlers so debug printing and asserts will print to
   // the any debugger output (such as the Visual Studio Output Window).
@@ -201,9 +201,9 @@ void PlasmaStartup::Initialize()
   ContentMetaLibrary::Initialize();
   SpatialPartitionLibrary::Initialize();
 
-  for (size_t i = 0; i < mLibararyInitializers.Size(); ++i)
+  for (size_t i = 0; i < mLibraryInitializers.Size(); ++i)
   {
-      mLibararyInitializers[i]->Initialize();
+      mLibraryInitializers[i]->Initialize();
   }
 
   LightningScriptLibrary::Initialize();
@@ -381,10 +381,10 @@ void PlasmaStartup::Shutdown()
     // Shutdown in reverse order
     LightningScriptLibrary::Shutdown();
 
-    for (size_t i = 0; i < mLibararyInitializers.Size(); ++i)
+    for (size_t i = 0; i < mLibraryInitializers.Size(); ++i)
     {
-        size_t index = mLibararyInitializers.Size() - i - 1;
-        mLibararyInitializers[index]->Shutdown();
+        size_t index = mLibraryInitializers.Size() - i - 1;
+        mLibraryInitializers[index]->Shutdown();
     }
 
     SpatialPartitionLibrary::Shutdown();
@@ -397,10 +397,10 @@ void PlasmaStartup::Shutdown()
     // ClearLibrary
     LightningScriptLibrary::GetInstance().ClearLibrary();
 
-    for (size_t i = 0; i < mLibararyInitializers.Size(); ++i)
+    for (size_t i = 0; i < mLibraryInitializers.Size(); ++i)
     {
-        size_t index = mLibararyInitializers.Size() - i - 1;
-        mLibararyInitializers[index]->ClearLibrary();
+        size_t index = mLibraryInitializers.Size() - i - 1;
+        mLibraryInitializers[index]->ClearLibrary();
     }
 
     SpatialPartitionLibrary::GetInstance().ClearLibrary();
@@ -412,10 +412,10 @@ void PlasmaStartup::Shutdown()
     // Destroy
     LightningScriptLibrary::Destroy();
 
-    for (size_t i = 0; i < mLibararyInitializers.Size(); ++i)
+    for (size_t i = 0; i < mLibraryInitializers.Size(); ++i)
     {
-        size_t index = mLibararyInitializers.Size() - i - 1;
-        mLibararyInitializers[index]->Destroy();
+        size_t index = mLibraryInitializers.Size() - i - 1;
+        mLibraryInitializers[index]->Destroy();
     }
 
     SpatialPartitionLibrary::Destroy();
