@@ -38,8 +38,6 @@ enc_temp_folder/
 .vscode/ipch
 .idea
 
-External/
-
 Source/Core/Common/PlasmaConfig.hpp
 
 Installer/
