@@ -74,6 +74,13 @@ namespace Plasma
         virtual void ShowProgress(ShowProgressInfo* info);
 
         virtual void DoRenderTasks(RenderTasks* renderTasks, RenderQueues* renderQueues);
+        void DoRenderTaskRange(RenderTaskRange& taskRange);
+        void DoRenderTaskClearTarget(RenderTaskClearTarget* task);
+        void DoRenderTaskRenderPass(RenderTaskRenderPass* task);
+        void DoRenderTaskPostProcess(RenderTaskPostProcess* task);
+        void DoRenderTaskBackBufferBlit(RenderTaskBackBufferBlit* task);
+        void DoRenderTaskTextureUpdate(RenderTaskTextureUpdate* task);
+        void DoRenderTaskCompute(RenderTaskCompute* task);
 
         void DelayedRenderDataDestruction();
         void DestroyRenderData(BGFXMaterialData* renderData);
@@ -93,6 +100,16 @@ namespace Plasma
         bgfx::TextureFormat::Enum PlasmaFormatToBGFX(TextureFormat::Enum);
 
         bgfx::UniformHandle m_texColor;
+
+
+        RenderTasks* mRenderTasks;
+        RenderQueues* mRenderQueues;
+        FrameBlock* mFrameBlock;
+        ViewBlock* mViewBlock;
+        uint mShaderInputsId;
+        String mRenderPassName;
+
+
 
         Array<BGFXMaterialData*> mMaterialRenderDataToDestroy;
         Array<BGFXMeshData*> mMeshRenderDataToDestroy;

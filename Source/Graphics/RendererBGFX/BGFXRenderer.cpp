@@ -367,7 +367,105 @@ namespace Plasma
 
     void RendererBGFX::DoRenderTasks(RenderTasks* renderTasks, RenderQueues* renderQueues)
     {
+        ZoneScoped;
+        mRenderTasks = renderTasks;
+        mRenderQueues = renderQueues;
+
+        forRange(RenderTaskRange& taskRange, mRenderTasks->mRenderTaskRanges.All())
+            DoRenderTaskRange(taskRange);
+
+        {
+            ZoneScopedN("SwapBuffers");
+//            TracyGpuZone("SwapBuffer")
+//            plGlSwapBuffers(this);
+//            TracyGpuCollect;
+        }
+
+        {
+            ZoneScopedN("DestroyRenderData");
+            DelayedRenderDataDestruction();
+            //DestroyUnusedSamplers();
+        }
     }
+
+    void RendererBGFX::DoRenderTaskRange(RenderTaskRange &taskRange) {
+        mFrameBlock = &mRenderQueues->mFrameBlocks[taskRange.mFrameBlockIndex];
+        mViewBlock = &mRenderQueues->mViewBlocks[taskRange.mViewBlockIndex];
+
+        uint taskIndex = taskRange.mTaskIndex;
+        for (uint i = 0; i < taskRange.mTaskCount; ++i)
+        {
+            ErrorIf(taskIndex >= mRenderTasks->mRenderTaskBuffer.mCurrentIndex, "Render task data is not valid.");
+            RenderTask* task = (RenderTask*)&mRenderTasks->mRenderTaskBuffer.mRenderTaskData[taskIndex];
+
+            switch (task->mId)
+            {
+                case RenderTaskType::ClearTarget:
+                    DoRenderTaskClearTarget(static_cast<RenderTaskClearTarget*>(task));
+                    taskIndex += sizeof(RenderTaskClearTarget);
+                    break;
+
+                case RenderTaskType::RenderPass:
+                {
+                    RenderTaskRenderPass* renderPass = static_cast<RenderTaskRenderPass*>(task);
+                    DoRenderTaskRenderPass(renderPass);
+                    // RenderPass tasks can have multiple following task entries for sub
+                    // RenderGroup settings. Have to index past all sub tasks.
+                    taskIndex += sizeof(RenderTaskRenderPass) * (renderPass->mSubRenderGroupCount + 1);
+                    i += renderPass->mSubRenderGroupCount;
+                }
+                    break;
+
+                case RenderTaskType::PostProcess:
+                    DoRenderTaskPostProcess(static_cast<RenderTaskPostProcess*>(task));
+                    taskIndex += sizeof(RenderTaskPostProcess);
+                    break;
+
+                case RenderTaskType::BackBufferBlit:
+                    DoRenderTaskBackBufferBlit(static_cast<RenderTaskBackBufferBlit*>(task));
+                    taskIndex += sizeof(RenderTaskBackBufferBlit);
+                    break;
+
+                case RenderTaskType::TextureUpdate:
+                    DoRenderTaskTextureUpdate(static_cast<RenderTaskTextureUpdate*>(task));
+                    taskIndex += sizeof(RenderTaskTextureUpdate);
+                    break;
+                case RenderTaskType::ComputePass:
+                    Warn("Compute: Implementation Unfinied");
+                    DoRenderTaskCompute(static_cast<RenderTaskCompute*>(task));
+                    taskIndex += sizeof(RenderTaskCompute);
+                    break;
+                default:
+                    Error("Render task not implemented.");
+                    break;
+            }
+        }
+    }
+
+    void RendererBGFX::DoRenderTaskClearTarget(RenderTaskClearTarget *task) {
+
+    }
+
+    void RendererBGFX::DoRenderTaskRenderPass(RenderTaskRenderPass *task) {
+
+    }
+
+    void RendererBGFX::DoRenderTaskPostProcess(RenderTaskPostProcess *task) {
+
+    }
+
+    void RendererBGFX::DoRenderTaskBackBufferBlit(RenderTaskBackBufferBlit *task) {
+
+    }
+
+    void RendererBGFX::DoRenderTaskTextureUpdate(RenderTaskTextureUpdate *task) {
+
+    }
+
+    void RendererBGFX::DoRenderTaskCompute(RenderTaskCompute *task) {
+
+    }
+
     String RendererBGFX::GetVendorName(uint16_t id)
     {
         if (id == VendorID_AMD)
