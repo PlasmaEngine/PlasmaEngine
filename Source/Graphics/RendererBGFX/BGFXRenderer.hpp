@@ -75,6 +75,11 @@ namespace Plasma
 
         virtual void DoRenderTasks(RenderTasks* renderTasks, RenderQueues* renderQueues);
 
+        void DelayedRenderDataDestruction();
+        void DestroyRenderData(BGFXMaterialData* renderData);
+        void DestroyRenderData(BGFXMeshData* renderData);
+        void DestroyRenderData(BGFXTextureData* renderData);
+
     private:
 
         void DumpCaps();
@@ -89,6 +94,9 @@ namespace Plasma
 
         bgfx::UniformHandle m_texColor;
 
+        Array<BGFXMaterialData*> mMaterialRenderDataToDestroy;
+        Array<BGFXMeshData*> mMeshRenderDataToDestroy;
+        Array<BGFXTextureData*> mTextureRenderDataToDestroy;
     };
 
     Renderer* CreateRenderer(OsHandle windowHandle, IntVec2 resolution, RenderAPI::Enum api, String& error)

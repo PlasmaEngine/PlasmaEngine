@@ -1,4 +1,6 @@
 #include "Precompiled.hpp"
+#include "BGFXRenderer.hpp"
+
 
 namespace Plasma
 {
@@ -295,31 +297,17 @@ namespace Plasma
 
     void RendererBGFX::RemoveMaterial(MaterialRenderData* data)
     {
+        mMaterialRenderDataToDestroy.PushBack(static_cast<BGFXMaterialData*>(data));
     }
 
     void RendererBGFX::RemoveMesh(MeshRenderData* data)
     {
-        BGFXMeshData* meshData = static_cast<BGFXMeshData*>(data);
-
-        if(bgfx::isValid(meshData->mIndexBuffer))
-        {
-            bgfx::destroy(meshData->mIndexBuffer);
-        }
-
-        if(bgfx::isValid(meshData->mVertexBuffer))
-        {
-            bgfx::destroy(meshData->mVertexBuffer);
-        }
+        mMeshRenderDataToDestroy.PushBack(static_cast<BGFXMeshData*>(data));
     }
 
     void RendererBGFX::RemoveTexture(TextureRenderData* data)
     {
-        BGFXTextureData* textureData = static_cast<BGFXTextureData*>(data);
-
-        if(bgfx::isValid(textureData->mTextureHandle))
-        {
-            bgfx::destroy(textureData->mTextureHandle);
-        }
+        mTextureRenderDataToDestroy.PushBack(static_cast<BGFXTextureData*>(data));
     }
 
     bool RendererBGFX::GetLazyShaderCompilation()
@@ -393,6 +381,46 @@ namespace Plasma
         else
         {
             return "Vendor to be added";
+        }
+    }
+
+    void RendererBGFX::DelayedRenderDataDestruction()
+    {
+        forRange(BGFXMaterialData* renderData, mMaterialRenderDataToDestroy.All())
+                        DestroyRenderData(renderData);
+        forRange(BGFXMeshData* renderData, mMeshRenderDataToDestroy.All())
+                        DestroyRenderData(renderData);
+        forRange(BGFXTextureData* renderData, mTextureRenderDataToDestroy.All())
+                        DestroyRenderData(renderData);
+
+        mMaterialRenderDataToDestroy.Clear();
+        mMeshRenderDataToDestroy.Clear();
+        mTextureRenderDataToDestroy.Clear();
+    }
+
+    void  RendererBGFX::DestroyRenderData(BGFXMaterialData* renderData)
+    {
+
+    }
+    void RendererBGFX::DestroyRenderData(BGFXMeshData* renderData)
+    {
+        if(bgfx::isValid(renderData->mIndexBuffer))
+        {
+            bgfx::destroy(renderData->mIndexBuffer);
+        }
+
+        if(bgfx::isValid(renderData->mVertexBuffer))
+        {
+            bgfx::destroy(renderData->mVertexBuffer);
+        }
+
+        renderData->mBones.Clear();
+}
+    void  RendererBGFX::DestroyRenderData(BGFXTextureData* renderData)
+    {
+        if(bgfx::isValid(renderData->mTextureHandle))
+        {
+            bgfx::destroy(renderData->mTextureHandle);
         }
     }
 }
