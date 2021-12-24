@@ -400,7 +400,7 @@ namespace Plasma
 
     void  RendererBGFX::DestroyRenderData(BGFXMaterialData* renderData)
     {
-
+        delete renderData;
     }
     void RendererBGFX::DestroyRenderData(BGFXMeshData* renderData)
     {
@@ -415,6 +415,7 @@ namespace Plasma
         }
 
         renderData->mBones.Clear();
+        delete renderData;
 }
     void  RendererBGFX::DestroyRenderData(BGFXTextureData* renderData)
     {
@@ -422,5 +423,6 @@ namespace Plasma
         {
             bgfx::destroy(renderData->mTextureHandle);
         }
+        delete renderData;
     }
 }
