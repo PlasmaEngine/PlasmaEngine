@@ -442,27 +442,55 @@ namespace Plasma
         }
     }
 
-    void RendererBGFX::DoRenderTaskClearTarget(RenderTaskClearTarget *task) {
+    void RendererBGFX::DoRenderTaskClearTarget(RenderTaskClearTarget *task)
+    {
+        uint16_t clear = BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL;
+        bgfx::setViewClear(0, clear, ToByteColor(task->mColor), task->mDepth, task->mStencil);
+    }
+
+    void RendererBGFX::DoRenderTaskRenderPass(RenderTaskRenderPass *task)
+    {
 
     }
 
-    void RendererBGFX::DoRenderTaskRenderPass(RenderTaskRenderPass *task) {
+    void RendererBGFX::DoRenderTaskPostProcess(RenderTaskPostProcess *task)
+    {
 
     }
 
-    void RendererBGFX::DoRenderTaskPostProcess(RenderTaskPostProcess *task) {
+    void RendererBGFX::DoRenderTaskBackBufferBlit(RenderTaskBackBufferBlit *task)
+    {
 
     }
 
-    void RendererBGFX::DoRenderTaskBackBufferBlit(RenderTaskBackBufferBlit *task) {
+    void RendererBGFX::DoRenderTaskTextureUpdate(RenderTaskTextureUpdate *task)
+    {
+        ZoneScoped;
+        AddTextureInfo info;
+        info.mRenderData = task->mRenderData;
+        info.mWidth = task->mWidth;
+        info.mDepth = task->mDepth;
+        info.mHeight = task->mHeight;
+        info.mType = task->mType;
+        info.mFormat = task->mFormat;
+        info.mAddressingX = task->mAddressingX;
+        info.mAddressingY = task->mAddressingY;
+        info.mFiltering = task->mFiltering;
+        info.mCompareMode = task->mCompareMode;
+        info.mCompareFunc = task->mCompareFunc;
+        info.mAnisotropy = task->mAnisotropy;
+        info.mMipMapping = task->mMipMapping;
 
+        info.mMipCount = 0;
+        info.mTotalDataSize = 0;
+        info.mImageData = nullptr;
+        info.mMipHeaders = nullptr;
+
+        AddTexture(&info);
     }
 
-    void RendererBGFX::DoRenderTaskTextureUpdate(RenderTaskTextureUpdate *task) {
-
-    }
-
-    void RendererBGFX::DoRenderTaskCompute(RenderTaskCompute *task) {
+    void RendererBGFX::DoRenderTaskCompute(RenderTaskCompute *task)
+    {
 
     }
 
