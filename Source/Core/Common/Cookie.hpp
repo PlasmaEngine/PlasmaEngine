@@ -33,7 +33,7 @@ namespace Plasma
             return __super::Hash();
         }
 
-        bool operator==(const TypedCookie& rhs) const = default;
+        bool operator==(const TypedCookie& rhs) const {};
 
     private:
         static size_t mLastCookie;

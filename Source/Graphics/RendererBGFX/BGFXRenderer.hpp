@@ -86,6 +86,9 @@ namespace Plasma
 
         bgfx::RendererType::Enum PlasmaApiToBGFX(RenderAPI::Enum api);
         bgfx::TextureFormat::Enum PlasmaFormatToBGFX(TextureFormat::Enum);
+
+        bgfx::UniformHandle m_texColor;
+
     };
 
     Renderer* CreateRenderer(OsHandle windowHandle, IntVec2 resolution, RenderAPI::Enum api, String& error)

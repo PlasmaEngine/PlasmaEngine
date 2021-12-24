@@ -51,6 +51,8 @@ namespace Plasma
 
         bgfx::init(bgfxInit);
 
+        m_texColor = bgfx::createUniform("s_texColor",  bgfx::UniformType::Sampler);
+
         bgfx::setDebug(BGFX_DEBUG_TEXT | BGFX_DEBUG_STATS);
 
         DumpCaps();
@@ -162,6 +164,7 @@ namespace Plasma
 
     RendererBGFX::~RendererBGFX()
     {
+        bgfx::destroy(m_texColor);
         bgfx::shutdown();
     }
 
@@ -253,17 +256,41 @@ namespace Plasma
             bgfx::destroy(textureData->mTextureHandle);
         }
 
+        // TODO (@Davey): Layer params may need some fancy focus?
         switch (info->mType)
         {
         case TextureType::Texture2D:
             textureData->mTextureHandle = bgfx::createTexture2D(info->mWidth, info->mHeight, info->mMipCount > 0, 1, PlasmaFormatToBGFX(info->mFormat));
             break;
         case TextureType::TextureCube:
+            textureData->mTextureHandle = bgfx::createTextureCube(info->mWidth, info->mMipCount > 0, 1, PlasmaFormatToBGFX(info->mFormat));
             break;
         case TextureType::Texture3D:
+            textureData->mTextureHandle = bgfx::createTexture3D(info->mWidth, info->mHeight, info->mDepth, info->mMipCount > 0, PlasmaFormatToBGFX(info->mFormat));
         default:
             break;
         }
+
+       if(bgfx::isValid(textureData->mTextureHandle))
+       {
+           bgfx::setTexture(0, m_texColor, textureData->mTextureHandle);
+       }
+
+        textureData->mType   = info->mType;
+        textureData->mFormat = info->mFormat;
+        textureData->mWidth  = info->mWidth;
+        textureData->mHeight = info->mHeight;
+        textureData->mDepth  = info->mDepth;
+
+        textureData->mSamplerSettings = 0;
+        textureData->mSamplerSettings |= SamplerSettings::AddressingX(info->mAddressingX);
+        textureData->mSamplerSettings |= SamplerSettings::AddressingY(info->mAddressingY);
+        textureData->mSamplerSettings |= SamplerSettings::Filtering(info->mFiltering);
+        textureData->mSamplerSettings |= SamplerSettings::CompareMode(info->mCompareMode);
+        textureData->mSamplerSettings |= SamplerSettings::CompareFunc(info->mCompareFunc);
+
+        delete[] info->mImageData;
+        delete[] info->mMipHeaders;
     }
 
     void RendererBGFX::RemoveMaterial(MaterialRenderData* data)
