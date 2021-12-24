@@ -299,10 +299,27 @@ namespace Plasma
 
     void RendererBGFX::RemoveMesh(MeshRenderData* data)
     {
+        BGFXMeshData* meshData = static_cast<BGFXMeshData*>(data);
+
+        if(bgfx::isValid(meshData->mIndexBuffer))
+        {
+            bgfx::destroy(meshData->mIndexBuffer);
+        }
+
+        if(bgfx::isValid(meshData->mVertexBuffer))
+        {
+            bgfx::destroy(meshData->mVertexBuffer);
+        }
     }
 
     void RendererBGFX::RemoveTexture(TextureRenderData* data)
     {
+        BGFXTextureData* textureData = static_cast<BGFXTextureData*>(data);
+
+        if(bgfx::isValid(textureData->mTextureHandle))
+        {
+            bgfx::destroy(textureData->mTextureHandle);
+        }
     }
 
     bool RendererBGFX::GetLazyShaderCompilation()
