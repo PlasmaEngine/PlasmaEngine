@@ -39,6 +39,26 @@ namespace Plasma
         u32 mSamplerSettings;
     };
 
+    class StreamedVertexBuffer
+    {
+    public:
+        void Initialize();
+        void Destroy();
+
+        void AddVertices(StreamedVertex* vertices, uint count, PrimitiveType::Enum primitiveType);
+        void AddVertices(StreamedVertexArray& vertices, uint start, uint count, PrimitiveType::Enum primitiveType);
+        void FlushBuffer(bool deactivate);
+
+        uint32_t mBufferSize;
+        uint32_t mVertexArray;
+        uint32_t mVertexBuffer;
+
+        uint mCurrentBufferOffset;
+
+        PrimitiveType::Enum mPrimitiveType;
+        bool mActive;
+    };
+
     class RendererBGFX : public Renderer
     {
     public:
@@ -109,7 +129,9 @@ namespace Plasma
         uint mShaderInputsId;
         String mRenderPassName;
 
+        bgfx::ProgramHandle mLoadingShader;
 
+        StreamedVertexBuffer mStreamedVertexBuffer;
 
         Array<BGFXMaterialData*> mMaterialRenderDataToDestroy;
         Array<BGFXMeshData*> mMeshRenderDataToDestroy;

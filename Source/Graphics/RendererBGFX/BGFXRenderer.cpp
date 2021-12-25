@@ -167,6 +167,7 @@ namespace Plasma
     RendererBGFX::~RendererBGFX()
     {
         bgfx::destroy(m_texColor);
+        bgfx::destroy(mLoadingShader);
         bgfx::shutdown();
     }
 
@@ -344,21 +345,176 @@ namespace Plasma
         // if no other draw calls are submitted to view 0.
         bgfx::touch(0);
 
-        // Use debug font to print information about this example.
-        bgfx::dbgTextClear();
+        // Get data off info (we don't technically need to copy this anymore or lock)
+        BGFXTextureData* loadingTexture = static_cast<BGFXTextureData*>(info->mLoadingTexture);
+        BGFXTextureData* logoTexture    = static_cast<BGFXTextureData*>(info->mLogoTexture);
+        BGFXTextureData* whiteTexture   = static_cast<BGFXTextureData*>(info->mWhiteTexture);
+        BGFXTextureData* splashTexture  = static_cast<BGFXTextureData*>(info->mSplashTexture);
+        BGFXTextureData* fontTexture    = static_cast<BGFXTextureData*>(info->mFontTexture);
 
-        bgfx::dbgTextPrintf(0, 1, 0x0f, "Color can be changed with ANSI \x1b[9;me\x1b[10;ms\x1b[11;mc\x1b[12;ma\x1b[13;mp\x1b[14;me\x1b[0m code too.");
+        uint logoFrameSize                 = info->mLogoFrameSize;
+        Array<StreamedVertex> progressText = info->mProgressText;
+        int progressWidth                  = info->mProgressWidth;
+        float currentPercent               = info->mCurrentPercent;
+        double time                        = info->mTimer.Time();
+        bool splashMode                    = info->mSplashMode;
+        float alpha                        = splashMode ? info->mSplashFade : 1.0f;
 
-        bgfx::dbgTextPrintf(80, 1, 0x0f, "\x1b[;0m    \x1b[;1m    \x1b[; 2m    \x1b[; 3m    \x1b[; 4m    \x1b[; 5m    \x1b[; 6m    \x1b[; 7m    \x1b[0m");
-        bgfx::dbgTextPrintf(80, 2, 0x0f, "\x1b[;8m    \x1b[;9m    \x1b[;10m    \x1b[;11m    \x1b[;12m    \x1b[;13m    \x1b[;14m    \x1b[;15m    \x1b[0m");
 
-        const bgfx::Stats* stats = bgfx::getStats();
-        bgfx::dbgTextPrintf(0, 2, 0x0f, "Backbuffer %dW x %dH in pixels, debug text %dW x %dH in characters."
-            , stats->width
-            , stats->height
-            , stats->textWidth
-            , stats->textHeight
+        // TODO (@Davey): Check if this is the intended solution for BGFX vs GL
+        IntVec2 size = mResolution;
+
+        Mat4 viewportToNdc;
+        viewportToNdc.BuildTransform(Vec3(-1.0f, 1.0f, 0.0f), Mat3::cIdentity,
+                                     Vec3(2.0f / size.x, -2.0f / size.y, 1.0f));
+
+        // Logo uv transform for animating
+        uint xFrames = logoTexture->mWidth / logoFrameSize;
+        uint yFrames = logoTexture->mHeight / logoFrameSize;
+        double framesPerSecond = 30.0;
+        uint frame = static_cast<uint>(time * framesPerSecond) % (xFrames * yFrames);
+        Vec2 logoUvScale = Vec2(1.0f / xFrames, 1.0f / yFrames);
+        Vec2 logoUvTranslate = Vec2(static_cast<float>(frame % xFrames), static_cast<float>(frame / xFrames)) *
+                               logoUvScale;
+        Mat3 logoUvTransform;
+        logoUvTransform.BuildTransform(logoUvTranslate, 0.0f, logoUvScale);
+
+        // Object transforms
+        Vec3 logoScale = Vec3(static_cast<float>(logoFrameSize), static_cast<float>(logoFrameSize), 1.0f);
+        Vec3 logoTranslation = Vec3((size.x - loadingTexture->mWidth + logoScale.x) * 0.5f, size.y * 0.5f, 0.0f);
+        Mat4 logoTransform;
+        logoTransform.BuildTransform(logoTranslation, Mat3::cIdentity, logoScale);
+        logoTransform = viewportToNdc * logoTransform;
+
+        Vec3 loadingScale = Vec3(static_cast<float>(loadingTexture->mWidth),
+                                 static_cast<float>(loadingTexture->mHeight), 1.0f);
+        Vec3 loadingTranslation = Vec3(size.x * 0.5f, size.y * 0.5f, 0.0f);
+        Mat4 loadingTransform;
+        loadingTransform.BuildTransform(loadingTranslation, Mat3::cIdentity, loadingScale);
+        loadingTransform = viewportToNdc * loadingTransform;
+
+        Vec3 progressScale = Vec3(progressWidth * currentPercent, 20.0f, 1.0f);
+        Vec3 progressTranslation =
+                Vec3((size.x - loadingScale.x + progressScale.x) * 0.5f, (size.y + loadingScale.y) * 0.5f + 300.0f, 0.0f);
+        Mat4 progressTransform;
+        progressTransform.BuildTransform(progressTranslation, Mat3::cIdentity, progressScale);
+        progressTransform = viewportToNdc * progressTransform;
+
+        Vec3 textScale = Vec3(1.0f);
+        Vec3 textTranslation = Vec3((size.x - loadingScale.x) * 0.5f, (size.y + loadingScale.y) * 0.5f + 250.0f, 0.0f);
+        Mat4 textTransform;
+        textTransform.BuildTransform(textTranslation, Mat3::cIdentity, textScale);
+        textTransform = viewportToNdc * textTransform;
+
+        Vec3 splashScale = Vec3(static_cast<float>(size.x), static_cast<float>(size.y),
+                                1.0f);
+        //if (size.x < splashScale.x)
+        //    splashScale *= size.x / splashScale.x;
+        //if (size.y < splashScale.y)
+        //    splashScale *= size.y / splashScale.y;
+        Vec3 splashTranslation = Vec3(size.x * 0.5f, size.y * 0.5f, 0.0f);
+        Mat4 splashTransform;
+        splashTransform.BuildTransform(splashTranslation, Mat3::cIdentity, splashScale);
+        splashTransform = viewportToNdc * splashTransform;
+
+        StreamedVertex quadVertices[] = {
+                {Vec3(-0.5f, -0.5f, 0.0f), Vec2(0.0f, 0.0f), Vec4(1.0f)},
+                {Vec3(-0.5f, 0.5f, 0.0f), Vec2(0.0f, 1.0f), Vec4(1.0f)},
+                {Vec3(0.5f, 0.5f, 0.0f), Vec2(1.0f, 1.0f), Vec4(1.0f)},
+                {Vec3(0.5f, 0.5f, 0.0f), Vec2(1.0f, 1.0f), Vec4(1.0f)},
+                {Vec3(0.5f, -0.5f, 0.0f), Vec2(1.0f, 0.0f), Vec4(1.0f)},
+                {Vec3(-0.5f, -0.5f, 0.0f), Vec2(0.0f, 0.0f), Vec4(1.0f)},
+        };
+
+        bgfx::setViewClear(0
+                , BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
+                , 0x303030ff
+                , 1.0f
+                , 0
         );
+
+        if(!bgfx::isValid(mLoadingShader))
+        {
+            //bgfx::ShaderHandle handle = bgfx::createShader();
+            //mLoadingShader = bgfx::createProgram(handle, true);
+        }
+
+//        bgfx::
+//        glUseProgram(mLoadingShader);
+//        glEnable(GL_BLEND);
+//        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//
+//        GLint textureLoc = glGetUniformLocation(mLoadingShader, "Texture");
+//        GLint transformLoc = glGetUniformLocation(mLoadingShader, "Transform");
+//        GLint uvTransformLoc = glGetUniformLocation(mLoadingShader, "UvTransform");
+//
+//        GLint alphaLoc = glGetUniformLocation(mLoadingShader, "Alpha");
+//        glUniform1fv(alphaLoc, 1, &alpha);
+//
+//        GLint textureSlot = 0;
+//        glActiveTexture(GL_TEXTURE0 + textureSlot);
+//        glUniform1iv(textureLoc, 1, &textureSlot);
+//
+//        glUniformMatrix3fv(uvTransformLoc, 1, cTransposeMatrices, Mat3::cIdentity.array);
+//
+//        if (!splashMode)
+//        {
+//            //// Loading
+//            //glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, loadingTransform.array);
+//            //glBindTexture(GL_TEXTURE_2D, loadingTexture->mId);
+//            //mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
+//            //mStreamedVertexBuffer.FlushBuffer(true);
+//
+//            // Logo
+//            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, splashTransform.array);
+//            glBindTexture(GL_TEXTURE_2D, splashTexture->mId);
+//            mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
+//            mStreamedVertexBuffer.FlushBuffer(true);
+//
+//            // Progress bar
+//            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, progressTransform.array);
+//            glBindTexture(GL_TEXTURE_2D, whiteTexture->mId);
+//            mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
+//            mStreamedVertexBuffer.FlushBuffer(true);
+//
+//            // Progress text
+//            if (progressText.Size() > 0)
+//            {
+//                glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, textTransform.array);
+//                glBindTexture(GL_TEXTURE_2D, fontTexture->mId);
+//                mStreamedVertexBuffer.AddVertices(&progressText[0], progressText.Size(), PrimitiveType::Triangles);
+//                mStreamedVertexBuffer.FlushBuffer(true);
+//            }
+//        }
+//        else
+//        {
+//            // Splash
+//            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, splashTransform.array);
+//            glBindTexture(GL_TEXTURE_2D, splashTexture->mId);
+//            mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
+//            mStreamedVertexBuffer.FlushBuffer(true);
+//        }
+
+//        float mtx[16];
+//        bx::mtxRotateXY(mtx
+//                , 0.0f
+//                , time*0.37f
+//        );
+//
+//        meshSubmit(m_mesh, 0, mLoadingShader, mtx);
+
+//        glDisable(GL_BLEND);
+//        glUseProgram(0);
+
+//        // Disable v-sync so we don't wait on frames (mostly for single threaded mode)
+//        // This could cause tearing, but it's the loading screen.
+//        plGlSetSwapInterval(this, 0);
+//
+//        plGlSwapBuffers(this);
+//        TracyGpuCollect;
+//
+//        int swapInterval = mVsync ? 1 : 0;
+//        plGlSetSwapInterval(this, swapInterval);
 
         // Advance to next frame. Rendering thread will be kicked to
         // process submitted rendering primitives.
@@ -513,11 +669,11 @@ namespace Plasma
     void RendererBGFX::DelayedRenderDataDestruction()
     {
         forRange(BGFXMaterialData* renderData, mMaterialRenderDataToDestroy.All())
-                        DestroyRenderData(renderData);
+            DestroyRenderData(renderData);
         forRange(BGFXMeshData* renderData, mMeshRenderDataToDestroy.All())
-                        DestroyRenderData(renderData);
+            DestroyRenderData(renderData);
         forRange(BGFXTextureData* renderData, mTextureRenderDataToDestroy.All())
-                        DestroyRenderData(renderData);
+            DestroyRenderData(renderData);
 
         mMaterialRenderDataToDestroy.Clear();
         mMeshRenderDataToDestroy.Clear();
@@ -550,5 +706,26 @@ namespace Plasma
             bgfx::destroy(renderData->mTextureHandle);
         }
         delete renderData;
+    }
+
+    void StreamedVertexBuffer::Initialize() {
+
+    }
+
+    void StreamedVertexBuffer::Destroy() {
+
+    }
+
+    void StreamedVertexBuffer::AddVertices(StreamedVertex *vertices, uint count, PrimitiveType::Enum primitiveType) {
+
+    }
+
+    void StreamedVertexBuffer::AddVertices(StreamedVertexArray &vertices, uint start, uint count,
+                                           PrimitiveType::Enum primitiveType) {
+
+    }
+
+    void StreamedVertexBuffer::FlushBuffer(bool deactivate) {
+
     }
 }
