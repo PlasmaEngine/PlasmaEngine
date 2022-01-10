@@ -50,7 +50,7 @@ Level
 			var ClearColor = Real4{0, 0, 0, 1}
 			var DirectLighting = true
 			var IndirectLighting = true
-			var IndirectIntensity = 1
+			var IndirectIntensity = 0.5
 			var MaxIntensity = 50
 			var UseACES = true
 			var ShoulderStrength = 2.50999999
@@ -65,10 +65,6 @@ Level
 			var RenderDiffuse = true
 			var RenderSpecular = true
 			var RenderSkybox = true
-			var SSGIDebug = false
-			var RayDistance = 64
-			var StepDistance = 0.0399999991
-			var Intensity = 1
 			var DirectionalLight = CogPath
 			{
 				var Path = ":/DirectionalLightShadows"
@@ -79,7 +75,7 @@ Level
 				var UpdatePathOnCogChange = true
 				var UpdateCogOnInitialize = true
 				var ResolvedNullErrorOccurred = false
-				var Cog = 4294967293
+				var Cog = 3
 				var PathPreference0 = CogPathPreference.CogRelative
 				var PathPreference1 = CogPathPreference.SpaceRelative
 				var PathPreference2 = CogPathPreference.Absolute
@@ -89,34 +85,16 @@ Level
 		{
 			var EnableSMAA = true
 			var EnableDiagnols = true
-			var DepthBasedEdges = false
-			var EdgeDetection = DetectionChance.Medium
+			var DepthBasedEdges = true
+			var EdgeDetection = DetectionChance.High
 			var TargetTexture = SMAADebugTargets.Off
 		}
-	}
-	Cog [ContextId:3]
-	{
-		var Name = "DirectionalLight"
-		Transform 
+		ProcedualSky 
 		{
-			var Translation = Real3{0, 50, 50}
-			var Scale = Real3{1, 1, 1}
-			var Rotation = Quaternion{-0.382683456, 0, 0, 0.923879504}
-		}
-		Orientation 
-		{
-			var GlobalUp = Real3{0, 1, 0}
-			var LocalOrientationBasis = Quaternion{0, 0, 0, 1}
-			var DefaultBases = OrientationBases.ForwardNegativeZUpY
-		}
-		CameraViewport 
-		{
-			var RenderInEditor = true
-			var RenderInGame = true
-			var RenderOrder = -1
-			var CameraPath = CogPath
+			var Enabled = true
+			var MainLight = CogPath
 			{
-				var Path = "."
+				var Path = ":/DirectionalLightShadows"
 				var ErrorOnResolveToNull = false
 				var ErrorOnPathCantCompute = false
 				var ErrorOnDirectLinkFail = false
@@ -129,67 +107,34 @@ Level
 				var PathPreference1 = CogPathPreference.SpaceRelative
 				var PathPreference2 = CogPathPreference.Absolute
 			}
-			var RendererPath = CogPath
-			{
-				var Path = "."
-				var ErrorOnResolveToNull = false
-				var ErrorOnPathCantCompute = false
-				var ErrorOnDirectLinkFail = false
-				var UpdateCogOnPathChange = true
-				var UpdatePathOnCogChange = true
-				var UpdateCogOnInitialize = true
-				var ResolvedNullErrorOccurred = false
-				var Cog = 3
-				var PathPreference0 = CogPathPreference.CogRelative
-				var PathPreference1 = CogPathPreference.SpaceRelative
-				var PathPreference2 = CogPathPreference.Absolute
-			}
-			var ResolutionOrAspect = Integer2{1920, 1080}
-			var RenderToViewport = false
-			var ForwardViewportEvents = false
-			var ViewportScaling = ViewportScaling.Fill
-			var MarginColor = Real4{0, 0, 0, 1}
-			var NormalizedSize = Real2{1, 1}
-			var NormalizedOffset = Real2{0, 0}
+			var RayleighBrightness = 2.62707949
+			var MieBrightness = 0.100000001
+			var SpotBrightness = 50
+			var ScatterStrength = 0.0799999982
+			var RayleighStrength = 1
+			var MieStrength = 0.170000002
+			var RayleighCollectionPower = 0.810000002
+			var MieCollectionPower = 0.72766161
+			var MieDistribution = 0
+			var KR = Real4{0.0835999846, 0.151316017, 0.439999998, 1}
+			var SurfaceHeight = 0.99000001
+			var Intensity = 1.79999995
+			var StepCount = 16
 		}
-		Camera 
+		PostProcessBloom 
 		{
-			var NearPlane = 0.100000001
-			var FarPlane = 100
-			var PerspectiveMode = PerspectiveMode.Orthographic
-			var FieldOfView = 45
-			var Size = 64
-			var Aperture = 16
-			var FocalDistance = 22
-			var ShutterSpeed = 100
-			var ISO = 100
-		}
-		ShadowRenderer 
-		{
-			var ResolutionValue = ShadowResolution.Medium
-			var NormalOffsetBias = 0.100000001
-		}
-		Model 
-		{
-			var Visible = true
-			var ViewCulling = false
-			var VisibilityEvents = true
-			var OverrideBoundingBox = false
-			var LocalAabbCenter = Real3{0, 0, 0}
-			var LocalAabbHalfExtents = Real3{1, 1, 1}
-			var GroupSortValue = 0
-			var Material = "583afb5e7bf75e18:PlasmaMaterial"
-			var Mesh = "4de0354322b345ae:Cube"
-		}
-		DirectionalLight 
-		{
-			var LightColor = Real4{1, 1, 1, 1}
-			var LightIntensity = 2000
-			var SpecularMultiplier = 1
-			var LightTemperature = 6500
-		}
-		Hierarchy 
-		{
+			var Active = true
+			var Intensity = 0.100000001
+			var Threshold = 1
+			var LensDirt = "5826e695131ca33a:White"
+			var LensDirtIntensity = 0.200000003
+			var LensDirtThreshold = 0.100000001
+			var DebugBuffer = false
+			var Bloom1 = true
+			var Bloom2 = true
+			var Bloom3 = true
+			var Bloom4 = true
+			var Bloom5 = true
 		}
 	}
 	Cog [ContextId:4]
@@ -197,9 +142,9 @@ Level
 		var Name = "EditorCamera"
 		Transform 
 		{
-			var Translation = Real3{-4.41947603, 3.09734392, 8.90303707}
+			var Translation = Real3{-10.2754469, 5.24944878, 9.0521946}
 			var Scale = Real3{1, 1, 1}
-			var Rotation = Quaternion{-0.0534983911, -0.228004575, -0.0125478636, 0.972108185}
+			var Rotation = Quaternion{-0.180130213, -0.403562933, -0.0813725442, 0.893346846}
 		}
 		CameraViewport 
 		{
@@ -251,7 +196,7 @@ Level
 			var PerspectiveMode = PerspectiveMode.Perspective
 			var FieldOfView = 60
 			var Size = 20
-			var Aperture = 16
+			var Aperture = 22
 			var FocalDistance = 22
 			var ShutterSpeed = 250
 			var ISO = 100
@@ -260,10 +205,10 @@ Level
 		{
 			var ControlMode = ControlMode.Orbit
 			var Previous3DMode = ControlMode.Orbit
-			var LookDistance = 10
-			var VerticalAngle = 0.109955832
-			var HorizontalAngle = -5.82242107
-			var LookTarget = Real3{0, 2, 0}
+			var LookDistance = 14.8547535
+			var VerticalAngle = 0.397934884
+			var HorizontalAngle = -18.0009518
+			var LookTarget = Real3{0, -0.506997824, 0}
 			var MoveSensitivity = 1
 		}
 	}
@@ -335,6 +280,153 @@ Level
 		{
 			var Active = true
 			var AttenuationScale = 1
+		}
+	}
+	Cog [ContextId:3]
+	{
+		var Name = "DirectionalLightShadows"
+		Transform 
+		{
+			var Translation = Real3{47.3517151, 54.8187675, 51.7472191}
+			var Scale = Real3{1, 1, 1}
+			var Rotation = Quaternion{-0.381590843, 0.348516375, 0.158060104, 0.841392875}
+		}
+		SelectionIcon 
+		{
+			var Visible = true
+			var VisibilityEvents = true
+			var Material = "564a44b7f62c1d67:DebugDraw"
+			var SpriteSource = "58f8e4be736f5ea2:LightIcon"
+			var ViewScale = 1
+			var OverrideSelections = true
+		}
+		Model 
+		{
+			var Visible = true
+			var ViewCulling = false
+			var VisibilityEvents = true
+			var OverrideBoundingBox = false
+			var LocalAabbCenter = Real3{0, 0, 0}
+			var LocalAabbHalfExtents = Real3{1, 1, 1}
+			var GroupSortValue = 0
+			var Material = "580267aabbf7843e:DirectionalLightShadows"
+			var Mesh = "4de0354322b345ae:Cube"
+		}
+		DirectionalLight 
+		{
+			var LightColor = Real4{1, 1, 1, 1}
+			var LightIntensity = 2000
+			var SpecularMultiplier = 1
+			var LightTemperature = 6500
+		}
+		CameraViewport 
+		{
+			var RenderInEditor = true
+			var RenderInGame = true
+			var RenderOrder = -1
+			var CameraPath = CogPath
+			{
+				var Path = "."
+				var ErrorOnResolveToNull = false
+				var ErrorOnPathCantCompute = false
+				var ErrorOnDirectLinkFail = false
+				var UpdateCogOnPathChange = true
+				var UpdatePathOnCogChange = true
+				var UpdateCogOnInitialize = true
+				var ResolvedNullErrorOccurred = false
+				var Cog = 3
+				var PathPreference0 = CogPathPreference.CogRelative
+				var PathPreference1 = CogPathPreference.SpaceRelative
+				var PathPreference2 = CogPathPreference.Absolute
+			}
+			var RendererPath = CogPath
+			{
+				var Path = "."
+				var ErrorOnResolveToNull = false
+				var ErrorOnPathCantCompute = false
+				var ErrorOnDirectLinkFail = false
+				var UpdateCogOnPathChange = true
+				var UpdatePathOnCogChange = true
+				var UpdateCogOnInitialize = true
+				var ResolvedNullErrorOccurred = false
+				var Cog = 3
+				var PathPreference0 = CogPathPreference.CogRelative
+				var PathPreference1 = CogPathPreference.SpaceRelative
+				var PathPreference2 = CogPathPreference.Absolute
+			}
+			var ResolutionOrAspect = Integer2{1, 1}
+			var RenderToViewport = false
+			var ForwardViewportEvents = false
+			var ViewportScaling = ViewportScaling.Fill
+			var MarginColor = Real4{0, 0, 0, 1}
+			var NormalizedSize = Real2{1, 1}
+			var NormalizedOffset = Real2{0, 0}
+		}
+		Camera 
+		{
+			var NearPlane = 0.100000001
+			var FarPlane = 200
+			var PerspectiveMode = PerspectiveMode.Orthographic
+			var FieldOfView = 45
+			var Size = 100
+			var Aperture = 22
+			var FocalDistance = 22
+			var ShutterSpeed = 100
+			var ISO = 100
+		}
+		ShadowRenderer 
+		{
+			var ResolutionValue = ShadowResolution.High
+			var NormalOffsetBias = 0.13125056
+		}
+		Hierarchy 
+		{
+		}
+	}
+	Cog [ContextId:6]
+	{
+		var Name = "Floor"
+		EditorFlags 
+		{
+			var Locked = true
+			var Hidden = false
+		}
+		Transform 
+		{
+			var Translation = Real3{0, -0.506997824, 0}
+			var Scale = Real3{25, 1, 25}
+			var Rotation = Quaternion{0, 0, 0, 1}
+		}
+		Model 
+		{
+			var Visible = true
+			var ViewCulling = true
+			var VisibilityEvents = true
+			var OverrideBoundingBox = false
+			var LocalAabbCenter = Real3{0, 0, 0}
+			var LocalAabbHalfExtents = Real3{1, 1, 1}
+			var GroupSortValue = 0
+			var Material = "583afb5e7bf75e18:PlasmaMaterial"
+			var Mesh = "4de0354322b345ae:Cube"
+		}
+		RigidBody 
+		{
+			var Velocity = Real3{0, 0, 0}
+			var AngularVelocity = Real3{0, 0, 0}
+			var DynamicState = RigidBodyDynamicState.Dynamic
+			var AllowSleep = true
+			var Asleep = false
+			var RotationLocked = false
+			var Mode2D = Mode2DStates.InheritFromSpace
+		}
+		BoxCollider 
+		{
+			var Ghost = false
+			var SendsEvents = true
+			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
+			var CollisionGroup = "4e740859314e5515:DefaultGroup"
+			var Offset = Real3{0, 0, 0}
+			var HalfSize = Real3{0.5, 0.5, 0.5}
 		}
 	}
 }
