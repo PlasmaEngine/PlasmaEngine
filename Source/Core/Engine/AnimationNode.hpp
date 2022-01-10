@@ -5,363 +5,421 @@ namespace Plasma
 {
 
 /// Forward Declarations.
-class AnimationGraph;
-class AnimationGraphEvent;
-class AnimationNode;
-class Animation;
-class PoseNode;
+    class AnimationGraph;
+    class AnimationGraphEvent;
+    class AnimationNode;
+    class Animation;
+    class PoseNode;
 
-DeclareEnum3(AnimationPlayMode, PlayOnce, Loop, Pingpong);
-DeclareEnum2(AnimationDirection, Forward, Backward);
+    DeclareEnum3(AnimationPlayMode, PlayOnce, Loop, Pingpong);
+    DeclareEnum2(AnimationDirection, Forward, Backward);
+
+    AnimationNode* BuildBlendSpace();
 
 /// Blend between two looping animation like walk to run
-AnimationNode* BuildCrossBlend(AnimationGraph* animGraph, AnimationNode* a, AnimationNode* b, float transitionTime);
+    AnimationNode* BuildCrossBlend(AnimationGraph* animGraph, AnimationNode* a, AnimationNode* b, float transitionTime);
 
 /// Blend from the current animation position to the beginning of the next.
-AnimationNode* BuildDirectBlend(AnimationGraph* animGraph, AnimationNode* a, AnimationNode* b, float transitionTime);
+    AnimationNode* BuildDirectBlend(AnimationGraph* animGraph, AnimationNode* a, AnimationNode* b, float transitionTime);
 
-AnimationNode* BuildSelectiveNode(AnimationGraph* t, AnimationNode* a, AnimationNode* b, Cog* rootBone);
+    AnimationNode* BuildSelectiveNode(AnimationGraph* t, AnimationNode* a, AnimationNode* b, Cog* rootBone);
 
 // Rename to Sequence
-AnimationNode* BuildChainNode(AnimationGraph* t, AnimationNode* a, AnimationNode* b);
+    AnimationNode* BuildChainNode(AnimationGraph* t, AnimationNode* a, AnimationNode* b);
 
 /// Base animation node.
-AnimationNode* BuildBasic(AnimationGraph* animGraph, Animation* animation, float t, AnimationPlayMode::Enum playMode);
+    AnimationNode* BuildBasic(AnimationGraph* animGraph, Animation* animation, float t, AnimationPlayMode::Enum playMode);
 
-struct BlendTrack
-{
-  uint Index;
-  Property* Property;
-  Handle Object;
-};
+    struct BlendTrack
+    {
+        uint Index;
+        Property* Property;
+        Handle Object;
+    };
 
-typedef HashMap<String, BlendTrack*> BlendTracks;
+    typedef HashMap<String, BlendTrack*> BlendTracks;
 
 /// Data needed for each track to play
-struct PropertyTrackPlayData
-{
-  PropertyTrackPlayData() : mBlend(NULL)
-  {
-  }
+    struct PropertyTrackPlayData
+    {
+        PropertyTrackPlayData() : mBlend(NULL)
+        {
+        }
 
-  BlendTrack* mBlend;
-  // Current key frame of the animation track
-  uint mKeyframeIndex;
-  // Component this track animates.
-  Object* mComponent;
-};
+        BlendTrack* mBlend;
+        // Current key frame of the animation track
+        uint mKeyframeIndex;
+        // Component this track animates.
+        Object* mComponent;
+    };
 
-class ObjectTrack;
+    class ObjectTrack;
 
 // Data needed for an object track
-struct ObjectTrackPlayData
-{
-  ObjectTrackPlayData()
-  {
-  }
-  // Object being animated.
-  CogId ObjectHandle;
-  // Per sub track data for this track.
-  Array<PropertyTrackPlayData> mSubTrackPlayData;
-  /// Track
-  ObjectTrack* Track;
-};
+    struct ObjectTrackPlayData
+    {
+        ObjectTrackPlayData()
+        {
+        }
+        // Object being animated.
+        CogId ObjectHandle;
+        // Per sub track data for this track.
+        Array<PropertyTrackPlayData> mSubTrackPlayData;
+        /// Track
+        ObjectTrack* Track;
+    };
 
-struct AnimationFrameData
-{
-  AnimationFrameData() : Active(false)
-  {
-  }
-  bool Active;
-  Any Value;
-};
+    struct AnimationFrameData
+    {
+        AnimationFrameData() : Active(false)
+        {
+        }
+        bool Active;
+        Any Value;
+    };
 
-struct AnimationFrame
-{
-  Array<AnimationFrameData> Tracks;
-};
+    struct AnimationFrame
+    {
+        Array<AnimationFrameData> Tracks;
+    };
 
-typedef Array<ObjectTrackPlayData> PlayData;
+    typedef Array<ObjectTrackPlayData> PlayData;
 
-DeclareEnum2(AnimationNodeState, Running, Finished);
+    DeclareEnum2(AnimationNodeState, Running, Finished);
 
 // Node in animation graph
-class AnimationNode : public ReferenceCountedEventObject
-{
-public:
-  LightningDeclareType(AnimationNode, TypeCopyMode::ReferenceType);
+    class AnimationNode : public ReferenceCountedEventObject
+    {
+    public:
+    LightningDeclareType(AnimationNode, TypeCopyMode::ReferenceType);
 
-  typedef Array<AnimationGraphEvent*>& EventList;
+        typedef Array<AnimationGraphEvent*>& EventList;
 
-  /// Constructor / destructor.
-  AnimationNode();
-  virtual ~AnimationNode()
-  {
-  }
+        /// Constructor / destructor.
+        AnimationNode();
+        virtual ~AnimationNode()
+        {
+        }
 
-  /// Used when the meta database has changed.
-  virtual void ReLinkAnimations()
-  {
-  }
+        /// Used when the meta database has changed.
+        virtual void ReLinkAnimations()
+        {
+        }
 
-  virtual AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) = 0;
-  virtual AnimationNode* Clone()
-  {
-    return NULL;
-  }
-  virtual bool IsPlayingInNode(StringParam animName) = 0;
-  virtual void PrintNode(uint tabs) = 0;
-  virtual bool IsActive()
-  {
-    return mTime <= mDuration;
-  }
+        virtual AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) = 0;
+        virtual AnimationNode* Clone()
+        {
+            return NULL;
+        }
+        virtual bool IsPlayingInNode(StringParam animName) = 0;
+        virtual void PrintNode(uint tabs) = 0;
+        virtual bool IsActive()
+        {
+            return mTime <= mDuration;
+        }
 
-  virtual String GetDisplayName();
+        virtual String GetDisplayName();
 
-  AnimationNode* GetParent();
+        AnimationNode* GetParent();
 
-  /// Collapses all children to a pose node on the next Update.
-  void CollapseToPose();
+        /// Collapses all children to a pose node on the next Update.
+        void CollapseToPose();
 
-  /// The duration of the node.
-  void SetDuration(float duration);
-  float GetDuration();
+        /// The duration of the node.
+        void SetDuration(float duration);
+        float GetDuration();
 
-  /// Time getter/setter.
-  void SetTime(float time);
-  float GetTime();
+        /// Time getter/setter.
+        void SetTime(float time);
+        float GetTime();
 
-  /// A value between [0-1].
-  void SetNormalizedTime(float normalizedTime);
-  float GetNormalizedTime();
+        /// A value between [0-1].
+        void SetNormalizedTime(float normalizedTime);
+        float GetNormalizedTime();
 
-  /// If this node has already been updated, we shouldn't do anything.
-  bool HasUpdatedThisFrame(uint frameId);
+        /// If this node has already been updated, we shouldn't do anything.
+        bool HasUpdatedThisFrame(uint frameId);
 
-  /// Whether or not this node has ever been updated.
-  bool HasUpdatedAtLeastOnce();
+        /// Whether or not this node has ever been updated.
+        bool HasUpdatedAtLeastOnce();
 
-  /// Whether or not the node is currently paused.
-  bool mPaused;
+        /// Whether or not the node is currently paused.
+        bool mPaused;
 
-  /// Whether or not to collapse to a pose node when finished playing.
-  bool mCollapseToPoseOnFinish;
+        /// Whether or not to collapse to a pose node when finished playing.
+        bool mCollapseToPoseOnFinish;
 
-  AnimationFrame mFrameData;
+        AnimationFrame mFrameData;
 
-protected:
-  /// The current time in the node.
-  float mTime;
+    protected:
+        /// The current time in the node.
+        float mTime;
 
-  /// The duration of the node.
-  float mDuration;
+        /// The duration of the node.
+        float mDuration;
 
-  /// A scalar to dt when updating the node.
-  float mTimeScale;
+        /// A scalar to dt when updating the node.
+        float mTimeScale;
 
-  /// Whether or not to, on next update, collapse to a pose node.
-  bool mCollapseToPose;
+        /// Whether or not to, on next update, collapse to a pose node.
+        bool mCollapseToPose;
 
-  /// We've already been updated for this frame id.
-  uint mUpdatedFrameId;
+        /// We've already been updated for this frame id.
+        uint mUpdatedFrameId;
 
-  AnimationNode* mParent;
-};
+        AnimationNode* mParent;
+    };
 
-class PoseNode : public AnimationNode
-{
-public:
-  LightningDeclareType(PoseNode, TypeCopyMode::ReferenceType);
+    class PoseNode : public AnimationNode
+    {
+    public:
+    LightningDeclareType(PoseNode, TypeCopyMode::ReferenceType);
 
-  /// Constructors.
-  PoseNode(AnimationFrame& pose);
+        /// Constructors.
+        PoseNode(AnimationFrame& pose);
 
-  /// AnimationNode Interface.
-  AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
-  virtual bool IsPlayingInNode(StringParam animName)
-  {
-    return false;
-  }
-  virtual void PrintNode(uint tabs);
-};
+        /// AnimationNode Interface.
+        AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
+        virtual bool IsPlayingInNode(StringParam animName)
+        {
+            return false;
+        }
+        virtual void PrintNode(uint tabs);
+    };
 
 /// This node simply plays a single animation.
-class BasicAnimation : public AnimationNode
-{
-public:
-  LightningDeclareType(BasicAnimation, TypeCopyMode::ReferenceType);
+    class BasicAnimation : public AnimationNode
+    {
+    public:
+    LightningDeclareType(BasicAnimation, TypeCopyMode::ReferenceType);
 
-  /// Constructors.
-  BasicAnimation();
-  BasicAnimation(AnimationGraph* animGraph);
-  BasicAnimation(AnimationGraph* animGraph, Animation* animation, float t, AnimationPlayMode::Enum playMode);
+        /// Constructors.
+        BasicAnimation();
+        BasicAnimation(AnimationGraph* animGraph);
+        BasicAnimation(AnimationGraph* animGraph, Animation* animation, float t, AnimationPlayMode::Enum playMode);
 
-  /// AnimationNode Interface.
-  void ReLinkAnimations() override;
-  AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
-  void UpdateFrame(AnimationGraph* animGraph);
-  AnimationNode* Clone() override;
-  bool IsPlayingInNode(StringParam animName) override;
-  void PrintNode(uint tabs) override;
-  String GetDisplayName() override;
+        /// AnimationNode Interface.
+        void ReLinkAnimations() override;
+        AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
+        void UpdateFrame(AnimationGraph* animGraph);
+        AnimationNode* Clone() override;
+        bool IsPlayingInNode(StringParam animName) override;
+        void PrintNode(uint tabs) override;
+        String GetDisplayName() override;
 
-  /// The current animation playing.
-  Animation* GetAnimation();
-  void SetAnimation(Animation* animation);
+        /// The current animation playing.
+        Animation* GetAnimation();
+        void SetAnimation(Animation* animation);
 
-  /// Loops until this count hit, or indefinitely if -1.
-  int mLoopCount;
+        /// Loops until this count hit, or indefinitely if -1.
+        int mLoopCount;
 
-  /// The current play mode.
-  AnimationPlayMode::Enum mPlayMode;
+        /// The current play mode.
+        AnimationPlayMode::Enum mPlayMode;
 
-protected:
-  /// The animGraph object in which this node is attached to.
-  HandleOf<AnimationGraph> mAnimGraph;
+    protected:
+        /// The animGraph object in which this node is attached to.
+        HandleOf<AnimationGraph> mAnimGraph;
 
-  /// The animation being played.
-  HandleOf<Animation> mAnimation;
+        /// The animation being played.
+        HandleOf<Animation> mAnimation;
 
-  /// Used for the ping-pong play mode.
-  float mDirection;
+        /// Used for the ping-pong play mode.
+        float mDirection;
 
-  PlayData mPlayData;
-};
+        PlayData mPlayData;
+    };
+
+    class BlendSpaceData
+    {
+    public:
+    LightningDeclareType(BlendSpaceData, TypeCopyMode::ReferenceType);
+
+        BlendSpaceData() = default;
+        BlendSpaceData(AnimationNode* animationNode, Vec2Param position);
+        bool operator==(const BlendSpaceData& blendSpaceData) const;
+
+        void SetAnimationNode(AnimationNode* animationNode);
+        AnimationNode* GetAnimationNode() const;
+
+        void SetPosition(Vec2Param position);
+        Vec2 GetPosition() const;
+
+
+    private:
+        HandleOf<AnimationNode> mAnimationNode;
+        Vec2 mPosition;
+    };
+
+    class BlendSpace : public AnimationNode
+    {
+    public:
+    LightningDeclareType(BlendSpace, TypeCopyMode::ReferenceType);
+
+        BlendSpace();
+        BlendSpace(AnimationGraph* animGraph);
+
+        void AddAnimationData(BlendSpaceData animationData);
+        void RemoveAnimationData(BlendSpaceData animationData);
+
+        void SetPosition(Vec2Param position);
+        void SetXPosition(float x);
+        void SetYPosition(float y);
+
+        Vec2 GetPosition() const;
+
+        /// AnimationNode Interface.
+        void ReLinkAnimations() override;
+        AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
+        AnimationNode* Clone() override;
+        bool IsPlayingInNode(StringParam animName) override;
+        void PrintNode(uint tabs) override;
+        String GetDisplayName() override;
+
+    protected:
+
+        Vec2 mPosition;
+
+        Array<BlendSpaceData> mAnimations;
+        AnimationNode* mLastReturned;
+
+        HandleOf<AnimationGraph> mAnimGraph;
+    };
 
 /// This node is an interface for animation nodes that deal with
 /// multiple animations. It's templated for the clone function.
-template <typename DerivedType>
-class DualBlend : public AnimationNode
-{
-public:
-  LightningDeclareType(DualBlend, TypeCopyMode::ReferenceType);
-  typedef DualBlend<DerivedType> self_type;
+    template <typename DerivedType>
+    class DualBlend : public AnimationNode
+    {
+    public:
+    LightningDeclareType(DualBlend, TypeCopyMode::ReferenceType);
+        typedef DualBlend<DerivedType> self_type;
 
-  /// Constructors.
-  DualBlend();
-  ~DualBlend();
+        /// Constructors.
+        DualBlend();
+        ~DualBlend();
 
-  /// AnimationNode Interface.
-  void ReLinkAnimations() override;
-  virtual String GetName() = 0;
-  AnimationNode* Clone() override;
-  AnimationNode* CollapseToA(AnimationGraph* animGraph, uint frameId, EventList eventsToSend);
-  AnimationNode* CollapseToB(AnimationGraph* animGraph, uint frameId, EventList eventsToSend);
-  bool IsPlayingInNode(StringParam animName) override;
+        /// AnimationNode Interface.
+        void ReLinkAnimations() override;
+        virtual String GetName() = 0;
+        AnimationNode* Clone() override;
+        AnimationNode* CollapseToA(AnimationGraph* animGraph, uint frameId, EventList eventsToSend);
+        AnimationNode* CollapseToB(AnimationGraph* animGraph, uint frameId, EventList eventsToSend);
+        bool IsPlayingInNode(StringParam animName) override;
 
-  /// Left node.
-  void SetFrom(AnimationNode* node);
-  AnimationNode* GetFrom();
+        /// Left node.
+        void SetFrom(AnimationNode* node);
+        AnimationNode* GetFrom();
 
-  /// Right Node
-  void SetTo(AnimationNode* node);
-  AnimationNode* GetTo();
+        /// Right Node
+        void SetTo(AnimationNode* node);
+        AnimationNode* GetTo();
 
-  /// If two nodes are pointing at this node, we need to properly hand them
-  /// both the correct node when we collapse. If null, it should return itself.
-  HandleOf<AnimationNode> mLastReturned;
-  HandleOf<AnimationNode> mA;
-  HandleOf<AnimationNode> mB;
-};
+        /// If two nodes are pointing at this node, we need to properly hand them
+        /// both the correct node when we collapse. If null, it should return itself.
+        HandleOf<AnimationNode> mLastReturned;
+        HandleOf<AnimationNode> mA;
+        HandleOf<AnimationNode> mB;
+    };
 
 /// Blends directly between the two animations (the animations do not continue
 /// to play while the blend node is in affect).
-class DirectBlend : public DualBlend<DirectBlend>
-{
-public:
-  LightningDeclareType(DirectBlend, TypeCopyMode::ReferenceType);
+    class DirectBlend : public DualBlend<DirectBlend>
+    {
+    public:
+    LightningDeclareType(DirectBlend, TypeCopyMode::ReferenceType);
 
-  /// Constructors.
-  DirectBlend();
+        /// Constructors.
+        DirectBlend();
 
-  /// AnimationNode Interface.
-  String GetName() override;
-  AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
-  void PrintNode(uint tabs) override;
-};
+        /// AnimationNode Interface.
+        String GetName() override;
+        AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
+        void PrintNode(uint tabs) override;
+    };
 
 // Normalized CrossBlend vs Basic
-DeclareEnum2(AnimationBlendType,
-             // Does no cadence matching.
-             Standard,
-             // Does a basic cadence matching.
-             Normalized);
+    DeclareEnum2(AnimationBlendType,
+    // Does no cadence matching.
+                 Standard,
+    // Does a basic cadence matching.
+                 Normalized);
 
-DeclareEnum2(AnimationBlendMode,
-             // Automatically interpolates the blend and collapsed when
-             // the duration is met.
-             Auto,
-             // The time is not updated and is up to
-             // the user to change the blend time.
-             Manual);
+    DeclareEnum2(AnimationBlendMode,
+    // Automatically interpolates the blend and collapsed when
+    // the duration is met.
+                 Auto,
+    // The time is not updated and is up to
+    // the user to change the blend time.
+                 Manual);
 
 /// Blends between the two animations while continuing to play both individual
 /// animations.
-class CrossBlend : public DualBlend<CrossBlend>
-{
-public:
-  LightningDeclareType(CrossBlend, TypeCopyMode::ReferenceType);
+    class CrossBlend : public DualBlend<CrossBlend>
+    {
+    public:
+    LightningDeclareType(CrossBlend, TypeCopyMode::ReferenceType);
 
-  /// Constructors.
-  CrossBlend();
+        /// Constructors.
+        CrossBlend();
 
-  /// AnimationNode Interface.
-  String GetName() override;
-  AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
-  void PrintNode(uint tabs) override;
+        /// AnimationNode Interface.
+        String GetName() override;
+        AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
+        void PrintNode(uint tabs) override;
 
-  /// Updates the time of the 'To' animation to sync the cadence with the
-  /// current position in the 'From' animation.
-  /// Sync right percentage to left percentage.
-  void SyncCadence();
+        /// Updates the time of the 'To' animation to sync the cadence with the
+        /// current position in the 'From' animation.
+        /// Sync right percentage to left percentage.
+        void SyncCadence();
 
-  /// Updates the blend time and time scales of the children based on the
-  /// given values. Min represents the 'From' timescale and the max represents
-  /// the 'To' timescale.
-  /// When current is at min, you're running at the 'From' animations timescale,
-  /// when current is at max, you're running at the 'To' animations timescale.
-  /// When current is outside the boundaries, timescale will be based on
-  /// the closest animations timescale.
-  void SetNormalizedTimeScale(float min, float max, float current);
+        /// Updates the blend time and time scales of the children based on the
+        /// given values. Min represents the 'From' timescale and the max represents
+        /// the 'To' timescale.
+        /// When current is at min, you're running at the 'From' animations timescale,
+        /// when current is at max, you're running at the 'To' animations timescale.
+        /// When current is outside the boundaries, timescale will be based on
+        /// the closest animations timescale.
+        void SetNormalizedTimeScale(float min, float max, float current);
 
-  float mTimeScaleFrom, mTimeScaleTo;
-  AnimationBlendType::Enum mType;
-  AnimationBlendMode::Enum mMode;
-};
+        float mTimeScaleFrom, mTimeScaleTo;
+        AnimationBlendType::Enum mType;
+        AnimationBlendMode::Enum mMode;
+    };
 
-class SelectiveNode : public DualBlend<SelectiveNode>
-{
-public:
-  LightningDeclareType(SelectiveNode, TypeCopyMode::ReferenceType);
+    class SelectiveNode : public DualBlend<SelectiveNode>
+    {
+    public:
+    LightningDeclareType(SelectiveNode, TypeCopyMode::ReferenceType);
 
-  /// Constructors.
-  SelectiveNode();
+        /// Constructors.
+        SelectiveNode();
 
-  /// AnimationNode Interface.
-  String GetName() override;
-  AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
-  AnimationNode* Clone() override;
-  void PrintNode(uint tabs) override;
+        /// AnimationNode Interface.
+        String GetName() override;
+        AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
+        AnimationNode* Clone() override;
+        void PrintNode(uint tabs) override;
 
-  void SetRoot(Cog* root);
-  Cog* GetRoot();
+        void SetRoot(Cog* root);
+        Cog* GetRoot();
 
-  CogId mRoot;
-  HashSet<uint> mSelectiveBones;
-};
+        CogId mRoot;
+        HashSet<uint> mSelectiveBones;
+    };
 
-class ChainNode : public DualBlend<ChainNode>
-{
-public:
-  LightningDeclareType(ChainNode, TypeCopyMode::ReferenceType);
+    class ChainNode : public DualBlend<ChainNode>
+    {
+    public:
+    LightningDeclareType(ChainNode, TypeCopyMode::ReferenceType);
 
-  /// Constructors.
-  ChainNode();
+        /// Constructors.
+        ChainNode();
 
-  String GetName() override;
-  AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
-  bool IsPlayingInNode(StringParam animName) override;
-  void PrintNode(uint tabs) override;
-};
+        String GetName() override;
+        AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
+        bool IsPlayingInNode(StringParam animName) override;
+        void PrintNode(uint tabs) override;
+    };
 
 } // namespace Plasma
