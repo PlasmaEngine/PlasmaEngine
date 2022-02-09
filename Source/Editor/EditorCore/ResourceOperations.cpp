@@ -28,6 +28,7 @@ Resource* AddResourceFromFile(StringParam filePath, StringParam resourceType)
   // Add to the library and save
   AddContentItemInfo addContent;
   addContent.FileName = fileName;
+  addContent.FullPath = filePath;
   addContent.BuilderType = resourceType;
   addContent.Library = contentLibrary;
   addContent.ExternalFile = filePath;
@@ -233,6 +234,7 @@ Resource* DuplicateResource(Resource* resource, StringParam expectedNewName)
   // Add to the library (this builds the meta data and content file).
   AddContentItemInfo addContent;
   addContent.FileName = newFileName;
+  addContent.FullPath = sourceFileName;
   addContent.ExternalFile = tempFile;
   addContent.Name = newName;
   addContent.Library = library;
