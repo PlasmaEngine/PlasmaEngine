@@ -39,6 +39,7 @@ SceneGraphNode* ArchetypeProcessor::BuildSceneNodes(HierarchyData nodeData)
 
   graphNode->Translation = Math::TransformPoint(transform, graphNode->Translation);
   graphNode->Rotation = changeOfBasis * graphNode->Rotation * changeOfBasis.Inverted();
+  graphNode->Scale = Vec3(1.0);
 
   graphNode->IsSkeletonRoot = nodeData.mIsSkeletonRoot;
 
