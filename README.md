@@ -5,7 +5,7 @@
 [![Plasma Logo](https://raw.githubusercontent.com/PlasmaEngine/PlasmaEngine/master/GithubMedia/LargeLogo.png)](https://plasmagameengine.com/)
 
 ## Overview
-Plasma Game engine is a C++ powered 2D and 3D game engine that is designed to be straigt forward yet powerful for all users. We aim to have clear and easy to read code with many comments allowing anyone to pickup and extend the code as they feel is needed. Plasma is origionally branched from the Zero Game Engine.
+Plasma Game engine is a C++ powered 2D and 3D game engine that is designed to be straigt forward yet powerful for all users. We aim to have clear and easy to read code with many comments allowing anyone to pickup and extend the code as they feel is needed. Plasma is originally branched from the Zero Game Engine.
 
 ## Installing binary builds
 You can find the latest compiled version of the launcher on the Plasma discord, if you get lost feel free to ask there.
