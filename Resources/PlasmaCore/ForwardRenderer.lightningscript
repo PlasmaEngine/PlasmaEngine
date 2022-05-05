@@ -29,6 +29,18 @@ class ForwardRenderer : LightningComponent
   [Property] var ToneMap : Boolean = true;
   // Path to object with DirectionalLight component to use for direct lighting.
   [Property] var DirectionalLight : CogPath = CogPath(":/DirectionalLightShadows");
+  [Group("Tonemapping")]
+  [Property] var UseACES : Boolean = true;
+  [Group("Tonemapping")]
+  [Property] var ShoulderStrength : Real = 2.51;
+  [Group("Tonemapping")]
+  [Property] var LinearStrength : Real = 0.03;
+  [Group("Tonemapping")]
+  [Property] var LinearAngle : Real = 2.43;
+  [Group("Tonemapping")]
+  [Property] var ToeStrength : Real = 0.59;
+  [Group("Tonemapping")]
+  [Property] var WhitePoint : Real = 6;
   
     [Group("Transparancy")]
   // [100-300] Decrease if high opacity surface seem too transparent.
@@ -214,9 +226,14 @@ class ForwardRenderer : LightningComponent
   {
     if (this.ToneMap)
     {
-      var filmicToneMap = FilmicTonemap();
-      filmicToneMap.Texture = inputBuffer.Texture;
-      event.AddRenderTaskPostProcess(outputBuffer, filmicToneMap, "FilmicTonemap");
+       var acesTonemapping = ACESTonemap();
+        acesTonemapping.Texture = inputBuffer.Texture;
+        acesTonemapping.A = this.ShoulderStrength;
+        acesTonemapping.B = this.LinearStrength;
+        acesTonemapping.C = this.LinearAngle;
+        acesTonemapping.D = this.ToeStrength;
+        acesTonemapping.WhitePoint = this.WhitePoint;
+        event.AddRenderTaskPostProcess(outputBuffer, acesTonemapping, "ACES");
     }
     else
     {
