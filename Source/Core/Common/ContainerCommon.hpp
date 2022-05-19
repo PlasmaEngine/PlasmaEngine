@@ -137,11 +137,7 @@ struct MoveWithoutDestructionOperator
 {
   static inline void MoveWithoutDestruction(type* dest, type* source)
   {
-    if (std::is_move_constructible<type>::value)
-    {
-        dest = std::move(source);
-        return;
-    }
+    // TODO: Use move constructor if available
 
     // Use copy constructor
     new (dest) type(*source);
