@@ -1582,7 +1582,6 @@ namespace Plasma
     {
         // Get data off info (we don't technically need to copy this anymore or lock)
         GlTextureRenderData* loadingTexture = static_cast<GlTextureRenderData*>(info->mLoadingTexture);
-        GlTextureRenderData* logoTexture = static_cast<GlTextureRenderData*>(info->mLogoTexture);
         GlTextureRenderData* whiteTexture = static_cast<GlTextureRenderData*>(info->mWhiteTexture);
         GlTextureRenderData* splashTexture = static_cast<GlTextureRenderData*>(info->mSplashTexture);
         GlTextureRenderData* fontTexture = static_cast<GlTextureRenderData*>(info->mFontTexture);
@@ -1600,23 +1599,7 @@ namespace Plasma
         viewportToNdc.BuildTransform(Vec3(-1.0f, 1.0f, 0.0f), Mat3::cIdentity,
                                      Vec3(2.0f / size.x, -2.0f / size.y, 1.0f));
 
-        // Logo uv transform for animating
-        uint xFrames = logoTexture->mWidth / logoFrameSize;
-        uint yFrames = logoTexture->mHeight / logoFrameSize;
-        double framesPerSecond = 30.0;
-        uint frame = static_cast<uint>(time * framesPerSecond) % (xFrames * yFrames);
-        Vec2 logoUvScale = Vec2(1.0f / xFrames, 1.0f / yFrames);
-        Vec2 logoUvTranslate = Vec2(static_cast<float>(frame % xFrames), static_cast<float>(frame / xFrames)) *
-            logoUvScale;
-        Mat3 logoUvTransform;
-        logoUvTransform.BuildTransform(logoUvTranslate, 0.0f, logoUvScale);
-
-        // Object transforms
-        Vec3 logoScale = Vec3(static_cast<float>(logoFrameSize), static_cast<float>(logoFrameSize), 1.0f);
-        Vec3 logoTranslation = Vec3((size.x - loadingTexture->mWidth + logoScale.x) * 0.5f, size.y * 0.5f, 0.0f);
-        Mat4 logoTransform;
-        logoTransform.BuildTransform(logoTranslation, Mat3::cIdentity, logoScale);
-        logoTransform = viewportToNdc * logoTransform;
+       
 
         Vec3 loadingScale = Vec3(static_cast<float>(loadingTexture->mWidth),
                                  static_cast<float>(loadingTexture->mHeight), 1.0f);
@@ -1680,17 +1663,17 @@ namespace Plasma
 
         if (!splashMode)
         {
-            //// Loading
-            //glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, loadingTransform.array);
-            //glBindTexture(GL_TEXTURE_2D, loadingTexture->mId);
-            //mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
-            //mStreamedVertexBuffer.FlushBuffer(true);
-            
-            // Logo
-            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, splashTransform.array);
-            glBindTexture(GL_TEXTURE_2D, splashTexture->mId);
+            // Loading
+            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, loadingTransform.array);
+            glBindTexture(GL_TEXTURE_2D, loadingTexture->mId);
             mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
             mStreamedVertexBuffer.FlushBuffer(true);
+            
+            //// Logo
+            //glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, splashTransform.array);
+            //glBindTexture(GL_TEXTURE_2D, splashTexture->mId);
+            //mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
+            //mStreamedVertexBuffer.FlushBuffer(true);
 
             // Progress bar
             glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, progressTransform.array);

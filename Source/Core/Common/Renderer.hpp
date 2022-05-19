@@ -435,7 +435,6 @@ namespace Plasma
         ShowProgressInfo();
 
         TextureRenderData* mLoadingTexture;
-        TextureRenderData* mLogoTexture;
         TextureRenderData* mWhiteTexture;
         TextureRenderData* mSplashTexture;
         uint mLogoFrameSize;
