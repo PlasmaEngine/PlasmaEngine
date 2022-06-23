@@ -14,6 +14,7 @@ LightningDefineEnum(UiHorizontalAlignment);
 LightningDefineEnum(UiDockMode);
 LightningDefineEnum(UiFocusDirection);
 LightningDefineEnum(UiStackLayoutDirection);
+LightningDefineEnum(UiButtonState);
 
 LightningDefineStaticLibrary(UiWidgetLibrary)
 {
@@ -29,14 +30,17 @@ LightningDefineStaticLibrary(UiWidgetLibrary)
   LightningInitializeEnum(UiDockMode);
   LightningInitializeEnum(UiFocusDirection);
   LightningInitializeEnum(UiStackLayoutDirection);
+  LightningInitializeEnum(UiButtonState);
 
   // Events
   LightningInitializeType(UiFocusEvent);
   LightningInitializeType(UiTransformUpdateEvent);
 
+  // Widgets
   LightningInitializeType(UiWidgetCastResultsRange);
   LightningInitializeType(UiWidgetComponentHierarchy);
   LightningInitializeType(UiWidget);
+  LightningInitializeType(UiButton);
   LightningInitializeType(UiRootWidget);
   LightningInitializeType(UiLayout);
   LightningInitializeType(UiStackLayout);
