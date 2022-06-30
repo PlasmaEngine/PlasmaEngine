@@ -15,6 +15,7 @@ LightningDefineEnum(UiDockMode);
 LightningDefineEnum(UiFocusDirection);
 LightningDefineEnum(UiStackLayoutDirection);
 LightningDefineEnum(UiButtonState);
+LightningDefineEnum(UiButtonMouseDetectionMode);
 
 LightningDefineStaticLibrary(UiWidgetLibrary)
 {
@@ -31,6 +32,7 @@ LightningDefineStaticLibrary(UiWidgetLibrary)
   LightningInitializeEnum(UiFocusDirection);
   LightningInitializeEnum(UiStackLayoutDirection);
   LightningInitializeEnum(UiButtonState);
+  LightningInitializeEnum(UiButtonMouseDetectionMode);
 
   // Events
   LightningInitializeType(UiFocusEvent);

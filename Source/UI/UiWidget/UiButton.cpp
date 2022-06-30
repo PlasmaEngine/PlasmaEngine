@@ -36,6 +36,15 @@ namespace Plasma
 
 	void UiButton::Initialize(CogInitializer& initializer)
 	{
+		if (GetOwner()->has(UiWidget))
+		{
+			mTransform = GetOwner()->has(Transform);
+			mArea = GetOwner()->has(Area);
+			DoNotifyWarning("Invalid component placement", "UiButton is not compatible with UiWidget");
+			GetOwner()->ForceRemoveComponent(this);
+			return;
+		}
+
 		UiWidget::Initialize(initializer);
 
 		if (MouseDetectionMode == UiButtonMouseDetectionMode::OnEnter)
