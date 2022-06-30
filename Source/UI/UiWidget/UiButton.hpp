@@ -32,12 +32,14 @@ namespace Plasma
 		LightningDeclareType(UiButton, TypeCopyMode::ReferenceType);
 
 		// Visuals
-		Real4 MouseHoverColor;
-		Real4 MouseDownColor;
+		Real4 MouseHoverColor = Real4(1);
+		Real4 MouseDownColor = Real4(1);
 
 		// States
 		UiButtonState::Enum State = UiButtonState::Idle;
-		UiButtonMouseDetectionMode::Enum MouseDetectionMode = UiButtonMouseDetectionMode::OnEnterHierarchy;
+		// Note: this isn't serialized or exposed to editor left in case we want to change implimentation later
+		// and allow users to configure this for whatever reason.
+		UiButtonMouseDetectionMode::Enum MouseDetectionMode = UiButtonMouseDetectionMode::OnHover;
 
 		// Component Interface.
 		void Serialize(Serializer& stream) override;

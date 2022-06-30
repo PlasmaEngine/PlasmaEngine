@@ -19,24 +19,30 @@ namespace Plasma
 	{
 		PlasmaBindDocumented();
 		PlasmaBindComponent();
+
 		PlasmaBindSetup(SetupMode::DefaultSerialization);
 		PlasmaBindInterface(UiWidget);
-
+		PlasmaBindDependency(Sprite);
 		PlasmaBindEvent(Events::UiButtonStateChanged, UiButtonStateChangedEvent);
+
 		LightningBindGetterSetterProperty(MouseHoverColor);
 		LightningBindGetterSetterProperty(MouseDownColor);
-		LightningBindGetterSetterProperty(MouseDetectionMode);
+		// LightningBindGetterSetterProperty(MouseDetectionMode); <- Don't need if we require a sprite...
 		LightningBindGetter(State);
 	}
 
 	void UiButton::Serialize(Serializer& stream)
 	{
-		UiWidget::Serialize(stream);
+		UiWidget::Serialize(stream); 
+
+		// SerializeEnumNameDefault(UiButtonMouseDetectionMode, MouseDetectionMode, UiButtonMouseDetectionMode::OnEnterHierarchy);
+		SerializeNameDefault(MouseHoverColor, Real4(1));
+		SerializeNameDefault(MouseDownColor, Real4(1));
 	}
 
 	void UiButton::Initialize(CogInitializer& initializer)
 	{
-		if (GetOwner()->has(UiWidget))
+		if (GetOwner()->has(UiWidget) != this)
 		{
 			mTransform = GetOwner()->has(Transform);
 			mArea = GetOwner()->has(Area);
