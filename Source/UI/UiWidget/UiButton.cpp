@@ -38,6 +38,19 @@ namespace Plasma
 
 	void UiButton::Initialize(CogInitializer& initializer)
 	{
+		// Cannot have multiple UiWidgets on one object
+		// So check if there is already one...
+		if (GetOwner()->has(UiWidget)) 
+		{
+			// Required to be set for function calls that happen prior to removal.
+			mTransform = GetOwner()->has(Transform);
+			mArea = GetOwner()->has(Area);
+			// Warn and remove
+			DoNotifyWarning("Invalid component placement", "UiButton is not compatible with UiWidget");
+			GetOwner()->RemoveComponent(this);
+			return;
+		}
+
 		UiWidget::Initialize(initializer);
 
 		ConnectThisTo(GetOwner(), Events::MouseEnter, OnMouseEnter);
