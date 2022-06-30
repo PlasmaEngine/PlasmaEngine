@@ -1,17 +1,34 @@
 // MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
+
+
 namespace Plasma
 {
+	namespace Events
+	{
+		DefineEvent(UiButtonStateChanged);
+	}
+
+	LightningDefineType(UiButtonStateChangedEvent, builder, type)
+	{
+		PlasmaBindDocumented();
+		LightningBindGetterProperty(ToState);
+		LightningBindGetterProperty(FromState);
+	}
+
 	LightningDefineType(UiButton, builder, type)
 	{
 		PlasmaBindDocumented();
 		PlasmaBindComponent();
 		PlasmaBindSetup(SetupMode::DefaultSerialization);
 
-		LightningBindGetterSetterProperty(State);
+		PlasmaBindEvent(Events::UiButtonStateChanged, UiButtonStateChangedEvent);
+
 		LightningBindGetterSetterProperty(MouseHoverColor);
 		LightningBindGetterSetterProperty(MouseDownColor);
+
+		LightningBindGetter(State);
 	}
 
 	void UiButton::Serialize(Serializer& stream)
@@ -22,6 +39,21 @@ namespace Plasma
 	void UiButton::Initialize(CogInitializer& initializer)
 	{
 		UiWidget::Initialize(initializer);
+
+		ConnectThisTo(GetOwner(), Events::MouseEnter, OnMouseEnter);
+		ConnectThisTo(GetOwner(), Events::MouseExit, OnMouseExit);
+		ConnectThisTo(GetOwner(), Events::LeftMouseDown, OnLeftMouseDown);
+		ConnectThisTo(GetOwner(), Events::LeftMouseUp, OnLeftMouseUp);
+	}
+
+	UiButtonState::Enum UiButtonStateChangedEvent::GetFromState()
+	{
+		return FromState;
+	}
+
+	UiButtonState::Enum UiButtonStateChangedEvent::GetToState()
+	{
+		return ToState;
 	}
 
 	Real4 UiButton::GetMouseHoverColor()
@@ -51,22 +83,38 @@ namespace Plasma
 
 	void UiButton::SetState(UiButtonState::Enum state)
 	{
+		auto lastState = State;
 		State = state;
+		UiButtonStateChangedEvent e;
+		e.FromState = lastState;
+		e.ToState = state;
+		GetOwner()->DispatchEvent(Events::UiButtonStateChanged, &e);
 	}
 
-	void UiButton::OnMouseEnter()
+	void UiButton::OnMouseEnter(ViewportMouseEvent* e)
 	{
+		// TODO: See if there is a need or want to cascade color down to children
+		// add an enum for that and apply hover and click colors to the mHierarchyColor...
+		mOriginalColor = UiWidget::mLocalColor;
+		UiWidget::mLocalColor = MouseHoverColor;
+		SetState(UiButtonState::MouseOver);
 	}
 
-	void UiButton::OnMouseExit()
+	void UiButton::OnMouseExit(ViewportMouseEvent* e)
 	{
+		UiWidget::mLocalColor = mOriginalColor;
+		SetState(UiButtonState::Idle);
 	}
 
-	void UiButton::OnLeftMouseDown()
+	void UiButton::OnLeftMouseDown(ViewportMouseEvent* e)
 	{
+		UiWidget::mLocalColor = MouseDownColor;
+		SetState(UiButtonState::Pressed);
 	}
 
-	void UiButton::OnLeftMouseUp()
+	void UiButton::OnLeftMouseUp(ViewportMouseEvent* e)
 	{
+		UiWidget::mLocalColor = MouseHoverColor;
+		SetState(UiButtonState::MouseOver);
 	}
 }

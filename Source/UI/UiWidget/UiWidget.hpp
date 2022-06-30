@@ -264,7 +264,7 @@ public:
           LocationGetterSetter(BottomLeft) LocationGetterSetter(BottomCenter) LocationGetterSetter(BottomRight)
 #undef LocationGetterSetter
 
-              float GetLocalTop();
+  float GetLocalTop();
   void SetLocalTop(float localTop);
   float GetWorldTop();
   void SetWorldTop(float worldTop);

@@ -46,3 +46,4 @@ Installer/
 CMakeSettings.json
 cmake-build-**/
 *.library
+/Resources/EditorUi

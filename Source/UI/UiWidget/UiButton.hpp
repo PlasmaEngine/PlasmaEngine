@@ -1,9 +1,28 @@
 // MIT Licensed (see LICENSE.md).
 #pragma once
 
+
 namespace Plasma
 {
+	namespace Events
+	{
+		DeclareEvent(UiButtonStateChanged);
+	}
+
 	DeclareEnum3(UiButtonState, MouseOver, Pressed, Idle);
+
+	class UiButtonStateChangedEvent : public Event
+	{
+	public:
+		/// Meta Initialization.
+		LightningDeclareType(UiButtonStateChangedEvent, TypeCopyMode::ReferenceType);
+
+		UiButtonState::Enum FromState = UiButtonState::Idle;
+		UiButtonState::Enum ToState = UiButtonState::Idle;
+
+		UiButtonState::Enum GetFromState();
+		UiButtonState::Enum GetToState();
+	};
 
 	class UiButton : public UiWidget
 	{
@@ -11,14 +30,14 @@ namespace Plasma
 		/// Meta Initialization.
 		LightningDeclareType(UiButton, TypeCopyMode::ReferenceType);
 
-		// Color
+		// Visuals
 		Real4 MouseHoverColor = Real4(1);
 		Real4 MouseDownColor = Real4(1);
 
 		// States
-		UiButtonState::Enum State;
+		UiButtonState::Enum State = UiButtonState::Idle;
 
-		/// Component Interface.
+		// Component Interface.
 		void Serialize(Serializer& stream) override;
 		void Initialize(CogInitializer& initializer) override;
 
@@ -30,13 +49,14 @@ namespace Plasma
 		void SetMouseDownColor(Real4 color);
 
 		UiButtonState::Enum GetState();
-		void SetState(UiButtonState::Enum state);
 
 	private:
-		// Button stuff...
-		void OnMouseEnter();
-		void OnMouseExit();
-		void OnLeftMouseDown();
-		void OnLeftMouseUp();
+		Real4 mOriginalColor;
+		void SetState(UiButtonState::Enum state);
+		void OnMouseEnter(ViewportMouseEvent* e);
+		void OnMouseExit(ViewportMouseEvent* e);
+		void OnLeftMouseDown(ViewportMouseEvent* e);
+		void OnLeftMouseUp(ViewportMouseEvent* e);
+		bool ShouldRunInEditMode();
 	};
 }
