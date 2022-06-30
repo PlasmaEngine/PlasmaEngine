@@ -27,15 +27,12 @@ namespace Plasma
 
 		LightningBindGetterSetterProperty(MouseHoverColor);
 		LightningBindGetterSetterProperty(MouseDownColor);
-		// LightningBindGetterSetterProperty(MouseDetectionMode); <- Don't need if we require a sprite...
 		LightningBindGetter(State);
 	}
 
 	void UiButton::Serialize(Serializer& stream)
 	{
 		UiWidget::Serialize(stream); 
-
-		// SerializeEnumNameDefault(UiButtonMouseDetectionMode, MouseDetectionMode, UiButtonMouseDetectionMode::OnEnterHierarchy);
 		SerializeNameDefault(MouseHoverColor, Real4(1));
 		SerializeNameDefault(MouseDownColor, Real4(1));
 	}
