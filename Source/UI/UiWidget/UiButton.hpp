@@ -37,9 +37,9 @@ namespace Plasma
 
 		// States
 		UiButtonState::Enum State = UiButtonState::Idle;
-		// Note: this isn't serialized or exposed to editor left in case we want to change implimentation later
-		// and allow users to configure this for whatever reason.
-		UiButtonMouseDetectionMode::Enum MouseDetectionMode = UiButtonMouseDetectionMode::OnHover;
+		// Note: This isn't serialized or exposed to editor as I decided it added unnecessary complexity. 
+		// Left it in case we want to change implimentation later and allow users to configure this for whatever reason.
+		UiButtonMouseDetectionMode::Enum MouseDetectionMode = UiButtonMouseDetectionMode::OnEnterHierarchy;
 
 		// Component Interface.
 		void Serialize(Serializer& stream) override;
