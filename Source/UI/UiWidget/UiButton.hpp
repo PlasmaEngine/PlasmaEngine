@@ -10,6 +10,7 @@ namespace Plasma
 	}
 
 	DeclareEnum3(UiButtonState, MouseOver, Pressed, Idle);
+	DeclareEnum3(UiButtonMouseDetectionMode, OnEnter, OnEnterHierarchy, OnHover);
 
 	class UiButtonStateChangedEvent : public Event
 	{
@@ -31,11 +32,12 @@ namespace Plasma
 		LightningDeclareType(UiButton, TypeCopyMode::ReferenceType);
 
 		// Visuals
-		Real4 MouseHoverColor = Real4(1);
-		Real4 MouseDownColor = Real4(1);
+		Real4 MouseHoverColor;
+		Real4 MouseDownColor;
 
 		// States
 		UiButtonState::Enum State = UiButtonState::Idle;
+		UiButtonMouseDetectionMode::Enum MouseDetectionMode = UiButtonMouseDetectionMode::OnEnterHierarchy;
 
 		// Component Interface.
 		void Serialize(Serializer& stream) override;
@@ -49,6 +51,9 @@ namespace Plasma
 		void SetMouseDownColor(Real4 color);
 
 		UiButtonState::Enum GetState();
+		UiButtonMouseDetectionMode::Enum UiButton::GetMouseDetectionMode();
+
+		void UiButton::SetMouseDetectionMode(UiButtonMouseDetectionMode::Enum detection);
 
 	private:
 		Real4 mOriginalColor;

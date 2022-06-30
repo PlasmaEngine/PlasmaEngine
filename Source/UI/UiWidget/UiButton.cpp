@@ -1,8 +1,6 @@
 // MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
-
-
 namespace Plasma
 {
 	namespace Events
@@ -22,12 +20,12 @@ namespace Plasma
 		PlasmaBindDocumented();
 		PlasmaBindComponent();
 		PlasmaBindSetup(SetupMode::DefaultSerialization);
+		PlasmaBindInterface(UiWidget);
 
 		PlasmaBindEvent(Events::UiButtonStateChanged, UiButtonStateChangedEvent);
-
 		LightningBindGetterSetterProperty(MouseHoverColor);
 		LightningBindGetterSetterProperty(MouseDownColor);
-
+		LightningBindGetterSetterProperty(MouseDetectionMode);
 		LightningBindGetter(State);
 	}
 
@@ -38,23 +36,24 @@ namespace Plasma
 
 	void UiButton::Initialize(CogInitializer& initializer)
 	{
-		// Cannot have multiple UiWidgets on one object
-		// So check if there is already one...
-		if (GetOwner()->has(UiWidget)) 
-		{
-			// Required to be set for function calls that happen prior to removal.
-			mTransform = GetOwner()->has(Transform);
-			mArea = GetOwner()->has(Area);
-			// Warn and remove
-			DoNotifyWarning("Invalid component placement", "UiButton is not compatible with UiWidget");
-			GetOwner()->RemoveComponent(this);
-			return;
-		}
-
 		UiWidget::Initialize(initializer);
 
-		ConnectThisTo(GetOwner(), Events::MouseEnter, OnMouseEnter);
-		ConnectThisTo(GetOwner(), Events::MouseExit, OnMouseExit);
+		if (MouseDetectionMode == UiButtonMouseDetectionMode::OnEnter)
+		{
+			ConnectThisTo(GetOwner(), Events::MouseEnter, OnMouseEnter);
+			ConnectThisTo(GetOwner(), Events::MouseExit, OnMouseExit);
+		}
+		else if (MouseDetectionMode == UiButtonMouseDetectionMode::OnEnterHierarchy)
+		{
+			ConnectThisTo(GetOwner(), Events::MouseEnterHierarchy, OnMouseEnter);
+			ConnectThisTo(GetOwner(), Events::MouseExitHierarchy, OnMouseExit);
+		}
+		else
+		{
+			ConnectThisTo(GetOwner(), Events::MouseHover, OnMouseEnter);
+			ConnectThisTo(GetOwner(), Events::MouseExitHierarchy, OnMouseExit);
+		}
+
 		ConnectThisTo(GetOwner(), Events::LeftMouseDown, OnLeftMouseDown);
 		ConnectThisTo(GetOwner(), Events::LeftMouseUp, OnLeftMouseUp);
 	}
@@ -67,6 +66,16 @@ namespace Plasma
 	UiButtonState::Enum UiButtonStateChangedEvent::GetToState()
 	{
 		return ToState;
+	}
+
+	UiButtonMouseDetectionMode::Enum UiButton::GetMouseDetectionMode()
+	{
+		return MouseDetectionMode;
+	}
+
+	void UiButton::SetMouseDetectionMode(UiButtonMouseDetectionMode::Enum detection)
+	{
+		MouseDetectionMode = detection;
 	}
 
 	Real4 UiButton::GetMouseHoverColor()
