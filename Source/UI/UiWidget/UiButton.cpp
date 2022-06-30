@@ -127,8 +127,8 @@ namespace Plasma
 
 	void UiButton::OnMouseEnter(ViewportMouseEvent* e)
 	{
-		// TODO: See if there is a need or want to cascade color down to children
-		// add an enum for that and apply hover and click colors to the mHierarchyColor...
+		PlasmaTodo("TODO: See if there is a need or want to cascade color down to" + 
+			"children add an enum for thatand apply hoverand click colors to the mHierarchyColor...");
 		mOriginalColor = UiWidget::mLocalColor;
 		UiWidget::mLocalColor = MouseHoverColor;
 		SetState(UiButtonState::MouseOver);

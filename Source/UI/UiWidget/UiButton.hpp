@@ -37,7 +37,7 @@ namespace Plasma
 
 		// States
 		UiButtonState::Enum State = UiButtonState::Idle;
-		// Note: This isn't serialized or exposed to editor as I decided it added unnecessary complexity. 
+		// Note: This isn't serialized or exposed to editor as I felt it added unnecessary complexity. 
 		// Left it in case we want to change implimentation later and allow users to configure this for whatever reason.
 		UiButtonMouseDetectionMode::Enum MouseDetectionMode = UiButtonMouseDetectionMode::OnEnterHierarchy;
 
