@@ -23,7 +23,7 @@ target_sources(UiWidget
     ${CMAKE_CURRENT_LIST_DIR}/UiWidgetEvents.hpp
     ${CMAKE_CURRENT_LIST_DIR}/UiWidgetStandard.cpp
     ${CMAKE_CURRENT_LIST_DIR}/UiWidgetStandard.hpp
-)
+    ${CMAKE_CURRENT_LIST_DIR}/UiButton.cpp)
 
 plasma_target_includes(UiWidget
   PUBLIC

@@ -103,13 +103,23 @@ LightningDefineType(UiWidget, builder, type)
   PlasmaBindEvent(Events::UiPreUpdate, UiTransformUpdateEvent);
   PlasmaBindEvent(Events::UiPostUpdate, UiTransformUpdateEvent);
 
+  //static const String sFlagGroup = "Flags";
+
   LightningBindGetterSetterProperty(Active);
   LightningBindGetterSetterProperty(Visible);
   LightningBindGetterSetterProperty(Interactive);
   LightningBindGetterSetterProperty(OnTop);
-  LightningBindGetterSetterProperty(LocalTranslation)->AddAttribute(PropertyAttributes::cLocalModificationOverride);
-  LightningBindGetterSetterProperty(WorldTranslation)->AddAttribute(PropertyAttributes::cLocalModificationOverride);
-  LightningBindGetterSetterProperty(Size)->AddAttribute(PropertyAttributes::cLocalModificationOverride);
+  LightningBindGetterSetterProperty(ClipChildren);
+  LightningBindGetterSetterProperty(CanTakeFocus);
+  LightningBindGetterSetterProperty(InLayout)
+      ->PlasmaLocalModificationOverride();
+
+  LightningBindGetterSetterProperty(LocalTranslation)
+      ->AddAttribute(PropertyAttributes::cLocalModificationOverride);
+  LightningBindGetterSetterProperty(WorldTranslation)
+      ->AddAttribute(PropertyAttributes::cLocalModificationOverride);
+  LightningBindGetterSetterProperty(Size)
+      ->AddAttribute(PropertyAttributes::cLocalModificationOverride);
 
   LightningBindGetterSetter(LocalRectangle);
   LightningBindGetterSetter(WorldRectangle);
@@ -149,10 +159,9 @@ LightningDefineType(UiWidget, builder, type)
   LightningBindGetterSetter(WorldLeft);
 
   LightningBindFieldProperty(mAbsoluteMinSize);
+
   LightningBindFieldProperty(mLocalColor);
   LightningBindFieldProperty(mHierarchyColor);
-  LightningBindGetterSetterProperty(ClipChildren);
-  LightningBindGetterSetterProperty(InLayout)->PlasmaLocalModificationOverride();
 
   static const String sLayoutGroup = "Layout";
 
@@ -171,12 +180,11 @@ LightningDefineType(UiWidget, builder, type)
   LightningBindGetterSetterProperty(MarginBottom)->PlasmaSetPropertyGroup(sLayoutGroup)->PlasmaLocalModificationOverride();
 
   LightningBindGetterSetterProperty(DockMode)->PlasmaSetPropertyGroup(sLayoutGroup)->PlasmaLocalModificationOverride();
-  LightningBindGetterSetterProperty(CanTakeFocus);
+
   LightningBindGetter(MouseOver);
   LightningBindGetter(MouseOverHierarchy);
   LightningBindGetter(HasFocus);
   LightningBindGetter(HierarchyHasFocus);
-
   LightningBindGetter(Root);
 
   LightningBindMethodProperty(SizeToContents);
