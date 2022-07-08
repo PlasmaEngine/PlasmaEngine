@@ -577,8 +577,7 @@ String GeometryImporter::ProcessAssimpErrorMessage(StringParam errorMessage)
   // likely a result of the format but assimp attempts to parse the entire FBX
   // DOM before checking if the format is supported
   if (errorMessage.Contains("FBX-Tokenize"))
-    return String("FBX Parsing Error. Supported formats are FBX 2011, FBX 2012 "
-                  "and FBX 2013.");
+    return String("FBX Parsing Error. Supported formats are FBX 2011+.");
 
   return errorMessage;
 }

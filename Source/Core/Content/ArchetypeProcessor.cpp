@@ -45,7 +45,8 @@ SceneGraphNode* ArchetypeProcessor::BuildSceneNodes(HierarchyData nodeData)
 
   if (nodeData.mHasMesh)
   {
-    graphNode->MeshName = nodeData.mMeshName;
+    if(!nodeData.mMeshName.Contains("_phys"))
+        graphNode->MeshName = nodeData.mMeshName;
     graphNode->PhysicsMeshName = nodeData.mPhysicsMeshName;
     graphNode->SkeletonRootNodePath = nodeData.mSkeletonRootNodePath;
   }
