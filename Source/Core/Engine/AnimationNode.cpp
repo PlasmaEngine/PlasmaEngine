@@ -394,10 +394,14 @@ namespace Plasma
 
     LightningDefineType(BlendSpaceData, builder, type)
     {
-        LightningBindMethod(SetAnimationNode);
-        LightningBindMethod(GetAnimationNode);
-        LightningBindMethod(SetPosition);
-        LightningBindMethod(GetPosition);
+        LightningBindGetterSetterProperty(Position);
+        LightningBindGetterSetterProperty(AnimationNode);
+    }
+
+    BlendSpaceData::BlendSpaceData()
+    {
+        mAnimationNode = NULL;
+        mPosition = Vec2(0, 0);
     }
 
     BlendSpaceData::BlendSpaceData(AnimationNode* animationNode, Vec2Param position) :
@@ -432,21 +436,39 @@ namespace Plasma
         return mPosition;
     }
 
-    LightningDefineType(BlendSpace, builder, type)
+    LightningDefineType(BlendSpace2D, builder, type)
+    {
+        LightningBindMethod(AddAnimationData);
+        LightningBindMethod(RemoveAnimationData);
+        LightningBindMethod(CreateBlendSpaceData);
+
+        LightningBindMethod(SetPosition);
+        LightningBindMethod(SetXPosition);
+        LightningBindMethod(SetYPosition);
+        LightningBindMethod(GetPosition);
+    }
+
+    BlendSpace2D::BlendSpace2D()
     {
 
     }
 
-    BlendSpace::BlendSpace()
-    {
-
-    }
-
-    BlendSpace::BlendSpace(AnimationGraph* animGraph) : mAnimGraph(animGraph)
+    BlendSpace2D::BlendSpace2D(AnimationGraph* animGraph) : mAnimGraph(animGraph)
     {
     }
 
-    void BlendSpace::AddAnimationData(BlendSpaceData blendSpaceData)
+    BlendSpaceData* BlendSpace2D::CreateBlendSpaceData(AnimationNode* node, Vec2Param position)
+    {
+        BlendSpaceData* blendSpaceData = new BlendSpaceData();
+        blendSpaceData->SetAnimationNode(node);
+        blendSpaceData->SetPosition(position);
+
+        this->AddAnimationData(blendSpaceData);
+
+        return blendSpaceData;
+    }
+
+    void BlendSpace2D::AddAnimationData(BlendSpaceData* blendSpaceData)
     {
         if (!mAnimations.Contains(blendSpaceData))
         {
@@ -455,7 +477,7 @@ namespace Plasma
         }
     }
 
-    void BlendSpace::RemoveAnimationData(BlendSpaceData blendSpaceData)
+    void BlendSpace2D::RemoveAnimationData(BlendSpaceData* blendSpaceData)
     {
         if (mAnimations.Contains(blendSpaceData))
         {
@@ -465,11 +487,11 @@ namespace Plasma
         }
     }
 
-    void BlendSpace::ReLinkAnimations()
+    void BlendSpace2D::ReLinkAnimations()
     {
-        for each (BlendSpaceData blendSpaceData in mAnimations)
+        for each (BlendSpaceData* blendSpaceData in mAnimations)
         {
-            AnimationNode* animationNode = blendSpaceData.GetAnimationNode();
+            AnimationNode* animationNode = blendSpaceData->GetAnimationNode();
             if (animationNode != nullptr)
             {
                 animationNode->ReLinkAnimations();
@@ -477,27 +499,27 @@ namespace Plasma
         }
     }
 
-    void BlendSpace::SetPosition(Vec2Param position)
+    void BlendSpace2D::SetPosition(Vec2Param position)
     {
         mPosition = position;
     }
 
-    void BlendSpace::SetXPosition(float x)
+    void BlendSpace2D::SetXPosition(float x)
     {
         mPosition.x = x;
     }
 
-    void BlendSpace::SetYPosition(float y)
+    void BlendSpace2D::SetYPosition(float y)
     {
         mPosition.y = y;
     }
 
-    Vec2 BlendSpace::GetPosition() const
+    Vec2 BlendSpace2D::GetPosition() const
     {
         return mPosition;
     }
 
-    AnimationNode* BlendSpace::Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend)
+    AnimationNode* BlendSpace2D::Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend)
     {
         // Return early if we've already been updated
         if (HasUpdatedThisFrame(frameId))
@@ -530,7 +552,7 @@ namespace Plasma
             // temporary data structure to help with blendspace distance checks
             struct NodeDistance
             {
-                BlendSpaceData animation;
+                BlendSpaceData* animation;
                 float distance;
             };
 
@@ -538,9 +560,9 @@ namespace Plasma
             NodeDistance distnaceB;
             NodeDistance distnaceC;
 
-            for each (BlendSpaceData blendSpaceData in mAnimations)
+            for each (BlendSpaceData* blendSpaceData in mAnimations)
             {
-                float distanceToData = Math::Distance(blendSpaceData.GetPosition(), mPosition);
+                float distanceToData = Math::Distance(blendSpaceData->GetPosition(), mPosition);
 
                 NodeDistance newNode;
                 newNode.animation = blendSpaceData;
@@ -566,11 +588,11 @@ namespace Plasma
 
             // Use Barycentric coordinates to find the distance of mPosition from the 3 animation points
             Vec3 barycentricCoords;
-            Geometry::BarycentricTriangle(Vec3(mPosition, 0), Vec3(distnaceA.animation.GetPosition()), Vec3(distnaceA.animation.GetPosition()), Vec3(distnaceC.animation.GetPosition(), 0), &barycentricCoords);
+            Geometry::BarycentricTriangle(Vec3(mPosition, 0), Vec3(distnaceA.animation->GetPosition()), Vec3(distnaceA.animation->GetPosition()), Vec3(distnaceC.animation->GetPosition(), 0), &barycentricCoords);
 
-            AnimationNode* animationNodeA = distnaceA.animation.GetAnimationNode();
-            AnimationNode* animationNodeB = distnaceB.animation.GetAnimationNode();
-            AnimationNode* animationNodeC = distnaceC.animation.GetAnimationNode();
+            AnimationNode* animationNodeA = distnaceA.animation->GetAnimationNode();
+            AnimationNode* animationNodeB = distnaceB.animation->GetAnimationNode();
+            AnimationNode* animationNodeC = distnaceC.animation->GetAnimationNode();
 
             // Update all animations before we use them for blending
             animationNodeA->Update(animGraph, dt, frameId, eventsToSend);
@@ -584,37 +606,26 @@ namespace Plasma
                 animationFrame.Tracks[i].Value = animationFrame.Tracks[i].Value.Get<Vec3>() + animationNodeB->mFrameData.Tracks[i].Value.Get<Vec3>() * barycentricCoords.y;
                 animationFrame.Tracks[i].Value = animationFrame.Tracks[i].Value.Get<Vec3>() + animationNodeC->mFrameData.Tracks[i].Value.Get<Vec3>() * barycentricCoords.z;
             }
-            return new PoseNode(animationFrame);
+            
+            if (mCollapseToPose)
+                return new PoseNode(mFrameData);
+
+            return this;
         }
         else
         {
-            PlasmaPrint("Animation BlendSpace is invalid to to few animaitons");
-            if (mAnimations.Empty())
-            {
-                Warn("No Animations in BlendSpace");
+            PlasmaPrint("Animation BlendSpace2D is invalid to to few animaitons");
+           
+            if (mCollapseToPose)
                 return new PoseNode(mFrameData);
-            }
-            else
-            {
-                BlendSpaceData blendSpaceData = mAnimations[0];
-                if (AnimationNode* node = blendSpaceData.GetAnimationNode())
-                {
-                    node->Update(animGraph, dt, frameId, eventsToSend);
-                    return new PoseNode(node->mFrameData);
-                }
-            }
+
+            return this;
         }
-
-
-
-        // get barymetric coord
-        // blend 3 animations
-        // pose
     }
 
-    AnimationNode* BlendSpace::Clone()
+    AnimationNode* BlendSpace2D::Clone()
     {
-        BlendSpace* clone = new BlendSpace();
+        BlendSpace2D* clone = new BlendSpace2D();
         clone->mAnimations = mAnimations;
         clone->mPosition = mPosition;
         clone->mLastReturned = mLastReturned;
@@ -622,11 +633,11 @@ namespace Plasma
         return clone;
     }
 
-    bool BlendSpace::IsPlayingInNode(StringParam animName)
+    bool BlendSpace2D::IsPlayingInNode(StringParam animName)
     {
         for (int i = 0; i < mAnimations.Size(); ++i)
         {
-            if (mAnimations[i].GetAnimationNode()->IsPlayingInNode(animName))
+            if (mAnimations[i]->GetAnimationNode()->IsPlayingInNode(animName))
             {
                 return true;
             }
@@ -634,18 +645,29 @@ namespace Plasma
         return false;
     }
 
-    void BlendSpace::PrintNode(uint tabs)
+    void BlendSpace2D::PrintNode(uint tabs)
     {
+        for (auto animation : mAnimations)
+        {
+            PlasmaPrint("__Animation Node__\n");
+            animation->GetAnimationNode()->PrintNode(1);
+
+            PlasmaPrint("__Node Position__\n");
+            PlasmaPrint((ToString(animation->GetPosition()) + "\n").c_str());
+        }
+
+        PlasmaPrint("__Blend Space Position__\n");
+        PlasmaPrint((ToString(mPosition) + "\n").c_str());
     }
 
-    String BlendSpace::GetDisplayName()
+    String BlendSpace2D::GetDisplayName()
     {
-        return "Unimplemented";
+        return String("BlendSpace2D");
     }
 
     AnimationNode* BuildBlendSpace()
     {
-        return new BlendSpace();
+        return new BlendSpace2D();
     }
 
     LightningDefineType(DirectBlend, builder, type)
@@ -1154,6 +1176,38 @@ namespace Plasma
         chain->mA = a;
         chain->mB = b;
         return chain;
+    }
+
+    AddativeNode::AddativeNode()
+    {
+    }
+
+    void AddativeNode::ReLinkAnimations()
+    {
+    }
+
+    AnimationNode* AddativeNode::Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend)
+    {
+        return nullptr;
+    }
+
+    AnimationNode* AddativeNode::Clone()
+    {
+        return nullptr;
+    }
+
+    bool AddativeNode::IsPlayingInNode(StringParam animName)
+    {
+        return false;
+    }
+
+    void AddativeNode::PrintNode(uint tabs)
+    {
+    }
+
+    String AddativeNode::GetDisplayName()
+    {
+        return String();
     }
 
 } // namespace Plasma

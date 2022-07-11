@@ -32,10 +32,12 @@ LightningDefineType(AnimationGraph, builder, type)
   LightningBindMethod(CreateCrossBlendNode);
   LightningBindMethod(CreateSelectiveNode);
   LightningBindMethod(CreateChainNode);
+  LightningBindMethod(CreateBlendSpace);
 
   PlasmaBindTag(Tags::Core);
 
-  // LightningBindMethodProperty(PreviewGraph);
+  LightningBindMethodProperty(PreviewGraph);
+  LightningBindMethodProperty(PrintGraph);
 }
 
 AnimationGraph::AnimationGraph()
@@ -320,6 +322,11 @@ SelectiveNode* AnimationGraph::CreateSelectiveNode()
 ChainNode* AnimationGraph::CreateChainNode()
 {
   return new ChainNode();
+}
+
+BlendSpace2D* AnimationGraph::CreateBlendSpace()
+{
+    return new BlendSpace2D();
 }
 
 LightningDefineType(SimpleAnimation, builder, type)

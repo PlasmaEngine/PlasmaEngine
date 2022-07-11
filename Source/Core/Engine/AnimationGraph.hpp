@@ -50,6 +50,7 @@ public:
   CrossBlend* CreateCrossBlendNode();
   SelectiveNode* CreateSelectiveNode();
   ChainNode* CreateChainNode();
+  BlendSpace2D* CreateBlendSpace();
 
   void SetUpPlayData(Animation* animation, PlayData& playData);
 

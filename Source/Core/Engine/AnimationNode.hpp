@@ -187,6 +187,22 @@ namespace Plasma
         virtual void PrintNode(uint tabs);
     };
 
+    class AddativeNode : public AnimationNode
+    {
+    public:
+        AddativeNode();
+
+        void ReLinkAnimations() override;
+        AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
+        AnimationNode* Clone() override;
+        bool IsPlayingInNode(StringParam animName) override;
+        void PrintNode(uint tabs) override;
+        String GetDisplayName() override;
+
+        HandleOf<AnimationNode> mBase;
+        HandleOf<AnimationNode> mAddative;
+    };
+
 /// This node simply plays a single animation.
     class BasicAnimation : public AnimationNode
     {
@@ -233,9 +249,9 @@ namespace Plasma
     class BlendSpaceData
     {
     public:
-    LightningDeclareType(BlendSpaceData, TypeCopyMode::ReferenceType);
+        LightningDeclareType(BlendSpaceData, TypeCopyMode::ReferenceType);
 
-        BlendSpaceData() = default;
+        BlendSpaceData();
         BlendSpaceData(AnimationNode* animationNode, Vec2Param position);
         bool operator==(const BlendSpaceData& blendSpaceData) const;
 
@@ -251,16 +267,17 @@ namespace Plasma
         Vec2 mPosition;
     };
 
-    class BlendSpace : public AnimationNode
+    class BlendSpace2D : public AnimationNode
     {
     public:
-    LightningDeclareType(BlendSpace, TypeCopyMode::ReferenceType);
+        LightningDeclareType(BlendSpace2D, TypeCopyMode::ReferenceType);
 
-        BlendSpace();
-        BlendSpace(AnimationGraph* animGraph);
+        BlendSpace2D();
+        BlendSpace2D(AnimationGraph* animGraph);
 
-        void AddAnimationData(BlendSpaceData animationData);
-        void RemoveAnimationData(BlendSpaceData animationData);
+        BlendSpaceData* CreateBlendSpaceData(AnimationNode* node, Vec2Param position);
+        void AddAnimationData(BlendSpaceData* animationData);
+        void RemoveAnimationData(BlendSpaceData* animationData);
 
         void SetPosition(Vec2Param position);
         void SetXPosition(float x);
@@ -280,7 +297,7 @@ namespace Plasma
 
         Vec2 mPosition;
 
-        Array<BlendSpaceData> mAnimations;
+        Array<BlendSpaceData*> mAnimations;
         AnimationNode* mLastReturned;
 
         HandleOf<AnimationGraph> mAnimGraph;
