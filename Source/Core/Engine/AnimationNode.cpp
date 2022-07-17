@@ -400,7 +400,7 @@ namespace Plasma
         LightningBindMethod(GetPosition);
     }
 
-    BlendSpaceData::BlendSpaceData() :
+     BlendSpaceData::BlendSpaceData() :
             mAnimationNode(nullptr),
             mPosition(Vec2(0,0))
     {
@@ -412,6 +412,12 @@ namespace Plasma
             mPosition(position)
     {
 
+    }
+
+    BlendSpaceData::BlendSpaceData(const BlendSpaceData& data)
+    {
+        mAnimationNode = data.mAnimationNode;
+        mPosition = data.mPosition;
     }
 
     bool BlendSpaceData::operator==(const BlendSpaceData& blendSpaceData) const
@@ -439,9 +445,120 @@ namespace Plasma
         return mPosition;
     }
 
-    LightningDefineType(BlendSpace2D, builder, type)
+    LightningDefineType(BlendSpace1D, builder, type)
+    {
+        LightningBindMethod(AddAnimationData);
+        LightningBindMethod(RemoveAnimationData);
+        LightningBindMethod(CreateBlendSpaceData);
+
+        LightningBindMethod(SetPosition);
+        LightningBindMethod(GetPosition);
+    }
+
+    BlendSpace1D::BlendSpace1D()
     {
 
+    }
+
+    BlendSpace1D::BlendSpace1D(AnimationGraph* animGraph) : mAnimGraph(animGraph)
+    {
+    }
+
+    BlendSpaceData* BlendSpace1D::CreateBlendSpaceData(AnimationNode* node, float position)
+    {
+        BlendSpaceData* blandData = new BlendSpaceData(node, Vec2(position, 0));
+        return blandData;
+    }
+
+    void BlendSpace1D::AddAnimationData(BlendSpaceData* blendSpaceData)
+    {
+        if (!mAnimations.Contains(blendSpaceData))
+        {
+            mAnimations.PushBack(blendSpaceData);
+            ReLinkAnimations();
+        }
+    }
+
+    void BlendSpace1D::RemoveAnimationData(BlendSpaceData* blendSpaceData)
+    {
+        if (mAnimations.Contains(blendSpaceData))
+        {
+            int index = mAnimations.FindIndex(blendSpaceData);
+            mAnimations.EraseAt(index);
+            ReLinkAnimations();
+        }
+    }
+
+    void BlendSpace1D::ReLinkAnimations()
+    {
+        for (BlendSpaceData* blendSpaceData : mAnimations)
+        {
+            AnimationNode* animationNode = blendSpaceData->GetAnimationNode();
+            if (animationNode != nullptr)
+            {
+                animationNode->ReLinkAnimations();
+            }
+        }
+    }
+
+    void BlendSpace1D::SetPosition(float position)
+    {
+        mPosition = position;
+    }
+    float BlendSpace1D::GetPosition() const
+    {
+        return mPosition;
+    }
+
+    AnimationNode* BlendSpace1D::Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend)
+    {
+        return this;
+    }
+
+    AnimationNode* BlendSpace1D::Clone()
+    {
+        BlendSpace1D* clone = new BlendSpace1D();
+        clone->mAnimations = mAnimations;
+        clone->mPosition = mPosition;
+        clone->mLastReturned = mLastReturned;
+        clone->mAnimGraph = mAnimGraph;
+        return clone;
+    }
+
+    bool BlendSpace1D::IsPlayingInNode(StringParam animName)
+    {
+        for (int i = 0; i < mAnimations.Size(); ++i)
+        {
+            if (mAnimations[i]->GetAnimationNode()->IsPlayingInNode(animName))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void BlendSpace1D::PrintNode(uint tabs)
+    {
+    }
+
+    String BlendSpace1D::GetDisplayName()
+    {
+        return "Unimplemented";
+    }
+
+    AnimationNode* BuildBlend1DSpace()
+    {
+        return new BlendSpace1D();
+    }
+
+    LightningDefineType(BlendSpace2D, builder, type)
+    {
+        LightningBindMethod(AddAnimationData);
+        LightningBindMethod(RemoveAnimationData);
+        LightningBindMethod(CreateBlendSpaceData);
+
+        LightningBindMethod(SetPosition);
+        LightningBindMethod(GetPosition);
     }
 
     BlendSpace2D::BlendSpace2D()
@@ -451,6 +568,12 @@ namespace Plasma
 
     BlendSpace2D::BlendSpace2D(AnimationGraph* animGraph) : mAnimGraph(animGraph)
     {
+    }
+
+    BlendSpaceData* BlendSpace2D::CreateBlendSpaceData(AnimationNode* node, Vec2Param position)
+    {
+        BlendSpaceData* blandData = new BlendSpaceData(node, position);
+        return blandData;
     }
 
     void BlendSpace2D::AddAnimationData(BlendSpaceData* blendSpaceData)
@@ -650,7 +773,7 @@ namespace Plasma
         return "Unimplemented";
     }
 
-    AnimationNode* BuildBlendSpace()
+    AnimationNode* BuildBlend2DSpace()
     {
         return new BlendSpace2D();
     }

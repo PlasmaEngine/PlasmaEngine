@@ -248,6 +248,7 @@ LightningDefineStaticLibrary(EngineLibrary)
   LightningInitializeType(BlendSpaceData);
   LightningInitializeType(PoseNode);
   LightningInitializeType(BasicAnimation);
+  LightningInitializeType(BlendSpace1D);
   LightningInitializeType(BlendSpace2D);
   LightningInitializeType(DualBlend<DirectBlend>);
   LightningInitializeType(DirectBlend);

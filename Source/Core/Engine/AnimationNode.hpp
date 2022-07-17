@@ -253,6 +253,7 @@ namespace Plasma
 
         BlendSpaceData();
         BlendSpaceData(AnimationNode* animationNode, Vec2Param position);
+        BlendSpaceData(const BlendSpaceData& data);
         bool operator==(const BlendSpaceData& blendSpaceData) const;
 
         void SetAnimationNode(AnimationNode* animationNode);
@@ -265,6 +266,38 @@ namespace Plasma
     private:
         HandleOf<AnimationNode> mAnimationNode;
         Vec2 mPosition;
+    };
+
+    class BlendSpace1D : public AnimationNode
+    {
+    public:
+        LightningDeclareType(BlendSpace1D, TypeCopyMode::ReferenceType);
+
+        BlendSpace1D();
+        BlendSpace1D(AnimationGraph* animGraph);
+
+        BlendSpaceData* CreateBlendSpaceData(AnimationNode* node, float position);
+        void AddAnimationData(BlendSpaceData* animationData);
+        void RemoveAnimationData(BlendSpaceData* animationData);
+
+        void SetPosition(float position);
+        float GetPosition() const;
+
+        /// AnimationNode Interface.
+        void ReLinkAnimations() override;
+        AnimationNode* Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend) override;
+        AnimationNode* Clone() override;
+        bool IsPlayingInNode(StringParam animName) override;
+        void PrintNode(uint tabs) override;
+        String GetDisplayName() override;
+        
+    private:
+        float mPosition;
+
+        Array<BlendSpaceData*> mAnimations;
+        AnimationNode* mLastReturned;
+
+        HandleOf<AnimationGraph> mAnimGraph;
     };
 
     class BlendSpace2D : public AnimationNode
