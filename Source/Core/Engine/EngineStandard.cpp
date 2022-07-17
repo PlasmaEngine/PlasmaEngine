@@ -245,8 +245,10 @@ LightningDefineStaticLibrary(EngineLibrary)
   LightningInitializeType(GameSession);
 
   LightningInitializeType(AnimationNode);
+  LightningInitializeType(BlendSpaceData);
   LightningInitializeType(PoseNode);
   LightningInitializeType(BasicAnimation);
+  LightningInitializeType(BlendSpace2D);
   LightningInitializeType(DualBlend<DirectBlend>);
   LightningInitializeType(DirectBlend);
   LightningInitializeType(DualBlend<CrossBlend>);

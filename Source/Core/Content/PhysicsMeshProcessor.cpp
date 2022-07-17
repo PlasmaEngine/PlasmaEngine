@@ -25,32 +25,36 @@ void PhysicsMeshProcessor::BuildPhysicsMesh(String outputPath)
   for (size_t i = 0; i < numMeshes; ++i)
   {
     GeometryResourceEntry& entry = mBuilder->Meshes[i];
-    MeshData& meshData = mMeshDataMap[i];
-    String physicsMeshFile = FilePath::CombineWithExtension(outputPath, entry.mName, extension);
-    meshData.mPhysicsMeshName = physicsMeshFile;
+   
+    if (entry.mName.Contains("_phys"))
+    {
+        MeshData& meshData = mMeshDataMap[i];
+        String physicsMeshFile = FilePath::CombineWithExtension(outputPath, entry.mName, extension);
+        meshData.mPhysicsMeshName = physicsMeshFile;
 
-    BinaryFileSaver saver;
-    Status status;
-    saver.Open(status, physicsMeshFile.c_str());
+        BinaryFileSaver saver;
+        Status status;
+        saver.Open(status, physicsMeshFile.c_str());
 
-    // Copy the vertices
-    VertexPositionArray vertices;
-    size_t numVertices = meshData.mVertexBuffer.Size();
-    vertices.Resize(numVertices);
-    for (size_t j = 0; j < numVertices; ++j)
-      vertices[j] = meshData.mVertexBuffer[j].mPosition;
+        // Copy the vertices
+        VertexPositionArray vertices;
+        size_t numVertices = meshData.mVertexBuffer.Size();
+        vertices.Resize(numVertices);
+        for (size_t j = 0; j < numVertices; ++j)
+            vertices[j] = meshData.mVertexBuffer[j].mPosition;
 
-    // Copy the indices
-    IndexArray indices = meshData.mIndexBuffer;
-    // Remove degenerate triangles
-    RemoveDegenerateTriangles(vertices, indices);
+        // Copy the indices
+        IndexArray indices = meshData.mIndexBuffer;
+        // Remove degenerate triangles
+        RemoveDegenerateTriangles(vertices, indices);
 
-    if (mBuilder->MeshBuilt == PhysicsMeshType::PhysicsMesh)
-      WriteStaticMesh(vertices, indices, saver);
-    else
-      WriteConvexMesh(vertices, indices, saver);
+        if (mBuilder->MeshBuilt == PhysicsMeshType::PhysicsMesh)
+            WriteStaticMesh(vertices, indices, saver);
+        else
+            WriteConvexMesh(vertices, indices, saver);
 
-    saver.Close();
+        saver.Close();
+    }
   }
 }
 

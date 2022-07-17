@@ -104,8 +104,10 @@ void UiRootWidget::Initialize(CogInitializer& initializer)
 {
   UiWidget::Initialize(initializer);
 
-  // If we have a Reactive Component, listen for events that come through it
-  if (GetOwner()->has(Reactive))
+  // If we have a Reactive Component, listen for events that come through it,
+  // If we are in editor mode don't listen to get events... for now. 
+  // NOTE: If editor stuff with UiWidgets is desired then this has to be re-evaluated.
+  if (GetOwner()->has(Reactive) && !initializer.GetSpace()->IsEditorMode())
   {
     // Mouse events
     ConnectThisTo(GetOwner(), Events::LeftMouseDown, OnMouseButton);

@@ -490,7 +490,7 @@ class DeferredRenderer : LightningComponent
       
       drawLast.LightTransform = light.ShadowRenderer.LightTransform;
       drawLast.ShadowBuffer = light.ShadowRenderer.ShadowBuffer;
-      drawLast.NormalOffsetBias = light.ShadowRenderer.NormalOffsetBias;
+      drawLast.NormalOffsetBias = light.ShadowRenderer.NormalOffsetBias; 
     }
   
     drawLast.DirectLightIntensity *= this.DirectLighting as Real;

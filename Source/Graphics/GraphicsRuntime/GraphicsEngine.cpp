@@ -474,15 +474,13 @@ void GraphicsEngine::StartProgress(Event* event)
     return;
 
   Texture* loadingTexture = TextureManager::FindOrNull("PlasmaLoading");
-  Texture* logoTexture = TextureManager::FindOrNull("PlasmaLogoAnimated");
   Texture* whiteTexture = TextureManager::FindOrNull("White");
   Texture* splashTexture = TextureManager::FindOrNull("PlasmaSplash");
-  if (loadingTexture == nullptr || logoTexture == nullptr || whiteTexture == nullptr || splashTexture == nullptr)
+  if (loadingTexture == nullptr || whiteTexture == nullptr || splashTexture == nullptr)
     return;
 
   mShowProgressJob->Lock();
   mShowProgressJob->mLoadingTexture = loadingTexture->mRenderData;
-  mShowProgressJob->mLogoTexture = logoTexture->mRenderData;
   mShowProgressJob->mWhiteTexture = whiteTexture->mRenderData;
   mShowProgressJob->mSplashTexture = splashTexture->mRenderData;
   mShowProgressJob->mLogoFrameSize = 128;

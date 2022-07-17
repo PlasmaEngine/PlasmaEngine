@@ -7,7 +7,7 @@ target_sources(Platform
   PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/../Curl/WebRequest.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../Empty/MainLoop.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/../Libgit2/Git.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../Empty/Git.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Atomic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Audio.cpp
     ${CMAKE_CURRENT_LIST_DIR}/CallStack.cpp
@@ -56,7 +56,7 @@ plasma_target_includes(Platform
 target_link_libraries(Platform
   PUBLIC
     Curl
-    Libgit2
+    #Libgit2
     tracy
 )
 
