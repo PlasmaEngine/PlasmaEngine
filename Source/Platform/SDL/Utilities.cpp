@@ -193,6 +193,13 @@ bool ShellEditFile(StringParam file)
 }
 
 #if !defined(PlasmaPlatformNoShellOpenApplication)
+bool ShellOpenApplicationWithWorkingDirectory(StringParam file, StringParam parameters, StringParam workingDirectory)
+{
+    String commandLine = String::Format("\"%s\" %s &", file.c_str(), parameters.c_str());
+    int result = system(commandLine.c_str());
+    return result == 0;
+}
+
 bool ShellOpenApplication(StringParam file, StringParam parameters)
 {
   String commandLine = String::Format("\"%s\" %s &", file.c_str(), parameters.c_str());

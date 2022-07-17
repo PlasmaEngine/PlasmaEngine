@@ -400,6 +400,13 @@ namespace Plasma
         LightningBindMethod(GetPosition);
     }
 
+    BlendSpaceData::BlendSpaceData() :
+            mAnimationNode(nullptr),
+            mPosition(Vec2(0,0))
+    {
+
+    }
+
     BlendSpaceData::BlendSpaceData(AnimationNode* animationNode, Vec2Param position) :
             mAnimationNode(animationNode),
             mPosition(position)

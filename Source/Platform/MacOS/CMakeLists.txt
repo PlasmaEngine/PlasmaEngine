@@ -21,7 +21,7 @@ target_sources(Platform
     ${CMAKE_CURRENT_LIST_DIR}/../Empty/Intrinsics.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../Empty/MainLoop.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../Empty/Socket.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/../Libgit2/Git.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../Empty/Git.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../SDL/Audio.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../SDL/ExternalLibrary.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../SDL/File.cpp
@@ -53,6 +53,5 @@ target_link_libraries(Platform
     Curl
     GL
     Glew
-    Libgit2
     SDL
 )

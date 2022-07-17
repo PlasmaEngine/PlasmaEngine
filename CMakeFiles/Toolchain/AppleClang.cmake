@@ -1,6 +1,6 @@
 add_definitions(-DPlasmaCompilerClang=1 -DPlasmaCompilerName="Clang")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 set(PLASMA_C_CXX_FLAGS "\
   -Wno-address-of-packed-member\
   -Wno-empty-body\
@@ -12,24 +12,38 @@ set(PLASMA_C_CXX_FLAGS "\
   -pthread\
 ")
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker /ignore:4049,4217")
+set(PLASMA_C_CXX_FLAGS_DEBUG "\
+  -g\
+")
+
+set(PLASMA_C_CXX_FLAGS_RELWITHDEBINFO "\
+  -O3\
+  -g\
+")
+
+set(PLASMA_C_CXX_FLAGS_RELEASE "\
+  -O3\
+")
+
+set(PLASMA_C_CXX_FLAGS_MINSIZEREL "\
+  -Oz\
+")
+
+#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker /ignore:4049,4217")
 if(APPLE)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -c")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker")
 else()
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker --start-group -Wunused-command-line-argument")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker --start-group")
 endif()
 
 set(PLASMA_C_CXX_EXTERNAL_FLAGS -Wno-everything)
 
 function(plasma_toolchain_setup_library target)
-#    target_compile_options(${target} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-stdlib=libc++>)
-#
-#    target_link_options(${target} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-stdlib=libc++>)
 endfunction()
 
 function(plasma_use_precompiled_header target directory)
     #add_library(${target}PrecompiledHeader)
-    #s
+    #
     #target_sources(${target}PrecompiledHeader
     #  PRIVATE
     #    ${directory}/Precompiled.hpp
