@@ -467,7 +467,7 @@ namespace Plasma
 
     void BlendSpace::ReLinkAnimations()
     {
-        for each (BlendSpaceData blendSpaceData in mAnimations)
+        for (BlendSpaceData blendSpaceData : mAnimations)
         {
             AnimationNode* animationNode = blendSpaceData.GetAnimationNode();
             if (animationNode != nullptr)
@@ -538,7 +538,7 @@ namespace Plasma
             NodeDistance distnaceB;
             NodeDistance distnaceC;
 
-            for each (BlendSpaceData blendSpaceData in mAnimations)
+            for (BlendSpaceData blendSpaceData : mAnimations)
             {
                 float distanceToData = Math::Distance(blendSpaceData.GetPosition(), mPosition);
 

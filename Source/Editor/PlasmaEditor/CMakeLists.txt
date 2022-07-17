@@ -15,6 +15,12 @@ target_sources(PlasmaEditor
     ${CMAKE_CURRENT_LIST_DIR}/RC/PlasmaEditor.rc
 )
 
+if(APPLE)
+    set(NetworkingLibs)
+else()
+    set(NetworkingLibs NetworkCore Replication)
+endif()
+
 target_link_libraries(PlasmaEditor
   PUBLIC
     assimp
@@ -31,12 +37,11 @@ target_link_libraries(PlasmaEditor
     RendererGL
     Libpng
     Meta
-    NetworkCore
     Nvtt
+    ${NetworkingLibs}
     Opus
     Physics
     Platform
-    Replication
     Scintilla
     Serialization
     Sound

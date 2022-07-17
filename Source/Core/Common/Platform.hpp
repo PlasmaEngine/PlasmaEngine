@@ -8,6 +8,14 @@
 #  define PlasmaDebug 1
 #endif
 
+#if defined(PlasmaCompilerAppleClang)
+#   define PlasmaCompilerClang
+#endif
+
+#if defined(PlasmaPlatformDarwin)
+#	define PLASMA_PLATFORM_OSX
+#endif
+
 // Work out the active compiller
 #if defined(_MSC_VER)
 #   define PLASMA_COMPILLER_MSVC
@@ -286,7 +294,7 @@
 #    define PlasmaForceInline /* GCC has issues with                                                                     \
                                __attribute__((always_inline)) */                                                       \
       inline
-#    define PlasmaDebugBreak() asm("int $3")
+#    define PlasmaDebugBreak() // TODO: Casuses error on linux
 #  endif
 #  define PlasmaNoInline
 #endif

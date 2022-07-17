@@ -5,10 +5,10 @@ namespace Plasma
     class LibraryInitializer
     {
     public:
-        virtual void Initialize() abstract;
-        virtual void Shutdown() abstract;
-        virtual void ClearLibrary() abstract;
-        virtual void Destroy() abstract;
+        virtual void Initialize() = 0;
+        virtual void Shutdown() = 0;
+        virtual void ClearLibrary() = 0;
+        virtual void Destroy() = 0;
     };
 
     template<typename T>

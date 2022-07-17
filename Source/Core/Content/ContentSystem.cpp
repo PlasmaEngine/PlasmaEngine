@@ -703,7 +703,7 @@ bool ContentSystem::MoveContentItem(ContentItem* contentItem, ContentLibrary* ta
     {
         // If the file does not exists in the directory that we are trying to move it to, we need to remove the meta file and move the file.
         if (!contentItem->DeleteMetaFile())
-            PlasmaPrint("Unable to delete meta file for %s", contentItem->Filename);
+            PlasmaPrint("Unable to delete meta file for %s", contentItem->Filename.c_str());
         MoveFile(newFullPath, contentItem->GetFullPath());
     }
 
