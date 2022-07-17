@@ -53,9 +53,9 @@ namespace Plasma
 		void SetMouseDownColor(Real4 color);
 
 		UiButtonState::Enum GetState();
-		UiButtonMouseDetectionMode::Enum UiButton::GetMouseDetectionMode();
+		UiButtonMouseDetectionMode::Enum GetMouseDetectionMode();
 
-		void UiButton::SetMouseDetectionMode(UiButtonMouseDetectionMode::Enum detection);
+		void SetMouseDetectionMode(UiButtonMouseDetectionMode::Enum detection);
 
 	private:
 		Real4 mOriginalColor;

@@ -9,7 +9,7 @@ if ("${CMAKE_GENERATOR}" MATCHES "Visual Studio*")
     set(PLASMA_COMMON_VISUALIZER "${CMAKE_CURRENT_LIST_DIR}/Visualizers.natvis")
 endif()
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/PlasmaConfig.hpp.in ${CMAKE_CURRENT_LIST_DIR}/PlasmaConfig.hpp)
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/PlasmaConfig.hpp.in ${CMAKE_CURRENT_LIST_DIR}/PlasmaConfig.hpp)
 
 target_sources(Common
     PRIVATE
