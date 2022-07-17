@@ -432,21 +432,21 @@ namespace Plasma
         return mPosition;
     }
 
-    LightningDefineType(BlendSpace, builder, type)
+    LightningDefineType(BlendSpace2D, builder, type)
     {
 
     }
 
-    BlendSpace::BlendSpace()
+    BlendSpace2D::BlendSpace2D()
     {
 
     }
 
-    BlendSpace::BlendSpace(AnimationGraph* animGraph) : mAnimGraph(animGraph)
+    BlendSpace2D::BlendSpace2D(AnimationGraph* animGraph) : mAnimGraph(animGraph)
     {
     }
 
-    void BlendSpace::AddAnimationData(BlendSpaceData blendSpaceData)
+    void BlendSpace2D::AddAnimationData(BlendSpaceData* blendSpaceData)
     {
         if (!mAnimations.Contains(blendSpaceData))
         {
@@ -455,7 +455,7 @@ namespace Plasma
         }
     }
 
-    void BlendSpace::RemoveAnimationData(BlendSpaceData blendSpaceData)
+    void BlendSpace2D::RemoveAnimationData(BlendSpaceData* blendSpaceData)
     {
         if (mAnimations.Contains(blendSpaceData))
         {
@@ -465,11 +465,11 @@ namespace Plasma
         }
     }
 
-    void BlendSpace::ReLinkAnimations()
+    void BlendSpace2D::ReLinkAnimations()
     {
-        for (BlendSpaceData blendSpaceData : mAnimations)
+        for (BlendSpaceData* blendSpaceData : mAnimations)
         {
-            AnimationNode* animationNode = blendSpaceData.GetAnimationNode();
+            AnimationNode* animationNode = blendSpaceData->GetAnimationNode();
             if (animationNode != nullptr)
             {
                 animationNode->ReLinkAnimations();
@@ -477,27 +477,27 @@ namespace Plasma
         }
     }
 
-    void BlendSpace::SetPosition(Vec2Param position)
+    void BlendSpace2D::SetPosition(Vec2Param position)
     {
         mPosition = position;
     }
 
-    void BlendSpace::SetXPosition(float x)
+    void BlendSpace2D::SetXPosition(float x)
     {
         mPosition.x = x;
     }
 
-    void BlendSpace::SetYPosition(float y)
+    void BlendSpace2D::SetYPosition(float y)
     {
         mPosition.y = y;
     }
 
-    Vec2 BlendSpace::GetPosition() const
+    Vec2 BlendSpace2D::GetPosition() const
     {
         return mPosition;
     }
 
-    AnimationNode* BlendSpace::Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend)
+    AnimationNode* BlendSpace2D::Update(AnimationGraph* animGraph, float dt, uint frameId, EventList eventsToSend)
     {
         // Return early if we've already been updated
         if (HasUpdatedThisFrame(frameId))
@@ -538,12 +538,12 @@ namespace Plasma
             NodeDistance distnaceB;
             NodeDistance distnaceC;
 
-            for (BlendSpaceData blendSpaceData : mAnimations)
+            for (BlendSpaceData* blendSpaceData : mAnimations)
             {
-                float distanceToData = Math::Distance(blendSpaceData.GetPosition(), mPosition);
+                float distanceToData = Math::Distance(blendSpaceData->GetPosition(), mPosition);
 
                 NodeDistance newNode;
-                newNode.animation = blendSpaceData;
+                newNode.animation = *blendSpaceData;
                 newNode.distance = distanceToData;
 
                 // Waterfall data to we ensure we have 3 closest
@@ -596,8 +596,8 @@ namespace Plasma
             }
             else
             {
-                BlendSpaceData blendSpaceData = mAnimations[0];
-                if (AnimationNode* node = blendSpaceData.GetAnimationNode())
+                BlendSpaceData* blendSpaceData = mAnimations[0];
+                if (AnimationNode* node = blendSpaceData->GetAnimationNode())
                 {
                     node->Update(animGraph, dt, frameId, eventsToSend);
                     return new PoseNode(node->mFrameData);
@@ -612,9 +612,9 @@ namespace Plasma
         // pose
     }
 
-    AnimationNode* BlendSpace::Clone()
+    AnimationNode* BlendSpace2D::Clone()
     {
-        BlendSpace* clone = new BlendSpace();
+        BlendSpace2D* clone = new BlendSpace2D();
         clone->mAnimations = mAnimations;
         clone->mPosition = mPosition;
         clone->mLastReturned = mLastReturned;
@@ -622,11 +622,11 @@ namespace Plasma
         return clone;
     }
 
-    bool BlendSpace::IsPlayingInNode(StringParam animName)
+    bool BlendSpace2D::IsPlayingInNode(StringParam animName)
     {
         for (int i = 0; i < mAnimations.Size(); ++i)
         {
-            if (mAnimations[i].GetAnimationNode()->IsPlayingInNode(animName))
+            if (mAnimations[i]->GetAnimationNode()->IsPlayingInNode(animName))
             {
                 return true;
             }
@@ -634,18 +634,18 @@ namespace Plasma
         return false;
     }
 
-    void BlendSpace::PrintNode(uint tabs)
+    void BlendSpace2D::PrintNode(uint tabs)
     {
     }
 
-    String BlendSpace::GetDisplayName()
+    String BlendSpace2D::GetDisplayName()
     {
         return "Unimplemented";
     }
 
     AnimationNode* BuildBlendSpace()
     {
-        return new BlendSpace();
+        return new BlendSpace2D();
     }
 
     LightningDefineType(DirectBlend, builder, type)
