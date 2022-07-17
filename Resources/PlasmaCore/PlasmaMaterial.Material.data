@@ -6,6 +6,11 @@ Material
 		"581cffd64d449122:Opaque"
 		"580269d9a1d6b870:ShadowCasters"
 	}
+	TriplanarUV 
+	{
+		var UvScale = 1
+		var Blend = 50
+	}
 	AlbedoMap 
 	{
 		var AlbedoMap = "5827bc9481103535:PlasmaAlbedo"

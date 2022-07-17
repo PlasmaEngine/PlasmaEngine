@@ -1,0 +1,30 @@
+[Pixel]
+struct TriplanarUV
+{
+  [AppBuiltInInput] var ObjectWorldPosition : Real3;
+
+
+  [AppBuiltInInput] var ViewToWorld : Real4x4;
+  // Common vertex inputs
+  [FragmentInput][StageInput] var ViewPosition : Real3;
+  [FragmentInput][StageInput] var ViewNormal : Real3;
+  [FragmentInput][StageInput][Output] var Uv : Real2;
+  
+  [Input][Output] var UvScale : Real = 1.0;
+  [Input][Output][Slider(0,100,1)] var Blend : Real = 50.0;
+
+  function Main()
+  {     
+    var viewPosition = this.ViewPosition + this.ViewNormal;
+    var worldPosition = Math.MultiplyPoint(this.ViewToWorld, viewPosition) - this.ObjectWorldPosition;
+    var worldNormal = Math.Abs(Math.MultiplyNormal(this.ViewToWorld, this.ViewNormal));
+    worldNormal = Math.Pow(worldNormal, Real3(Math.Max(this.Blend, 1.0)));
+    worldNormal /= Math.Dot(worldNormal, Real3(1.0));
+         
+    var uvX = Real2(worldPosition.X, worldPosition.Y) * worldNormal.Z;
+    var uvY = Real2(worldPosition.Y, worldPosition.Z) * worldNormal.X;
+    var uvZ = Real2(worldPosition.X, worldPosition.Z) * worldNormal.Y;
+      
+    this.Uv = uvX + uvY + uvZ;
+  }
+}

@@ -1,0 +1,9 @@
+[Version:1]
+TextContent 
+{
+	LightningFragmentBuilder 
+	{
+		var Name = "TriplanarUV"
+		var ResourceId = 0x6247cb050dda4114
+	}
+}
