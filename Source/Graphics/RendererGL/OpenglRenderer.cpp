@@ -1664,8 +1664,8 @@ namespace Plasma
         if (!splashMode)
         {
             // Loading
-            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, loadingTransform.array);
-            glBindTexture(GL_TEXTURE_2D, loadingTexture->mId);
+            glUniformMatrix4fv(transformLoc, 1, cTransposeMatrices, splashTransform.array);
+            glBindTexture(GL_TEXTURE_2D, splashTexture->mId);
             mStreamedVertexBuffer.AddVertices(quadVertices, 6, PrimitiveType::Triangles);
             mStreamedVertexBuffer.FlushBuffer(true);
             
