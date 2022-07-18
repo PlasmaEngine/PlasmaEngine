@@ -10,19 +10,24 @@ Plasma Game engine is a C++ powered 2D and 3D game engine that is designed to be
 ## Installing binary builds
 You can find the latest compiled version of the launcher on the Plasma discord, if you get lost feel free to ask there.
 
+## Getting the source
+```
+git clone --recursive https://github.com/PlasmaEngine/PlasmaEngine.git
+```
+
 ## Building the engine
   
 ### Building on Windows:
-#### For Development:
+#### Easiest:
    - Open folder with VS2019+
    - (Optional) Manage Configuration to add x64-Release configuration
    - Build
-
+   
+#### For Solution Files:
+   - run build_vs2019_x64.bat
+   
 #### For Release Build
    - run build_vs2019_ninja.bat
-
-#### For Debug build and sln(debug only):
-   - run build_vs2019_x64.bat
 
 ### Building on Linux:
    - In Development
