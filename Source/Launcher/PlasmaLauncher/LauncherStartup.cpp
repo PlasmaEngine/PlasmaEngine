@@ -41,8 +41,8 @@ void LauncherStartup::UserInitialize()
 
   CrashHandler::SetRestartCommandLine(Environment::GetInstance()->mCommandLine);
 
-  mWindowSize = IntVec2(1024, 595);
-  mMinimumWindowSize = IntVec2(1024, 595);
+  mWindowSize = IntVec2(1280, 720);
+  mMinimumWindowSize = IntVec2(1280, 720);
   mWindowCentered = true;
   mWindowState = WindowState::Windowed;
 }
