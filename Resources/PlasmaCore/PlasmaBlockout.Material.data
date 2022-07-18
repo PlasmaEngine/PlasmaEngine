@@ -30,4 +30,22 @@ Material
 		var ColorC = Real4{0.110000014, 1, 0.118900217, 1}
 		var BlendValue = 0.5
 	}
+	MetallicMap 
+	{
+		var MetallicMap = "5827acd640fecdcb:PlasmaMetallic"
+		var Invert = false
+		var UseRed = true
+		var UseGreen = false
+		var UseBlue = false
+		var UseAlpha = false
+	}
+	RoughnessMap 
+	{
+		var RoughnessMap = "5827b28df611775d:PlasmaRoughness"
+		var Invert = false
+		var UseRed = true
+		var UseGreen = false
+		var UseBlue = false
+		var UseAlpha = false
+	}
 }

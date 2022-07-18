@@ -23,4 +23,8 @@ DataContent
 		var Category = "Opaque"
 		var CategorySortWeight = 99
 	}
+	ContentEditorOptions 
+	{
+		var ShowInEditor = true
+	}
 }
