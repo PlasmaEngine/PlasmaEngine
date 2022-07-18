@@ -217,6 +217,7 @@ LightningDefineStaticLibrary(EngineLibrary)
   LightningInitializeType(Component);
   LightningInitializeType(Transform);
   LightningInitializeType(Hierarchy);
+  LightningInitializeType(SystemDateTime);
   LightningInitializeType(TimeSpace);
   LightningInitializeType(ObjectLink);
   LightningInitializeType(ObjectLinkAnchor);

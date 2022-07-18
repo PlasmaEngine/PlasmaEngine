@@ -41,6 +41,19 @@ UpdateEvent::UpdateEvent(float dt, float realDt, float timePassed, float realTim
 {
 }
 
+LightningDefineType(SystemDateTime, builder, type)
+{
+    LightningBindFieldProperty(mSeconds);
+    LightningBindFieldProperty(mMinutes);
+    LightningBindFieldProperty(mHour);
+    LightningBindFieldProperty(mDay);
+    LightningBindFieldProperty(mMonth);
+    LightningBindFieldProperty(mYear);
+    LightningBindFieldProperty(mWeekday);
+    LightningBindFieldProperty(mYearday);
+    LightningBindFieldProperty(mIsDaylightSavings);
+}
+
 LightningDefineType(TimeSpace, builder, type)
 {
   PlasmaBindComponent();
@@ -69,6 +82,7 @@ LightningDefineType(TimeSpace, builder, type)
   LightningBindField(mRealTimePassed);
   LightningBindField(mFrame);
   LightningBindFieldProperty(mStepCount);
+  LightningBindFieldProperty(mSystemDateTime);
 }
 
 TimeSpace::TimeSpace()
@@ -128,7 +142,7 @@ void TimeSpace::SetTimeScale(float timeScale)
 {
   mTimeScale = Math::Max(timeScale, 0.0f);
 }
-
+#pragma optimize(off)
 void TimeSpace::Update(float dt)
 {
   // Enable for logic update loop only in debug
@@ -173,6 +187,22 @@ void TimeSpace::Update(float dt)
   // We don't want the engine to lock down, so cap it at 60 steps per update
   mStepCount = Math::Clamp(mStepCount, 1u, 60u);
 
+
+  // Update System Time
+  CalendarDateTime dateTime = Time::GetLocalTime(Time::GetTime());
+  mSystemDateTime.mSeconds = dateTime.Seconds;
+  mSystemDateTime.mMinutes = dateTime.Minutes;
+  mSystemDateTime.mHour = dateTime.Hour;
+  mSystemDateTime.mDay = dateTime.Day;
+  PlasmaTodo("Investigate the month because it was reporting 1 under the actual month");
+  mSystemDateTime.mMonth = dateTime.Month + 1; 
+  mSystemDateTime.mYear = dateTime.Year;
+  mSystemDateTime.mWeekday = dateTime.Weekday;
+  mSystemDateTime.mYearday = dateTime.Yearday;
+  mSystemDateTime.mIsDaylightSavings = dateTime.IsDaylightSavings;
+
+
+
   for (uint i = 0; i < mStepCount; ++i)
   {
     ++mFrame;
@@ -212,7 +242,7 @@ void TimeSpace::Update(float dt)
     }
   }
 }
-
+#pragma optimize(on)
 void TimeSpace::TogglePause()
 {
   mPaused = !mPaused;

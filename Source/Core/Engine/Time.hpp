@@ -48,6 +48,26 @@ public:
 
 DeclareEnum2(TimeMode, FixedFrametime, ActualFrametime);
 
+class SystemDateTime
+{
+public:
+    LightningDeclareType(SystemDateTime, TypeCopyMode::ValueType);
+    SystemDateTime() = default;
+
+    int mSeconds = 0;
+    int mMinutes = 0;
+    int mHour = 0;
+    int mDay = 0;
+    int mMonth = 0;
+    // Years from year 0
+    int mYear = 0;
+    // Days since Sunday
+    int mWeekday = 0;
+    // Days since January 1
+    int mYearday = 0;
+    int mIsDaylightSavings = 0;
+};
+
 /// Time space component controls time for a Space.
 class TimeSpace : public Component
 {
@@ -141,6 +161,8 @@ public:
   /// The amount of time that passed between this frame and the last (scaled by
   /// TimeSpace.TimeScale).
   float mScaledClampedDt;
+
+  SystemDateTime mSystemDateTime;
 
   /// Causes the engine to update multiple times before rendering a frame.
   uint mStepCount;
