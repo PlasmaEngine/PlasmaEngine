@@ -85,7 +85,7 @@ class PostProcessBloom : LightningComponent
     // The blur's radius increases as the resolution becomes lower, since
     // wide-ranged blurs look better and they become less expensive the
     // smaller the target is.
-    DownsampleAndBlur[Filter13TapPartialKarisAverage, SeparableBlurRadius5].Call(event, bloom0, bloom1);
+    DownsampleAndBlur[Filter13Tap, SeparableBlurRadius5].Call(event, bloom0, bloom1);
     DownsampleAndBlur[Filter13Tap, SeparableBlurRadius5].Call(event, bloom1, bloom2);
     DownsampleAndBlur[Filter13Tap, SeparableBlurRadius10].Call(event, bloom2, bloom3);
     DownsampleAndBlur[Filter13Tap, SeparableBlurRadius10].Call(event, bloom3, bloom4);
