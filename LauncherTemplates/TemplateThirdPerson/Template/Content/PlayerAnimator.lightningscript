@@ -1,0 +1,110 @@
+// MIT Licensed (see LICENSE.md).
+
+class PlayerAnimator : LightningComponent
+{
+  [Dependency] var RigidBody : RigidBody;
+  [Dependency] var PlayerController : PlayerController = null;
+  
+  [Property] var AnimatedCharacterCog = CogPath("spacesuit");
+  var AnimGraph : AnimationGraph = null;
+  
+  [Group("Animation")]
+  [Property] var IdleAnimation : Animation;
+  var IdleAnimationNode : AnimationNode = null;
+  
+  [Group("Animation")]
+  [Property] var RunAnimation : Animation;
+  var RunAnimationNode : AnimationNode = null;
+  
+    [Group("Animation")]
+  [Property] var JumpAnimation : Animation;
+  var JumpAnimationNode : AnimationNode = null;
+  
+  var CurrentAnimationState : AnimationState; 
+  var TargetAnimaitonState : AnimationState;
+  
+  
+  function Initialize(init : CogInitializer)
+  {
+    if(this.AnimatedCharacterCog != null)
+      if(this.AnimatedCharacterCog.AnimationGraph != null)
+        this.AnimGraph = this.AnimatedCharacterCog.AnimationGraph;
+    
+    if(this.AnimGraph != null)
+    {
+      this.IdleAnimationNode = this.AnimGraph.CreateBasicNode(this.IdleAnimation, AnimationPlayMode.Loop);
+      this.RunAnimationNode = this.AnimGraph.CreateBasicNode(this.RunAnimation, AnimationPlayMode.Loop);
+      this.JumpAnimationNode = this.AnimGraph.CreateBasicNode(this.JumpAnimation, AnimationPlayMode.PlayOnce);
+      
+      this.AnimGraph.ActiveNode = this.IdleAnimationNode;
+      this.CurrentAnimationState = AnimationState.Idle;
+      this.TargetAnimaitonState = AnimationState.Idle;
+    }
+    
+    Plasma.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+  }
+  
+  function AnimationNodeFromAnimationState(state : AnimationState) : AnimationNode
+  {
+    if(state == AnimationState.Idle)
+    {
+      return this.IdleAnimationNode;
+    }
+    else if(state == AnimationState.Run)
+    {
+      return this.RunAnimationNode;
+    }
+    else if(state == AnimationState.Jump)
+    {
+      this.JumpAnimationNode.Time = 0;
+      return this.JumpAnimationNode;
+    }
+    return this.IdleAnimationNode;
+  }
+
+  function OnLogicUpdate(event : UpdateEvent)
+  {
+    if(this.AnimGraph == null)
+      return;
+      
+    var speed = Math.Length(this.RigidBody.Velocity);
+     
+    if(this.PlayerController.Grounded && !this.PlayerController.Jumping) 
+    {
+      if(speed > 0.1 || speed < -0.1)
+      {
+        this.TargetAnimaitonState = AnimationState.Run;
+      }
+      else
+      {
+        this.TargetAnimaitonState = AnimationState.Idle;
+      }
+    }
+    else
+    {
+      this.TargetAnimaitonState = AnimationState.Jump;
+    }
+    
+    if(this.TargetAnimaitonState != this.CurrentAnimationState)
+    {
+       var targetNode = this.AnimationNodeFromAnimationState(this.TargetAnimaitonState);
+       
+       var blendNode = this.AnimGraph.CreateDirectBlendNode();
+       blendNode.From = this.AnimGraph.ActiveNode;
+       blendNode.To = targetNode;
+       blendNode.Duration = 5;
+       
+       this.AnimGraph.ActiveNode = blendNode;
+       
+       this.CurrentAnimationState = this.TargetAnimaitonState;
+    }
+    
+  }
+}
+
+enum AnimationState
+{
+  Idle,
+  Run,
+  Jump
+}

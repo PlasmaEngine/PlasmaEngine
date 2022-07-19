@@ -1,0 +1,11 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "Robot"
+		var ResourceId = 0x62453d1b158ce485
+		var LoaderType = "Cog"
+		var Version = 0
+	}
+}

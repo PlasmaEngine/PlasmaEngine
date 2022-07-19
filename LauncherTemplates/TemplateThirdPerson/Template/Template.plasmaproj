@@ -1,0 +1,35 @@
+[Version:1]
+Cog 
+{
+	var Name = ""
+	ProjectSettings 
+	{
+		var ProjectName = "Project"
+		var ProjectOwner = ""
+		var DefaultLevel = "Level"
+		var ProjectSpace = "Space"
+		var ProjectEngineRevision = 0
+		var AutoTakeProjectScreenshot = true
+		var Guid = 0x0000000000000000
+	}
+	LauncherProjectInfo 
+	{
+		var Tags = ""
+		var ExperimentalBranchName = ""
+		var MajorVersion = 0
+		var MinorVersion = 0
+		var PatchVersion = 0
+		var RevisionId = 0
+	}
+	WindowLaunchSettings 
+	{
+		var LaunchFullscreen = true
+		var WindowedResolution = Integer2{1280, 720}
+	}
+	FrameRateSettings 
+	{
+		var VerticalSync = false
+		var LimitFrameRate = true
+		var FrameRate = 60
+	}
+}

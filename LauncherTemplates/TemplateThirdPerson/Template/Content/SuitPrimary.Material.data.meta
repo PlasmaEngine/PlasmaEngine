@@ -1,0 +1,18 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "SuitPrimary"
+		var ResourceId = 0x62454419c82ff089
+		var LoaderType = "Material"
+		var Version = 0
+	}
+	ContentTags 
+	{
+		var Tags = Array
+		{
+			"Material"
+		}
+	}
+}

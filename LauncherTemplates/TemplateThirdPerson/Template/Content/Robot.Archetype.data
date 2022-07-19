@@ -1,0 +1,1507 @@
+[Version:1]
+Cog 
+{
+	var Name = "Robot"
+	Transform 
+	{
+		var Translation = Real3{0, 0, 0}
+		var Scale = Real3{1, 1, 1}
+		var Rotation = Quaternion{0, 0, 0, 1}
+	}
+	AnimationGraph 
+	{
+		var Active = true
+		var PlayMode = AnimationPlayMode.PlayOnce
+		var TimeScale = 1
+		var Animation = "4f8ebbde619389d0:DefaultAnimation"
+		var DebugPreviewId = 2104021393920
+	}
+	SimpleAnimation 
+	{
+		var Animation = "62453d1b15bac6b3:Robot_RobotArmatureRobot_Dance"
+		var PlayMode = AnimationPlayMode.Loop
+	}
+	Hierarchy 
+	{
+		Cog [Id:0x62453d1b15cbc907]
+		{
+			var Name = "RobotArmature"
+			Transform 
+			{
+				var Translation = Real3{0, 0, 0}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{-0.707106888, 0, 0, 0.70710665}
+			}
+			Skeleton 
+			{
+			}
+			Hierarchy 
+			{
+				Cog [Id:0x62453d1b15cbc911]
+				{
+					var Name = "Bone"
+					Transform 
+					{
+						var Translation = Real3{-0.00319546298, 0.195048094, -0.00588517403}
+						var Scale = Real3{1, 1, 1}
+						var Rotation = Quaternion{0.707106888, 1.68587434e-07, 1.68587391e-07, 0.70710665}
+					}
+					Bone 
+					{
+					}
+					Hierarchy 
+					{
+						Cog [Id:0x62453d1b15cbc913]
+						{
+							var Name = "FootL"
+							Transform 
+							{
+								var Translation = Real3{0.636722028, 0.0305792093, 0.0570146777}
+								var Scale = Real3{1, 1, 1}
+								var Rotation = Quaternion{7.20229281e-08, 0.695549667, 0.718478024, 2.01275014e-07}
+							}
+							Bone 
+							{
+							}
+							Hierarchy 
+							{
+								Cog [Id:0x62453d1b15cbc914]
+								{
+									var Name = "FootL0"
+									Transform 
+									{
+										var Translation = Real3{0.00946879387, 0.316882968, 0.383445084}
+										var Scale = Real3{1, 1, 1}
+										var Rotation = Quaternion{1.04703574e-07, -0.0162129793, 0.999868572, 1.96430577e-07}
+									}
+									Bone 
+									{
+									}
+									Model 
+									{
+										var Visible = true
+										var ViewCulling = true
+										var VisibilityEvents = true
+										var OverrideBoundingBox = false
+										var LocalAabbCenter = Real3{0, 0, 0}
+										var LocalAabbHalfExtents = Real3{1, 1, 1}
+										var GroupSortValue = 0
+										var Material = "583afb5e7bf75e18:PlasmaMaterial"
+										var Mesh = "62453d1b15bac5b5:Robot_FootL0"
+									}
+								}
+								Cog [Id:0x62453d1b15cbc916]
+								{
+									var Name = "FootL_end"
+									Transform 
+									{
+										var Translation = Real3{0, 0.325548947, 0}
+										var Scale = Real3{1, 1, 1}
+										var Rotation = Quaternion{0, 0, 0, 1}
+									}
+									Bone 
+									{
+									}
+								}
+							}
+						}
+						Cog [Id:0x62453d1b15cbc917]
+						{
+							var Name = "Body"
+							Transform 
+							{
+								var Translation = Real3{0.00524589559, 1.41396964, 0.307719767}
+								var Scale = Real3{1, 1, 1}
+								var Rotation = Quaternion{0, 0, 0, 1}
+							}
+							Bone 
+							{
+							}
+							Hierarchy 
+							{
+								Cog [Id:0x62453d1b15cbc919]
+								{
+									var Name = "Torso"
+									Transform 
+									{
+										var Translation = Real3{-0.00476612151, 0.801257968, -0.132252887}
+										var Scale = Real3{1, 1, 1}
+										var Rotation = Quaternion{-0.707106888, -2.52901657e-07, -2.52901742e-07, 0.70710665}
+									}
+									Bone 
+									{
+									}
+									Hierarchy 
+									{
+										Cog [Id:0x62453d1b15cbc91a]
+										{
+											var Name = "TorsoGeneratedMeshNode1"
+											Transform 
+											{
+												var Translation = Real3{0, 0, 0}
+												var Scale = Real3{1, 1, 1}
+												var Rotation = Quaternion{0, 0, 0, 1}
+											}
+											Bone 
+											{
+											}
+											Model 
+											{
+												var Visible = true
+												var ViewCulling = true
+												var VisibilityEvents = true
+												var OverrideBoundingBox = false
+												var LocalAabbCenter = Real3{0, 0, 0}
+												var LocalAabbHalfExtents = Real3{1, 1, 1}
+												var GroupSortValue = 0
+												var Material = "583afb5e7bf75e18:PlasmaMaterial"
+												var Mesh = "62453d1b15bac5c5:Robot_TorsoGeneratedMeshNode1"
+											}
+										}
+										Cog [Id:0x62453d1b15cbc91c]
+										{
+											var Name = "TorsoGeneratedMeshNode2"
+											Transform 
+											{
+												var Translation = Real3{0, 0, 0}
+												var Scale = Real3{1, 1, 1}
+												var Rotation = Quaternion{0, 0, 0, 1}
+											}
+											Bone 
+											{
+											}
+											Model 
+											{
+												var Visible = true
+												var ViewCulling = true
+												var VisibilityEvents = true
+												var OverrideBoundingBox = false
+												var LocalAabbCenter = Real3{0, 0, 0}
+												var LocalAabbHalfExtents = Real3{1, 1, 1}
+												var GroupSortValue = 0
+												var Material = "583afb5e7bf75e18:PlasmaMaterial"
+												var Mesh = "62453d1b15bac5cd:Robot_TorsoGeneratedMeshNode2"
+											}
+										}
+									}
+								}
+								Cog [Id:0x62453d1b15cbc91d]
+								{
+									var Name = "Hips"
+									Transform 
+									{
+										var Translation = Real3{-0.0020504985, -0.0965745449, -0.112671681}
+										var Scale = Real3{1, 1, 1}
+										var Rotation = Quaternion{-0.118955061, -2.65790391e-07, -5.33846674e-08, 0.992899656}
+									}
+									Bone 
+									{
+									}
+									Hierarchy 
+									{
+										Cog [Id:0x62453d1b15cbc91f]
+										{
+											var Name = "Abdomen"
+											Transform 
+											{
+												var Translation = Real3{-2.1649349e-15, 0.328791767, -7.4505806e-09}
+												var Scale = Real3{1, 1, 1}
+												var Rotation = Quaternion{0.115165174, 4.35135689e-07, 7.13079444e-08, 0.993346453}
+											}
+											Bone 
+											{
+											}
+											Hierarchy 
+											{
+												Cog [Id:0x62453d1b15cbc920]
+												{
+													var Name = "Torso3"
+													Transform 
+													{
+														var Translation = Real3{-1.03805853e-14, 0.484584123, -3.72528985e-09}
+														var Scale = Real3{1, 1, 1}
+														var Rotation = Quaternion{0.0582748801, -8.30917941e-07, 1.30327864e-08, 0.998300612}
+													}
+													Bone 
+													{
+													}
+													Hierarchy 
+													{
+														Cog [Id:0x62453d1b15cbc922]
+														{
+															var Name = "Neck"
+															Transform 
+															{
+																var Translation = Real3{1.41830991e-14, 0.584088624, 2.79396772e-08}
+																var Scale = Real3{1, 1, 1}
+																var Rotation = Quaternion{-0.0433809236, -0.0141812982, 0.0282902773, 0.998557329}
+															}
+															Bone 
+															{
+															}
+															Hierarchy 
+															{
+																Cog [Id:0x62453d1b15cbc923]
+																{
+																	var Name = "Head"
+																	Transform 
+																	{
+																		var Translation = Real3{1.10594556e-09, 0.309865922, -2.44472176e-09}
+																		var Scale = Real3{1, 1, 1}
+																		var Rotation = Quaternion{-0.0309211072, -0.00285618007, -0.00128304877, 0.999516904}
+																	}
+																	Bone 
+																	{
+																	}
+																	Hierarchy 
+																	{
+																		Cog [Id:0x62453d1b15cbc924]
+																		{
+																			var Name = "Head4"
+																			Transform 
+																			{
+																				var Translation = Real3{-0.000895768404, 0.647621751, 0.0363968238}
+																				var Scale = Real3{1, 1, 1}
+																				var Rotation = Quaternion{-0.713709235, 0.00102141465, -0.000962924387, 0.700440764}
+																			}
+																			Bone 
+																			{
+																			}
+																			Hierarchy 
+																			{
+																				Cog [Id:0x62453d1b15cbc926]
+																				{
+																					var Name = "Head4GeneratedMeshNode5"
+																					Transform 
+																					{
+																						var Translation = Real3{0, 0, 0}
+																						var Scale = Real3{1, 1, 1}
+																						var Rotation = Quaternion{0, 0, 0, 1}
+																					}
+																					Bone 
+																					{
+																					}
+																					Model 
+																					{
+																						var Visible = true
+																						var ViewCulling = true
+																						var VisibilityEvents = true
+																						var OverrideBoundingBox = false
+																						var LocalAabbCenter = Real3{0, 0, 0}
+																						var LocalAabbHalfExtents = Real3{1, 1, 1}
+																						var GroupSortValue = 0
+																						var Material = "583afb5e7bf75e18:PlasmaMaterial"
+																						var Mesh = "62453d1b15bac5dd:Robot_Head4GeneratedMeshNode5"
+																					}
+																				}
+																				Cog [Id:0x62453d1b15cbc928]
+																				{
+																					var Name = "Head4GeneratedMeshNode6"
+																					Transform 
+																					{
+																						var Translation = Real3{0, 0, 0}
+																						var Scale = Real3{1, 1, 1}
+																						var Rotation = Quaternion{0, 0, 0, 1}
+																					}
+																					Bone 
+																					{
+																					}
+																					Model 
+																					{
+																						var Visible = true
+																						var ViewCulling = true
+																						var VisibilityEvents = true
+																						var OverrideBoundingBox = false
+																						var LocalAabbCenter = Real3{0, 0, 0}
+																						var LocalAabbHalfExtents = Real3{1, 1, 1}
+																						var GroupSortValue = 0
+																						var Material = "583afb5e7bf75e18:PlasmaMaterial"
+																						var Mesh = "62453d1b15bac5e6:Robot_Head4GeneratedMeshNode6"
+																					}
+																				}
+																				Cog [Id:0x62453d1b15cbc929]
+																				{
+																					var Name = "Head4GeneratedMeshNode7"
+																					Transform 
+																					{
+																						var Translation = Real3{0, 0, 0}
+																						var Scale = Real3{1, 1, 1}
+																						var Rotation = Quaternion{0, 0, 0, 1}
+																					}
+																					Bone 
+																					{
+																					}
+																					Model 
+																					{
+																						var Visible = true
+																						var ViewCulling = true
+																						var VisibilityEvents = true
+																						var OverrideBoundingBox = false
+																						var LocalAabbCenter = Real3{0, 0, 0}
+																						var LocalAabbHalfExtents = Real3{1, 1, 1}
+																						var GroupSortValue = 0
+																						var Material = "583afb5e7bf75e18:PlasmaMaterial"
+																						var Mesh = "62453d1b15bac5f1:Robot_Head4GeneratedMeshNode7"
+																					}
+																				}
+																			}
+																		}
+																		Cog [Id:0x62453d1b15cbc92b]
+																		{
+																			var Name = "Head_end"
+																			Transform 
+																			{
+																				var Translation = Real3{0, 1.10828316, 0}
+																				var Scale = Real3{1, 1, 1}
+																				var Rotation = Quaternion{0, 0, 0, 1}
+																			}
+																			Bone 
+																			{
+																			}
+																		}
+																	}
+																}
+															}
+														}
+														Cog [Id:0x62453d1b15cbc92c]
+														{
+															var Name = "ShoulderL"
+															Transform 
+															{
+																var Translation = Real3{0.582737744, 0.296720266, 0.0324412994}
+																var Scale = Real3{1, 1, 1}
+																var Rotation = Quaternion{0.0114497263, 0.0532470867, 0.976199925, -0.209922746}
+															}
+															Bone 
+															{
+															}
+															Hierarchy 
+															{
+																Cog [Id:0x62453d1b15cbc92e]
+																{
+																	var Name = "ShoulderL8"
+																	Transform 
+																	{
+																		var Translation = Real3{-0.000380992889, -0.00098336488, -0.00415095687}
+																		var Scale = Real3{1, 1, 1}
+																		var Rotation = Quaternion{0.493473619, 0.506443322, -0.50644213, -0.493472785}
+																	}
+																	Bone 
+																	{
+																	}
+																	Model 
+																	{
+																		var Visible = true
+																		var ViewCulling = true
+																		var VisibilityEvents = true
+																		var OverrideBoundingBox = false
+																		var LocalAabbCenter = Real3{0, 0, 0}
+																		var LocalAabbHalfExtents = Real3{1, 1, 1}
+																		var GroupSortValue = 0
+																		var Material = "583afb5e7bf75e18:PlasmaMaterial"
+																		var Mesh = "62453d1b15bac5fc:Robot_ShoulderL8"
+																	}
+																}
+																Cog [Id:0x62453d1b15cbc92f]
+																{
+																	var Name = "UpperArmL"
+																	Transform 
+																	{
+																		var Translation = Real3{-2.44509977e-08, 0.0840358213, 5.19548848e-11}
+																		var Scale = Real3{1, 1, 1}
+																		var Rotation = Quaternion{-0.054585699, -0.68988651, 0.0692138821, 0.718530834}
+																	}
+																	Bone 
+																	{
+																	}
+																	Hierarchy 
+																	{
+																		Cog [Id:0x62453d1b15cbc931]
+																		{
+																			var Name = "ArmL"
+																			Transform 
+																			{
+																				var Translation = Real3{0.035145551, -0.667810202, -0.0759339333}
+																				var Scale = Real3{1, 1, 1}
+																				var Rotation = Quaternion{0.0278562959, 0.0200833585, 0.728074729, 0.684637129}
+																			}
+																			Bone 
+																			{
+																			}
+																			Model 
+																			{
+																				var Visible = true
+																				var ViewCulling = true
+																				var VisibilityEvents = true
+																				var OverrideBoundingBox = false
+																				var LocalAabbCenter = Real3{0, 0, 0}
+																				var LocalAabbHalfExtents = Real3{1, 1, 1}
+																				var GroupSortValue = 0
+																				var Material = "583afb5e7bf75e18:PlasmaMaterial"
+																				var Mesh = "62453d1b15bac608:Robot_ArmL"
+																			}
+																		}
+																		Cog [Id:0x62453d1b15cbc932]
+																		{
+																			var Name = "LowerArmL"
+																			Transform 
+																			{
+																				var Translation = Real3{-5.58793545e-08, 0.657292128, 2.91969627e-07}
+																				var Scale = Real3{1, 1, 1}
+																				var Rotation = Quaternion{0.309992492, 0.499337494, -0.364940256, 0.722070277}
+																			}
+																			Bone 
+																			{
+																			}
+																			Hierarchy 
+																			{
+																				Cog [Id:0x62453d1b15cbc933]
+																				{
+																					var Name = "Palm2L"
+																					Transform 
+																					{
+																						var Translation = Real3{4.47034836e-08, 1.36819971, 5.96046448e-08}
+																						var Scale = Real3{1, 1, 1}
+																						var Rotation = Quaternion{-0.00335278083, 0.00587500073, -0.325525552, 0.945509076}
+																					}
+																					Bone 
+																					{
+																					}
+																					Hierarchy 
+																					{
+																						Cog [Id:0x62453d1b15cbc935]
+																						{
+																							var Name = "Middle1L"
+																							Transform 
+																							{
+																								var Translation = Real3{-1.1920929e-07, 0.371198028, 2.98023224e-08}
+																								var Scale = Real3{1, 1, 1}
+																								var Rotation = Quaternion{-0.00442113914, 0.0238239598, -0.552072048, 0.833444238}
+																							}
+																							Bone 
+																							{
+																							}
+																							Hierarchy 
+																							{
+																								Cog [Id:0x62453d1b15cbc936]
+																								{
+																									var Name = "Middle2L"
+																									Transform 
+																									{
+																										var Translation = Real3{4.47034836e-08, 0.189366877, -2.23517418e-08}
+																										var Scale = Real3{1, 1, 1}
+																										var Rotation = Quaternion{-0.0381108224, 0.000934107695, -0.699655771, 0.713462353}
+																									}
+																									Bone 
+																									{
+																									}
+																									Hierarchy 
+																									{
+																										Cog [Id:0x62453d1b15cbc938]
+																										{
+																											var Name = "Middle2L_end"
+																											Transform 
+																											{
+																												var Translation = Real3{0, 0.131474957, 0}
+																												var Scale = Real3{1, 1, 1}
+																												var Rotation = Quaternion{0, 0, 0, 1}
+																											}
+																											Bone 
+																											{
+																											}
+																										}
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																				Cog [Id:0x62453d1b15cbc939]
+																				{
+																					var Name = "ThumbL"
+																					Transform 
+																					{
+																						var Translation = Real3{0.0841742456, 1.25747418, 0.189778209}
+																						var Scale = Real3{1, 1, 1}
+																						var Rotation = Quaternion{0.729874134, 0.635341585, 0.211089283, 0.138080522}
+																					}
+																					Bone 
+																					{
+																					}
+																					Hierarchy 
+																					{
+																						Cog [Id:0x62453d1b15cbc93a]
+																						{
+																							var Name = "Thumb2L"
+																							Transform 
+																							{
+																								var Translation = Real3{-2.98023224e-08, 0.136672825, -1.78813934e-07}
+																								var Scale = Real3{1, 1, 1}
+																								var Rotation = Quaternion{-0.248973742, 0.62718457, 0.630886376, -0.382928371}
+																							}
+																							Bone 
+																							{
+																							}
+																							Hierarchy 
+																							{
+																								Cog [Id:0x62453d1b15cbc93c]
+																								{
+																									var Name = "Thumb2L_end"
+																									Transform 
+																									{
+																										var Translation = Real3{0, 0.126784429, 0}
+																										var Scale = Real3{1, 1, 1}
+																										var Rotation = Quaternion{0, 0, 0, 1}
+																									}
+																									Bone 
+																									{
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																				Cog [Id:0x62453d1b15cbc93d]
+																				{
+																					var Name = "Palm1L"
+																					Transform 
+																					{
+																						var Translation = Real3{4.47034836e-08, 1.36819971, 5.96046448e-08}
+																						var Scale = Real3{1, 1, 1}
+																						var Rotation = Quaternion{0.303970993, 0.278789103, -0.210350335, 0.88635838}
+																					}
+																					Bone 
+																					{
+																					}
+																					Hierarchy 
+																					{
+																						Cog [Id:0x62453d1b15cbc93f]
+																						{
+																							var Name = "IndexL"
+																							Transform 
+																							{
+																								var Translation = Real3{2.98023224e-08, 0.422426552, 1.15483999e-07}
+																								var Scale = Real3{1, 1, 1}
+																								var Rotation = Quaternion{0.0467354059, -0.39611125, -0.589060664, 0.702793896}
+																							}
+																							Bone 
+																							{
+																							}
+																							Hierarchy 
+																							{
+																								Cog [Id:0x62453d1b15cbc940]
+																								{
+																									var Name = "Index2L"
+																									Transform 
+																									{
+																										var Translation = Real3{-2.60770321e-08, 0.189366534, 8.94069672e-08}
+																										var Scale = Real3{1, 1, 1}
+																										var Rotation = Quaternion{-0.0425872356, -0.0183796249, -0.699962437, 0.712671876}
+																									}
+																									Bone 
+																									{
+																									}
+																									Hierarchy 
+																									{
+																										Cog [Id:0x62453d1b15cbc941]
+																										{
+																											var Name = "Index2L_end"
+																											Transform 
+																											{
+																												var Translation = Real3{0, 0.13147524, 0}
+																												var Scale = Real3{1, 1, 1}
+																												var Rotation = Quaternion{0, 0, 0, 1}
+																											}
+																											Bone 
+																											{
+																											}
+																										}
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																				Cog [Id:0x62453d1b15cbc943]
+																				{
+																					var Name = "Palm3L"
+																					Transform 
+																					{
+																						var Translation = Real3{4.47034836e-08, 1.36819971, 5.96046448e-08}
+																						var Scale = Real3{1, 1, 1}
+																						var Rotation = Quaternion{-0.335566163, -0.336440563, -0.180589601, 0.861156523}
+																					}
+																					Bone 
+																					{
+																					}
+																					Hierarchy 
+																					{
+																						Cog [Id:0x62453d1b15cbc944]
+																						{
+																							var Name = "Ring1L"
+																							Transform 
+																							{
+																								var Translation = Real3{-7.4505806e-08, 0.42620647, 2.01165676e-07}
+																								var Scale = Real3{1, 1, 1}
+																								var Rotation = Quaternion{-0.068016693, 0.483185351, -0.584013641, 0.648717046}
+																							}
+																							Bone 
+																							{
+																							}
+																							Hierarchy 
+																							{
+																								Cog [Id:0x62453d1b15cbc946]
+																								{
+																									var Name = "Ring2L"
+																									Transform 
+																									{
+																										var Translation = Real3{4.09781933e-08, 0.189366713, 8.19563866e-08}
+																										var Scale = Real3{1, 1, 1}
+																										var Rotation = Quaternion{-0.042587284, -0.0183794666, -0.699962258, 0.712671995}
+																									}
+																									Bone 
+																									{
+																									}
+																									Hierarchy 
+																									{
+																										Cog [Id:0x62453d1b15cbc947]
+																										{
+																											var Name = "Ring2L_end"
+																											Transform 
+																											{
+																												var Translation = Real3{0, 0.13147524, 0}
+																												var Scale = Real3{1, 1, 1}
+																												var Rotation = Quaternion{0, 0, 0, 1}
+																											}
+																											Bone 
+																											{
+																											}
+																										}
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+														Cog [Id:0x62453d1b15cbc949]
+														{
+															var Name = "ShoulderR"
+															Transform 
+															{
+																var Translation = Real3{-0.636815727, 0.296746969, 0.032439094}
+																var Scale = Real3{1, 1, 1}
+																var Rotation = Quaternion{-0.0122890156, 0.0530603901, 0.972768009, 0.225291207}
+															}
+															Bone 
+															{
+															}
+															Hierarchy 
+															{
+																Cog [Id:0x62453d1b15cbc94b]
+																{
+																	var Name = "ShoulderR9"
+																	Transform 
+																	{
+																		var Translation = Real3{0.000351786613, -0.000331386924, -0.00415095501}
+																		var Scale = Real3{1, 1, 1}
+																		var Rotation = Quaternion{0.497529, -0.502458334, 0.502458751, -0.497529745}
+																	}
+																	Bone 
+																	{
+																	}
+																	Model 
+																	{
+																		var Visible = true
+																		var ViewCulling = true
+																		var VisibilityEvents = true
+																		var OverrideBoundingBox = false
+																		var LocalAabbCenter = Real3{0, 0, 0}
+																		var LocalAabbHalfExtents = Real3{1, 1, 1}
+																		var GroupSortValue = 0
+																		var Material = "583afb5e7bf75e18:PlasmaMaterial"
+																		var Mesh = "62453d1b15bac60f:Robot_ShoulderR9"
+																	}
+																}
+																Cog [Id:0x62453d1b15cbc94c]
+																{
+																	var Name = "UpperArmR"
+																	Transform 
+																	{
+																		var Translation = Real3{2.15338556e-08, 0.102177776, 9.40701739e-10}
+																		var Scale = Real3{1, 1, 1}
+																		var Rotation = Quaternion{0.0435723439, 0.804570138, 0.057477951, 0.589461505}
+																	}
+																	Bone 
+																	{
+																	}
+																	Hierarchy 
+																	{
+																		Cog [Id:0x62453d1b15cbc94d]
+																		{
+																			var Name = "ArmR"
+																			Transform 
+																			{
+																				var Translation = Real3{-0.00794100761, 0.334939241, -0.00472545624}
+																				var Scale = Real3{1, 1, 1}
+																				var Rotation = Quaternion{0.101482056, -0.0872304812, -0.722726047, 0.678055525}
+																			}
+																			Bone 
+																			{
+																			}
+																			Model 
+																			{
+																				var Visible = true
+																				var ViewCulling = true
+																				var VisibilityEvents = true
+																				var OverrideBoundingBox = false
+																				var LocalAabbCenter = Real3{0, 0, 0}
+																				var LocalAabbHalfExtents = Real3{1, 1, 1}
+																				var GroupSortValue = 0
+																				var Material = "583afb5e7bf75e18:PlasmaMaterial"
+																				var Mesh = "62453d1b15bac618:Robot_ArmR"
+																			}
+																		}
+																		Cog [Id:0x62453d1b15cbc94f]
+																		{
+																			var Name = "LowerArmR"
+																			Transform 
+																			{
+																				var Translation = Real3{-3.7252903e-08, 0.575238109, 9.31322575e-09}
+																				var Scale = Real3{1, 1, 1}
+																				var Rotation = Quaternion{0.0897254795, -0.705057979, 0.255013704, 0.655599415}
+																			}
+																			Bone 
+																			{
+																			}
+																			Hierarchy 
+																			{
+																				Cog [Id:0x62453d1b15cbc950]
+																				{
+																					var Name = "Palm2R"
+																					Transform 
+																					{
+																						var Translation = Real3{7.4505806e-08, 1.37971687, -6.33299351e-08}
+																						var Scale = Real3{1, 1, 1}
+																						var Rotation = Quaternion{-0.0372121744, -0.0747184977, 0.323253781, 0.942623734}
+																					}
+																					Bone 
+																					{
+																					}
+																					Hierarchy 
+																					{
+																						Cog [Id:0x62453d1b15cbc951]
+																						{
+																							var Name = "Middle1R"
+																							Transform 
+																							{
+																								var Translation = Real3{2.38418579e-07, 0.371198028, -5.96046448e-08}
+																								var Scale = Real3{1, 1, 1}
+																								var Rotation = Quaternion{-0.0436783843, -0.0103277797, 0.525089025, 0.849862993}
+																							}
+																							Bone 
+																							{
+																							}
+																							Hierarchy 
+																							{
+																								Cog [Id:0x62453d1b15cbc953]
+																								{
+																									var Name = "Middle2R"
+																									Transform 
+																									{
+																										var Translation = Real3{2.23517418e-08, 0.189366847, -5.96046448e-08}
+																										var Scale = Real3{1, 1, 1}
+																										var Rotation = Quaternion{0.0348680802, -0.039005518, 0.504719019, 0.861696899}
+																									}
+																									Bone 
+																									{
+																									}
+																									Hierarchy 
+																									{
+																										Cog [Id:0x62453d1b15cbc954]
+																										{
+																											var Name = "Middle2R_end"
+																											Transform 
+																											{
+																												var Translation = Real3{0, 0.131474957, 0}
+																												var Scale = Real3{1, 1, 1}
+																												var Rotation = Quaternion{0, 0, 0, 1}
+																											}
+																											Bone 
+																											{
+																											}
+																										}
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																				Cog [Id:0x62453d1b15cbc956]
+																				{
+																					var Name = "ThumbR"
+																					Transform 
+																					{
+																						var Translation = Real3{-0.116363972, 1.26899934, 0.171936646}
+																						var Scale = Real3{1, 1, 1}
+																						var Rotation = Quaternion{0.669464946, -0.587013245, -0.279995739, 0.358935207}
+																					}
+																					Bone 
+																					{
+																					}
+																					Hierarchy 
+																					{
+																						Cog [Id:0x62453d1b15cbc957]
+																						{
+																							var Name = "Thumb2R"
+																							Transform 
+																							{
+																								var Translation = Real3{-4.09781933e-08, 0.136672914, 1.78813934e-07}
+																								var Scale = Real3{1, 1, 1}
+																								var Rotation = Quaternion{-0.135572046, 0.735133052, 0.594621062, -0.296015948}
+																							}
+																							Bone 
+																							{
+																							}
+																							Hierarchy 
+																							{
+																								Cog [Id:0x62453d1b15cbc959]
+																								{
+																									var Name = "Thumb2R_end"
+																									Transform 
+																									{
+																										var Translation = Real3{0, 0.126784429, 0}
+																										var Scale = Real3{1, 1, 1}
+																										var Rotation = Quaternion{0, 0, 0, 1}
+																									}
+																									Bone 
+																									{
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																				Cog [Id:0x62453d1b15cbc95a]
+																				{
+																					var Name = "Palm1R"
+																					Transform 
+																					{
+																						var Translation = Real3{7.4505806e-08, 1.37971687, -6.33299351e-08}
+																						var Scale = Real3{1, 1, 1}
+																						var Rotation = Quaternion{-0.158436656, 0.743061304, 0.333881766, 0.557925344}
+																					}
+																					Bone 
+																					{
+																					}
+																					Hierarchy 
+																					{
+																						Cog [Id:0x62453d1b15cbc95b]
+																						{
+																							var Name = "IndexR"
+																							Transform 
+																							{
+																								var Translation = Real3{5.96046448e-08, 0.42242679, -8.94069672e-08}
+																								var Scale = Real3{1, 1, 1}
+																								var Rotation = Quaternion{-0.504662573, -0.573821068, 0.135774136, 0.630563617}
+																							}
+																							Bone 
+																							{
+																							}
+																							Hierarchy 
+																							{
+																								Cog [Id:0x62453d1b15cbc95d]
+																								{
+																									var Name = "Index2R"
+																									Transform 
+																									{
+																										var Translation = Real3{1.49011612e-08, 0.189366639, -1.34110451e-07}
+																										var Scale = Real3{1, 1, 1}
+																										var Rotation = Quaternion{-0.0418692157, -0.0120426966, 0.527238071, 0.84860003}
+																									}
+																									Bone 
+																									{
+																									}
+																									Hierarchy 
+																									{
+																										Cog [Id:0x62453d1b15cbc95e]
+																										{
+																											var Name = "Index2R_end"
+																											Transform 
+																											{
+																												var Translation = Real3{0, 0.13147524, 0}
+																												var Scale = Real3{1, 1, 1}
+																												var Rotation = Quaternion{0, 0, 0, 1}
+																											}
+																											Bone 
+																											{
+																											}
+																										}
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																				Cog [Id:0x62453d1b15cbc95f]
+																				{
+																					var Name = "Palm3R"
+																					Transform 
+																					{
+																						var Translation = Real3{7.4505806e-08, 1.37971687, -6.33299351e-08}
+																						var Scale = Real3{1, 1, 1}
+																						var Rotation = Quaternion{-0.115108475, 0.858054698, -0.363120914, -0.344434947}
+																					}
+																					Bone 
+																					{
+																					}
+																					Hierarchy 
+																					{
+																						Cog [Id:0x62453d1b15cbc961]
+																						{
+																							var Name = "Ring1R"
+																							Transform 
+																							{
+																								var Translation = Real3{8.19563866e-08, 0.42620641, 7.63684511e-08}
+																								var Scale = Real3{1, 1, 1}
+																								var Rotation = Quaternion{0.575218439, 0.552901387, 0.116742954, 0.591434598}
+																							}
+																							Bone 
+																							{
+																							}
+																							Hierarchy 
+																							{
+																								Cog [Id:0x62453d1b15cbc962]
+																								{
+																									var Name = "Ring2R"
+																									Transform 
+																									{
+																										var Translation = Real3{-3.7252903e-08, 0.189366668, -2.98023224e-08}
+																										var Scale = Real3{1, 1, 1}
+																										var Rotation = Quaternion{0.138602868, 0.0249029994, 0.427062839, 0.893188894}
+																									}
+																									Bone 
+																									{
+																									}
+																									Hierarchy 
+																									{
+																										Cog [Id:0x62453d1b15cbc964]
+																										{
+																											var Name = "Ring2R_end"
+																											Transform 
+																											{
+																												var Translation = Real3{0, 0.13147524, 0}
+																												var Scale = Real3{1, 1, 1}
+																												var Rotation = Quaternion{0, 0, 0, 1}
+																											}
+																											Bone 
+																											{
+																											}
+																										}
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+								Cog [Id:0x62453d1b15cbc965]
+								{
+									var Name = "UpperLegL"
+									Transform 
+									{
+										var Translation = Real3{0.628246129, 0.0962255001, -0.182560921}
+										var Scale = Real3{1, 1, 1}
+										var Rotation = Quaternion{0.985518157, 0.0175862964, -0.0842845812, 0.146085382}
+									}
+									Bone 
+									{
+									}
+									Hierarchy 
+									{
+										Cog [Id:0x62453d1b15cbc967]
+										{
+											var Name = "LegL"
+											Transform 
+											{
+												var Translation = Real3{-0.00674009323, 0.332478583, -0.0028693974}
+												var Scale = Real3{1, 1, 1}
+												var Rotation = Quaternion{0.777582467, -0.00162170024, 0.00259671221, 0.628773689}
+											}
+											Bone 
+											{
+											}
+											Model 
+											{
+												var Visible = true
+												var ViewCulling = true
+												var VisibilityEvents = true
+												var OverrideBoundingBox = false
+												var LocalAabbCenter = Real3{0, 0, 0}
+												var LocalAabbHalfExtents = Real3{1, 1, 1}
+												var GroupSortValue = 0
+												var Material = "583afb5e7bf75e18:PlasmaMaterial"
+												var Mesh = "62453d1b15bac626:Robot_LegL"
+											}
+										}
+										Cog [Id:0x62453d1b15cbc968]
+										{
+											var Name = "LowerLegL"
+											Transform 
+											{
+												var Translation = Real3{-3.91155481e-08, 0.611006796, 7.4505806e-09}
+												var Scale = Real3{1, 1, 1}
+												var Rotation = Quaternion{0.277154416, 1.3188459e-07, -7.68165549e-08, 0.960825443}
+											}
+											Bone 
+											{
+											}
+											Hierarchy 
+											{
+												Cog [Id:0x62453d1b15cbc96a]
+												{
+													var Name = "LowerLegL10"
+													Transform 
+													{
+														var Translation = Real3{-0.0068179965, 0.498979747, -0.252089024}
+														var Scale = Real3{1, 1, 1}
+														var Rotation = Quaternion{0.636176646, -0.00106981816, 0.0028685187, 0.771537483}
+													}
+													Bone 
+													{
+													}
+													Model 
+													{
+														var Visible = true
+														var ViewCulling = true
+														var VisibilityEvents = true
+														var OverrideBoundingBox = false
+														var LocalAabbCenter = Real3{0, 0, 0}
+														var LocalAabbHalfExtents = Real3{1, 1, 1}
+														var GroupSortValue = 0
+														var Material = "583afb5e7bf75e18:PlasmaMaterial"
+														var Mesh = "62453d1b15bac62d:Robot_LowerLegL10"
+													}
+												}
+												Cog [Id:0x62453d1b15cbc96b]
+												{
+													var Name = "LowerLegL_end"
+													Transform 
+													{
+														var Translation = Real3{0, 0.927859664, 0}
+														var Scale = Real3{1, 1, 1}
+														var Rotation = Quaternion{0, 0, 0, 1}
+													}
+													Bone 
+													{
+													}
+												}
+											}
+										}
+									}
+								}
+								Cog [Id:0x62453d1b15cbc96c]
+								{
+									var Name = "UpperLegR"
+									Transform 
+									{
+										var Translation = Real3{-0.645356596, 0.0962255001, -0.182561919}
+										var Scale = Real3{1, 1, 1}
+										var Rotation = Quaternion{0.979526758, -0.0257470608, 0.137310892, 0.144949198}
+									}
+									Bone 
+									{
+									}
+									Hierarchy 
+									{
+										Cog [Id:0x62453d1b15cbc96e]
+										{
+											var Name = "LegR"
+											Transform 
+											{
+												var Translation = Real3{0.00534522533, 0.332517922, 0.00620937347}
+												var Scale = Real3{1, 1, 1}
+												var Rotation = Quaternion{0.767386556, -0.00165121641, 0.0025988312, 0.641177297}
+											}
+											Bone 
+											{
+											}
+											Model 
+											{
+												var Visible = true
+												var ViewCulling = true
+												var VisibilityEvents = true
+												var OverrideBoundingBox = false
+												var LocalAabbCenter = Real3{0, 0, 0}
+												var LocalAabbHalfExtents = Real3{1, 1, 1}
+												var GroupSortValue = 0
+												var Material = "583afb5e7bf75e18:PlasmaMaterial"
+												var Mesh = "62453d1b15bac633:Robot_LegR"
+											}
+										}
+										Cog [Id:0x62453d1b15cbc96f]
+										{
+											var Name = "LowerLegR"
+											Transform 
+											{
+												var Translation = Real3{9.96515155e-08, 0.611006856, 2.23517418e-08}
+												var Scale = Real3{1, 1, 1}
+												var Rotation = Quaternion{0.277154356, -3.05388227e-07, 3.9256399e-08, 0.960825443}
+											}
+											Bone 
+											{
+											}
+											Hierarchy 
+											{
+												Cog [Id:0x62453d1b15cbc971]
+												{
+													var Name = "LowerLegR11"
+													Transform 
+													{
+														var Translation = Real3{0.00470799208, 0.499000132, -0.251993865}
+														var Scale = Real3{1, 1, 1}
+														var Rotation = Quaternion{0.636150539, -0.00114406599, 0.00285833515, 0.771558821}
+													}
+													Bone 
+													{
+													}
+													Model 
+													{
+														var Visible = true
+														var ViewCulling = true
+														var VisibilityEvents = true
+														var OverrideBoundingBox = false
+														var LocalAabbCenter = Real3{0, 0, 0}
+														var LocalAabbHalfExtents = Real3{1, 1, 1}
+														var GroupSortValue = 0
+														var Material = "583afb5e7bf75e18:PlasmaMaterial"
+														var Mesh = "62453d1b15bac63f:Robot_LowerLegR11"
+													}
+												}
+												Cog [Id:0x62453d1b15cbc972]
+												{
+													var Name = "LowerLegR_end"
+													Transform 
+													{
+														var Translation = Real3{0, 0.927859664, 0}
+														var Scale = Real3{1, 1, 1}
+														var Rotation = Quaternion{0, 0, 0, 1}
+													}
+													Bone 
+													{
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						Cog [Id:0x62453d1b15cbc974]
+						{
+							var Name = "PoleTargetL"
+							Transform 
+							{
+								var Translation = Real3{0.913523138, 1.05808377, 1.70948827}
+								var Scale = Real3{1, 1, 1}
+								var Rotation = Quaternion{0, 0, 0, 1}
+							}
+							Bone 
+							{
+							}
+							Hierarchy 
+							{
+								Cog [Id:0x62453d1b15cbc975]
+								{
+									var Name = "PoleTargetL_end"
+									Transform 
+									{
+										var Translation = Real3{0, 0.309120774, 0}
+										var Scale = Real3{1, 1, 1}
+										var Rotation = Quaternion{0, 0, 0, 1}
+									}
+									Bone 
+									{
+									}
+								}
+							}
+						}
+						Cog [Id:0x62453d1b15cbc977]
+						{
+							var Name = "FootR"
+							Transform 
+							{
+								var Translation = Real3{-0.636880636, 0.0305792093, 0.0570139959}
+								var Scale = Real3{1, 1, 1}
+								var Rotation = Quaternion{5.03264175e-07, 0.695549667, 0.718478024, 6.13391705e-07}
+							}
+							Bone 
+							{
+							}
+							Hierarchy 
+							{
+								Cog [Id:0x62453d1b15cbc978]
+								{
+									var Name = "FootR12"
+									Transform 
+									{
+										var Translation = Real3{-0.00207841396, 0.316882968, 0.383445024}
+										var Scale = Real3{1, 1, 1}
+										var Rotation = Quaternion{8.19865477e-07, -0.016212916, 0.999868572, 2.08026961e-07}
+									}
+									Bone 
+									{
+									}
+									Model 
+									{
+										var Visible = true
+										var ViewCulling = true
+										var VisibilityEvents = true
+										var OverrideBoundingBox = false
+										var LocalAabbCenter = Real3{0, 0, 0}
+										var LocalAabbHalfExtents = Real3{1, 1, 1}
+										var GroupSortValue = 0
+										var Material = "583afb5e7bf75e18:PlasmaMaterial"
+										var Mesh = "62453d1b15bac64f:Robot_FootR12"
+									}
+								}
+								Cog [Id:0x62453d1b15cbc979]
+								{
+									var Name = "FootR_end"
+									Transform 
+									{
+										var Translation = Real3{0, 0.325548977, 0}
+										var Scale = Real3{1, 1, 1}
+										var Rotation = Quaternion{0, 0, 0, 1}
+									}
+									Bone 
+									{
+									}
+								}
+							}
+						}
+						Cog [Id:0x62453d1b15cbc97b]
+						{
+							var Name = "PoleTargetR"
+							Transform 
+							{
+								var Translation = Real3{-1.10091221, 1.05808377, 1.70948732}
+								var Scale = Real3{1, 1, 1}
+								var Rotation = Quaternion{0, 0, 0, 1}
+							}
+							Bone 
+							{
+							}
+							Hierarchy 
+							{
+								Cog [Id:0x62453d1b15cbc97c]
+								{
+									var Name = "PoleTargetR_end"
+									Transform 
+									{
+										var Translation = Real3{0, 0.309120774, 0}
+										var Scale = Real3{1, 1, 1}
+										var Rotation = Quaternion{0, 0, 0, 1}
+									}
+									Bone 
+									{
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		Cog [Id:0x62453d1b15cbc97e]
+		{
+			var Name = "HandR"
+			Transform 
+			{
+				var Translation = Real3{-0.271563709, 237.029739, -2.09941483}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{-0.707106888, 0, 0, 0.70710665}
+			}
+			Hierarchy 
+			{
+				Cog [Id:0x62453d1b15cbc97f]
+				{
+					var Name = "HandRGeneratedMeshNode13"
+					Transform 
+					{
+						var Translation = Real3{0, 0, 0}
+						var Scale = Real3{1, 1, 1}
+						var Rotation = Quaternion{0, 0, 0, 1}
+					}
+					SkinnedModel 
+					{
+						var Visible = true
+						var ViewCulling = true
+						var VisibilityEvents = true
+						var OverrideBoundingBox = false
+						var LocalAabbCenter = Real3{0, 0, 0}
+						var LocalAabbHalfExtents = Real3{1, 1, 1}
+						var GroupSortValue = 0
+						var Material = "583afb5e7bf75e18:PlasmaMaterial"
+						var Mesh = "62453d1b15bac656:Robot_HandRGeneratedMeshNode13"
+						var SkeletonPath = CogPath
+						{
+							var Path = "../../RobotArmature"
+							var ErrorOnResolveToNull = false
+							var ErrorOnPathCantCompute = false
+							var ErrorOnDirectLinkFail = false
+							var UpdateCogOnPathChange = true
+							var UpdatePathOnCogChange = true
+							var UpdateCogOnInitialize = true
+							var ResolvedNullErrorOccurred = false
+							var Cog = 4294967293
+							var PathPreference0 = CogPathPreference.CogRelative
+							var PathPreference1 = CogPathPreference.SpaceRelative
+							var PathPreference2 = CogPathPreference.Absolute
+						}
+					}
+				}
+				Cog [Id:0x62453d1b15cbc981]
+				{
+					var Name = "HandRGeneratedMeshNode14"
+					Transform 
+					{
+						var Translation = Real3{0, 0, 0}
+						var Scale = Real3{1, 1, 1}
+						var Rotation = Quaternion{0, 0, 0, 1}
+					}
+					SkinnedModel 
+					{
+						var Visible = true
+						var ViewCulling = true
+						var VisibilityEvents = true
+						var OverrideBoundingBox = false
+						var LocalAabbCenter = Real3{0, 0, 0}
+						var LocalAabbHalfExtents = Real3{1, 1, 1}
+						var GroupSortValue = 0
+						var Material = "583afb5e7bf75e18:PlasmaMaterial"
+						var Mesh = "62453d1b15bac65f:Robot_HandRGeneratedMeshNode14"
+						var SkeletonPath = CogPath
+						{
+							var Path = "../../RobotArmature"
+							var ErrorOnResolveToNull = false
+							var ErrorOnPathCantCompute = false
+							var ErrorOnDirectLinkFail = false
+							var UpdateCogOnPathChange = true
+							var UpdatePathOnCogChange = true
+							var UpdateCogOnInitialize = true
+							var ResolvedNullErrorOccurred = false
+							var Cog = 4294967293
+							var PathPreference0 = CogPathPreference.CogRelative
+							var PathPreference1 = CogPathPreference.SpaceRelative
+							var PathPreference2 = CogPathPreference.Absolute
+						}
+					}
+				}
+			}
+		}
+		Cog [Id:0x62453d1b15cbc982]
+		{
+			var Name = "HandL"
+			Transform 
+			{
+				var Translation = Real3{-0.271563709, 237.029739, -2.09941483}
+				var Scale = Real3{1, 1, 1}
+				var Rotation = Quaternion{-0.707106888, 0, 0, 0.70710665}
+			}
+			Hierarchy 
+			{
+				Cog [Id:0x62453d1b15cbc984]
+				{
+					var Name = "HandLGeneratedMeshNode15"
+					Transform 
+					{
+						var Translation = Real3{0, 0, 0}
+						var Scale = Real3{1, 1, 1}
+						var Rotation = Quaternion{0, 0, 0, 1}
+					}
+					SkinnedModel 
+					{
+						var Visible = true
+						var ViewCulling = true
+						var VisibilityEvents = true
+						var OverrideBoundingBox = false
+						var LocalAabbCenter = Real3{0, 0, 0}
+						var LocalAabbHalfExtents = Real3{1, 1, 1}
+						var GroupSortValue = 0
+						var Material = "583afb5e7bf75e18:PlasmaMaterial"
+						var Mesh = "62453d1b15bac669:Robot_HandLGeneratedMeshNode15"
+						var SkeletonPath = CogPath
+						{
+							var Path = "../../RobotArmature"
+							var ErrorOnResolveToNull = false
+							var ErrorOnPathCantCompute = false
+							var ErrorOnDirectLinkFail = false
+							var UpdateCogOnPathChange = true
+							var UpdatePathOnCogChange = true
+							var UpdateCogOnInitialize = true
+							var ResolvedNullErrorOccurred = false
+							var Cog = 4294967293
+							var PathPreference0 = CogPathPreference.CogRelative
+							var PathPreference1 = CogPathPreference.SpaceRelative
+							var PathPreference2 = CogPathPreference.Absolute
+						}
+					}
+				}
+				Cog [Id:0x62453d1b15cbc985]
+				{
+					var Name = "HandLGeneratedMeshNode16"
+					Transform 
+					{
+						var Translation = Real3{0, 0, 0}
+						var Scale = Real3{1, 1, 1}
+						var Rotation = Quaternion{0, 0, 0, 1}
+					}
+					SkinnedModel 
+					{
+						var Visible = true
+						var ViewCulling = true
+						var VisibilityEvents = true
+						var OverrideBoundingBox = false
+						var LocalAabbCenter = Real3{0, 0, 0}
+						var LocalAabbHalfExtents = Real3{1, 1, 1}
+						var GroupSortValue = 0
+						var Material = "583afb5e7bf75e18:PlasmaMaterial"
+						var Mesh = "62453d1b15bac66f:Robot_HandLGeneratedMeshNode16"
+						var SkeletonPath = CogPath
+						{
+							var Path = "../../RobotArmature"
+							var ErrorOnResolveToNull = false
+							var ErrorOnPathCantCompute = false
+							var ErrorOnDirectLinkFail = false
+							var UpdateCogOnPathChange = true
+							var UpdatePathOnCogChange = true
+							var UpdateCogOnInitialize = true
+							var ResolvedNullErrorOccurred = false
+							var Cog = 4294967293
+							var PathPreference0 = CogPathPreference.CogRelative
+							var PathPreference1 = CogPathPreference.SpaceRelative
+							var PathPreference2 = CogPathPreference.Absolute
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,26 @@
+[Version:1]
+ImageContent 
+{
+	TextureInfo 
+	{
+		var FileType = "png"
+		var LoadFormat = "RGBA8"
+		var Dimensions = "2048 x 2048"
+		var Size = "2.666 MB"
+	}
+	TextureBuilder 
+	{
+		var Name = "Tiles066_4K_AmbientOcclusion"
+		var ResourceId = 0x6247c5e63f4bbbf9
+		var Type = TextureType.Texture2D
+		var Compression = TextureCompression.BC4
+		var AddressingX = TextureAddressing.Repeat
+		var AddressingY = TextureAddressing.Repeat
+		var Filtering = TextureFiltering.Trilinear
+		var Anisotropy = TextureAnisotropy.x16
+		var MipMapping = TextureMipMapping.PreGenerated
+		var HalfScaleCount = 1
+		var PremultipliedAlpha = false
+		var GammaCorrection = false
+	}
+}

@@ -1,0 +1,45 @@
+[Version:1]
+Material 
+{
+	var RenderGroups = Array
+	{
+		"581cffd64d449122:Opaque"
+		"580269d9a1d6b870:ShadowCasters"
+	}
+	WorldUV 
+	{
+		var UvScale = Real2{0.5, 0.5}
+	}
+	AOMap 
+	{
+		var AOMap = "6247c5e63f4bbbf9:Tiles066_4K_AmbientOcclusion"
+		var Multiplier = 1
+		var Invert = true
+	}
+	AlbedoMap 
+	{
+		var AlbedoMap = "6247c5e63f4e1d1e:Tiles066_4K_Color"
+		var InvertAlpha = false
+	}
+	NormalMap 
+	{
+		var NormalMap = "6247c5e63f474bef:Tiles066_4K_NormalGL"
+		var Bumpiness = 1
+		var RedLeft = false
+		var GreenDown = false
+	}
+	RoughnessMap 
+	{
+		var RoughnessMap = "6247c5e63f7889ea:Tiles066_4K_Roughness"
+		var Invert = false
+		var UseRed = true
+		var UseGreen = false
+		var UseBlue = false
+		var UseAlpha = false
+	}
+	AlbedoValue 
+	{
+		var AlbedoValue = Real4{0.665000021, 0.665000021, 0.665000021, 1}
+		var GammaCorrect = true
+	}
+}

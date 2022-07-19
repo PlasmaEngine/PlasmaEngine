@@ -1,0 +1,225 @@
+[Version:1]
+GeometryContent 
+{
+	GeometryImport 
+	{
+		var CollapsePivots = false
+		var OriginOffset = Real3{0, 0, 0}
+		var ScaleFactor = 1
+		var ChangeBasis = false
+		var XBasisTo = BasisType.PositiveX
+		var YBasisTo = BasisType.PositiveY
+		var ZBasisTo = BasisType.PositiveZ
+	}
+	MeshBuilder 
+	{
+		var GenerateSmoothNormals = true
+		var SmoothingAngleDegreesThreshold = 30
+		var GenerateTangentSpace = true
+		var TangentSmoothAngle = 30
+		var InvertUvYAxis = false
+		var FlipWindingOrder = false
+		var FlipNormals = false
+		var Meshes = Array
+		{
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_FeetGeneratedMeshNode0"
+				var ResourceId = 0x624520f6d9213418
+			}
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_FeetGeneratedMeshNode1"
+				var ResourceId = 0x624520f6d9213436
+			}
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_LegsGeneratedMeshNode2"
+				var ResourceId = 0x624520f6d9213441
+			}
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_LegsGeneratedMeshNode3"
+				var ResourceId = 0x624520f6d9213456
+			}
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_LegsGeneratedMeshNode4"
+				var ResourceId = 0x624520f6d921346c
+			}
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_LegsGeneratedMeshNode5"
+				var ResourceId = 0x624520f6d9213476
+			}
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_BodyGeneratedMeshNode6"
+				var ResourceId = 0x624520f6d9213488
+			}
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_BodyGeneratedMeshNode7"
+				var ResourceId = 0x624520f6d921349f
+			}
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_BodyGeneratedMeshNode8"
+				var ResourceId = 0x624520f6d92134b0
+			}
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_BodyGeneratedMeshNode9"
+				var ResourceId = 0x624520f6d92134bc
+			}
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_HeadGeneratedMeshNode10"
+				var ResourceId = 0x624520f6d92134c9
+			}
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_HeadGeneratedMeshNode11"
+				var ResourceId = 0x624520f6d92134ce
+			}
+			Object
+			{
+				var Name = "Spacesuit_SpaceSuit_HeadGeneratedMeshNode12"
+				var ResourceId = 0x624520f6d92134d4
+			}
+		}
+	}
+	AnimationBuilder 
+	{
+		var Clips = Array
+		{
+		}
+		var Animations = Array
+		{
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureDeath"
+				var ResourceId = 0x624520f6d9213501
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureGun_Shoot"
+				var ResourceId = 0x624520f6d921352f
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureHitRecieve"
+				var ResourceId = 0x624520f6d9213564
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureHitRecieve_2"
+				var ResourceId = 0x624520f6d9213589
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureIdle"
+				var ResourceId = 0x624520f6d92135be
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureIdle_Gun"
+				var ResourceId = 0x624520f6d92135e4
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureIdle_Gun_Pointing"
+				var ResourceId = 0x624520f6d921360c
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureIdle_Gun_Shoot"
+				var ResourceId = 0x624520f6d9213648
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureIdle_Neutral"
+				var ResourceId = 0x624520f6d921367d
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureIdle_Sword"
+				var ResourceId = 0x624520f6d92136ad
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureInteract"
+				var ResourceId = 0x624520f6d92136de
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureKick_Left"
+				var ResourceId = 0x624520f6d9213713
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureKick_Right"
+				var ResourceId = 0x624520f6d9213741
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmaturePunch_Left"
+				var ResourceId = 0x624520f6d9213761
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmaturePunch_Right"
+				var ResourceId = 0x624520f6d9213784
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureRoll"
+				var ResourceId = 0x624520f6d92137a7
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureRun"
+				var ResourceId = 0x624520f6d92137c5
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureRun_Back"
+				var ResourceId = 0x624520f6d92137e6
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureRun_Left"
+				var ResourceId = 0x624520f6d9213819
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureRun_Right"
+				var ResourceId = 0x624520f6d9213836
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureRun_Shoot"
+				var ResourceId = 0x624520f6d921385e
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureSword_Slash"
+				var ResourceId = 0x624520f6d9213885
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureWalk"
+				var ResourceId = 0x624520f6d92138a3
+			}
+			Object
+			{
+				var Name = "Spacesuit_CharacterArmatureWave"
+				var ResourceId = 0x624520f6d92138bf
+			}
+		}
+	}
+	GeneratedArchetype 
+	{
+		var ResourceId = 0x624520f6d917cc93
+	}
+}
