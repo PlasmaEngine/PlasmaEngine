@@ -413,6 +413,7 @@ SpriteSheetImporter::AddSpriteResource(StringParam name, Image& output, IntRect 
   AddContentItemInfo addContent;
   addContent.Library = PL::gEditor->mProjectLibrary;
   addContent.FileName = BuildString(name, ".png");
+  addContent.FullPath = FilePath::Combine(addContent.Library->SourcePath, addContent.FileName);
   addContent.BuilderType = "SpriteSource";
   addContent.ExternalFile = fileName;
   addContent.OnContentFileConflict = ContentFileConflict::FindNewName;
