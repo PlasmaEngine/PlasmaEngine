@@ -249,7 +249,7 @@ namespace Plasma
     class BlendSpaceData
     {
     public:
-        LightningDeclareType(BlendSpaceData, TypeCopyMode::ReferenceType);
+        LightningDeclareType(BlendSpaceData, TypeCopyMode::ValueType);
 
         BlendSpaceData();
         BlendSpaceData(AnimationNode* animationNode, Vec2Param position);
