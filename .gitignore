@@ -45,3 +45,5 @@ Source/Core/Common/PlasmaConfig.hpp
 Installer/
 CMakeSettings.json
 cmake-build-**/
+
+CMakeFiles/
