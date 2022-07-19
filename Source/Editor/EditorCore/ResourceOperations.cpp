@@ -234,7 +234,7 @@ Resource* DuplicateResource(Resource* resource, StringParam expectedNewName)
   // Add to the library (this builds the meta data and content file).
   AddContentItemInfo addContent;
   addContent.FileName = newFileName;
-  addContent.FullPath = sourceFileName;
+  addContent.FullPath = FilePath::Combine(resource->mContentItem->mLibrary->SourcePath, newFileName);
   addContent.ExternalFile = tempFile;
   addContent.Name = newName;
   addContent.Library = library;
