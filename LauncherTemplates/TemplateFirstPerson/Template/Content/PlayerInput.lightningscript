@@ -1,0 +1,43 @@
+// MIT Licensed (see LICENSE.md).
+
+class PlayerInput : LightningComponent
+{
+  [Dependency] var PlayerController : PlayerController;
+  [Dependency] var Orientation : Orientation;
+  
+  [Property] var LeftKey : Keys = Keys.A;
+  [Property] var RightKey : Keys = Keys.D;
+  [Property] var ForwardKey : Keys = Keys.W;
+  [Property] var BackKey : Keys = Keys.S;
+  [Property] var JumpKey : Keys = Keys.Space;
+  
+  function Initialize(init : CogInitializer)
+  {
+    Plasma.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+  }
+
+  function OnLogicUpdate(event : UpdateEvent)
+  {
+     // Accumulate movement
+    var movement = Real3(0, 0, 0);
+    if (Plasma.Keyboard.KeyIsDown(this.LeftKey))
+      movement -= this.Orientation.WorldRight;
+    if (Plasma.Keyboard.KeyIsDown(this.RightKey))
+      movement += this.Orientation.WorldRight;
+    if (Plasma.Keyboard.KeyIsDown(this.ForwardKey))
+      movement += this.Orientation.WorldForward;
+    if (Plasma.Keyboard.KeyIsDown(this.BackKey))
+      movement -= this.Orientation.WorldForward;
+    
+    if (Plasma.Keyboard.KeyIsPressed(this.JumpKey))
+    {
+      this.PlayerController.Jump();
+    }
+    else if (Plasma.Keyboard.KeyIsReleased(this.JumpKey))
+    {
+      this.PlayerController.JumpCancel();
+    }
+    
+    this.PlayerController.Update(movement, event.Dt);
+  }
+}

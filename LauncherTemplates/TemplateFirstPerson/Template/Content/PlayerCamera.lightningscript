@@ -1,0 +1,111 @@
+// MIT Licensed (see LICENSE.md).
+
+class PlayerCamera : LightningComponent
+{
+  // If holding the right mouse button is required to move the camera.
+  [Property] var RightMouseToMove : Boolean = false;
+  // Scalar for how much mouse movement translates to camera movement.
+  [Property] var MouseSensitivity : Real = 10.0;
+  // Invert vertical mouse input
+  [Property] var InvertVertical : Boolean = false;
+  // Path to the camera to control.
+  [Property] var GameCamera : CogPath = CogPath(":/GameCamera");
+  [Property] var CameraTarget : CogPath = CogPath("CameraTarget");
+  
+  var CameraDistance : Real = 5.0;
+  var CameraAngleX : Real = -0.25;
+  var CameraAngleY : Real = 0.0;
+  
+  var CameraObject : Cog = null;
+  
+  var MoveActive : Boolean = false;
+  
+   function Initialize(init : CogInitializer)
+  {
+    // If path is not valid just make a new camera and control it.
+    this.CameraObject = this.GameCamera.Cog;
+    if (this.CameraObject == null)
+    {
+      this.CameraObject = this.Space.Create(Archetype.Camera);
+    }
+    
+    // If using Orientation, initialize camera angle to face forward.
+    if (this.Owner.Orientation != null)
+      this.CameraAngleY = Math.ACos(-this.Owner.Orientation.WorldForward.Z);
+    
+    if (this.RightMouseToMove)
+    {
+      // Only set MoveActive on mouse events.
+      Plasma.Connect(this.CameraObject, Events.RightMouseDown, this.OnRightMouseDown);
+      Plasma.Connect(this.CameraObject, Events.RightMouseUp, this.OnRightMouseUp);
+    }
+    else
+    {
+      // Make camera movement always active.
+      this.MoveActive = true;
+     // Plasma.Mouse.Trapped = true;
+    }
+    
+    Plasma.Connect(this.CameraObject, Events.MouseScroll, this.OnMouseScroll);
+    Plasma.Connect(this.CameraObject, Events.MouseMove, this.OnMouseMove);
+    
+    Plasma.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    
+    Plasma.Mouse.Trapped = true;
+  }
+
+  function OnLogicUpdate(event : UpdateEvent)
+  {
+    
+    // If camera is missing or destroyed just don't do anything.
+    if (this.CameraObject == null || this.CameraObject.Transform == null)
+      return;
+    
+    // Rotate the character with the Y angle.
+    this.Owner.Transform.WorldRotation = Math.ToQuaternion(Real3.YAxis, this.CameraAngleY);
+    
+    // Rotate camera before setting position to easily get the Z axis for translating.
+    this.CameraObject.Transform.WorldRotation = Math.ToQuaternion(Real3(this.CameraAngleX, this.CameraAngleY, 0.0));
+    
+    // Using a focus point that is above the character position.
+    var position = this.CameraTarget.Transform.WorldTranslation;
+    // Translate along the camera's Z axis.
+ //   position += Math.Multiply(this.CameraObject.Transform.WorldRotation, Real3.ZAxis) * this.CameraDistance;
+    this.CameraObject.Transform.WorldTranslation = position;
+  }
+
+  function OnRightMouseDown(event : ViewportMouseEvent)
+  {
+    this.MoveActive = true;
+    Plasma.Mouse.Trapped = true;
+  }
+
+  function OnRightMouseUp(event : ViewportMouseEvent)
+  {
+    this.MoveActive = false;
+    Plasma.Mouse.Trapped = false;
+  }
+
+  function OnMouseScroll(event : ViewportMouseEvent)
+  {
+    // Distance of 0.0 is effectively first person, 30.0 is arbitrary.
+    this.CameraDistance = Math.Clamp(this.CameraDistance - event.Scroll.Y, 0.0, 30.0);
+  }
+
+  function OnMouseMove(event : ViewportMouseEvent)
+  {
+    if (this.MoveActive == false)
+      return;
+    
+    // Arbitrary scale on raw movement for reasonable sensitivity values.
+    var move = Plasma.Mouse.RawMovement * 0.005;
+    var sensitivity = this.MouseSensitivity / 10.0;
+    
+    if(this.InvertVertical)
+      move.Y = -move.Y;
+    
+    // Clamp X angle between pointing straight up and straight down.
+    this.CameraAngleX = Math.Clamp(this.CameraAngleX - move.Y * sensitivity, -Math.Pi / 2.0, Math.Pi / 2.0);
+    this.CameraAngleY -= move.X * sensitivity;
+  }
+}
