@@ -664,20 +664,23 @@ void UiRootWidget::RenderWidgets(RenderTasksEvent* e,
 
   if (widget->GetVisible())
   {
-    // Write out stencil if we're clipping our children
-    if (widget->GetClipChildren())
-      AddGraphical(e, color, depth, renderPass, widgetCog, StencilDrawMode::Add, 1);
+      // Write out stencil if we're clipping our children
+      if (widget->GetClipChildren())
+          AddGraphical(e, color, depth, renderPass, widgetCog, StencilDrawMode::Add, 1);
 
-    // Add the widget to be rendered
-    AddGraphical(e, color, depth, renderPass, widgetCog, StencilDrawMode::Test, 0);
+      // Add the widget to be rendered
+      AddGraphical(e, color, depth, renderPass, widgetCog, StencilDrawMode::Test, 0);
 
-    // Recurse to all children
-    forRange (UiWidget& child, widget->GetChildren())
-      RenderWidgets(e, color, depth, renderPass, &child, hierarchyColor, floatingWidgets);
+      // Recurse to all children
+      forRange(Cog& child, widget->GetOwner()->GetChildren())
+      {
+          if(UiWidget* childWidget = child.Has<UiWidget>())
+            RenderWidgets(e, color, depth, renderPass, childWidget, hierarchyColor, floatingWidgets);
+      }
 
-    // Remove the written stencil data
-    if (widget->GetClipChildren())
-      AddGraphical(e, color, depth, renderPass, widgetCog, StencilDrawMode::Remove, -1);
+      // Remove the written stencil data
+      if (widget->GetClipChildren())
+          AddGraphical(e, color, depth, renderPass, widgetCog, StencilDrawMode::Remove, -1);
   }
 }
 
