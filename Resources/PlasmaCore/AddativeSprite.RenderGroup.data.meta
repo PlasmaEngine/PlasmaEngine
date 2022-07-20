@@ -1,0 +1,18 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "AddativeSprite"
+		var ResourceId = 0x6244a4b820f32f94
+		var LoaderType = "RenderGroup"
+		var Version = 0
+	}
+	ContentTags 
+	{
+		var Tags = Array
+		{
+			"RenderGroup"
+		}
+	}
+}

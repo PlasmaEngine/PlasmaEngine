@@ -202,6 +202,21 @@ class ForwardRenderer : LightningComponent
     // Order Independent Transparancy
     AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, depthTarget, colorTarget, this.Skybox, alphaForwardSettigns, this.DirectionalLight.Cog);
     
+    
+    var spriteSettings = RenderSettings();
+    spriteSettings.ColorTarget = colorTarget;
+    spriteSettings.DepthTarget = depthTarget;
+    spriteSettings.CullMode = CullMode.Disabled;
+    spriteSettings.BlendSettings.BlendMode = BlendMode.Separate;
+    spriteSettings.BlendSettings.BlendEquation = BlendEquation.Add;
+    spriteSettings.BlendSettings.SourceFactor = BlendFactor.SourceAlpha;
+    spriteSettings.BlendSettings.DestFactor = BlendFactor.One;
+    spriteSettings.BlendSettings.SourceFactorAlpha = BlendFactor.One;
+    spriteSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
+    spriteSettings.DepthSettings.DepthMode = DepthMode.Read;
+    spriteSettings.DepthSettings.DepthCompareFunc = TextureCompareFunc.LessEqual;
+    event.AddRenderTaskRenderPass(spriteSettings, RenderGroup.AddativeSprite, ColorOutput(), "Sprite");
+        
     var camera = event.CameraViewportCog.Camera;
     
     if(camera != null)
@@ -218,6 +233,10 @@ class ForwardRenderer : LightningComponent
     // Bring final lighting to gamma space for monitor display
     this.LinearToGamma(event, colorTarget, final);
     
+    
+    spriteSettings.ColorTarget = final;
+    spriteSettings.BlendSettings.DestFactor = BlendFactor.InvSourceAlpha;
+    event.AddRenderTaskRenderPass(spriteSettings, RenderGroup.AlphaSprite, ColorOutput(), "Sprite");    
     
     this.DrawDebugObjects(event, final, depthTarget);
   }

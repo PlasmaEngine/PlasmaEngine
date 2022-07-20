@@ -1,0 +1,18 @@
+[Version:1]
+DataContent 
+{
+	DataBuilder 
+	{
+		var Name = "AlphaSprite"
+		var ResourceId = 0x6244a4a65f3f6ff6
+		var LoaderType = "RenderGroup"
+		var Version = 0
+	}
+	ContentTags 
+	{
+		var Tags = Array
+		{
+			"RenderGroup"
+		}
+	}
+}

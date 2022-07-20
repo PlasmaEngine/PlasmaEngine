@@ -4,8 +4,7 @@ Material
 	var RenderGroups = Array
 	{
 		"5961eaa40f1649f6:ZSort"
-		"612904579a5ab10e:Unlit"
-		"580269d9a1d6b870:ShadowCasters"
+		"6244a4a65f3f6ff6:AlphaSprite"
 	}
 	SpriteSourceColor 
 	{
