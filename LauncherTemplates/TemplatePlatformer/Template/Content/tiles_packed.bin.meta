@@ -1,0 +1,13 @@
+[Version:1]
+BinaryContent 
+{
+	BinaryBuilder 
+	{
+		var Name = "tiles_packed"
+		var ResourceId = 0x6244b50f8ac2c3b5
+		var LoaderType = "TilePaletteSource"
+		var Version = 0
+		var FilterTag = ""
+		var ResourceOwner = ""
+	}
+}

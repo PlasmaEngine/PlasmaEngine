@@ -1,0 +1,13 @@
+[Version:1]
+BinaryContent 
+{
+	BinaryBuilder 
+	{
+		var Name = "Background"
+		var ResourceId = 0x6244b992c5a448a6
+		var LoaderType = "TilePaletteSource"
+		var Version = 0
+		var FilterTag = ""
+		var ResourceOwner = ""
+	}
+}

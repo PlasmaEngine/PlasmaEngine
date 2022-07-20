@@ -1,0 +1,20 @@
+[Version:1]
+ImageContent 
+{
+	SpriteSourceBuilder 
+	{
+		var Name = "tiles_packed012"
+		var ResourceId = 0x6244b50b88fba597
+		var FrameSizeX = 18
+		var FrameSizeY = 18
+		var FrameCount = 1
+		var FrameDelay = 0.0833333358
+		var OriginX = 9
+		var OriginY = 9
+		var PixelsPerUnit = 18
+		var Sampling = SpriteSampling.Nearest
+		var Looping = true
+		var Slices = Real4{0, 0, 0, 0}
+		var Fill = SpriteFill.Stretch
+	}
+}

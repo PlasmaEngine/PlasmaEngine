@@ -1,0 +1,58 @@
+// MIT Licensed (see LICENSE.md).
+
+class PlayerAnimator : LightningComponent
+{
+  [Dependency] var Sprite : Sprite;
+  [Dependency] var PlayerController : PlayerController;
+  
+  [Property] var Idle : SpriteSource;
+  [Property] var Walk : SpriteSource;
+  
+  var CurrentState : PlayerState;
+  
+  var Flipped : Boolean = false;
+  function Initialize(init : CogInitializer)
+  {
+    Plasma.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+  }
+
+  function OnLogicUpdate(event : UpdateEvent)
+  {
+    var vel = this.PlayerController.GetVelocity();
+    var newState = PlayerState.Idle;
+    
+    
+    if(vel.X != 0 && this.PlayerController.Grounded)
+      newState = PlayerState.Walk;
+    else
+      newState = PlayerState.Idle;
+      
+    if(this.CurrentState != newState)
+    {
+      if(newState == PlayerState.Walk)
+      {
+        this.Sprite.SpriteSource = this.Walk;
+      }
+      else
+      {
+        this.Sprite.SpriteSource = this.Idle;
+      }
+      this.CurrentState = newState;
+    }
+    
+    if(vel.X < 0)
+      this.Flipped = false;
+    
+    if(vel.X > 0)
+      this.Flipped = true;
+      
+    this.Sprite.FlipX = this.Flipped;
+  }
+}
+
+enum PlayerState
+{
+  Idle,
+  Walk
+}
+
