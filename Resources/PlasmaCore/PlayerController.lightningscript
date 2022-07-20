@@ -532,13 +532,13 @@ class PlayerController : LightningComponent
             }
             
             // If no intersections to resolve from the sweep.
-           // if (!collision)
-         //   {
+            if (!collision)
+            {
                 // Move by the remaining sweep amount.
                 this.Transform.Translation += sweepVelocity * timeLeft;
                 // No more interations to do, sweep is completed.
                 break;
-           // }
+           }
         }
     }
     
