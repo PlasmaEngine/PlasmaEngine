@@ -58,6 +58,7 @@ target_link_libraries(Platform
     Curl
     #Libgit2
     tracy
+    IMGUI
 )
 
 set_target_properties( Platform PROPERTIES FOLDER "Platform" )

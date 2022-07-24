@@ -120,4 +120,5 @@ plasma_target_includes(GraphicsRuntime
     Geometry
     LightningShaders
     FreeType
+    IMGUI
 )

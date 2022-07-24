@@ -411,4 +411,16 @@ bool ShowProgressJob::OnShouldRun()
   }
 }
 
+void ImguiNewFrame::Execute()
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+}
+
+void ImGUIRenderJob::Execute()
+{
+    mRenderFunction();
+}
+
 } // namespace Plasma

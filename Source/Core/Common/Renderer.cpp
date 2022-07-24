@@ -1635,6 +1635,11 @@ void RenderTaskBuffer::Clear()
       taskIndex += sizeof(RenderTaskTextureUpdate);
       break;
 
+    case RenderTaskType::ImGuiClear:
+      ((RenderTaskImguiClear*)task)->~RenderTaskImguiClear();
+      taskIndex += sizeof(RenderTaskImguiClear);
+      break;
+
     default:
       Error("Render task destruction not implemented.");
       break;

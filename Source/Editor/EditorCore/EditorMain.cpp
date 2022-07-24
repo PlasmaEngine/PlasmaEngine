@@ -890,6 +890,13 @@ void SetupTools(Editor* editor);
 #define BindCommand(commandName, memberFunction)                                                                       \
   Connect(commands->GetCommand(commandName), Events::CommandExecute, editorMain, &EditorMain::memberFunction);
 
+void CreateEditor2(OsWindow* mainWindow, StringParam projectFile, StringParam newProjectName)
+{
+    ZoneScoped;
+
+
+}
+
 void CreateEditor(OsWindow* mainWindow, StringParam projectFile, StringParam newProjectName)
 {
   ZoneScoped;
@@ -1236,5 +1243,4 @@ void CreateEditor(OsWindow* mainWindow, StringParam projectFile, StringParam new
   // Copy commands to the HotKeyCommands DataSource.
   HotKeyCommands::GetInstance()->CopyCommandData(commands->mCommands);
 }
-
 } // namespace Plasma

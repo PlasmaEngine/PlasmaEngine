@@ -216,4 +216,5 @@ plasma_target_includes(Engine
     Geometry
     LightningCore
     tracy
+    IMGUI
 )

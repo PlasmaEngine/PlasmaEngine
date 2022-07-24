@@ -1,9 +1,14 @@
 // MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
 
+#include "imgui_impl_win32.h"
+#include <Repo/backends/imgui_impl_win32.cpp>
+
 namespace Plasma
 {
 Shell* Shell::sInstance;
+
+ImGuiContext* sImguiContext;
 
 // These values must be defined to handle the WM_MOUSEHWHEEL on
 // Windows 2000 and Windows XP, the first two values will be defined
@@ -1271,6 +1276,42 @@ LRESULT CALLBACK ShellWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       }
     }
 
+    if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
+        return true;
+
+    if(sImguiContext)
+    {
+        ImGui::SetCurrentContext(sImguiContext);
+
+        if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle((void*)hwnd))
+        {
+            switch (msg)
+            {
+            case WM_CLOSE:
+                viewport->PlatformRequestClose = true;
+                return 0;
+            case WM_MOVE:
+                viewport->PlatformRequestMove = true;
+                break;
+            case WM_SIZE:
+                viewport->PlatformRequestResize = true;
+                break;
+            case WM_MOUSEACTIVATE:
+                if (viewport->Flags & ImGuiViewportFlags_NoFocusOnClick)
+                    return MA_NOACTIVATE;
+                break;
+            case WM_NCHITTEST:
+                // Let mouse pass-through the window. This will allow the backend to call io.AddMouseViewportEvent() correctly. (which is optional).
+                // The ImGuiViewportFlags_NoInputs flag is set while dragging a viewport, as want to detect the window behind the one we are dragging.
+                // If you cannot easily access those viewport flags from your windowing/event code: you may manually synchronize its state e.g. in
+                // your main loop after calling UpdatePlatformWindows(). Iterate all viewports/platform windows and pass the flag to your windowing system.
+                if (viewport->Flags & ImGuiViewportFlags_NoInputs)
+                    return HTTRANSPARENT;
+                break;
+            }
+        }
+    }
+
     return ShellWindowWndProc(window, hwnd, msg, wParam, lParam);
   }
   else
@@ -1634,6 +1675,18 @@ ShellWindow::ShellWindow(Shell* shell,
   }
   shell->mWindows.PushBack(this);
   SetState(state);
+
+  IMGUI_CHECKVERSION();
+  sImguiContext = ImGui::CreateContext();
+  ImGuiIO& io = ImGui::GetIO(); (void)io;
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+  io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+  io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+  //io.ConfigViewportsNoAutoMerge = true;
+  //io.ConfigViewportsNoTaskBarIcon = true;
+
+  ImGui_ImplWin32_Init(windowHandle);
 }
 
 ShellWindow::~ShellWindow()

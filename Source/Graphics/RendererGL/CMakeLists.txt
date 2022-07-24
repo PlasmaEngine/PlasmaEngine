@@ -26,6 +26,7 @@ target_link_libraries(RendererGL
     GL
     Glew
     tracy
+    IMGUI
 )
 
 if (NOT WIN32)

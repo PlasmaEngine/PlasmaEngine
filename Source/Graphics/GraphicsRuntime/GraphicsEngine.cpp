@@ -313,6 +313,20 @@ void GraphicsEngine::Update(bool debugger)
   UpdateRenderGroups();
 
   {
+      ZoneScopedN("Imgui NewFrame");
+      ImguiNewFrame* newFrame = new ImguiNewFrame();
+      AddRendererJob(newFrame);
+
+      // Ensure Imgui runs
+      Array<RendererJob*> returnJobs;
+      mReturnJobQueue->TakeAllJobs(returnJobs);
+      forRange(RendererJob* job, returnJobs.All())
+      {
+          job->ReturnExecute();
+      }
+  }
+
+  {
     ZoneScopedN("FrameUpdate");
     ProfileScopeTree("FrameUpdate", "GraphicsSystem", Color::SpringGreen);
     float frameDt = PL::gEngine->has(TimeSystem)->mEngineDt;
@@ -1093,6 +1107,14 @@ void GraphicsEngine::RemoveComposite(StringParam compositeName)
     mModifiedComposites.Erase(compositeName);
     mUniqueComposites.Erase(compositeName);
   }
+}
+
+void Plasma::GraphicsEngine::AddImguiRender(void(*ImGuiRenderFunction)())
+{
+    ImGUIRenderJob* renderJob = new ImGUIRenderJob;
+    renderJob->mRenderFunction = ImGuiRenderFunction;
+
+    AddRendererJob(renderJob);
 }
 
 Shader* GraphicsEngine::GetOrCreateShader(StringParam coreVertex,
