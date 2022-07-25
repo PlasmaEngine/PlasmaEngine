@@ -62,7 +62,7 @@ struct ImageBasedLighting
     
     var iblInputs = ImageBasedLightingInputs();
     iblInputs.WorldNormal = Math.MultiplyNormal(this.ViewToWorld, viewNormal);
-    iblInputs.WorldViewDirection = Math.MultiplyNormal(this.ViewToWorld, viewDirection);
+    iblInputs.WorldViewDirection = Math.MultiplyPoint(this.ViewToWorld, viewDirection);
     iblInputs.Albedo = GeometryPass.GetAlbedo(geometrySample1);
     iblInputs.Metallic = GeometryPass.GetMetallic(geometrySample1);
     iblInputs.Roughness = GeometryPass.GetRoughness(geometrySample0);
