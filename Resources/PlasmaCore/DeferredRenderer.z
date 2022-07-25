@@ -147,7 +147,7 @@ class DeferredRenderer : LightningComponent
     GBufferPass.AddGBufferRenderPass(event, this.GBuffer0, this.GBuffer1, this.GBuffer2, this.GBuffer3, this.Depth);
     
     // Lighting
-    var lightBuffer = event.GetRenderTarget(event.ViewportSize, TextureFormat.RGBA16f);
+    var lightBuffer = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
     event.AddRenderTaskClearTarget(lightBuffer, Real4(0.0, 0.0, 0.0, 1.0));
     
     var lightSettings = RenderSettings();
@@ -182,8 +182,8 @@ class DeferredRenderer : LightningComponent
     
     var velocityBuffer = VelocityBuffer();
     velocityBuffer.FirstFrame = this.FirstFrame;
-    event.AddRenderTaskPostProcess(this.VelPosBuffer, velocityBuffer, "VelocityBuffer");
-    
+    event.AddRenderTaskPostProcess(this.VelPosBuffer, velocityBuffer, "VelocityBuffer");  
+     
     // Only process opaque pixels
     lightSettings.DepthSettings.StencilTestValue = 1 as Byte;
     
@@ -498,7 +498,7 @@ class DeferredRenderer : LightningComponent
     
     event.AddRenderTaskRenderPass(forwardSettings, RenderGroup.DrawLast, drawLast, "DrawLast");
     
-    var fullResTarget = event.GetRenderTarget(event.ViewportSize, TextureFormat.RGBA16f);
+    var fullResTarget = event.GetRenderTarget(viewportSize, TextureFormat.RGBA16f);
     
     var copyFullRes = CopyTarget();
     copyFullRes.Texture = lightBuffer.Texture;
