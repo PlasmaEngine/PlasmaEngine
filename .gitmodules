@@ -45,4 +45,4 @@
 	url = https://github.com/PlasmaEngine/Libgit2.git
 [submodule "External/imgui/Repo"]
 	path = External/imgui/Repo
-	url = https://github.com/ocornut/imgui.git
+	url = https://github.com/PlasmaEngine/imgui.git
