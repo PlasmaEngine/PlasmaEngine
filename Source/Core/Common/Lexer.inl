@@ -1167,16 +1167,16 @@ void RecursiveDescentParser<TokenType, StreamType, ParseHandlerType>::EvaluateCa
     this->EvaluateCapture(node->mLhs, captures);
 
     // Negative indices wrap around from the back
-    int startIndexInclusive = node->mStartIndexInclusive;
+    size_t startIndexInclusive = node->mStartIndexInclusive;
     if (startIndexInclusive < 0)
       startIndexInclusive += captures.Size();
-    int endIndexInclusive = node->mStartIndexInclusive;
+    size_t endIndexInclusive = node->mStartIndexInclusive;
     if (endIndexInclusive < 0)
       endIndexInclusive += captures.Size();
 
     // The index could still be out of bounds (more negative than the size, or
     // greater)
-    for (int i = startIndexInclusive; i <= endIndexInclusive; ++i)
+    for (size_t i = startIndexInclusive; i <= endIndexInclusive; ++i)
     {
       if (i >= 0 && i < (int)capturesOut.Size())
         capturesOut.PushBack(captures[i]);

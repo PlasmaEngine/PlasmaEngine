@@ -844,7 +844,7 @@ String Tokenizer::SkipToEndOfLine()
   // Get the range of text
   StringRange range;
   range = this->Data.c_str() + this->Position;
-  int startingPos = this->Position;
+  size_t startingPos = this->Position;
   // Loop until we hit the end of a line or the end of the file
   LightningLoop
   {

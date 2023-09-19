@@ -80,7 +80,7 @@ void BlockingWebSocketConnection::SendFullPacket(Status& status,
 
   // Send the header off first (this will block until it sends the entire
   // thing!)
-  int sentSizeHeader = this->RemoteSocket.Send(status, header, (int)headerSize, SocketFlags::None);
+  size_t sentSizeHeader = this->RemoteSocket.Send(status, header, (int)headerSize, SocketFlags::None);
   ErrorIf(sentSizeHeader != 0 && sentSizeHeader != (int)headerSize,
           "We should always send the entire header, send should block until "
           "its all sent!");
@@ -89,7 +89,7 @@ void BlockingWebSocketConnection::SendFullPacket(Status& status,
 
   // Now send the rest of the payload data (could be done in one send, no
   // problem though!)
-  int sentSizeData = this->RemoteSocket.Send(status, data, (int)length, SocketFlags::None);
+  size_t sentSizeData = this->RemoteSocket.Send(status, data, (int)length, SocketFlags::None);
   ErrorIf(sentSizeData != 0 && sentSizeData != (int)length,
           "We should always send the entire data, send should block until its "
           "all sent!");
@@ -126,7 +126,7 @@ WebSocketPacketType::Enum BlockingWebSocketConnection::ReceiveFullPacket(Status&
 
     // Read the data from the socket
     byte buffer[ReceiveBufferSize];
-    int amountReceived = this->RemoteSocket.Receive(status, buffer, ReceiveBufferSize, SocketFlags::None);
+    size_t amountReceived = this->RemoteSocket.Receive(status, buffer, ReceiveBufferSize, SocketFlags::None);
 
     // If the receive call failed, or we gracefully disconnected...
     if (status.Failed() || amountReceived == 0)
@@ -273,7 +273,7 @@ void BlockingWebSocketListener::Initialize(Status& status, int port)
 
   // Now listen on the socket, which should allow incoming connections to be
   // accepted
-  this->ListenerSocket.Listen(status, Socket::GetMaxListenBacklog());
+  this->ListenerSocket.Listen(status, static_cast<uint>(Socket::GetMaxListenBacklog()));
 }
 
 void BlockingWebSocketListener::Close(Status& status)
@@ -314,7 +314,7 @@ void BlockingWebSocketListener::Accept(Status& status, BlockingWebSocketConnecti
   {
     // Read the data from the socket
     byte buffer[ReceiveBufferSize];
-    int amountReceived = connectionOut.RemoteSocket.Receive(status, buffer, ReceiveBufferSize, SocketFlags::None);
+    size_t amountReceived = connectionOut.RemoteSocket.Receive(status, buffer, ReceiveBufferSize, SocketFlags::None);
 
     // If the receive call failed, or we gracefully disconnected...
     if (status.Failed() || amountReceived == 0)

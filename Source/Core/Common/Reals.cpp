@@ -371,7 +371,7 @@ real Round(real value, int places)
 
 real Round(real value, int places, int base)
 {
-  real scale = std::pow(real(base), places);
+  real scale =(real) std::pow(real(base), places);
   return Round(value / scale) * scale;
 }
 
@@ -387,7 +387,7 @@ real Truncate(real value, int places)
 
 real Truncate(real value, int places, int base)
 {
-  real scale = std::pow(real(base), places);
+  real scale = (real)std::pow(real(base), places);
   return Truncate(value / scale) * scale;
 }
 
@@ -409,7 +409,7 @@ real Ceil(real value, int places)
 
 real Ceil(real value, int places, int base)
 {
-  real scale = std::pow(real(base), places);
+  real scale = (real)std::pow(real(base), places);
   return Ceil(value / scale) * scale;
 }
 
@@ -425,7 +425,7 @@ real Floor(real value, int places)
 
 real Floor(real value, int places, int base)
 {
-  real scale = std::pow(real(base), places);
+  real scale = (real)std::pow(real(base), places);
   return Floor(value / scale) * scale;
 }
 

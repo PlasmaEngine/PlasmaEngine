@@ -687,7 +687,7 @@ void IndirectionType::GenericDestruct(byte* value) const
 
 int IndirectionType::GenericHash(const byte* value) const
 {
-  return ((Handle*)value)->Hash();
+  return static_cast<int>(((Handle*)value)->Hash());
 }
 
 String IndirectionType::GenericToString(const byte* value) const
@@ -824,7 +824,7 @@ void AnyType::GenericDestruct(byte* value) const
 
 int AnyType::GenericHash(const byte* value) const
 {
-  return ((Any*)value)->Hash();
+  return static_cast<int>(((Any*)value)->Hash());
 }
 
 String AnyType::GenericToString(const byte* value) const
@@ -1058,7 +1058,7 @@ int BoundType::GenericHash(const byte* value) const
   if (this->CopyMode == TypeCopyMode::ReferenceType)
   {
     // Hash the handle and return that value
-    return ((Handle*)value)->Hash();
+    return static_cast<int>(((Handle*)value)->Hash());
   }
   else
   {
@@ -2086,7 +2086,7 @@ void DelegateType::GenericDestruct(byte* value) const
 
 int DelegateType::GenericHash(const byte* value) const
 {
-  return ((Delegate*)value)->Hash();
+  return static_cast<int>(((Delegate*)value)->Hash());
 }
 
 String DelegateType::GenericToString(const byte* value) const
