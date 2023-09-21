@@ -104,7 +104,7 @@ DeclareEnum2(PerspectiveMode, Perspective, Orthographic);
 
 DeclareEnum2(RenderingType, Static, Streamed);
 
-DeclareEnum7(RenderTaskType, ClearTarget, RenderPass, PostProcess, BackBufferBlit, TextureUpdate, ComputePass, ImGuiClear);
+DeclareEnum6(RenderTaskType, ClearTarget, RenderPass, PostProcess, BackBufferBlit, TextureUpdate, ComputePass);
 
 DeclareEnum2(ScissorMode, Disabled, Enabled);
 

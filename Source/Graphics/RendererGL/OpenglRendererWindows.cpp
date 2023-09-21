@@ -57,9 +57,6 @@ OpenglRendererWindows::OpenglRendererWindows(OsHandle windowHandle, String& erro
 
   // Call the base initialize now that we've created the OpenGL context.
   Initialize(windowHandle, deviceContext, renderContext, error);
-
-  const char* glsl_version = "#version 450";
-  ImGui_ImplOpenGL3_Init(glsl_version);
 }
 
 OpenglRendererWindows::~OpenglRendererWindows()
@@ -68,11 +65,7 @@ OpenglRendererWindows::~OpenglRendererWindows()
   Shutdown();
 
   wglMakeCurrent(NULL, NULL);
-  ImGui_ImplOpenGL3_Shutdown();
   wglDeleteContext((HGLRC)mRenderContext);
-
-  ImGui::DestroyContext();
-  ImGui_ImplWin32_Shutdown();
 }
 
 Renderer* CreateRendererOpenGL(OsHandle windowHandle, String& error)

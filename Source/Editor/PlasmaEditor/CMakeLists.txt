@@ -27,6 +27,7 @@ target_link_libraries(PlasmaEditor
     CodeTranslator
     Common
     Content
+    DearImgui
     EditorCore
     ExportTool
     Engine
@@ -35,6 +36,7 @@ target_link_libraries(PlasmaEditor
     Geometry
     GraphicsRuntime
     RendererGL
+    IMGUI
     Libpng
     Meta
     Nvtt

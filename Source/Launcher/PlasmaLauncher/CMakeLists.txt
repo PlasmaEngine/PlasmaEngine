@@ -58,6 +58,7 @@ target_link_libraries(PlasmaLauncher
     CodeTranslator
     Common
     Content
+    DearImgui
     EditorCore
     ExportTool
     Engine
@@ -65,6 +66,7 @@ target_link_libraries(PlasmaLauncher
     Gameplay
     Geometry
     GraphicsRuntime
+    DearImgui
     RendererGL
     Libpng
     Meta

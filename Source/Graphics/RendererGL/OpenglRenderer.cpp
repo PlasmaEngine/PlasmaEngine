@@ -1736,10 +1736,6 @@ namespace Plasma
         forRange(RenderTaskRange& taskRange, mRenderTasks->mRenderTaskRanges.All())
             DoRenderTaskRange(taskRange);
 
-        ImGui::Render();
-        glViewport(0, 0, mViewportSize.x, mViewportSize.y);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 		{
           ZoneScopedN("SwapBuffers");
      	  TracyGpuZone("SwapBuffer")

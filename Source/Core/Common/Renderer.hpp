@@ -886,10 +886,6 @@ namespace Plasma
         bool mRender;
     };
 
-    class RenderTaskImguiClear : public RenderTask
-    {
-    };
-
     class RenderTaskPostProcess : public RenderTask
     {
     public:

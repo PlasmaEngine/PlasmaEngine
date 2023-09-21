@@ -126,8 +126,6 @@ public:
   void AddComposite(Material* material);
   void RemoveComposite(StringParam compositeName);
 
-  void AddImguiRender(void (*ImGuiRenderFunction)());
-
   Shader*
   GetOrCreateShader(StringParam coreVertex, StringParam composite, StringParam renderPass, ShaderMap& shaderMap);
   void FindShadersToCompile(Array<String>& coreVertexRange,

@@ -12,5 +12,6 @@
 #include "Core/Gameplay/GameplayStandard.hpp"
 #include "Lightning/LightningScript/LightningScriptStandard.hpp"
 #include "PlatformStandard.hpp"
+#include "UI/DearImgui/DearImguiStandard.hpp"
 
 #include "Startup.hpp"

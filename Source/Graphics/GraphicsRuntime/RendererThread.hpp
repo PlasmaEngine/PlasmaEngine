@@ -180,22 +180,6 @@ public:
   bool mVSync;
 };
 
-class ImguiNewFrame : public RendererJob
-{
-public:
-    void Execute() override;
-};
-
-typedef void (*ImGuiRenderFunction)();
-
-class ImGUIRenderJob : public RendererJob
-{
-public:
-    void Execute() override;
-  
-    ImGuiRenderFunction mRenderFunction;
-};
-
 class DoRenderTasksJob : public WaitRendererJob
 {
 public:

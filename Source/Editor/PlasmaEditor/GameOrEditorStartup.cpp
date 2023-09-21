@@ -87,12 +87,6 @@ void GameOrEditorStartup::UserInitialize()
 
 void GameOrEditorStartup::UserStartup()
 {
-  IntVec2 displaySize = PL::gEngine->Has<OsShell>()->GetPrimaryMonitorSize();
-  mWindowSize = (displaySize / 5) * 4;
-  mMinimumWindowSize = IntVec2(1024, 595);
-  mWindowCentered = true;
-  mWindowState = WindowState::Maximized;
-
   if (mPlayGame)
   {
     LoadGamePackages(mProjectFile, mProjectCog);

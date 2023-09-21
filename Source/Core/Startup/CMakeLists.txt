@@ -16,6 +16,7 @@ target_sources(Startup
 plasma_target_includes(Startup
   PUBLIC
     Common
+    DearImgui
     Geometry
     GraphicsRuntime
     tracy

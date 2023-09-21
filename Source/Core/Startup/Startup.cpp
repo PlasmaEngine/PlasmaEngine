@@ -77,6 +77,7 @@ void PlasmaStartup::MainLoop()
   case StartupPhase::UserCreation:
     UserCreation();
     NextPhase();
+    //DearImgui::Initialize();
     break;
   case StartupPhase::EngineUpdate:
     // Handles changing to the next phase internally.
@@ -269,7 +270,8 @@ void PlasmaStartup::Startup()
   IntVec2 size = mWindowSize;
   if (mWindowSize == IntVec2::cZero)
   {
-    size = osShell->GetPrimaryMonitorSize();
+    IntRect rect = osShell->GetPrimaryMonitorRectangle();
+    size = IntVec2(rect.SizeX, rect.SizeY);
   }
 
   // Start window 4/5ths of the screen size in windowed mode.
@@ -372,6 +374,9 @@ void PlasmaStartup::Shutdown()
   {
     ZoneScoped;
     ProfileScopeFunction();
+
+    //DearImgui::Destroy();
+
     PL::gEngine->Shutdown();
 
     UserShutdownLibraries();
