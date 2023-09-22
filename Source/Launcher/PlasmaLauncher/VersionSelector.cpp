@@ -967,9 +967,14 @@ void VersionSelector::FindTemplateWithTags(const BuildId& buildId,
                                            Array<TemplateProject*>& results,
                                            TagSet& resultTags)
 {
-  TemplatePackageTagPolicy policy;
-  policy.mBuildId = buildId;
-  FilterDataSetWithTags(activeTags, rejectionTags, activeSearch, mTemplates, results, resultTags, policy);
+    //TemplatePackageTagPolicy policy;
+    //policy.mBuildId = buildId;
+    //FilterDataSetWithTags(activeTags, rejectionTags, activeSearch, mTemplates, results, resultTags, policy);
+
+  for (size_t i = 0; i < mTemplates.Size(); ++i)
+  {
+      results.PushBack(mTemplates[i]);
+  }
 
   // There's a chance that two projects with the same SKU could match the given
   // build. This typically happens with an installed template (such as the ones
