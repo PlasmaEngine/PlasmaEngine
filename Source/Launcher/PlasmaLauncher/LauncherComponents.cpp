@@ -174,15 +174,12 @@ String PlasmaTemplate::GetFullTemplateVersionName()
     BuildIdRange& idRange = mBuildIds[i];
     // Always print out the min build id, but only print out the max if we have
     // one
-    builder.Append(idRange.mMin.GetFullId());
+    builder.Append(idRange.mMin.GetVersionString());
     if (idRange.mHasMax)
     {
       builder.Append("-");
       builder.Append(idRange.mMax.GetFullId());
     }
-    // Add the separator token up to the last id range
-    if (i != mBuildIds.Size() - 1)
-      builder.Append(",");
   }
   return builder.ToString();
 }
