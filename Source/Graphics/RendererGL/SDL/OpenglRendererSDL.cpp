@@ -1,7 +1,7 @@
 // MIT Licensed (see LICENSE.md).
 
 #include "Precompiled.hpp"
-#include "OpenglRenderer.hpp"
+#include "../OpenglRenderer.hpp"
 
 namespace Plasma
 {
