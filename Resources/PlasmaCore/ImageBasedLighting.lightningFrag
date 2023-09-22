@@ -77,7 +77,7 @@ struct ImageBasedLighting
     color = Math.Min(color, Real3(this.MaxIntensity));
    
     var ssr = this.SSRTexture.Sample(this.Uv);
-    color = Math.Lerp(color, ssr.XYZ * (1.0 - iblInputs.Roughness) , ssr.W);
+    color = Math.Lerp(color, ssr.XYZ, ssr.W);
     
     // Remove color banding
     color = Utility.ApplyDither(color, &this.DitherTexture, this.Uv, this.ViewportSize);
