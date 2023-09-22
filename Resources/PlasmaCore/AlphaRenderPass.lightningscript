@@ -130,7 +130,7 @@ class AlphaRenderPass : LightningComponent
     
     // Clear the render targets.
     event.AddRenderTaskClearTarget(accumulation, Real4(0.0));
-    event.AddRenderTaskClearTarget(revealage, Real4(1.0));
+    event.AddRenderTaskClearTarget(revealage, Real4(0.0));
     
     // Render "Translucent" object with this pass.
     event.AddRenderTaskRenderPass(wPSetting, RenderGroup.OrderIndependentTransparent, weighPass, "OrderIndependentTransparancy");
