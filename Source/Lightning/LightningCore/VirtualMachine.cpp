@@ -275,7 +275,7 @@ GetField(PerFrameData* stackFrame, PerFrameData* reportFrame, OperandIndex handl
   Handle& handle = *(Handle*)(stackFrame->Frame + handleOperand);
 
   // Get a pointer to the data
-  byte* data = handle.Dereference();
+  ::byte* data = handle.Dereference();
 
   // If our data is null
   if (data == nullptr)
@@ -307,7 +307,7 @@ PlasmaForceInline T& GetConstant(Function* function, OperandIndex constantOperan
 
 // Get a particular local from a function
 template <typename T>
-PlasmaForceInline T& GetLocal(byte* frame, OperandIndex localOperand)
+PlasmaForceInline T& GetLocal(::byte* frame, OperandIndex localOperand)
 {
   return *(T*)(frame + localOperand);
 }
@@ -389,7 +389,7 @@ PlasmaForceInline void IfHandler(PerFrameData* stackFrame, const Opcode& opcode)
 }
 
 PlasmaForceInline void CopyHandlerEx(
-    PerFrameData* ourFrame, PerFrameData* topFrame, const byte*& sourceOut, byte*& destinationOut, const CopyOpcode& op)
+    PerFrameData* ourFrame, PerFrameData* topFrame, const ::byte*& sourceOut, ::byte*& destinationOut, const CopyOpcode& op)
 {
   // When we copy to parameters, it's always a destination
   // (we are placing parameters in the place they must go before we call)
@@ -416,8 +416,8 @@ PlasmaForceInline void CopyHandlerEx(
   }
 
   // Get pointers to both the source and destination memory
-  sourceOut = &GetOperand<byte>(ourFrame, ourFrame, op.Source) + returnOffset;
-  destinationOut = &GetOperand<byte>(parameterFrame, ourFrame, op.Destination);
+  sourceOut = &GetOperand<::byte>(ourFrame, ourFrame, op.Source) + returnOffset;
+  destinationOut = &GetOperand<::byte>(parameterFrame, ourFrame, op.Destination);
 
   // Increment the program counter to point past the opcode
   ourFrame->ProgramCounter += sizeof(CopyOpcode);
@@ -433,8 +433,8 @@ PlasmaForceInline void CopyHandler(PerFrameData* ourFrame,
                                  CopyType*& destinationTyped,
                                  const CopyOpcode& op)
 {
-  const byte* source;
-  byte* destination;
+  const ::byte* source;
+  ::byte* destination;
 
   CopyHandlerEx(ourFrame, topFrame, source, destination, op);
 
@@ -496,7 +496,7 @@ void VirtualMachine::NativeConstructor(Call& call, ExceptionReport& report)
 void VirtualMachine::PatchDummy(Call& call, ExceptionReport& report)
 {
   // Default construct the return value
-  byte* returnValue = call.GetReturnUnchecked();
+  ::byte* returnValue = call.GetReturnUnchecked();
   call.GetFunction()->FunctionType->Return->GenericDefaultConstruct(returnValue);
 }
 
@@ -817,7 +817,7 @@ LightningVirtualInstruction(ToHandle)
     ourFrame->QueueHandleCleanup(&handle);
 
     // Initialize the stack handle to point at the given location
-    byte* fieldPointer = &GetOperand<byte>(ourFrame, ourFrame, op.ToHandle);
+    ::byte* fieldPointer = &GetOperand<::byte>(ourFrame, ourFrame, op.ToHandle);
     state->InitializePointerHandle(handle, fieldPointer, op.Type);
   }
   else
@@ -1113,7 +1113,7 @@ LightningVirtualInstruction(PropertyDelegate)
   propertyDelegate->Get.BoundFunction = op.ReferencedProperty->Get;
   propertyDelegate->Set.BoundFunction = op.ReferencedProperty->Set;
   propertyDelegate->ReferencedProperty =
-      Handle((const byte*)op.ReferencedProperty, LightningTypeId(Property), nullptr, state);
+      Handle((const ::byte*)op.ReferencedProperty, LightningTypeId(Property), nullptr, state);
 
   // If this is a static property, then we don't have a this handle
   if (!op.ReferencedProperty->IsStatic)
@@ -1154,7 +1154,7 @@ LightningVirtualInstruction(EndStringBuilder)
   state->StringBuilders.PopBack();
 
   // Copy the handle to the stack
-  Handle* handle = new (ourFrame->Frame + op.SaveStringHandleLocal) Handle((byte*)&result, LightningTypeId(String));
+  Handle* handle = new (ourFrame->Frame + op.SaveStringHandleLocal) Handle((::byte*)&result, LightningTypeId(String));
 
   // We need to make sure we cleanup this handle
   ourFrame->QueueHandleCleanup(handle);
@@ -1173,7 +1173,7 @@ LightningVirtualInstruction(AddToStringBuilder)
   StringBuilder& builder = state->StringBuilders.Back();
 
   // Generically get the operand that we want to turn into a string
-  byte* data = &GetOperand<byte>(ourFrame, ourFrame, op.Value);
+  ::byte* data = &GetOperand<::byte>(ourFrame, ourFrame, op.Value);
 
   // Convert the value to a string in the best way we know how to
   String stringifiedValue = op.TypeToConvert->GenericToString(data);
@@ -1250,7 +1250,7 @@ LightningVirtualInstruction(TypeId)
   // of an IndirectionType. GenericGetSameVirtualTypeExceptAny ensures it always
   // returns IndirectionType. This behavior matches that of the Syntaxer for
   // TypeIdNode.
-  byte* expressionResult = &GetOperand<byte>(ourFrame, ourFrame, op.Expression);
+  ::byte* expressionResult = &GetOperand<::byte>(ourFrame, ourFrame, op.Expression);
   const Type* virtualType = op.CompileTimeType->GenericGetSameVirtualTypeExceptAny(expressionResult);
 
   // This may not be necessary, but just in case we don't get a valid type
@@ -1259,8 +1259,8 @@ LightningVirtualInstruction(TypeId)
     virtualType = op.CompileTimeType;
 
   // Create a handle in constant space for the type pointer
-  byte* handlePointer = &GetLocal<byte>(ourFrame->Frame, op.SaveTypeHandleLocal);
-  *new (handlePointer) Handle((byte*)virtualType, LightningVirtualTypeId(virtualType));
+  ::byte* handlePointer = &GetLocal<::byte>(ourFrame->Frame, op.SaveTypeHandleLocal);
+  *new (handlePointer) Handle((::byte*)virtualType, LightningVirtualTypeId(virtualType));
 
   programCounter += sizeof(TypeIdOpcode);
   return;
@@ -1270,10 +1270,10 @@ LightningVirtualInstruction(ConvertToAny)
 {
   // Grab the rest of the data
   const AnyConversionOpcode& op = (const AnyConversionOpcode&)opcode;
-  const byte* value = &GetOperand<byte>(ourFrame, ourFrame, op.ToConvert);
+  const ::byte* value = &GetOperand<::byte>(ourFrame, ourFrame, op.ToConvert);
 
   // Grab the bytes that will hold the 'Any' value
-  byte* anyData = &GetLocal<byte>(ourFrame->Frame, op.Output);
+  ::byte* anyData = &GetLocal<::byte>(ourFrame->Frame, op.Output);
 
   // Construct the any at the given position (this will do a proper copy of data
   // into the any)
@@ -1321,7 +1321,7 @@ LightningVirtualInstruction(ConvertFromAny)
   }
 
   // Grab the bytes that will hold the value we copy from the Any
-  byte* outputData = &GetLocal<byte>(ourFrame->Frame, op.Output);
+  ::byte* outputData = &GetLocal<::byte>(ourFrame->Frame, op.Output);
 
   // Copy the value out of the any onto the stack
   any.StoredType->GenericCopyConstruct(outputData, any.Data);
@@ -1346,7 +1346,7 @@ LightningVirtualInstruction(ConvertDowncast)
 
   // Grab the output that we want to initialize either to a casted handle, or to
   // null
-  byte* outputHandle = &GetLocal<byte>(ourFrame->Frame, op.Output);
+  ::byte* outputHandle = &GetLocal<::byte>(ourFrame->Frame, op.Output);
 
   // The value we were passed in was null, so just output null
   if (toConvert.IsNull())
@@ -1394,7 +1394,7 @@ LightningVirtualInstruction(ConvertStringToStringRangeExtended)
   const String* value = (String*)fromTypeHandle.Dereference();
 
   // Get the toType's memory
-  byte* toTypeMemory = &GetLocal<byte>(ourFrame->Frame, op.Output);
+  ::byte* toTypeMemory = &GetLocal<::byte>(ourFrame->Frame, op.Output);
 
   // Deal with null strings
   if (value == nullptr)
@@ -1423,8 +1423,8 @@ LightningVirtualInstruction(CopyValue)
   // Grab the rest of the data
   const CopyOpcode& op = (const CopyOpcode&)opcode;
 
-  const byte* source;
-  byte* destination;
+  const ::byte* source;
+  ::byte* destination;
 
   // Get the frame at the top of the stack (it could be ours)
   PerFrameData* topFrame = state->StackFrames.Back();
@@ -1438,8 +1438,8 @@ LightningVirtualInstruction(CopyValue)
 LightningVirtualInstruction(TestEqualityValue)
 {
   const BinaryRValueOpcode& op = (const BinaryRValueOpcode&)opcode;
-  const byte* left = &GetOperand<byte>(ourFrame, ourFrame, op.Left);
-  const byte* right = &GetOperand<byte>(ourFrame, ourFrame, op.Right);
+  const ::byte* left = &GetOperand<::byte>(ourFrame, ourFrame, op.Left);
+  const ::byte* right = &GetOperand<::byte>(ourFrame, ourFrame, op.Right);
   Boolean& output = GetLocal<Boolean>(ourFrame->Frame, op.Output);
   output = (memcmp(left, right, op.Size) == 0);
   programCounter += sizeof(BinaryRValueOpcode);
@@ -1448,8 +1448,8 @@ LightningVirtualInstruction(TestEqualityValue)
 LightningVirtualInstruction(TestInequalityValue)
 {
   const BinaryRValueOpcode& op = (const BinaryRValueOpcode&)opcode;
-  const byte* left = &GetOperand<byte>(ourFrame, ourFrame, op.Left);
-  const byte* right = &GetOperand<byte>(ourFrame, ourFrame, op.Right);
+  const ::byte* left = &GetOperand<::byte>(ourFrame, ourFrame, op.Left);
+  const ::byte* right = &GetOperand<::byte>(ourFrame, ourFrame, op.Right);
   Boolean& output = GetLocal<Boolean>(ourFrame->Frame, op.Output);
   output = (memcmp(left, right, op.Size) != 0);
   programCounter += sizeof(BinaryRValueOpcode);
@@ -1569,7 +1569,7 @@ void VirtualMachine::ExecuteNext(Call& call, ExceptionReport& report)
   // Store the compacted opcode as an attempt to bring the opcode into crash
   // reports / mini-dumps Also save it into a non-thread safe global pointer
   // (hopefully it will be pulled in)
-  byte* compactedOpcode = ourFrame->CurrentFunction->CompactedOpcode.Data();
+  ::byte* compactedOpcode = ourFrame->CurrentFunction->CompactedOpcode.Data();
   LightningLastRunningOpcode = compactedOpcode;
   LightningLastRunningFunction = ourFrame->CurrentFunction;
   LightningLastRunningOpcodeLength = ourFrame->CurrentFunction->CompactedOpcode.Size();
@@ -1593,7 +1593,7 @@ void VirtualMachine::ExecuteNext(Call& call, ExceptionReport& report)
   }
 }
 
-void VirtualMachine::PostDestructor(BoundType* boundType, byte* objectData)
+void VirtualMachine::PostDestructor(BoundType* boundType, ::byte* objectData)
 {
   // Loop through all the handles we want to destroy
   for (size_t i = 0; i < boundType->Handles.Size(); ++i)
@@ -1618,13 +1618,13 @@ void VirtualMachine::PostDestructor(BoundType* boundType, byte* objectData)
   }
 }
 
-String VirtualMachine::UnknownEnumerationToString(const BoundType* type, const byte* data)
+String VirtualMachine::UnknownEnumerationToString(const BoundType* type, const ::byte* data)
 {
   Integer inputValue = *(const Integer*)data;
   return String::Format("%s (%d)", type->Name.c_str(), inputValue);
 }
 
-String VirtualMachine::EnumerationToString(const BoundType* type, const byte* data)
+String VirtualMachine::EnumerationToString(const BoundType* type, const ::byte* data)
 {
   // Get the value of the enum
   Integer inputValue = *(const Integer*)data;
@@ -1652,7 +1652,7 @@ String VirtualMachine::EnumerationToString(const BoundType* type, const byte* da
   return UnknownEnumerationToString(type, data);
 }
 
-String VirtualMachine::FlagsToString(const BoundType* type, const byte* data)
+String VirtualMachine::FlagsToString(const BoundType* type, const ::byte* data)
 {
   // Get the value of the enum
   Integer inputValue = *(const Integer*)data;
@@ -1737,6 +1737,6 @@ String VirtualMachine::FlagsToString(const BoundType* type, const byte* data)
 } // namespace Lightning
 
 // ONLY FOR DEBUGGING CRASH DUMPS
-byte* LightningLastRunningOpcode = nullptr;
+::byte* LightningLastRunningOpcode = nullptr;
 Lightning::Function* LightningLastRunningFunction = nullptr;
 size_t LightningLastRunningOpcodeLength = 0;

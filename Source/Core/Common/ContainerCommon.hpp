@@ -19,7 +19,7 @@ namespace Plasma
 template <typename T>
 T& GetInvalidObject()
 {
-  static byte Invalid[sizeof(T)] = {0};
+  static ::byte Invalid[sizeof(T)] = {0};
   return (T&)*Invalid;
 }
 
@@ -517,13 +517,13 @@ void DeleteObjectsInContainer(containerType& container)
 struct DataBlock
 {
   DataBlock();
-  DataBlock(byte* data, size_t size);
+  DataBlock(::byte* data, size_t size);
   operator bool();
   bool operator==(DataBlock& lhs);
   bool operator!=(DataBlock& lhs);
   size_t Hash();
 
-  byte* Data;
+  ::byte* Data;
   size_t Size;
 };
 

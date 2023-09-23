@@ -110,7 +110,7 @@ template <typename T>
 inline String GetBinaryString(const T& value)
 {
   StringBuilder result;
-  byte* valueCursor = (byte*)&value;
+  ::byte* valueCursor = (::byte*)&value;
 
   // Read every byte (from left to right)
   for (uint i = 0; i < sizeof(value); ++i)

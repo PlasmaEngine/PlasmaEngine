@@ -20,20 +20,20 @@ template <typename bufferType, typename type>
 void Read(bufferType& buffer, type& data)
 {
   Status status;
-  buffer.Read(status, (byte*)&data, sizeof(type));
+  buffer.Read(status, (::byte*)&data, sizeof(type));
 }
 
 template <typename bufferType, typename type>
 void Write(bufferType& buffer, type& data)
 {
-  buffer.Write((byte*)&data, sizeof(type));
+  buffer.Write((::byte*)&data, sizeof(type));
 }
 
 template <typename bufferType, typename stringType>
 void ReadString(bufferType& buffer, uint size, stringType& str)
 {
   Status status;
-  byte* data = (byte*)alloca(size + 1);
+  ::byte* data = (::byte*)alloca(size + 1);
   buffer.Read(status, data, size);
   data[size] = '\0';
   str = (char*)data;
@@ -122,7 +122,7 @@ String HumanReadableFileSize(u64 bytes);
 void PopulateVirtualFileSystemWithZip(void* userData);
 
 // Download a single file.
-void Download(StringParam fileName, const Array<byte>& binaryData);
+void Download(StringParam fileName, const Array<::byte>& binaryData);
 // Download a single file.
 void Download(StringParam fileName, const DataBlock& binaryData);
 // Download a single file.

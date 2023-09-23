@@ -73,8 +73,8 @@ public:
 
   // HandleManager interface
   void Allocate(BoundType* type, Handle& handleToInitialize, size_t customFlags) override;
-  void ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize) override;
-  byte* HandleToObject(const Handle& handle) override;
+  void ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize) override;
+  ::byte* HandleToObject(const Handle& handle) override;
   void AddReference(const Handle& handle) override;
   ReleaseResult::Enum ReleaseReference(const Handle& handle) override;
   void Delete(const Handle& handle) override;

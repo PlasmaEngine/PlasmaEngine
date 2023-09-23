@@ -95,7 +95,7 @@ bool CopyToVFS(StringParam file)
       break;
     }
 
-    size_t written = destFile.Write((byte*)buf, bytesRead);
+    size_t written = destFile.Write((::byte*)buf, bytesRead);
     if (!written)
     {
       result = false;

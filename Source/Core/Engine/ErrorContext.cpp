@@ -34,7 +34,7 @@ String ErrorContextObject::GetDescription()
     if (MetaDisplay* display = metaType->HasInherited<MetaDisplay>())
       objectDesc = display->GetDebugText(Handle(ContextObject));
     else
-      objectDesc = metaType->ToStringFunction(metaType, (const byte*)ContextObject);
+      objectDesc = metaType->ToStringFunction(metaType, (const ::byte*)ContextObject);
   }
 
   // Return the display string combined with

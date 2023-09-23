@@ -230,7 +230,7 @@ String Project::ReadTextFile(Status& status, StringParam fileName)
   {
     // Create a temporary buffer to store read in chunks
     const size_t BufferSize = 4096;
-    byte buffer[BufferSize];
+    ::byte buffer[BufferSize];
 
     // While we haven't reached the end of the file and have no errors...
     LightningLoop

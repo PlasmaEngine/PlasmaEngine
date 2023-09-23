@@ -64,8 +64,8 @@ public:
   // Backs up by a certain number of bytes
   void Backup(size_t sizeInBytes);
 
-  byte operator[](size_t index) const;
-  byte& operator[](size_t index);
+  ::byte operator[](size_t index) const;
+  ::byte& operator[](size_t index);
 
   // Get size of buffer.
   size_t GetSize() const
@@ -120,10 +120,10 @@ public:
 
   // Create a buffer from existing data. If data is owned
   // buffer will deallocate data on destruction.
-  ByteBufferBlock(byte* data, size_t size, bool owned);
+  ByteBufferBlock(::byte* data, size_t size, bool owned);
 
   // Set data to use for this byte buffer
-  void SetData(byte* data, size_t size, bool owned);
+  void SetData(::byte* data, size_t size, bool owned);
 
   // Set data block to use for this byte buffer
   void SetBlock(DataBlock block);
@@ -131,19 +131,19 @@ public:
   const DataBlock GetBlock() const;
 
   // Read data from buffer.
-  size_t Read(Status& status, byte* data, size_t sizeInBytes);
+  size_t Read(Status& status, ::byte* data, size_t sizeInBytes);
 
   // Write data to the buffer
-  size_t Write(byte* data, size_t sizeInBytes);
+  size_t Write(::byte* data, size_t sizeInBytes);
 
   // Write a single byte of data
-  size_t Write(byte value);
+  size_t Write(::byte value);
 
   // Seek to position
   void Seek(int offset, uint origin);
 
   // Pointer to current position in buffer.
-  byte* GetCurrent();
+  ::byte* GetCurrent();
 
   // Size of a buffer.
   size_t Size() const;
@@ -152,15 +152,15 @@ public:
   size_t Tell();
 
   // Get start of block
-  byte* GetBegin();
+  ::byte* GetBegin();
 
   // Deallocate memory if owned.
   void Deallocate();
 
 private:
-  byte* mData;
+  ::byte* mData;
   size_t mSize;
-  byte* mCurrent;
+  ::byte* mCurrent;
   bool mOwnsData;
   friend class ByteBuffer;
 };

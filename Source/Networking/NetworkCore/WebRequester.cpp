@@ -71,7 +71,7 @@ void AsyncWebRequest::AddFile(StringParam formFieldName, StringParam fileName)
   data.mName = formFieldName;
 
   size_t fileSize = 0;
-  byte* fileMemory = ReadFileIntoMemory(fileName.c_str(), fileSize);
+  ::byte* fileMemory = ReadFileIntoMemory(fileName.c_str(), fileSize);
   data.mValue.SetData(fileMemory, fileSize, true);
   data.mFileName = fileName;
 }
@@ -81,7 +81,7 @@ void AsyncWebRequest::AddField(StringParam formFieldName, StringParam content)
   WebPostData& data = mPostData.PushBack();
   data.mName = formFieldName;
 
-  byte* copy = (byte*)plAllocate(content.SizeInBytes());
+  ::byte* copy = (::byte*)plAllocate(content.SizeInBytes());
   memcpy(copy, content.Data(), content.SizeInBytes());
   data.mValue.SetData(copy, content.SizeInBytes(), true);
 }
@@ -312,7 +312,7 @@ void AsyncWebRequest::OnWebResponseHeadersInternal(WebResponseEvent* event)
   DispatchEvent(Events::WebResponseHeaders, event);
 }
 
-void AsyncWebRequest::OnDataReceived(const byte* data, size_t size, u64 totalDownloaded, WebRequest* request)
+void AsyncWebRequest::OnDataReceived(const ::byte* data, size_t size, u64 totalDownloaded, WebRequest* request)
 {
   // This can be called within a thread!
   AsyncWebRequest* self = (AsyncWebRequest*)request->mUserData;

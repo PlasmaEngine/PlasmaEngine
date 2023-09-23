@@ -101,14 +101,14 @@ public:
 
   // Allocates writable memory that the user can work with
   // If the destructor passed in is null, then no destructor will be pushed
-  byte* Allocate(size_t size,
+  ::byte* Allocate(size_t size,
                  DestructFn destructor = nullptr,
                  CopyConstructFn copyConstructor = nullptr,
                  size_t* positionOut = nullptr);
 
   // Writes memory directly to the buffer
   // If the destructor passed in is null, then no destructor will be pushed
-  byte* WriteMemory(void* source, size_t size, DestructFn destructor = nullptr);
+  ::byte* WriteMemory(void* source, size_t size, DestructFn destructor = nullptr);
 
   // Writes an object directly to the buffer
   // If the object is POD, no destructor will be pushed
@@ -117,7 +117,7 @@ public:
   {
     // Allocate the memory for the object and push a wrapper around it's
     // destructor
-    byte* newData = this->Allocate(sizeof(T), GetDestructor<T>(), GetCopyConstructor<T>(), positionOut);
+    ::byte* newData = this->Allocate(sizeof(T), GetDestructor<T>(), GetCopyConstructor<T>(), positionOut);
 
     // Copy the object we got into the allocated data and return it
     return *new (newData) T(value);
@@ -130,7 +130,7 @@ public:
   {
     // Allocate the memory for the object and push a wrapper around it's
     // destructor
-    byte* newData = this->Allocate(sizeof(T), GetDestructor<T>(), GetCopyConstructor<T>(), positionOut);
+    ::byte* newData = this->Allocate(sizeof(T), GetDestructor<T>(), GetCopyConstructor<T>(), positionOut);
 
     // Default construct the type into the allocated data and return it
     return *new (newData) T();
@@ -138,7 +138,7 @@ public:
 
   // Reads an amount of data starting from the given position
   // and can optionally return the next position to read from
-  byte* Read(size_t position, size_t length, size_t* nextPositionOut = nullptr);
+  ::byte* Read(size_t position, size_t length, size_t* nextPositionOut = nullptr);
 
   // Reads an object from the data and moves the position forward by its size
   template <typename T>
@@ -149,7 +149,7 @@ public:
   }
 
   // Get the element at the given position
-  byte* GetElement(size_t position);
+  ::byte* GetElement(size_t position);
 
 private:
   // Represents any bit of destructible data in our buffer

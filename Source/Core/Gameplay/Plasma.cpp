@@ -268,7 +268,7 @@ void LightningScriptConnection::Invoke(Event* e)
 
 DataBlock LightningScriptConnection::GetFunctionPointer()
 {
-  return DataBlock((byte*)&mDelegate.BoundFunction, sizeof(Function*));
+  return DataBlock((::byte*)&mDelegate.BoundFunction, sizeof(Function*));
 }
 
 } // namespace Plasma

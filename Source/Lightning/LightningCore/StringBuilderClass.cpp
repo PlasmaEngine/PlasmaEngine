@@ -318,7 +318,7 @@ Rune::Rune(const Plasma::Rune plasmaRune) : mValue(plasmaRune)
 {
 }
 
-String Rune::ToString(const BoundType* type, const byte* data)
+String Rune::ToString(const BoundType* type, const ::byte* data)
 {
   Rune* rune = (Rune*)data;
   return String(rune->mValue);
@@ -370,7 +370,7 @@ LightningDefineType(RuneIterator, builder, type)
       type, "OriginalString", stringType, nullptr, &StringRangeExtended::GetOriginalString, FunctionOptions::None);
 }
 
-String RuneIterator::ToString(const BoundType* type, const byte* data)
+String RuneIterator::ToString(const BoundType* type, const ::byte* data)
 {
   RuneIterator* iterator = (RuneIterator*)data;
 
@@ -622,7 +622,7 @@ LightningDefineType(StringRangeExtended, builder, type)
                                           "linear search.");
 }
 
-String StringRangeExtended::ToString(const BoundType* type, const byte* data)
+String StringRangeExtended::ToString(const BoundType* type, const ::byte* data)
 {
   StringRangeExtended* range = (StringRangeExtended*)data;
 

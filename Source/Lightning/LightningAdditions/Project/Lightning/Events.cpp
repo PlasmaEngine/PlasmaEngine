@@ -11,7 +11,7 @@ namespace Lightning
   //***************************************************************************
   // When we attempt to 'get an event handler' from a type that is actually an EventHandler
   // then we really don't need to do anything except return ourself
-  EventHandler* EventHandlerGetEventHandlerFunction(const BoundType* type, const byte* data)
+  EventHandler* EventHandlerGetEventHandlerFunction(const BoundType* type, const ::byte* data)
   {
     return (EventHandler*)data;
   }
@@ -96,14 +96,14 @@ namespace Lightning
     }
 
     // Allocate on the stack an array of pointers to the delegates
-    byte* delegatesList = (byte*)alloca(EventDelegate::MaxEventDelegateSize * totalOutgoing);
+    ::byte* delegatesList = (::byte*)alloca(EventDelegate::MaxEventDelegateSize * totalOutgoing);
     
     // Now copy all the event delegates into our stack local list (before we invoke any user code!)
     size_t i = 0;
     LightningForEach(EventDelegate& delegate, this->Outgoing)
     {
       // Get the memory for the current delegate
-      byte* currentDelegate = delegatesList + EventDelegate::MaxEventDelegateSize * i;
+      ::byte* currentDelegate = delegatesList + EventDelegate::MaxEventDelegateSize * i;
       
       // Copy construct (clone) the current delegate into the memory
       delegate.CopyInto(currentDelegate);
@@ -340,7 +340,7 @@ namespace Lightning
     }
 
     // Make sure the sender is not null
-    byte* senderMemory = sender.Dereference();
+    ::byte* senderMemory = sender.Dereference();
     if (senderMemory == nullptr)
     {
       state->ThrowException(report, "The sender must not be null");
@@ -398,7 +398,7 @@ namespace Lightning
     
     // If the this handle is null and its not a static function, then throw an exception
     const Handle& receiver = callback.ThisHandle;
-    byte* receiverMemory = receiver.Dereference();
+    ::byte* receiverMemory = receiver.Dereference();
     if (receiverMemory == nullptr && callback.BoundFunction->This != nullptr)
     {
       state->ThrowException(report, "The callback's object (the receiver) was null, and the function was not a static function");
@@ -414,7 +414,7 @@ namespace Lightning
     }
 
     // Make sure the sender is not null
-    byte* senderMemory = sender.Dereference();
+    ::byte* senderMemory = sender.Dereference();
     if (senderMemory == nullptr)
     {
       state->ThrowException(report, "The sender must not be null");

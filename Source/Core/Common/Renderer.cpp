@@ -186,7 +186,7 @@ uint GetPixelSize(TextureFormat::Enum format)
   }
 }
 
-void SetPixelData(byte* data, uint index, Vec4 value, TextureFormat::Enum format)
+void SetPixelData(::byte* data, uint index, Vec4 value, TextureFormat::Enum format)
 {
   switch (format)
   {
@@ -254,7 +254,7 @@ void SetPixelData(byte* data, uint index, Vec4 value, TextureFormat::Enum format
   }
 }
 
-void ReadPixelData(byte* data, uint index, Vec4& value, TextureFormat::Enum format)
+void ReadPixelData(::byte* data, uint index, Vec4& value, TextureFormat::Enum format)
 {
   switch (format)
   {
@@ -322,24 +322,24 @@ void ReadPixelData(byte* data, uint index, Vec4& value, TextureFormat::Enum form
   }
 }
 
-void SetPixelDataByte(byte* data, uint index, Vec4 value, uint elementCount)
+void SetPixelDataByte(::byte* data, uint index, Vec4 value, uint elementCount)
 {
   const uint maxByte = 0xFF;
   const float normFactor = 0x100;
   switch (elementCount)
   {
   case 4:
-    ((byte*)(data + index))[3] = (byte)Math::Min(maxByte, (uint)(Math::Max(value.w, 0.0f) * normFactor));
+    ((::byte*)(data + index))[3] = (::byte)Math::Min(maxByte, (uint)(Math::Max(value.w, 0.0f) * normFactor));
   case 3:
-    ((byte*)(data + index))[2] = (byte)Math::Min(maxByte, (uint)(Math::Max(value.z, 0.0f) * normFactor));
+    ((::byte*)(data + index))[2] = (::byte)Math::Min(maxByte, (uint)(Math::Max(value.z, 0.0f) * normFactor));
   case 2:
-    ((byte*)(data + index))[1] = (byte)Math::Min(maxByte, (uint)(Math::Max(value.y, 0.0f) * normFactor));
+    ((::byte*)(data + index))[1] = (::byte)Math::Min(maxByte, (uint)(Math::Max(value.y, 0.0f) * normFactor));
   case 1:
-    ((byte*)(data + index))[0] = (byte)Math::Min(maxByte, (uint)(Math::Max(value.x, 0.0f) * normFactor));
+    ((::byte*)(data + index))[0] = (::byte)Math::Min(maxByte, (uint)(Math::Max(value.x, 0.0f) * normFactor));
   }
 }
 
-void SetPixelDataShort(byte* data, uint index, Vec4 value, uint elementCount)
+void SetPixelDataShort(::byte* data, uint index, Vec4 value, uint elementCount)
 {
   const uint maxShort = 0xFFFF;
   const float normFactor = 0x10000;
@@ -356,7 +356,7 @@ void SetPixelDataShort(byte* data, uint index, Vec4 value, uint elementCount)
   }
 }
 
-void SetPixelDataHalfFloat(byte* data, uint index, Vec4 value, uint elementCount)
+void SetPixelDataHalfFloat(::byte* data, uint index, Vec4 value, uint elementCount)
 {
   switch (elementCount)
   {
@@ -371,7 +371,7 @@ void SetPixelDataHalfFloat(byte* data, uint index, Vec4 value, uint elementCount
   }
 }
 
-void SetPixelDataFloat(byte* data, uint index, Vec4 value, uint elementCount)
+void SetPixelDataFloat(::byte* data, uint index, Vec4 value, uint elementCount)
 {
   switch (elementCount)
   {
@@ -386,7 +386,7 @@ void SetPixelDataFloat(byte* data, uint index, Vec4 value, uint elementCount)
   }
 }
 
-void SetPixelDataGamma(byte* data, uint index, Vec4 value, uint elementCount)
+void SetPixelDataGamma(::byte* data, uint index, Vec4 value, uint elementCount)
 {
   const uint maxByte = 0xFF;
   const float normFactor = 0x100;
@@ -394,20 +394,20 @@ void SetPixelDataGamma(byte* data, uint index, Vec4 value, uint elementCount)
   switch (elementCount)
   {
   case 4:
-    ((byte*)(data + index))[3] = (byte)Math::Min(maxByte, (uint)(Math::Max(value.w, 0.0f) * normFactor));
+    ((::byte*)(data + index))[3] = (::byte)Math::Min(maxByte, (uint)(Math::Max(value.w, 0.0f) * normFactor));
   case 3:
-    ((byte*)(data + index))[2] =
-        (byte)Math::Min(maxByte, (uint)(Math::Pow(Math::Max(value.z, 0.0f), gammaPower) * normFactor));
+    ((::byte*)(data + index))[2] =
+        (::byte)Math::Min(maxByte, (uint)(Math::Pow(Math::Max(value.z, 0.0f), gammaPower) * normFactor));
   case 2:
-    ((byte*)(data + index))[1] =
-        (byte)Math::Min(maxByte, (uint)(Math::Pow(Math::Max(value.y, 0.0f), gammaPower) * normFactor));
+    ((::byte*)(data + index))[1] =
+        (::byte)Math::Min(maxByte, (uint)(Math::Pow(Math::Max(value.y, 0.0f), gammaPower) * normFactor));
   case 1:
-    ((byte*)(data + index))[0] =
-        (byte)Math::Min(maxByte, (uint)(Math::Pow(Math::Max(value.x, 0.0f), gammaPower) * normFactor));
+    ((::byte*)(data + index))[0] =
+        (::byte)Math::Min(maxByte, (uint)(Math::Pow(Math::Max(value.x, 0.0f), gammaPower) * normFactor));
   }
 }
 
-void ReadPixelDataByte(byte* data, uint index, Vec4& value, uint elementCount)
+void ReadPixelDataByte(::byte* data, uint index, Vec4& value, uint elementCount)
 {
   const uint maxByte = 0xFF;
   const float normFactor = 1.0f / 0x100;
@@ -415,21 +415,21 @@ void ReadPixelDataByte(byte* data, uint index, Vec4& value, uint elementCount)
   {
     uint isOne;
   case 4:
-    isOne = ((byte*)(data + index))[3] / maxByte;
-    value.w = ((byte*)(data + index))[3] * normFactor * (1 - isOne) + isOne;
+    isOne = ((::byte*)(data + index))[3] / maxByte;
+    value.w = ((::byte*)(data + index))[3] * normFactor * (1 - isOne) + isOne;
   case 3:
-    isOne = ((byte*)(data + index))[2] / maxByte;
-    value.z = ((byte*)(data + index))[2] * normFactor * (1 - isOne) + isOne;
+    isOne = ((::byte*)(data + index))[2] / maxByte;
+    value.z = ((::byte*)(data + index))[2] * normFactor * (1 - isOne) + isOne;
   case 2:
-    isOne = ((byte*)(data + index))[1] / maxByte;
-    value.y = ((byte*)(data + index))[1] * normFactor * (1 - isOne) + isOne;
+    isOne = ((::byte*)(data + index))[1] / maxByte;
+    value.y = ((::byte*)(data + index))[1] * normFactor * (1 - isOne) + isOne;
   case 1:
-    isOne = ((byte*)(data + index))[0] / maxByte;
-    value.x = ((byte*)(data + index))[0] * normFactor * (1 - isOne) + isOne;
+    isOne = ((::byte*)(data + index))[0] / maxByte;
+    value.x = ((::byte*)(data + index))[0] * normFactor * (1 - isOne) + isOne;
   }
 }
 
-void ReadPixelDataShort(byte* data, uint index, Vec4& value, uint elementCount)
+void ReadPixelDataShort(::byte* data, uint index, Vec4& value, uint elementCount)
 {
   const uint maxShort = 0xFFFF;
   const float normFactor = 1.0f / 0x10000;
@@ -451,7 +451,7 @@ void ReadPixelDataShort(byte* data, uint index, Vec4& value, uint elementCount)
   }
 }
 
-void ReadPixelDataHalfFloat(byte* data, uint index, Vec4& value, uint elementCount)
+void ReadPixelDataHalfFloat(::byte* data, uint index, Vec4& value, uint elementCount)
 {
   switch (elementCount)
   {
@@ -466,7 +466,7 @@ void ReadPixelDataHalfFloat(byte* data, uint index, Vec4& value, uint elementCou
   }
 }
 
-void ReadPixelDataFloat(byte* data, uint index, Vec4& value, uint elementCount)
+void ReadPixelDataFloat(::byte* data, uint index, Vec4& value, uint elementCount)
 {
   switch (elementCount)
   {
@@ -481,7 +481,7 @@ void ReadPixelDataFloat(byte* data, uint index, Vec4& value, uint elementCount)
   }
 }
 
-void ReadPixelDataGamma(byte* data, uint index, Vec4& value, uint elementCount)
+void ReadPixelDataGamma(::byte* data, uint index, Vec4& value, uint elementCount)
 {
   const uint maxByte = 0xFF;
   const float normFactor = 1.0f / 0x100;
@@ -490,17 +490,17 @@ void ReadPixelDataGamma(byte* data, uint index, Vec4& value, uint elementCount)
   {
     uint isOne;
   case 4:
-    isOne = ((byte*)(data + index))[3] / maxByte;
-    value.w = ((byte*)(data + index))[3] * normFactor * (1 - isOne) + isOne;
+    isOne = ((::byte*)(data + index))[3] / maxByte;
+    value.w = ((::byte*)(data + index))[3] * normFactor * (1 - isOne) + isOne;
   case 3:
-    isOne = ((byte*)(data + index))[2] / maxByte;
-    value.z = Math::Pow(((byte*)(data + index))[2] * normFactor, gammaPower) * (1 - isOne) + isOne;
+    isOne = ((::byte*)(data + index))[2] / maxByte;
+    value.z = Math::Pow(((::byte*)(data + index))[2] * normFactor, gammaPower) * (1 - isOne) + isOne;
   case 2:
-    isOne = ((byte*)(data + index))[1] / maxByte;
-    value.y = Math::Pow(((byte*)(data + index))[1] * normFactor, gammaPower) * (1 - isOne) + isOne;
+    isOne = ((::byte*)(data + index))[1] / maxByte;
+    value.y = Math::Pow(((::byte*)(data + index))[1] * normFactor, gammaPower) * (1 - isOne) + isOne;
   case 1:
-    isOne = ((byte*)(data + index))[0] / maxByte;
-    value.x = Math::Pow(((byte*)(data + index))[0] * normFactor, gammaPower) * (1 - isOne) + isOne;
+    isOne = ((::byte*)(data + index))[0] / maxByte;
+    value.x = Math::Pow(((::byte*)(data + index))[0] * normFactor, gammaPower) * (1 - isOne) + isOne;
   }
 }
 
@@ -537,7 +537,7 @@ class PartitionPattern
 public:
   u32 mIndexBits0_7;
   u32 mIndexBits8_15;
-  byte mInvertsTo;
+  ::byte mInvertsTo;
   bool mSwapEndpoints01;
   bool mImplicit0Top;
   bool mImplicit0Bottom;
@@ -601,13 +601,13 @@ uint GetBlockSize(TextureCompression::Enum compression)
   }
 }
 
-void YInvertBC1Block(byte* block)
+void YInvertBC1Block(::byte* block)
 {
   Math::Swap(block[4], block[7]);
   Math::Swap(block[5], block[6]);
 }
 
-void YInvertBC3Block(byte* block)
+void YInvertBC3Block(::byte* block)
 {
   u32 indices0_7 = block[2] + 256 * (block[3] + 256 * block[4]);
   u32 indices8_15 = block[5] + 256 * (block[6] + 256 * block[7]);
@@ -624,7 +624,7 @@ void YInvertBC3Block(byte* block)
   block[7] = (indices0_7 & 0x00ff0000) >> 16;
 }
 
-void YInvertBC6Mode10Block(byte* block)
+void YInvertBC6Mode10Block(::byte* block)
 {
   u32 indices0_7 = block[10] + 256 * (block[11] + 256 * block[12]);
   u32 indices8_15 = block[13] + 256 * (block[14] + 256 * block[15]);
@@ -637,7 +637,7 @@ void YInvertBC6Mode10Block(byte* block)
   indices0_7 = (indices0_7 & 0x00fffff8) | ((indices0_7 & 0x00000006) >> 1);
 
   // Partition value before flipping
-  byte partition = (block[9] >> 5) | ((block[10] & 0x03) << 3);
+  ::byte partition = (block[9] >> 5) | ((block[10] & 0x03) << 3);
 
   // Fix implicit index bits if needed
   if (cPartitionPatterns[partition].mImplicit0Top)
@@ -657,7 +657,7 @@ void YInvertBC6Mode10Block(byte* block)
 
   // Determine which endpoints need to be swapped from partition flip and
   // required implicit 0's
-  byte newPartition = cPartitionPatterns[partition].mInvertsTo;
+  ::byte newPartition = cPartitionPatterns[partition].mInvertsTo;
   bool swapEndpoints01 = cPartitionPatterns[partition].mSwapEndpoints01;
   bool swapEndpoints0AB = indices0_7 & 0x00000004;
   bool swapEndpoints1AB = false;
@@ -718,20 +718,20 @@ void YInvertBC6Mode10Block(byte* block)
     // |b1A4|b1B1:0|g1B4|r0A5:0 |
 
     // Read all endpoints
-    byte r0A = (block[1] & 0x07) << 3 | (block[0] & 0xe0) >> 5;
-    byte r0B = (block[5] & 0x01) << 5 | (block[4] & 0xf8) >> 3;
-    byte r1A = (block[8] & 0x7e) >> 1;
-    byte r1B = (block[9] & 0x1f) << 1 | (block[8] & 0x80) >> 7;
+    ::byte r0A = (block[1] & 0x07) << 3 | (block[0] & 0xe0) >> 5;
+    ::byte r0B = (block[5] & 0x01) << 5 | (block[4] & 0xf8) >> 3;
+    ::byte r1A = (block[8] & 0x7e) >> 1;
+    ::byte r1B = (block[9] & 0x1f) << 1 | (block[8] & 0x80) >> 7;
 
-    byte g0A = (block[2] & 0x1f) << 1 | (block[1] & 0x80) >> 7;
-    byte g0B = (block[6] & 0x07) << 3 | (block[5] & 0xe0) >> 5;
-    byte g1A = (block[2] & 0x20) | (block[3] & 0x01) << 4 | (block[5] & 0x1e) >> 1;
-    byte g1B = (block[3] & 0x80) >> 2 | (block[1] & 0x08) << 1 | (block[6] & 0x78) >> 3;
+    ::byte g0A = (block[2] & 0x1f) << 1 | (block[1] & 0x80) >> 7;
+    ::byte g0B = (block[6] & 0x07) << 3 | (block[5] & 0xe0) >> 5;
+    ::byte g1A = (block[2] & 0x20) | (block[3] & 0x01) << 4 | (block[5] & 0x1e) >> 1;
+    ::byte g1B = (block[3] & 0x80) >> 2 | (block[1] & 0x08) << 1 | (block[6] & 0x78) >> 3;
 
-    byte b0A = (block[3] & 0x7e) >> 1;
-    byte b0B = (block[7] & 0x1f) << 1 | (block[6] & 0x80) >> 7;
-    byte b1A = (block[2] & 0x40) >> 1 | (block[1] & 0x40) >> 2 | (block[8] & 0x01) << 3 | (block[7] & 0xe0) >> 5;
-    byte b1B = (block[4] & 0x02) << 4 | (block[4] & 0x04) << 2 | (block[4] & 0x01) << 3 | (block[2] & 0x80) >> 5 |
+    ::byte b0A = (block[3] & 0x7e) >> 1;
+    ::byte b0B = (block[7] & 0x1f) << 1 | (block[6] & 0x80) >> 7;
+    ::byte b1A = (block[2] & 0x40) >> 1 | (block[1] & 0x40) >> 2 | (block[8] & 0x01) << 3 | (block[7] & 0xe0) >> 5;
+    ::byte b1B = (block[4] & 0x02) << 4 | (block[4] & 0x04) << 2 | (block[4] & 0x01) << 3 | (block[2] & 0x80) >> 5 |
                (block[1] & 0x30) >> 4;
 
     // Other swaps assume this swap will happen first if it's needed
@@ -785,7 +785,7 @@ void YInvertBC6Mode10Block(byte* block)
   block[15] = (indices8_15 & 0x00ff0000) >> 16;
 }
 
-void YInvertBC6Mode11Block(byte* block)
+void YInvertBC6Mode11Block(::byte* block)
 {
   // Swap indices
   u32 indices0_7 = block[14] + 256 * (block[15] + 256 * (block[12] + 256 * block[13]));
@@ -833,7 +833,7 @@ void YInvertBC6Mode11Block(byte* block)
   block[15] = (indices8_15 & 0xff000000) >> 24;
 }
 
-void YInvertNonCompressed(byte* imageData, uint width, uint height, uint pixelSize)
+void YInvertNonCompressed(::byte* imageData, uint width, uint height, uint pixelSize)
 {
   uint byteWidth = width * pixelSize;
 
@@ -849,7 +849,7 @@ void YInvertNonCompressed(byte* imageData, uint width, uint height, uint pixelSi
 }
 
 void YInvertBlockCompressed(
-    byte* imageData, uint width, uint height, uint dataSize, TextureCompression::Enum compression)
+    ::byte* imageData, uint width, uint height, uint dataSize, TextureCompression::Enum compression)
 {
   ReturnIf((width >= 3 && width % 4 != 0) || (height >= 3 && height % 4 != 0),
            ,
@@ -867,8 +867,8 @@ void YInvertBlockCompressed(
   // Invert rows
   for (uint i = 0; i < numRows / 2; ++i)
   {
-    byte* rowA = imageData + (i * bytesPerRow);
-    byte* rowB = imageData + ((numRows - 1 - i) * bytesPerRow);
+    ::byte* rowA = imageData + (i * bytesPerRow);
+    ::byte* rowB = imageData + ((numRows - 1 - i) * bytesPerRow);
     for (uint b = 0; b < bytesPerRow; ++b)
       Math::Swap(rowA[b], rowB[b]);
   }
@@ -878,7 +878,7 @@ void YInvertBlockCompressed(
   {
     for (uint i = 0; i < dataSize; i += blockSize)
     {
-      byte* block = imageData + i;
+      ::byte* block = imageData + i;
       // Color bytes
       YInvertBC1Block(block);
     }
@@ -887,7 +887,7 @@ void YInvertBlockCompressed(
   {
     for (uint i = 0; i < dataSize; i += blockSize)
     {
-      byte* block = imageData + i;
+      ::byte* block = imageData + i;
       // Alpha bytes
       Math::Swap(block[0], block[6]);
       Math::Swap(block[1], block[7]);
@@ -901,7 +901,7 @@ void YInvertBlockCompressed(
   {
     for (uint i = 0; i < dataSize; i += blockSize)
     {
-      byte* block = imageData + i;
+      ::byte* block = imageData + i;
       // Alpha bytes
       YInvertBC3Block(block);
       // Color bytes
@@ -912,7 +912,7 @@ void YInvertBlockCompressed(
   {
     for (uint i = 0; i < dataSize; i += blockSize)
     {
-      byte* block = imageData + i;
+      ::byte* block = imageData + i;
       YInvertBC3Block(block);
     }
   }
@@ -920,7 +920,7 @@ void YInvertBlockCompressed(
   {
     for (uint i = 0; i < dataSize; i += blockSize)
     {
-      byte* block = imageData + i;
+      ::byte* block = imageData + i;
       YInvertBC3Block(block);
       YInvertBC3Block(block + 8);
     }
@@ -929,7 +929,7 @@ void YInvertBlockCompressed(
   {
     for (uint i = 0; i < dataSize; i += blockSize)
     {
-      byte* block = imageData + i;
+      ::byte* block = imageData + i;
 
       // (2 bits)
       // Mode 1  = 0x00
@@ -947,7 +947,7 @@ void YInvertBlockCompressed(
       // Mode 12 = 0x07
       // Mode 13 = 0x0b
       // Mode 14 = 0x0f
-      byte mode = block[0] & 0x1f;
+      ::byte mode = block[0] & 0x1f;
 
       if (mode == 0x1e)
         YInvertBC6Mode10Block(block);
@@ -1607,7 +1607,7 @@ void RenderTaskBuffer::Clear()
   uint taskIndex = 0;
   while (taskIndex < mCurrentIndex)
   {
-    byte* task = &mRenderTaskData[taskIndex];
+    ::byte* task = &mRenderTaskData[taskIndex];
     switch (*task)
     {
     case RenderTaskType::ClearTarget:

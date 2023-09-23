@@ -177,8 +177,8 @@ bool EventConnection::operator==(EventConnection& lhs)
 
 size_t EventConnection::Hash()
 {
-  DataBlock thisObjectPointer((byte*)&ThisObject, sizeof(ObjPtr));
-  DataBlock dispatcherPointer((byte*)&mDispatcher, sizeof(EventDispatcher*));
+  DataBlock thisObjectPointer((::byte*)&ThisObject, sizeof(ObjPtr));
+  DataBlock dispatcherPointer((::byte*)&mDispatcher, sizeof(EventDispatcher*));
   DataBlock functionPointer = GetFunctionPointer();
   return thisObjectPointer.Hash() ^ dispatcherPointer.Hash() ^ functionPointer.Hash() ^ mEventId.Hash();
 }

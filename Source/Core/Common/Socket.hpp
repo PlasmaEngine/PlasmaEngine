@@ -396,14 +396,14 @@ public:
   /// Will block if the send buffer is full (unless the socket is set to
   /// non-blocking) Returns the number of bytes sent (0 if an error occurs,
   /// status will contain the error)
-  size_t Send(Status& status, const byte* data, size_t dataLength, SocketFlags::Enum flags = SocketFlags::None);
+  size_t Send(Status& status, const ::byte* data, size_t dataLength, SocketFlags::Enum flags = SocketFlags::None);
 
   /// Sends data on the open socket to the specified remote address
   /// Will block if the send buffer is full (unless the socket is set to
   /// non-blocking) Returns the number of bytes sent (0 if an error occurs,
   /// status will contain the error)
   size_t SendTo(Status& status,
-                const byte* data,
+                const ::byte* data,
                 size_t dataLength,
                 const SocketAddress& to,
                 SocketFlags::Enum flags = SocketFlags::None);
@@ -412,14 +412,14 @@ public:
   /// Will block if the receive buffer is empty (unless the socket is set to
   /// non-blocking) Returns the number of bytes received (0 if an error occurs,
   /// status will contain the error)
-  size_t Receive(Status& status, byte* dataOut, size_t dataLength, SocketFlags::Enum flags = SocketFlags::None);
+  size_t Receive(Status& status, ::byte* dataOut, size_t dataLength, SocketFlags::Enum flags = SocketFlags::None);
 
   /// Receives data on the open socket from any remote address
   /// Will block if the receive buffer is empty (unless the socket is set to
   /// non-blocking) Returns the number of bytes received (0 if an error occurs,
   /// status will contain the error)
   size_t ReceiveFrom(Status& status,
-                     byte* dataOut,
+                     ::byte* dataOut,
                      size_t dataLength,
                      SocketAddress& from,
                      SocketFlags::Enum flags = SocketFlags::None);

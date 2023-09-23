@@ -43,10 +43,10 @@ void LoadTexture(StringParam filename, Texture* texture)
   }
 
   MipHeader* mipHeaders = new MipHeader[header.mMipCount];
-  byte* imageData = new byte[header.mTotalDataSize];
+  ::byte* imageData = new ::byte[header.mTotalDataSize];
 
   Status status;
-  file.Read(status, (byte*)mipHeaders, header.mMipCount * sizeof(MipHeader));
+  file.Read(status, (::byte*)mipHeaders, header.mMipCount * sizeof(MipHeader));
   file.Read(status, imageData, header.mTotalDataSize);
 
   if (status.Failed())

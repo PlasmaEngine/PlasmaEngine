@@ -53,13 +53,13 @@ FixedVertexDescription& VertexDescriptionBuilder::SetupDescriptionFromMesh(aiMes
   return mVertexDescription;
 }
 
-void VertexDescriptionBuilder::AddAttribute(VertexSemantic::Enum semantic, VertexElementType::Enum type, byte count)
+void VertexDescriptionBuilder::AddAttribute(VertexSemantic::Enum semantic, VertexElementType::Enum type, ::byte count)
 {
   mVertexDescription.mAttributes[mIndex++] = VertexAttribute(semantic, type, count, mCurrentOffset);
   mCurrentOffset += count * GetElementSize(type);
 }
 
-byte VertexDescriptionBuilder::GetElementSize(VertexElementType::Type type)
+::byte VertexDescriptionBuilder::GetElementSize(VertexElementType::Type type)
 {
   switch (type)
   {

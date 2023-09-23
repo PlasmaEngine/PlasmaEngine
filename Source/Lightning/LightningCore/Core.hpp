@@ -98,7 +98,7 @@ public:
   BoundType* VectorScalarBoundTypes[VectorScalarTypes::Size];
   // To perform generic axis functions we need to know how to set a value for a
   // given type to 1
-  typedef void (*ScalarTypeOneFunction)(byte* outData);
+  typedef void (*ScalarTypeOneFunction)(::byte* outData);
   ScalarTypeOneFunction ScalarTypeOneFunctions[VectorScalarTypes::Size];
   // An array of types to vectors (so VectorScalarTypes::Integer to an array of
   // IntegerTypes)
@@ -111,7 +111,7 @@ public:
   BoundType* MatrixElementTypes[MaxMatrixElementTypes];
   // To perform certain generic matrix operations generically,
   // MultiplyAdd functions (a += b * c) are needed
-  typedef void (*MatrixMultiplyAddFunction)(byte* outData, byte* inputA, byte* inputB);
+  typedef void (*MatrixMultiplyAddFunction)(::byte* outData, ::byte* inputA, ::byte* inputB);
   MatrixMultiplyAddFunction TypeMultiplyAddFunctions[MaxMatrixElementTypes];
 
   // A very special type that allows us to take a delegate of any type

@@ -128,7 +128,7 @@ void EmscriptenExportTarget::ExportApplication()
       return;
     }
 
-    outputFile.Write((byte*)outputPlasmaJsFile.Data(), outputPlasmaJsFile.SizeInBytes());
+    outputFile.Write((::byte*)outputPlasmaJsFile.Data(), outputPlasmaJsFile.SizeInBytes());
     outputFile.Close();
   }
 

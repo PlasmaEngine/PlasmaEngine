@@ -4,7 +4,7 @@
 namespace Plasma
 {
 
-byte* ReadFileIntoMemory(cstr filePath, size_t& fileSize, size_t extra)
+::byte* ReadFileIntoMemory(cstr filePath, size_t& fileSize, size_t extra)
 {
   File file;
   if (!file.Open(filePath, FileMode::Read, FileAccessPattern::Sequential, FileShare::Read))
@@ -12,7 +12,7 @@ byte* ReadFileIntoMemory(cstr filePath, size_t& fileSize, size_t extra)
 
   fileSize = (size_t)file.CurrentFileSize();
 
-  byte* fileBuffer = (byte*)plAllocate(fileSize + extra);
+  ::byte* fileBuffer = (::byte*)plAllocate(fileSize + extra);
   if (fileBuffer == nullptr)
   {
     ErrorIf(fileBuffer == nullptr, "Could not allocate enough memory for file '%s' into memory.", filePath);
@@ -20,8 +20,8 @@ byte* ReadFileIntoMemory(cstr filePath, size_t& fileSize, size_t extra)
   }
   else
   {
-    byte* end = fileBuffer + fileSize;
-    byte* buffer = fileBuffer;
+    ::byte* end = fileBuffer + fileSize;
+    ::byte* buffer = fileBuffer;
     while (buffer < end)
     {
       Status status;
@@ -45,7 +45,7 @@ byte* ReadFileIntoMemory(cstr filePath, size_t& fileSize, size_t extra)
   return fileBuffer;
 }
 
-size_t WriteToFile(cstr filePath, const byte* data, size_t bufferSize)
+size_t WriteToFile(cstr filePath, const ::byte* data, size_t bufferSize)
 {
   File file;
   if (!file.Open(filePath, FileMode::Write, FileAccessPattern::Sequential, FileShare::Unspecified))
@@ -53,7 +53,7 @@ size_t WriteToFile(cstr filePath, const byte* data, size_t bufferSize)
 
   while (bufferSize != 0)
   {
-    size_t amountWritten = file.Write(const_cast<byte*>(data), bufferSize);
+    size_t amountWritten = file.Write(const_cast<::byte*>(data), bufferSize);
 
     if (amountWritten == 0)
       break;
@@ -75,7 +75,7 @@ DataBlock ReadFileIntoDataBlock(cstr path)
 ByteBufferBlock ReadFileIntoByteBufferBlock(cstr path)
 {
   size_t size = 0;
-  byte* data = ReadFileIntoMemory(path, size, 0);
+  ::byte* data = ReadFileIntoMemory(path, size, 0);
   ByteBufferBlock block;
   block.SetData(data, size, true);
   return block;
@@ -112,8 +112,8 @@ bool CompareFile(Status& status, StringParam filePath1, StringParam filePath2)
 
   ByteBufferBlock file1BufferBlock(ReadSize);
   ByteBufferBlock file2BufferBlock(ReadSize);
-  byte* file1Buffer = file1BufferBlock.GetBegin();
-  byte* file2Buffer = file2BufferBlock.GetBegin();
+  ::byte* file1Buffer = file1BufferBlock.GetBegin();
+  ::byte* file2Buffer = file2BufferBlock.GetBegin();
 
   for (;;)
   {
@@ -152,7 +152,7 @@ bool CompareFileAndString(Status& status, StringParam filePath, StringParam stri
   const size_t ReadSize = 65536;
 
   ByteBufferBlock fileBufferBlock(ReadSize);
-  byte* fileBuffer = fileBufferBlock.GetBegin();
+  ::byte* fileBuffer = fileBufferBlock.GetBegin();
 
   size_t index = 0;
 
@@ -205,12 +205,12 @@ u64 FileStream::Tell()
   return mFile->Tell();
 }
 
-size_t FileStream::Write(byte* data, size_t sizeInBytes)
+size_t FileStream::Write(::byte* data, size_t sizeInBytes)
 {
   return mFile->Write(data, sizeInBytes);
 }
 
-size_t FileStream::Read(byte* data, size_t sizeInBytes)
+size_t FileStream::Read(::byte* data, size_t sizeInBytes)
 {
   Status status;
   return mFile->Read(status, data, sizeInBytes);

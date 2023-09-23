@@ -25,7 +25,7 @@ OsInt DirectoryWatcher::RunThreadEntryPoint()
 
   // 4k buffer for directory events.
   const OsInt cBufferSize = 1024 * 4;
-  byte fileNotifyBuffer[cBufferSize];
+  ::byte fileNotifyBuffer[cBufferSize];
 
   // Create Io control so the directory watcher can be canceled.
   IoControl readDir;
@@ -49,7 +49,7 @@ OsInt DirectoryWatcher::RunThreadEntryPoint()
       OsInt overlapResult = GetOverlappedResult(dirHandle, IoGetOverlap(readDir), &bytesReturned, TRUE);
 
       // Iterate through the directory event buffer.
-      byte* buffer = (byte*)fileNotifyBuffer;
+      ::byte* buffer = (::byte*)fileNotifyBuffer;
 
       String lastRename;
 

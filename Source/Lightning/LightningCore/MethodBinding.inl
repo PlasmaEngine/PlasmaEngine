@@ -21,7 +21,7 @@ static Function* FromMethod(
 template <typename FunctionType, FunctionType function, typename Arg0>
 static void BoundStatic(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -47,8 +47,8 @@ static Function* FromMethod(LibraryBuilder& builder,
 template <typename FunctionType, FunctionType function, typename Arg0, typename Arg1>
 static void BoundStatic(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -77,9 +77,9 @@ static Function* FromMethod(LibraryBuilder& builder,
 template <typename FunctionType, FunctionType function, typename Arg0, typename Arg1, typename Arg2>
 static void BoundStatic(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -111,10 +111,10 @@ static Function* FromMethod(LibraryBuilder& builder,
 template <typename FunctionType, FunctionType function, typename Arg0, typename Arg1, typename Arg2, typename Arg3>
 static void BoundStatic(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -155,11 +155,11 @@ template <typename FunctionType,
           typename Arg4>
 static void BoundStatic(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
-  byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -210,12 +210,12 @@ template <typename FunctionType,
           typename Arg5>
 static void BoundStatic(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
-  byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
-  byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
+  ::byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -271,13 +271,13 @@ template <typename FunctionType,
           typename Arg6>
 static void BoundStatic(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
-  byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
-  byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
-  byte* arg6Ptr = call.GetArgumentPointer<LightningBindingType(Arg6)>(6);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
+  ::byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
+  ::byte* arg6Ptr = call.GetArgumentPointer<LightningBindingType(Arg6)>(6);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -349,7 +349,7 @@ static Function* FromMethod(
 template <typename FunctionType, FunctionType function, typename Return, typename Arg0>
 static void BoundStaticReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -378,8 +378,8 @@ static Function* FromMethod(LibraryBuilder& builder,
 template <typename FunctionType, FunctionType function, typename Return, typename Arg0, typename Arg1>
 static void BoundStaticReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -411,9 +411,9 @@ static Function* FromMethod(LibraryBuilder& builder,
 template <typename FunctionType, FunctionType function, typename Return, typename Arg0, typename Arg1, typename Arg2>
 static void BoundStaticReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -454,10 +454,10 @@ template <typename FunctionType,
           typename Arg3>
 static void BoundStaticReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -508,11 +508,11 @@ template <typename FunctionType,
           typename Arg4>
 static void BoundStaticReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
-  byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -568,12 +568,12 @@ template <typename FunctionType,
           typename Arg5>
 static void BoundStaticReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
-  byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
-  byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
+  ::byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -634,13 +634,13 @@ template <typename FunctionType,
           typename Arg6>
 static void BoundStaticReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
-  byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
-  byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
-  byte* arg6Ptr = call.GetArgumentPointer<LightningBindingType(Arg6)>(6);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
+  ::byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
+  ::byte* arg6Ptr = call.GetArgumentPointer<LightningBindingType(Arg6)>(6);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -717,7 +717,7 @@ static Function* FromMethod(LibraryBuilder& builder,
 template <typename FunctionType, FunctionType function, typename Class, typename Arg0>
 static void BoundInstance(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -744,8 +744,8 @@ static Function* FromMethod(LibraryBuilder& builder,
 template <typename FunctionType, FunctionType function, typename Class, typename Arg0, typename Arg1>
 static void BoundInstance(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -775,9 +775,9 @@ static Function* FromMethod(LibraryBuilder& builder,
 template <typename FunctionType, FunctionType function, typename Class, typename Arg0, typename Arg1, typename Arg2>
 static void BoundInstance(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -816,10 +816,10 @@ template <typename FunctionType,
           typename Arg3>
 static void BoundInstance(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -868,11 +868,11 @@ template <typename FunctionType,
           typename Arg4>
 static void BoundInstance(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
-  byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -926,12 +926,12 @@ template <typename FunctionType,
           typename Arg5>
 static void BoundInstance(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
-  byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
-  byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
+  ::byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -990,13 +990,13 @@ template <typename FunctionType,
           typename Arg6>
 static void BoundInstance(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
-  byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
-  byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
-  byte* arg6Ptr = call.GetArgumentPointer<LightningBindingType(Arg6)>(6);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
+  ::byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
+  ::byte* arg6Ptr = call.GetArgumentPointer<LightningBindingType(Arg6)>(6);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -1074,7 +1074,7 @@ static Function* FromMethod(LibraryBuilder& builder,
 template <typename FunctionType, FunctionType function, typename Class, typename Return, typename Arg0>
 static void BoundInstanceReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -1104,8 +1104,8 @@ static Function* FromMethod(LibraryBuilder& builder,
 template <typename FunctionType, FunctionType function, typename Class, typename Return, typename Arg0, typename Arg1>
 static void BoundInstanceReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -1144,9 +1144,9 @@ template <typename FunctionType,
           typename Arg2>
 static void BoundInstanceReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -1195,10 +1195,10 @@ template <typename FunctionType,
           typename Arg3>
 static void BoundInstanceReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -1252,11 +1252,11 @@ template <typename FunctionType,
           typename Arg4>
 static void BoundInstanceReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
-  byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -1315,12 +1315,12 @@ template <typename FunctionType,
           typename Arg5>
 static void BoundInstanceReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
-  byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
-  byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
+  ::byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);
@@ -1385,13 +1385,13 @@ template <typename FunctionType,
           typename Arg6>
 static void BoundInstanceReturn(Call& call, ExceptionReport& report)
 {
-  byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
-  byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
-  byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
-  byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
-  byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
-  byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
-  byte* arg6Ptr = call.GetArgumentPointer<LightningBindingType(Arg6)>(6);
+  ::byte* arg0Ptr = call.GetArgumentPointer<LightningBindingType(Arg0)>(0);
+  ::byte* arg1Ptr = call.GetArgumentPointer<LightningBindingType(Arg1)>(1);
+  ::byte* arg2Ptr = call.GetArgumentPointer<LightningBindingType(Arg2)>(2);
+  ::byte* arg3Ptr = call.GetArgumentPointer<LightningBindingType(Arg3)>(3);
+  ::byte* arg4Ptr = call.GetArgumentPointer<LightningBindingType(Arg4)>(4);
+  ::byte* arg5Ptr = call.GetArgumentPointer<LightningBindingType(Arg5)>(5);
+  ::byte* arg6Ptr = call.GetArgumentPointer<LightningBindingType(Arg6)>(6);
   if (report.HasThrownExceptions())
     return;
   LightningBindingType(Arg0) arg0 = call.CastArgumentPointer<LightningBindingType(Arg0)>(arg0Ptr);

@@ -223,7 +223,7 @@ namespace Lightning
     ExecutableState* state = ExecutableState::GetCallingState();
     handle.StoredType = state->AllocatingType;
     handle.Manager = state->PointerObjects;
-    state->PointerObjects->ObjectToHandle((const byte*)pointer, handle.StoredType, handle);
+    state->PointerObjects->ObjectToHandle((const ::byte*)pointer, handle.StoredType, handle);
   }
   
   //***************************************************************************

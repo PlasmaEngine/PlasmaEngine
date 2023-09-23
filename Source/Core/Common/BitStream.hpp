@@ -76,12 +76,12 @@ public:
   BitAlignment::Enum GetAlignment() const;
 
   /// Returns the data array
-  const byte* GetData() const;
+  const ::byte* GetData() const;
   /// Returns the data array exposed for writing to the internal buffer
   /// directly. Be sure there's enough room by calling Reserve() prior to this
   /// call and inform the BitStream of data written by calling SetBitsWritten()
   /// or SetBytesWritten() afterwards.
-  byte* GetDataExposed();
+  ::byte* GetDataExposed();
 
   /// Returns the data array capacity in bits
   inline Bits GetBitCapacity() const;
@@ -207,14 +207,14 @@ public:
   inline Bits SerializeBit(SerializeDirection::Enum direction, bool& value);
   /// Serializes multiple bits
   /// Returns the number of bits serialized if successful, else 0
-  inline Bits SerializeBits(SerializeDirection::Enum direction, byte* data, Bits dataBits);
+  inline Bits SerializeBits(SerializeDirection::Enum direction, ::byte* data, Bits dataBits);
 
   /// Serializes a single byte
   /// Returns the number of bits serialized if successful, else 0
   inline Bits SerializeByte(SerializeDirection::Enum direction, uint8& value);
   /// Serializes multiple bytes
   /// Returns the number of bits serialized if successful, else 0
-  inline Bits SerializeBytes(SerializeDirection::Enum direction, byte* data, Bytes dataBytes);
+  inline Bits SerializeBytes(SerializeDirection::Enum direction, ::byte* data, Bytes dataBytes);
 
   /// Serializes a boolean value
   /// Returns the number of bits serialized if successful, else 0
@@ -290,14 +290,14 @@ public:
   Bits WriteBit(bool value);
   /// Writes multiple bits
   /// Returns the number of bits written if successful, else 0
-  Bits WriteBits(const byte* data, Bits dataBits);
+  Bits WriteBits(const ::byte* data, Bits dataBits);
 
   /// Writes a single byte
   /// Returns the number of bits written if successful, else 0
   Bits WriteByte(uint8 value);
   /// Writes multiple bytes
   /// Returns the number of bits written if successful, else 0
-  Bits WriteBytes(const byte* data, Bytes dataBytes);
+  Bits WriteBytes(const ::byte* data, Bytes dataBytes);
 
   /// Writes a boolean value
   /// Returns the number of bits written if successful, else 0
@@ -417,14 +417,14 @@ public:
   Bits ReadBit(bool& value) const;
   /// Reads multiple bits
   /// Returns the number of bits read if successful, else 0
-  Bits ReadBits(byte* data, Bits dataBits) const;
+  Bits ReadBits(::byte* data, Bits dataBits) const;
 
   /// Reads a single byte
   /// Returns the number of bits read if successful, else 0
   Bits ReadByte(uint8& value) const;
   /// Reads multiple bytes
   /// Returns the number of bits read if successful, else 0
-  Bits ReadBytes(byte* data, Bytes dataBytes) const;
+  Bits ReadBytes(::byte* data, Bytes dataBytes) const;
 
   /// Reads a boolean value
   /// Returns the number of bits read if successful, else 0
@@ -530,7 +530,7 @@ protected:
   void Reallocate(Bytes capacity, bool copyData);
 
   /// Binary data array
-  byte* mData;
+  ::byte* mData;
   /// Binary data capacity
   Bytes mByteCapacity;
   /// Also next write position

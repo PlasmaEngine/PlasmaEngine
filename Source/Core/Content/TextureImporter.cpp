@@ -31,10 +31,10 @@ T* GetPixelClamped(T* image, int width, int height, uint numChannels, int x, int
 }
 
 template <typename T, unsigned Channels>
-void ResizeImage(const byte* srcImage,
+void ResizeImage(const ::byte* srcImage,
                  uint srcWidth,
                  uint srcHeight,
-                 byte* dstImage,
+                 ::byte* dstImage,
                  uint dstWidth,
                  uint dstHeight,
                  void (*ClampFunc)(float&))
@@ -89,10 +89,10 @@ void ShortClamp(float& value)
 }
 
 void ResizeImage(TextureFormat::Enum format,
-                 const byte* srcImage,
+                 const ::byte* srcImage,
                  uint srcWidth,
                  uint srcHeight,
-                 byte* dstImage,
+                 ::byte* dstImage,
                  uint dstWidth,
                  uint dstHeight)
 {
@@ -101,10 +101,10 @@ void ResizeImage(TextureFormat::Enum format,
   else if (format == TextureFormat::RGBA16)
     ResizeImage<u16, 4>(srcImage, srcWidth, srcHeight, dstImage, dstWidth, dstHeight, ShortClamp);
   else
-    ResizeImage<byte, 4>(srcImage, srcWidth, srcHeight, dstImage, dstWidth, dstHeight, ByteClamp);
+    ResizeImage<::byte, 4>(srcImage, srcWidth, srcHeight, dstImage, dstWidth, dstHeight, ByteClamp);
 }
 
-void MipmapTexture(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, TextureFormat::Enum format, bool compressed)
+void MipmapTexture(Array<MipHeader>& mipHeaders, Array<::byte*>& imageData, TextureFormat::Enum format, bool compressed)
 {
   if (mipHeaders.Size() != 1 || imageData.Size() != 1)
     return;
@@ -124,7 +124,7 @@ void MipmapTexture(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Textur
     if (width != newWidth || height != newHeight)
     {
       uint newSize = newWidth * newHeight * GetPixelSize(format);
-      byte* newImage = new byte[newSize];
+      ::byte* newImage = new ::byte[newSize];
       ResizeImage(format, imageData[0], width, height, newImage, newWidth, newHeight);
 
       delete[] imageData[0];
@@ -140,7 +140,7 @@ void MipmapTexture(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Textur
   uint height = mipHeaders[0].mHeight;
   uint pixelSize = GetPixelSize(format);
 
-  byte* image = imageData[0];
+  ::byte* image = imageData[0];
   uint level = 1;
   uint dataOffset = mipHeaders[0].mDataSize;
 
@@ -150,7 +150,7 @@ void MipmapTexture(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Textur
     uint newHeight = Math::Max(1u, height / 2);
     uint newSize = newWidth * newHeight * pixelSize;
 
-    byte* newImage = new byte[newSize];
+    ::byte* newImage = new ::byte[newSize];
     ResizeImage(format, image, width, height, newImage, newWidth, newHeight);
 
     MipHeader header;
@@ -185,7 +185,7 @@ public:
   void beginImage(int size, int width, int height, int depth, int face, int miplevel) override
   {
     mSize = size;
-    mData = new byte[mSize];
+    mData = new ::byte[mSize];
     mCurrentLocation = 0;
   }
 
@@ -194,7 +194,7 @@ public:
     if (mData == nullptr)
     {
       // ignore header
-      // mHeader = new byte[size];
+      // mHeader = new ::byte[size];
       // memcpy(mHeader, data, size);
       // mHeaderSize = size;
       return true;
@@ -215,9 +215,9 @@ public:
   {
   }
 
-  byte* mHeader;
+  ::byte* mHeader;
   uint mHeaderSize;
-  byte* mData;
+  ::byte* mData;
   uint mSize;
   uint mCurrentLocation;
 };
@@ -232,15 +232,15 @@ public:
   }
 };
 
-void ToNvttSurface(nvtt::Surface& surface, uint width, uint height, TextureFormat::Enum format, const byte* image)
+void ToNvttSurface(nvtt::Surface& surface, uint width, uint height, TextureFormat::Enum format, const ::byte* image)
 {
-  byte* convertedImage = nullptr;
+  ::byte* convertedImage = nullptr;
 
   // Nvtt requires input data to be BGRA8 or RGBA32f
   if (format == TextureFormat::RGB32f)
   {
     uint size = width * height * GetPixelSize(TextureFormat::RGBA32f);
-    convertedImage = new byte[size];
+    convertedImage = new ::byte[size];
 
     const float* srcImage = (const float*)image;
     float* destImage = (float*)convertedImage;
@@ -257,7 +257,7 @@ void ToNvttSurface(nvtt::Surface& surface, uint width, uint height, TextureForma
   {
     uint pixelSize = GetPixelSize(format);
     uint size = width * height * pixelSize;
-    convertedImage = new byte[size];
+    convertedImage = new ::byte[size];
     memcpy(convertedImage, image, size);
 
     for (uint i = 0; i < size; i += pixelSize)
@@ -271,7 +271,7 @@ void ToNvttSurface(nvtt::Surface& surface, uint width, uint height, TextureForma
   delete[] convertedImage;
 }
 
-void FromNvttSurface(const nvtt::Surface& surface, uint& width, uint& height, TextureFormat::Enum format, byte*& image)
+void FromNvttSurface(const nvtt::Surface& surface, uint& width, uint& height, TextureFormat::Enum format, ::byte*& image)
 {
   const float* srcImage = surface.data();
   width = surface.width();
@@ -279,7 +279,7 @@ void FromNvttSurface(const nvtt::Surface& surface, uint& width, uint& height, Te
 
   uint pixelSize = GetPixelSize(format);
   uint size = width * height * pixelSize;
-  image = new byte[size];
+  image = new ::byte[size];
 
   if (format == TextureFormat::RGB32f)
   {
@@ -295,10 +295,10 @@ void FromNvttSurface(const nvtt::Surface& surface, uint& width, uint& height, Te
   {
     for (uint i = 0; i < width * height; ++i)
     {
-      image[i * 4 + 0] = (byte)(Math::Clamp(srcImage[(width * height * 0) + i] * 255.0f, 0.0f, 255.0f));
-      image[i * 4 + 1] = (byte)(Math::Clamp(srcImage[(width * height * 1) + i] * 255.0f, 0.0f, 255.0f));
-      image[i * 4 + 2] = (byte)(Math::Clamp(srcImage[(width * height * 2) + i] * 255.0f, 0.0f, 255.0f));
-      image[i * 4 + 3] = (byte)(Math::Clamp(srcImage[(width * height * 3) + i] * 255.0f, 0.0f, 255.0f));
+      image[i * 4 + 0] = (::byte)(Math::Clamp(srcImage[(width * height * 0) + i] * 255.0f, 0.0f, 255.0f));
+      image[i * 4 + 1] = (::byte)(Math::Clamp(srcImage[(width * height * 1) + i] * 255.0f, 0.0f, 255.0f));
+      image[i * 4 + 2] = (::byte)(Math::Clamp(srcImage[(width * height * 2) + i] * 255.0f, 0.0f, 255.0f));
+      image[i * 4 + 3] = (::byte)(Math::Clamp(srcImage[(width * height * 3) + i] * 255.0f, 0.0f, 255.0f));
     }
   }
 }
@@ -422,7 +422,7 @@ ImageProcessorCodes::Enum TextureImporter::ProcessTexture(Status& status)
         uint newWidth = Math::Max(width / 2, 1u);
         uint newHeight = Math::Max(height / 2, 1u);
         uint newSize = newWidth * newHeight * pixelSize;
-        byte* newImageData = new byte[newSize];
+        ::byte* newImageData = new ::byte[newSize];
         ResizeImage(mLoadFormat, mImageData[0], width, height, newImageData, newWidth, newHeight);
 
         mMipHeaders[0].mWidth = newWidth;
@@ -451,11 +451,11 @@ ImageProcessorCodes::Enum TextureImporter::ProcessTexture(Status& status)
 
     mMipHeaders[0].mDataSize = newSize;
 
-    byte* newImageData = new byte[newSize];
+    ::byte* newImageData = new ::byte[newSize];
     for (uint i = 0; i < newSize; ++i)
     {
       float normalized = imageData[i] / 65535.0f;
-      newImageData[i] = (byte)(normalized * 255.0f);
+      newImageData[i] = (::byte)(normalized * 255.0f);
     }
 
     delete[] mImageData[0];
@@ -467,7 +467,7 @@ ImageProcessorCodes::Enum TextureImporter::ProcessTexture(Status& status)
 
   if (mLoadFormat == TextureFormat::RGBA8)
   {
-    byte* imageData = mImageData[0];
+    ::byte* imageData = mImageData[0];
     uint pixelCount = mMipHeaders[0].mWidth * mMipHeaders[0].mHeight;
     uint pixelSize = GetPixelSize(mLoadFormat);
 
@@ -475,12 +475,12 @@ ImageProcessorCodes::Enum TextureImporter::ProcessTexture(Status& status)
     {
       for (uint i = 0; i < pixelCount; ++i)
       {
-        byte* pixel = (byte*)(imageData + i * pixelSize);
+        ::byte* pixel = (::byte*)(imageData + i * pixelSize);
 
         float alpha = pixel[3] / 255.0f;
-        pixel[0] = (byte)(pixel[0] * alpha);
-        pixel[1] = (byte)(pixel[1] * alpha);
-        pixel[2] = (byte)(pixel[2] * alpha);
+        pixel[0] = (::byte)(pixel[0] * alpha);
+        pixel[1] = (::byte)(pixel[1] * alpha);
+        pixel[2] = (::byte)(pixel[2] * alpha);
       }
     }
 
@@ -488,17 +488,17 @@ ImageProcessorCodes::Enum TextureImporter::ProcessTexture(Status& status)
     {
       for (uint i = 0; i < pixelCount; ++i)
       {
-        byte* pixel = (byte*)(imageData + i * pixelSize);
+        ::byte* pixel = (::byte*)(imageData + i * pixelSize);
 
-        pixel[0] = (byte)Math::Clamp(Math::Pow(pixel[0] / 255.0f, 2.2f) * 255.0f, 0.0f, 255.0f);
-        pixel[1] = (byte)Math::Clamp(Math::Pow(pixel[1] / 255.0f, 2.2f) * 255.0f, 0.0f, 255.0f);
-        pixel[2] = (byte)Math::Clamp(Math::Pow(pixel[2] / 255.0f, 2.2f) * 255.0f, 0.0f, 255.0f);
+        pixel[0] = (::byte)Math::Clamp(Math::Pow(pixel[0] / 255.0f, 2.2f) * 255.0f, 0.0f, 255.0f);
+        pixel[1] = (::byte)Math::Clamp(Math::Pow(pixel[1] / 255.0f, 2.2f) * 255.0f, 0.0f, 255.0f);
+        pixel[2] = (::byte)Math::Clamp(Math::Pow(pixel[2] / 255.0f, 2.2f) * 255.0f, 0.0f, 255.0f);
       }
     }
   }
   else if (mLoadFormat == TextureFormat::RGBA16)
   {
-    byte* imageData = mImageData[0];
+    ::byte* imageData = mImageData[0];
     uint pixelCount = mMipHeaders[0].mWidth * mMipHeaders[0].mHeight;
     uint pixelSize = GetPixelSize(mLoadFormat);
 
@@ -563,7 +563,7 @@ ImageProcessorCodes::Enum TextureImporter::ProcessTexture(Status& status)
       mBackupMipHeaders[i].mDataSize = mBackupMipHeaders[i].mWidth * mBackupMipHeaders[i].mHeight * pixelSize;
       dataOffset += mBackupMipHeaders[i].mDataSize;
 
-      mBackupImageData[i] = new byte[mBackupMipHeaders[i].mDataSize];
+      mBackupImageData[i] = new ::byte[mBackupMipHeaders[i].mDataSize];
       ResizeImage(mLoadFormat,
                   mImageData[i],
                   mMipHeaders[i].mWidth,
@@ -611,7 +611,7 @@ ImageProcessorCodes::Enum TextureImporter::ProcessTexture(Status& status)
       if (newWidth != width || newHeight != height)
       {
         uint newSize = newWidth * newHeight * GetPixelSize(mLoadFormat);
-        byte* newImage = new byte[newSize];
+        ::byte* newImage = new ::byte[newSize];
 
         ResizeImage(mLoadFormat, mImageData[i], width, height, newImage, newWidth, newHeight);
 
@@ -717,7 +717,7 @@ void TextureImporter::LoadImageData(Status& status, StringParam extension)
   FileStream stream(file);
 
   uint width, height;
-  byte* imageData = nullptr;
+  ::byte* imageData = nullptr;
   bool imageLoadAttempted = false;
 
 #ifdef PlasmaCustomPngSupport
@@ -771,9 +771,9 @@ void TextureImporter::WriteTextureFile(Status& status)
   header.mMipCount = mMipHeaders.Size();
   header.mTotalDataSize = totalDataSize;
 
-  file.Write((byte*)&header, sizeof(TextureHeader));
+  file.Write((::byte*)&header, sizeof(TextureHeader));
 
-  file.Write((byte*)mMipHeaders.Data(), mMipHeaders.Size() * sizeof(MipHeader));
+  file.Write((::byte*)mMipHeaders.Data(), mMipHeaders.Size() * sizeof(MipHeader));
 
   for (size_t i = 0; i < mMipHeaders.Size(); ++i)
     file.Write(mImageData[i], mMipHeaders[i].mDataSize);
@@ -789,16 +789,16 @@ void TextureImporter::WriteTextureFile(Status& status)
     header.mMipCount = mBackupMipHeaders.Size();
     header.mTotalDataSize = totalDataSize;
 
-    file.Write((byte*)&header, sizeof(TextureHeader));
+    file.Write((::byte*)&header, sizeof(TextureHeader));
 
-    file.Write((byte*)mBackupMipHeaders.Data(), mBackupMipHeaders.Size() * sizeof(MipHeader));
+    file.Write((::byte*)mBackupMipHeaders.Data(), mBackupMipHeaders.Size() * sizeof(MipHeader));
 
     for (size_t i = 0; i < mBackupMipHeaders.Size(); ++i)
       file.Write(mBackupImageData[i], mBackupMipHeaders[i].mDataSize);
   }
 }
 
-void TextureImporter::AddImageData(byte* imageData, uint width, uint height)
+void TextureImporter::AddImageData(::byte* imageData, uint width, uint height)
 {
   MipHeader header;
   header.mFace = TextureFace::None;

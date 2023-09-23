@@ -26,11 +26,11 @@ public:
     Entry()
     {
     }
-    Entry(byte* ptr, size_t size) : Ptr(ptr), Size(size)
+    Entry(::byte* ptr, size_t size) : Ptr(ptr), Size(size)
     {
     }
 
-    byte* Ptr;
+    ::byte* Ptr;
     size_t Size;
   };
 
@@ -43,7 +43,7 @@ public:
 
 private:
   size_t mStackIndex;
-  byte* mStackHeader;
+  ::byte* mStackHeader;
   size_t mStackSize;
   size_t mMaxEntries;
   size_t mMaxSizeReached;

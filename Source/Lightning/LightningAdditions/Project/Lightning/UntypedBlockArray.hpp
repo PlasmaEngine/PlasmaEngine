@@ -42,7 +42,7 @@ namespace Lightning
 
     // Efficiently compact all the data into one output buffer
     // This will wipe out any empty space between the blocks
-    void RelativeCompact(byte* output)
+    void RelativeCompact(::byte* output)
     {
       // Loop through all the blocks
       for (size_t i = 0; i < this->Blocks.Size(); ++i)
@@ -59,7 +59,7 @@ namespace Lightning
     }
 
     // Gets an element in a block given an exact location
-    byte* GetAbsoluteElement(size_t index)
+    ::byte* GetAbsoluteElement(size_t index)
     {
       // Determine the block index and offset into that block
       size_t blockIndex = index / BlockSize;
@@ -73,7 +73,7 @@ namespace Lightning
     }
 
     // Get an element by index (note that this is not a constant time operation)
-    byte* GetRelativeElement(size_t index)
+    ::byte* GetRelativeElement(size_t index)
     {
       // Note: This could potentially be optimized using a few key facts
       // We know that we will probably mostly fill up each block, so block sizes
@@ -149,7 +149,7 @@ namespace Lightning
     }
 
     // Request a chunk of memory of a given size, and return a pointer to the beginning of it
-    byte* RequestElementOfSize(size_t size, size_t* absoluteIndexOut = nullptr)
+    ::byte* RequestElementOfSize(size_t size, size_t* absoluteIndexOut = nullptr)
     {
       // Error checking and handling
       ReturnIf(size > BlockSize, nullptr, "The element that was being allocated was larger than the block size");
@@ -175,7 +175,7 @@ namespace Lightning
     {
     public:
       // A pointer to the data that each block stores
-      byte* Data;
+      ::byte* Data;
       
       // The length that we've written into the data block
       // Note that the size of the memory pointed at by 'Data' is the BlockSize, however,
@@ -184,7 +184,7 @@ namespace Lightning
     };
 
     // Recursive version of requesting an element (we only recurse once)
-    byte* RequestElementOfSizeRecursive(size_t size, size_t* absoluteIndexOut = nullptr)
+    ::byte* RequestElementOfSizeRecursive(size_t size, size_t* absoluteIndexOut = nullptr)
     {
       // Get the last block (the only one we should be writing to)
       Block& last = this->Blocks.Back();
@@ -193,7 +193,7 @@ namespace Lightning
       if (BlockSize - last.LengthWritten > size)
       {
         // Get a pointer to the element data
-        byte* element = last.Data + last.LengthWritten;
+        ::byte* element = last.Data + last.LengthWritten;
 
         // If the user wants an absolute index back...
         if (absoluteIndexOut != nullptr)
@@ -225,7 +225,7 @@ namespace Lightning
       Block& block = this->Blocks.PushBack();
 
       // Create the block of data
-      block.Data = new byte[BlockSize];
+      block.Data = new ::byte[BlockSize];
 
       // We haven't written anything yet
       block.LengthWritten = 0;

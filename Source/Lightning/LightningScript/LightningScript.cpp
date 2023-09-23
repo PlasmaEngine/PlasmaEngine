@@ -305,7 +305,7 @@ void LightningScriptManager::OnMemoryLeak(MemoryLeakEvent* event)
     typeName = type->ToString();
 
     StringBuilderExtended builder;
-    Lightning::Console::DumpValue(builder, type, (const byte*)leakedObject, 5, 0);
+    Lightning::Console::DumpValue(builder, type, (const ::byte*)leakedObject, 5, 0);
     dump = builder.ToString();
 
     isTypeNative = type->IsTypeOrBaseNative();

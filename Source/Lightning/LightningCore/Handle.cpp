@@ -100,12 +100,12 @@ Handle::Handle(Handle&& other)
   memset(&other, 0, sizeof(*this));
 }
 
-Handle::Handle(const byte* data, BoundType* type, HandleManager* manager, ExecutableState* state)
+Handle::Handle(const ::byte* data, BoundType* type, HandleManager* manager, ExecutableState* state)
 {
   this->Initialize(data, type, manager, state);
 }
 
-void Handle::Initialize(const byte* data, BoundType* type, HandleManager* manager, ExecutableState* state)
+void Handle::Initialize(const ::byte* data, BoundType* type, HandleManager* manager, ExecutableState* state)
 {
   type->IsInitializedAssert();
   this->StoredType = type;
@@ -317,8 +317,8 @@ Handle& Handle::operator=(const Handle& rhs)
 bool Handle::operator==(const Handle& rhs) const
 {
   // Check whether either handle is null
-  byte* objectLhs = this->Dereference();
-  byte* objectRhs = rhs.Dereference();
+  ::byte* objectLhs = this->Dereference();
+  ::byte* objectRhs = rhs.Dereference();
   bool nullLhs = (objectLhs == nullptr);
   bool nullRhs = (objectRhs == nullptr);
 
@@ -407,7 +407,7 @@ String Handle::ToString() const
   // even when a handle is pointing at a value type, which can only occur if it
   // is an IndirectType
   Type* type = this->GetBoundOrIndirectType();
-  return type->GenericToString((const byte*)this);
+  return type->GenericToString((const ::byte*)this);
 }
 
 bool Handle::IsReferenceCounted()
@@ -427,7 +427,7 @@ void Handle::InternalClear()
   memset(this->Data, 0, sizeof(this->Data));
 }
 
-byte* Handle::Dereference() const
+::byte* Handle::Dereference() const
 {
   // If this handle is the null manager... (this is the trivial case of a
   // cleared handle)
@@ -495,7 +495,7 @@ void Handle::DestructAndDelete()
   ExecutableState* state = ExecutableState::CallingState;
 
   // Get a pointer to our own object's data
-  byte* self = this->Dereference();
+  ::byte* self = this->Dereference();
 
   // Error checking
   ErrorIf(self == nullptr, "Somehow we're attempting to delete a null object!");

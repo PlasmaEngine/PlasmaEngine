@@ -821,7 +821,7 @@ void TextEditor::OnTextTyped(KeyboardTextEvent* event)
   // character > 255 is quick UTF8 fix
   if (IsGraph(r) || r == Keys::Space || r > 255)
   {
-    byte utf8Bytes[4];
+    ::byte utf8Bytes[4];
     int bytesRead = UTF8::UnpackUtf8RuneIntoBuffer(r, utf8Bytes);
     mScintilla->AddCharUTF((char*)utf8Bytes, bytesRead);
   }
@@ -1545,7 +1545,7 @@ void TextEditor::UpdateTextMatchHighlighting()
     mIndicatorDisplay->SetSize(Pixels(bufferSize.x, bufferSize.y));
   }
 
-  mIndicators->Clear(byte(0));
+  mIndicators->Clear(::byte(0));
   mScintilla->UpdateHighlightIndicators();
 
   // Call after 'UpdateHighlightIndicators' so that cursor indicators

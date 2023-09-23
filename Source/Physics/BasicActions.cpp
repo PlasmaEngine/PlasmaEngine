@@ -109,7 +109,7 @@ InsertionAction::InsertionAction(Collider* collider)
   Queue(collider);
 }
 
-InsertionAction::InsertionAction(Collider* collider, byte state)
+InsertionAction::InsertionAction(Collider* collider, ::byte state)
 {
   mTransformAction.QueueState(TransformAction::WorldTransform);
   mBroadPhaseAction.QueueState(state);

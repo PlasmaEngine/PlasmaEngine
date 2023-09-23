@@ -20,7 +20,7 @@ MoleculeWalker::MoleculeWalker()
 
 MoleculeWalker::MoleculeWalker(void* start, uint totalStride, uint offset)
 {
-  mRawBuffer = reinterpret_cast<byte*>(start) + offset;
+  mRawBuffer = reinterpret_cast<::byte*>(start) + offset;
   mStride = totalStride;
 }
 

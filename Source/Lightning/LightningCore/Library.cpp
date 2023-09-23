@@ -750,14 +750,14 @@ void InstanceFieldSetter(Call& call, ExceptionReport& report)
 
   // Grab a handle to the this object and dereference it
   Handle& handle = call.GetHandle(Call::This);
-  byte* memory = handle.Dereference();
+  ::byte* memory = handle.Dereference();
 
   // Get the memory offsetted to the field
-  byte* fieldMemory = memory + field->Offset;
+  ::byte* fieldMemory = memory + field->Offset;
 
   // Get a direct pointer to the parameter (could be a primitive, such as a
   // handle)
-  byte* parameterMemory = call.GetParameterUnchecked(0);
+  ::byte* parameterMemory = call.GetParameterUnchecked(0);
 
   // Generically destruct the existing field (release reference, etc) the
   // current parameter's memory
@@ -775,13 +775,13 @@ void InstanceFieldGetter(Call& call, ExceptionReport& report)
 
   // Grab a handle to the this object and dereference it
   Handle& handle = call.GetHandle(Call::This);
-  byte* memory = handle.Dereference();
+  ::byte* memory = handle.Dereference();
 
   // Get the memory offsetted to the field
-  byte* fieldMemory = memory + field->Offset;
+  ::byte* fieldMemory = memory + field->Offset;
 
   // Get a direct pointer to the return (not initialized yet!)
-  byte* returnMemory = call.GetReturnUnchecked();
+  ::byte* returnMemory = call.GetReturnUnchecked();
   call.DisableReturnChecks();
 
   // Now copy construct the parameter they are trying to set over the field
@@ -794,14 +794,14 @@ void StaticFieldSetter(Call& call, ExceptionReport& report)
   // Get the field and its offset
   Field* field = (Field*)call.GetFunction()->UserData;
 
-  byte* fieldMemory = call.GetState()->GetStaticField(field, report);
+  ::byte* fieldMemory = call.GetState()->GetStaticField(field, report);
 
   if (report.HasThrownExceptions())
     return;
 
   // Get a direct pointer to the parameter (could be a primitive, such as a
   // handle)
-  byte* parameterMemory = call.GetParameterUnchecked(0);
+  ::byte* parameterMemory = call.GetParameterUnchecked(0);
 
   // Generically destruct the existing field (release reference, etc) the
   // current parameter's memory
@@ -817,13 +817,13 @@ void StaticFieldGetter(Call& call, ExceptionReport& report)
   // Get the field and its offset
   Field* field = (Field*)call.GetFunction()->UserData;
 
-  byte* fieldMemory = call.GetState()->GetStaticField(field, report);
+  ::byte* fieldMemory = call.GetState()->GetStaticField(field, report);
 
   if (report.HasThrownExceptions())
     return;
 
   // Get a direct pointer to the return (not initialized yet!)
-  byte* returnMemory = call.GetReturnUnchecked();
+  ::byte* returnMemory = call.GetReturnUnchecked();
   call.DisableReturnChecks();
 
   // Now copy construct the parameter they are trying to set over the field
@@ -2283,7 +2283,7 @@ void Module::BuildDocumentationRst(StringParam directory)
       // HACK should be using file path stuff (platform agnostic!)
       String rstFileName = BuildString(directory, "\\", type->Name, ".rst");
 
-      Plasma::WriteToFile(rstFileName.c_str(), (const byte*)typeRst.c_str(), typeRst.SizeInBytes());
+      Plasma::WriteToFile(rstFileName.c_str(), (const ::byte*)typeRst.c_str(), typeRst.SizeInBytes());
     }
   }
 }

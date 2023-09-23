@@ -14,7 +14,7 @@ LightningDefineType(Widget, builder, type)
   type->HandleManager = LightningManagerId(WidgetHandleManager);
 }
 
-void WidgetHandleManager::ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize)
+void WidgetHandleManager::ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize)
 {
   if (object == nullptr)
     return;
@@ -24,9 +24,9 @@ void WidgetHandleManager::ObjectToHandle(const byte* object, BoundType* type, Ha
   handleToInitialize.HandleU64 = instance->mId;
 }
 
-byte* WidgetHandleManager::HandleToObject(const Handle& handle)
+::byte* WidgetHandleManager::HandleToObject(const Handle& handle)
 {
-  return (byte*)PL::gWidgetManager->Widgets.FindValue(handle.HandleU64, nullptr);
+  return (::byte*)PL::gWidgetManager->Widgets.FindValue(handle.HandleU64, nullptr);
 }
 
 void WidgetHandleManager::Delete(const Handle& handle)
@@ -536,7 +536,7 @@ void Widget::DebugValidate() const
   gWidgetStack.PopBack();
 
   // Access all the widget memory
-  static byte sMemory[sizeof(Widget)];
+  static ::byte sMemory[sizeof(Widget)];
   memcpy(sMemory, (void*)this, sizeof(Widget));
 
   if (!mDestroyed)

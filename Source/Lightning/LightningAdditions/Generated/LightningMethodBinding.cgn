@@ -73,7 +73,7 @@ handler <? All ?>
   LightningArguments        = <? Utilities.RepeatNumeric("  DelegateParameter& p# = parameters.PushBack();\r\n  p#.ParameterType = LightningTypeId(Arg#);", "\r\n", 0, n) ?>;
   Arguments             = <? Utilities.RepeatNumeric("arg#", ", ", 0, n) ?>;
   ArgumentTypeNames     = <? Utilities.RepeatNumeric("typename Arg#", ", ", 0, n) ?>;
-  BoundReadArguments    = <? Utilities.RepeatNumeric("  byte* arg#Ptr = call.GetArgumentPointer<LightningBindingType(Arg#)>(#);", "\r\n", 0, n) ?>;
+  BoundReadArguments    = <? Utilities.RepeatNumeric("  ::byte* arg#Ptr = call.GetArgumentPointer<LightningBindingType(Arg#)>(#);", "\r\n", 0, n) ?>;
   BoundCastArguments    = <? Utilities.RepeatNumeric("  LightningBindingType(Arg#) arg# = call.CastArgumentPointer<LightningBindingType(Arg#)>(arg#Ptr);", "\r\n", 0, n) ?>;
   ArgumentTypes         = <? Utilities.RepeatNumeric("Arg#", ", ", 0, n) ?>;
   ExceptionCheck        = <? Utilities.RepeatNumeric("  if (report.HasThrownExceptions()) return;", "\r\n", 0, Math.Min(n, 0)) ?>;

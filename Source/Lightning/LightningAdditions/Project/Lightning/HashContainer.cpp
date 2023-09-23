@@ -52,17 +52,17 @@ namespace Lightning
     AnyHashMap* self = GetHashMapThis(call);
 
     // The first index is always the key, read that
-    byte* keyData = call.GetParameterUnchecked(0);
+    ::byte* keyData = call.GetParameterUnchecked(0);
 
     // The second index is a default value that gets returned when we fail to find the key
-    byte* defaultValueData = call.GetParameterUnchecked(1);
+    ::byte* defaultValueData = call.GetParameterUnchecked(1);
 
     // Construct an 'any' (we can avoid this step if we use a special finder, but who cares for right now)
     Any key(keyData, userData.KeyType);
     Any* value = (*self).FindPointer(key);
 
     // Get a pointer to the return value data (on the stack)
-    byte* returnValue = call.GetReturnUnchecked();
+    ::byte* returnValue = call.GetReturnUnchecked();
     call.DisableReturnChecks();
     
     // If we found the value, copy it to the return, otherwise copy the default to the return
@@ -82,14 +82,14 @@ namespace Lightning
     AnyHashMap* self = GetHashMapThis(call);
 
     // The first index is always the key, read that
-    byte* keyData = call.GetParameterUnchecked(0);
+    ::byte* keyData = call.GetParameterUnchecked(0);
 
     // Construct an 'any' (we can avoid this step if we use a special finder, but who cares for right now)
     Any key(keyData, userData.KeyType);
     Any* value = (*self).FindPointer(key);
 
     // Get a pointer to the return value data (on the stack)
-    byte* returnValue = call.GetReturnUnchecked();
+    ::byte* returnValue = call.GetReturnUnchecked();
     call.DisableReturnChecks();
     
     // If we found the value, copy it to the return, otherwise copy the default to the return
@@ -109,7 +109,7 @@ namespace Lightning
     AnyHashMap* self = GetHashMapThis(call);
 
     // The first index is always the key, read that
-    byte* keyData = call.GetParameterUnchecked(0);
+    ::byte* keyData = call.GetParameterUnchecked(0);
 
     // Construct an 'any' (we can avoid this step if we use a special finder, but who cares for right now)
     Any key(keyData, userData.KeyType);
@@ -123,7 +123,7 @@ namespace Lightning
     }
 
     // Get a pointer to the return value data (on the stack)
-    byte* returnValue = call.GetReturnUnchecked();
+    ::byte* returnValue = call.GetReturnUnchecked();
     call.DisableReturnChecks();
 
     // Generically copy the contained type to the return value
@@ -140,7 +140,7 @@ namespace Lightning
     AnyHashMap* self = GetHashMapThis(call);
 
     // The first index is always the key, read that
-    byte* keyData = call.GetParameterUnchecked(0);
+    ::byte* keyData = call.GetParameterUnchecked(0);
 
     // Construct an 'any' (we can avoid this step if we use a special finder, but who cares for right now)
     Any key(keyData, userData.KeyType);
@@ -160,8 +160,8 @@ namespace Lightning
     AnyHashMap* self = GetHashMapThis(call);
 
     // Read the first parameter as the key, and the second as the value
-    byte* keyData = call.GetParameterUnchecked(0);
-    byte* valueData = call.GetParameterUnchecked(1);
+    ::byte* keyData = call.GetParameterUnchecked(0);
+    ::byte* valueData = call.GetParameterUnchecked(1);
 
     // Construct an 'any' for the key and value
     Any key(keyData, userData.KeyType);
@@ -186,8 +186,8 @@ namespace Lightning
     AnyHashMap* self = GetHashMapThis(call);
 
     // Read the first parameter as the key, and the second as the value
-    byte* keyData = call.GetParameterUnchecked(0);
-    byte* valueData = call.GetParameterUnchecked(1);
+    ::byte* keyData = call.GetParameterUnchecked(0);
+    ::byte* valueData = call.GetParameterUnchecked(1);
 
     // Construct an 'any' for the key and value
     Any key(keyData, userData.KeyType);
@@ -212,8 +212,8 @@ namespace Lightning
     AnyHashMap* self = GetHashMapThis(call);
 
     // Read the first parameter as the key, and the second as the value
-    byte* keyData = call.GetParameterUnchecked(0);
-    byte* valueData = call.GetParameterUnchecked(1);
+    ::byte* keyData = call.GetParameterUnchecked(0);
+    ::byte* valueData = call.GetParameterUnchecked(1);
 
     // Construct an 'any' for the key and value
     Any key(keyData, userData.KeyType);
@@ -241,7 +241,7 @@ namespace Lightning
     AnyHashMap* self = GetHashMapThis(call);
 
     // The first index is always the key, read that
-    byte* keyData = call.GetParameterUnchecked(0);
+    ::byte* keyData = call.GetParameterUnchecked(0);
 
     // Construct an 'any' (we can avoid this step if we use a special finder, but who cares for right now)
     Any key(keyData, userData.KeyType);
@@ -268,7 +268,7 @@ namespace Lightning
     AnyHashMap* self = GetHashMapThis(call);
 
     // The first index is always the key, read that
-    byte* keyData = call.GetParameterUnchecked(0);
+    ::byte* keyData = call.GetParameterUnchecked(0);
 
     // Construct an 'any' (we can avoid this step if we use a special finder, but who cares for right now)
     Any key(keyData, userData.KeyType);
@@ -517,7 +517,7 @@ namespace Lightning
       case HashMapRangeMode::Value:
       {
         // Get a pointer to the return value data (on the stack)
-        byte* returnValue = call.GetReturnUnchecked();
+        ::byte* returnValue = call.GetReturnUnchecked();
         call.DisableReturnChecks();
 
         // Copy the value at the array to the return type (this properly deals with the Any type)
@@ -594,7 +594,7 @@ namespace Lightning
     KeyValueUserData& userData = call.GetFunction()->Owner->ComplexUserData.ReadObject<KeyValueUserData>(0);
 
     // Get ourselves (the key-value pair)
-    byte* selfData = call.GetHandle(Call::This).Dereference();
+    ::byte* selfData = call.GetHandle(Call::This).Dereference();
 
     AnyKeyValue* self = new (selfData) AnyKeyValue();
 
@@ -609,7 +609,7 @@ namespace Lightning
     AnyKeyValue* self = (AnyKeyValue*)call.GetHandle(Call::This).Dereference();
 
     // Get a pointer to the return value data (on the stack)
-    byte* returnValue = call.GetReturnUnchecked();
+    ::byte* returnValue = call.GetReturnUnchecked();
     call.DisableReturnChecks();
 
     // Copy the key to the stack (in the return place)
@@ -626,7 +626,7 @@ namespace Lightning
     AnyKeyValue* self = (AnyKeyValue*)call.GetHandle(Call::This).Dereference();
 
     // Grab the first parameter and set our key to it
-    byte* newKeyData = call.GetParameterUnchecked(0);
+    ::byte* newKeyData = call.GetParameterUnchecked(0);
     self->first.AssignFrom(newKeyData, userData.KeyType);
   }
   
@@ -637,7 +637,7 @@ namespace Lightning
     AnyKeyValue* self = (AnyKeyValue*)call.GetHandle(Call::This).Dereference();
 
     // Get a pointer to the return value data (on the stack)
-    byte* returnValue = call.GetReturnUnchecked();
+    ::byte* returnValue = call.GetReturnUnchecked();
     call.DisableReturnChecks();
 
     // Copy the value to the stack (in the return place)
@@ -654,7 +654,7 @@ namespace Lightning
     AnyKeyValue* self = (AnyKeyValue*)call.GetHandle(Call::This).Dereference();
 
     // Grab the first parameter and set our value to it
-    byte* newValueData = call.GetParameterUnchecked(0);
+    ::byte* newValueData = call.GetParameterUnchecked(0);
     self->second.AssignFrom(newValueData, userData.ValueType);
   }
 

@@ -297,12 +297,12 @@ size_t Type::GetCopyableSize() const
   return this->GetAllocatedSize();
 }
 
-byte* Type::GenericGetMemory(const byte* value) const
+::byte* Type::GenericGetMemory(const ::byte* value) const
 {
-  return const_cast<byte*>(value);
+  return const_cast<::byte*>(value);
 }
 
-Type* Type::GenericGetSameVirtualTypeExceptAny(const byte* value) const
+Type* Type::GenericGetSameVirtualTypeExceptAny(const ::byte* value) const
 {
   return GenericGetVirtualType(value);
 }
@@ -666,31 +666,31 @@ String IndirectionType::GetShortLowerCamelCaseName() const
   return this->ReferencedType->GetShortLowerCamelCaseName();
 }
 
-void IndirectionType::GenericDefaultConstruct(byte* toConstruct) const
+void IndirectionType::GenericDefaultConstruct(::byte* toConstruct) const
 {
   // Construct a null / empty handle
   new (toConstruct) Handle();
 }
 
-void IndirectionType::GenericCopyConstruct(byte* to, const byte* from) const
+void IndirectionType::GenericCopyConstruct(::byte* to, const ::byte* from) const
 {
   // Indirect types are always represented as handles (just perform a handle
   // copy)
   new (to) Handle(*(Handle*)from);
 }
 
-void IndirectionType::GenericDestruct(byte* value) const
+void IndirectionType::GenericDestruct(::byte* value) const
 {
   // Destroy the handle object
   ((Handle*)value)->~Handle();
 }
 
-int IndirectionType::GenericHash(const byte* value) const
+int IndirectionType::GenericHash(const ::byte* value) const
 {
   return static_cast<int>(((Handle*)value)->Hash());
 }
 
-String IndirectionType::GenericToString(const byte* value) const
+String IndirectionType::GenericToString(const ::byte* value) const
 {
   // Grab the handle primitive
   Handle* handle = (Handle*)value;
@@ -704,7 +704,7 @@ String IndirectionType::GenericToString(const byte* value) const
     type = handle->StoredType;
 
   // Get a pointer to the data of the object
-  byte* data = handle->Dereference();
+  ::byte* data = handle->Dereference();
 
   // If converting a null handle to a string... let the user know it's null, and
   // what type it is
@@ -715,7 +715,7 @@ String IndirectionType::GenericToString(const byte* value) const
   return type->ToStringFunction(type, data);
 }
 
-bool IndirectionType::GenericEquals(const byte* lhs, const byte* rhs) const
+bool IndirectionType::GenericEquals(const ::byte* lhs, const ::byte* rhs) const
 {
   // Compare the two handles
   Handle& lHandle = *((Handle*)lhs);
@@ -723,13 +723,13 @@ bool IndirectionType::GenericEquals(const byte* lhs, const byte* rhs) const
   return lHandle == rHandle;
 }
 
-byte* IndirectionType::GenericGetMemory(const byte* value) const
+::byte* IndirectionType::GenericGetMemory(const ::byte* value) const
 {
   // Get a pointer to the data of the object (indirect types are always handles)
   return ((Handle*)value)->Dereference();
 }
 
-Type* IndirectionType::GenericGetVirtualType(const byte* value) const
+Type* IndirectionType::GenericGetVirtualType(const ::byte* value) const
 {
   // Grab the handle
   Handle* handle = ((Handle*)value);
@@ -742,7 +742,7 @@ Type* IndirectionType::GenericGetVirtualType(const byte* value) const
   return handle->StoredType;
 }
 
-Type* IndirectionType::GenericGetSameVirtualTypeExceptAny(const byte* value) const
+Type* IndirectionType::GenericGetSameVirtualTypeExceptAny(const ::byte* value) const
 {
   // We override this functionality because our GenericGetVirtualType may return
   // a BoundType/ Since this is supposed to be the 'SameType' we want to
@@ -804,35 +804,35 @@ String AnyType::GetShortLowerCamelCaseName() const
   return Grammar::GetKeywordOrSymbol(Grammar::Any);
 }
 
-void AnyType::GenericDefaultConstruct(byte* toConstruct) const
+void AnyType::GenericDefaultConstruct(::byte* toConstruct) const
 {
   // Construct a default instance of 'any', should be null
   new (toConstruct) Any();
 }
 
-void AnyType::GenericCopyConstruct(byte* to, const byte* from) const
+void AnyType::GenericCopyConstruct(::byte* to, const ::byte* from) const
 {
   // Copy construct the 'any' to the given location
   new (to) Any(*(Any*)from);
 }
 
-void AnyType::GenericDestruct(byte* value) const
+void AnyType::GenericDestruct(::byte* value) const
 {
   // Destroy the any type
   ((Any*)value)->~Any();
 }
 
-int AnyType::GenericHash(const byte* value) const
+int AnyType::GenericHash(const ::byte* value) const
 {
   return static_cast<int>(((Any*)value)->Hash());
 }
 
-String AnyType::GenericToString(const byte* value) const
+String AnyType::GenericToString(const ::byte* value) const
 {
   return ((Any*)value)->ToString();
 }
 
-bool AnyType::GenericEquals(const byte* lhs, const byte* rhs) const
+bool AnyType::GenericEquals(const ::byte* lhs, const ::byte* rhs) const
 {
   // Compare the two any types
   Any& lAny = *((Any*)lhs);
@@ -840,7 +840,7 @@ bool AnyType::GenericEquals(const byte* lhs, const byte* rhs) const
   return lAny == rAny;
 }
 
-byte* AnyType::GenericGetMemory(const byte* value) const
+::byte* AnyType::GenericGetMemory(const ::byte* value) const
 {
   // Get access to the any primitive
   Any* any = ((Any*)value);
@@ -851,10 +851,10 @@ byte* AnyType::GenericGetMemory(const byte* value) const
 
   // Otherwise we had nothing stored... just return ourselves
   // This MUST match the 'GenericGetVirtualType' behavior!
-  return (byte*)value;
+  return (::byte*)value;
 }
 
-Type* AnyType::GenericGetVirtualType(const byte* value) const
+Type* AnyType::GenericGetVirtualType(const ::byte* value) const
 {
   // Get access to the any primitive
   Any* any = ((Any*)value);
@@ -868,7 +868,7 @@ Type* AnyType::GenericGetVirtualType(const byte* value) const
   return (Type*)this;
 }
 
-EventHandler* BoundType::GetEventHandler(const byte* data)
+EventHandler* BoundType::GetEventHandler(const ::byte* data)
 {
   // Walk up the entire type hierarchy starting with this type
   BoundType* type = this;
@@ -908,7 +908,7 @@ bool BoundType::IsTypeOrBaseNative()
   return false;
 }
 
-String BoundType::DefaultTypeToString(const BoundType* type, const byte* data)
+String BoundType::DefaultTypeToString(const BoundType* type, const ::byte* data)
 {
   return String::Format("%s (%p)", type->Name.c_str(), data);
 }
@@ -1012,7 +1012,7 @@ Composition* BoundType::GetBaseComposition()
   return this->BaseType;
 }
 
-void BoundType::GenericDefaultConstruct(byte* toConstruct) const
+void BoundType::GenericDefaultConstruct(::byte* toConstruct) const
 {
   if (this->CopyMode == TypeCopyMode::ReferenceType)
   {
@@ -1027,7 +1027,7 @@ void BoundType::GenericDefaultConstruct(byte* toConstruct) const
   }
 }
 
-void BoundType::GenericCopyConstruct(byte* to, const byte* from) const
+void BoundType::GenericCopyConstruct(::byte* to, const ::byte* from) const
 {
   if (this->CopyMode == TypeCopyMode::ReferenceType)
   {
@@ -1041,7 +1041,7 @@ void BoundType::GenericCopyConstruct(byte* to, const byte* from) const
   }
 }
 
-void BoundType::GenericDestruct(byte* value) const
+void BoundType::GenericDestruct(::byte* value) const
 {
   // We only need to do anything if this is a reference type
   // Value types do not need to be released
@@ -1052,7 +1052,7 @@ void BoundType::GenericDestruct(byte* value) const
   }
 }
 
-int BoundType::GenericHash(const byte* value) const
+int BoundType::GenericHash(const ::byte* value) const
 {
   // If this is a reference type, it means it's a handle
   if (this->CopyMode == TypeCopyMode::ReferenceType)
@@ -1067,7 +1067,7 @@ int BoundType::GenericHash(const byte* value) const
   }
 }
 
-String BoundType::GenericToString(const byte* value) const
+String BoundType::GenericToString(const ::byte* value) const
 {
   // By default, we know at least a base class type of what we're referencing
   // For value types, this is always the case
@@ -1075,7 +1075,7 @@ String BoundType::GenericToString(const byte* value) const
 
   // For value types, we assume that the type is just the data we get (not for
   // reference types!)
-  byte* data = (byte*)value;
+  ::byte* data = (::byte*)value;
 
   // If this is a reference type (it may be virtual)
   if (this->CopyMode == TypeCopyMode::ReferenceType)
@@ -1101,7 +1101,7 @@ String BoundType::GenericToString(const byte* value) const
   return type->ToStringFunction(type, data);
 }
 
-bool BoundType::GenericEquals(const byte* lhs, const byte* rhs) const
+bool BoundType::GenericEquals(const ::byte* lhs, const ::byte* rhs) const
 {
   // If this is a reference type, it means it's a handle
   if (this->CopyMode == TypeCopyMode::ReferenceType)
@@ -1118,7 +1118,7 @@ bool BoundType::GenericEquals(const byte* lhs, const byte* rhs) const
   }
 }
 
-byte* BoundType::GenericGetMemory(const byte* value) const
+::byte* BoundType::GenericGetMemory(const ::byte* value) const
 {
   // If this is a reference type, it means it's a handle
   if (this->CopyMode == TypeCopyMode::ReferenceType)
@@ -1129,11 +1129,11 @@ byte* BoundType::GenericGetMemory(const byte* value) const
   else
   {
     // Otherwise this is a value type, so we just directly return the memory
-    return const_cast<byte*>(value);
+    return const_cast<::byte*>(value);
   }
 }
 
-Type* BoundType::GenericGetVirtualType(const byte* value) const
+Type* BoundType::GenericGetVirtualType(const ::byte* value) const
 {
   // If this is a reference type, it means it's a handle
   if (this->CopyMode == TypeCopyMode::ReferenceType)
@@ -1221,7 +1221,7 @@ bool BoundType::IsDefaultConstructable()
 BoundType* BoundType::GetBindingVirtualTypeFromInstance(const void* memory)
 {
   if (this->GetBindingVirtualType)
-    return this->GetBindingVirtualType((const byte*)memory);
+    return this->GetBindingVirtualType((const ::byte*)memory);
   return this;
 }
 
@@ -2066,30 +2066,30 @@ size_t DelegateType::GetAllocatedSize() const
   return sizeof(Delegate);
 }
 
-void DelegateType::GenericDefaultConstruct(byte* toConstruct) const
+void DelegateType::GenericDefaultConstruct(::byte* toConstruct) const
 {
   // Construct a null / empty delegate
   new (toConstruct) Delegate();
 }
 
-void DelegateType::GenericCopyConstruct(byte* to, const byte* from) const
+void DelegateType::GenericCopyConstruct(::byte* to, const ::byte* from) const
 {
   // Copy construct the delegate to the given location
   new (to) Delegate(*(Delegate*)from);
 }
 
-void DelegateType::GenericDestruct(byte* value) const
+void DelegateType::GenericDestruct(::byte* value) const
 {
   // Destroy the delegate type
   ((Delegate*)value)->~Delegate();
 }
 
-int DelegateType::GenericHash(const byte* value) const
+int DelegateType::GenericHash(const ::byte* value) const
 {
   return static_cast<int>(((Delegate*)value)->Hash());
 }
 
-String DelegateType::GenericToString(const byte* value) const
+String DelegateType::GenericToString(const ::byte* value) const
 {
   // Get the delegate value and write it's function out as a string
   Delegate& delegate = *(Delegate*)value;
@@ -2099,7 +2099,7 @@ String DelegateType::GenericToString(const byte* value) const
     return delegate.BoundFunction->ToString();
 }
 
-bool DelegateType::GenericEquals(const byte* lhs, const byte* rhs) const
+bool DelegateType::GenericEquals(const ::byte* lhs, const ::byte* rhs) const
 {
   // Compare the two delegates
   Delegate& lDelegate = *((Delegate*)lhs);
@@ -2107,7 +2107,7 @@ bool DelegateType::GenericEquals(const byte* lhs, const byte* rhs) const
   return lDelegate == rDelegate;
 }
 
-Type* DelegateType::GenericGetVirtualType(const byte* value) const
+Type* DelegateType::GenericGetVirtualType(const ::byte* value) const
 {
   Delegate* delegate = (Delegate*)value;
   Function* function = delegate->BoundFunction;

@@ -277,7 +277,7 @@ void Joystick::LoadInputMapping(StringParam name)
   {
     RawControlMapping* mapping = new RawControlMapping();
 
-    DataBlock dataBlock((byte*)block->Text.Data(), block->Text.SizeInBytes());
+    DataBlock dataBlock((::byte*)block->Text.Data(), block->Text.SizeInBytes());
     LoadFromDataBlock(*mapping, dataBlock, DataFileFormat::Text);
 
     this->InternalSetInputMapping(mapping);

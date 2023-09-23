@@ -259,7 +259,7 @@ struct MemberFunctionConnection : public EventConnection
   DataBlock GetFunctionPointer() override
   {
     FuncPointer functionPointer = &MyFunction;
-    return DataBlock((byte*)functionPointer, sizeof(FuncType));
+    return DataBlock((::byte*)functionPointer, sizeof(FuncType));
   }
 };
 
@@ -332,7 +332,7 @@ struct StaticFunctionConnection : public EventConnection
   DataBlock GetFunctionPointer() override
   {
     FuncPointer functionPointer = &MyFunction;
-    return DataBlock((byte*)functionPointer, sizeof(FuncType));
+    return DataBlock((::byte*)functionPointer, sizeof(FuncType));
   }
 };
 

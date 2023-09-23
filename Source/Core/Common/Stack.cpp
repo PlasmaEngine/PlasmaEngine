@@ -16,7 +16,7 @@ Stack::Stack(cstr name, Graph* parent, size_t stackSize, size_t maxEntries) : Gr
     mEntries.Reserve(maxEntries);
   }
 
-  mStackHeader = (byte*)plAllocate(mStackSize);
+  mStackHeader = (::byte*)plAllocate(mStackSize);
   mStackIndex = 0;
   mMaxSizeReached = 0;
 }
@@ -46,7 +46,7 @@ MemPtr Stack::Allocate(size_t numberOfBytes)
             "Expand the starting size.");
   }
 
-  byte* curHead = mStackHeader + mStackIndex;
+  ::byte* curHead = mStackHeader + mStackIndex;
   mStackIndex += numberOfBytes;
 
   if (StackDebug)

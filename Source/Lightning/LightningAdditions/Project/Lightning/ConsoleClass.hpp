@@ -113,7 +113,7 @@ namespace Lightning
     static String ReadData();
 
     // Helper for writing out objects
-    static void DumpValue(StringBuilderExtended& builder, Type* type, const byte* value, Integer howDeep, Integer currentDepth);
+    static void DumpValue(StringBuilderExtended& builder, Type* type, const ::byte* value, Integer howDeep, Integer currentDepth);
 
   public:
 

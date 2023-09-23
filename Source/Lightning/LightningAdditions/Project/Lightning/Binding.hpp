@@ -274,7 +274,7 @@ namespace Lightning
     class FromDataPointer
     {
     public:
-      static T Cast(byte* data)
+      static T Cast(::byte* data)
       {
         return *(T*)data;
       }
@@ -284,7 +284,7 @@ namespace Lightning
     class FromDataPointer<T*>
     {
     public:
-      static T* Cast(byte* data)
+      static T* Cast(::byte* data)
       {
         return (T*)data;
       }
@@ -294,7 +294,7 @@ namespace Lightning
     class FromDataPointer<T&>
     {
     public:
-      static T& Cast(byte* data)
+      static T& Cast(::byte* data)
       {
         return *(T*)data;
       }
@@ -304,9 +304,9 @@ namespace Lightning
     class ToDataPointer
     {
     public:
-      static byte* Cast(const T& value)
+      static ::byte* Cast(const T& value)
       {
-        return (byte*)&value;
+        return (::byte*)&value;
       }
     };
 
@@ -314,9 +314,9 @@ namespace Lightning
     class ToDataPointer<T*>
     {
     public:
-      static byte* Cast(T* value)
+      static ::byte* Cast(T* value)
       {
-        return (byte*)value;
+        return (::byte*)value;
       }
     };
 
@@ -324,9 +324,9 @@ namespace Lightning
     class ToDataPointer<T&>
     {
     public:
-      static byte* Cast(T& value)
+      static ::byte* Cast(T& value)
       {
-        return (byte*)&value;
+        return (::byte*)&value;
       }
     };
 
@@ -381,14 +381,14 @@ namespace Lightning
       static const bool DirectRead = true;
       
       // Read our object representation from either stack data or handle data
-      static ReadType Read(byte* from)
+      static ReadType Read(::byte* from)
       {
         // Reading and writing by default should just be pulling the object out directly
         return *(T*)from;
       }
 
       // Write our object representation to either stack data or handle data
-      static void Write(const T& value, byte* to)
+      static void Write(const T& value, ::byte* to)
       {
         memcpy(to, &value, sizeof(T));
       }
@@ -609,7 +609,7 @@ namespace Lightning
     BoundType* type = LightningVirtualTypeId(pointer);
     type->IsInitializedAssert();
     LightningTypeId(T)->IsInitializedAssert();
-    this->Initialize((byte*)pointer, type, manager, state);
+    this->Initialize((::byte*)pointer, type, manager, state);
   }
 
   template <typename T>
@@ -633,7 +633,7 @@ namespace Lightning
       return T();
     }
 
-    return InternalReadRef<T>((byte*)this);
+    return InternalReadRef<T>((::byte*)this);
   }
 
   template <typename T>
@@ -667,13 +667,13 @@ namespace Lightning
 
   template <typename T>
   HandleOf<T>::HandleOf(const T& value) :
-    Handle((const byte*)&value, LightningVirtualTypeId(&value))
+    Handle((const ::byte*)&value, LightningVirtualTypeId(&value))
   {
   }
 
   template <typename T>
   HandleOf<T>::HandleOf(const T* value) :
-    Handle((const byte*)value, LightningVirtualTypeId(value))
+    Handle((const ::byte*)value, LightningVirtualTypeId(value))
   {
   }
 
@@ -911,12 +911,12 @@ namespace Lightning
         return type;                                                                                                                                  \
       }                                                                                                                                               \
       /* Read our object representation from either stack data or handle data */                                                                      \
-      static typename LightningStaticType(SelfType)::ReadType (Read)(byte* from)                                               \
+      static typename LightningStaticType(SelfType)::ReadType (Read)(::byte* from)                                               \
       {                                                                                                                                               \
         return *(SelfType*)from;                                                                                                                      \
       }                                                                                                                                               \
       /* Write our object representation to either stack data or handle data */                                                                       \
-      static void (Write)(const SelfType& value, byte* to)                                                                 \
+      static void (Write)(const SelfType& value, ::byte* to)                                                                 \
       {                                                                                                                                               \
         memcpy(to, &value, sizeof(SelfType));                                                                                                         \
       }                                                                                                                                               \
@@ -941,12 +941,12 @@ namespace Lightning
         return LightningTypeId(RepresentedType);                                                                                                          \
       }                                                                                                                                               \
       /* Read our object representation from either stack data or handle data */                                                                      \
-      static typename LightningStaticType(SelfType)::ReadType (Read)(byte* from)                                               \
+      static typename LightningStaticType(SelfType)::ReadType (Read)(::byte* from)                                               \
       {                                                                                                                                               \
         return ConvertToRedirect(*(RepresentedType*)from);                                                                                            \
       }                                                                                                                                               \
       /* Write our object representation to either stack data or handle data */                                                                       \
-      static void (Write)(const SelfType& value, byte* to)                                                                 \
+      static void (Write)(const SelfType& value, ::byte* to)                                                                 \
       {                                                                                                                                               \
         new (to) RepresentedType(ConvertFromRedirect(value));                                                                                         \
       }                                                                                                                                               \

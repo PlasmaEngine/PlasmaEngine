@@ -339,7 +339,7 @@ namespace Plasma
             {
                 PatchLayer* patchLayer = mMap->mSource->GetLayerData(heightPatch->Index, PatchLayerType::Weights);
                 if (patchLayer->Data)
-                    graphicalPatch.mWeightTexture->SetAll(static_cast<byte*>(patchLayer->Data));
+                    graphicalPatch.mWeightTexture->SetAll(static_cast<::byte*>(patchLayer->Data));
             }
         }
     }

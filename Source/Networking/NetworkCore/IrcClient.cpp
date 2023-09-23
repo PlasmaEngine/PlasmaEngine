@@ -78,7 +78,7 @@ void IrcClient::Send(const char* format, ...)
   data = String::FormatArgs(format, va);
 
   // Send it over the socket
-  mSocket.SendBufferToAll((const byte*)data.c_str(), data.SizeInBytes());
+  mSocket.SendBufferToAll((const ::byte*)data.c_str(), data.SizeInBytes());
 
   // End the world
   va_end(va);

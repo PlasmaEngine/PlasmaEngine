@@ -18,11 +18,11 @@ ExecutableResourceUpdater::~ExecutableResourceUpdater()
 {
 }
 
-void ExecutableResourceUpdater::Update(const char* name, const char* type, const byte* data, size_t size)
+void ExecutableResourceUpdater::Update(const char* name, const char* type, const ::byte* data, size_t size)
 {
 }
 
-void ExecutableResourceUpdater::UpdateIcon(const byte* buffer, size_t size)
+void ExecutableResourceUpdater::UpdateIcon(const ::byte* buffer, size_t size)
 {
 }
 

@@ -74,7 +74,7 @@ LightningDefineType(ReceivedDataEvent, builder, type)
   LightningBindFieldProperty(Buffer);
 }
 
-ReceivedDataEvent::ReceivedDataEvent(const ConnectionData* connectionInfo, const byte* data, size_t size) :
+ReceivedDataEvent::ReceivedDataEvent(const ConnectionData* connectionInfo, const ::byte* data, size_t size) :
     ConnectionEvent(connectionInfo)
 {
   // Resize the data buffer to be the size of the data we're getting
@@ -369,7 +369,7 @@ void TcpSocket::Close()
     CloseConnection(i);
 }
 
-void TcpSocket::RawSend(SocketData& socketData, const byte* data, size_t size)
+void TcpSocket::RawSend(SocketData& socketData, const ::byte* data, size_t size)
 {
   // Ignore this send if it's to an invalid socket
   if (!socketData.Handle.IsOpen())
@@ -403,13 +403,13 @@ void TcpSocket::RawSend(SocketData& socketData, const byte* data, size_t size)
 }
 
 // Send a message to a specific connection index
-void TcpSocket::SendBufferTo(const byte* buffer, size_t size, size_t index)
+void TcpSocket::SendBufferTo(const ::byte* buffer, size_t size, size_t index)
 {
   // Make sure that the index we were given was valid
   ReturnIf(index >= mConnections.Size(), , "The given connection index was invalid");
 
   // Make the user packet (which may do nothing if there no header needed)
-  PodArray<byte> data;
+  PodArray<::byte> data;
   MakeUserPacket(buffer, size, data);
 
   // Send the data to each connection
@@ -420,10 +420,10 @@ void TcpSocket::SendBufferTo(const byte* buffer, size_t size, size_t index)
 }
 
 // Send a message to all connections
-void TcpSocket::SendBufferToAll(const byte* buffer, size_t size)
+void TcpSocket::SendBufferToAll(const ::byte* buffer, size_t size)
 {
   // Make the user packet (which may do nothing if there no header needed)
-  PodArray<byte> data;
+  PodArray<::byte> data;
   MakeUserPacket(buffer, size, data);
 
   // Loop through all the connections
@@ -438,13 +438,13 @@ void TcpSocket::SendBufferToAll(const byte* buffer, size_t size)
 }
 
 // Send a message to all connections except a particular connection index
-void TcpSocket::SendBufferToAllExcept(const byte* buffer, size_t size, size_t exceptIndex)
+void TcpSocket::SendBufferToAllExcept(const ::byte* buffer, size_t size, size_t exceptIndex)
 {
   // Make sure that the exceptIndex we were given was valid
   ReturnIf(exceptIndex >= mConnections.Size(), , "The given connection index was invalid");
 
   // Make the user packet (which may do nothing if there no header needed)
-  PodArray<byte> data;
+  PodArray<::byte> data;
   MakeUserPacket(buffer, size, data);
 
   // Loop through all the connections
@@ -472,7 +472,7 @@ void TcpSocket::SendTo(StringParam eventId, SendableEvent* event, uint index)
   ReturnIf(index >= mConnections.Size(), , "The given connection index was invalid");
 
   // Store a buffer for the message
-  PodArray<byte> data;
+  PodArray<::byte> data;
   MakeEventPacket(event, data);
 
   // Send the data to each connection
@@ -489,7 +489,7 @@ void TcpSocket::SendToAll(StringParam eventId, SendableEvent* event)
   event->EventId = eventId;
 
   // Store a buffer for the message
-  PodArray<byte> data;
+  PodArray<::byte> data;
   MakeEventPacket(event, data);
 
   // Loop through all the connections
@@ -519,7 +519,7 @@ void TcpSocket::SendToAllExcept(StringParam eventId, SendableEvent* event, uint 
   ReturnIf(exceptIndex >= mConnections.Size(), , "The given connection index was invalid");
 
   // Store a buffer for the message
-  PodArray<byte> data;
+  PodArray<::byte> data;
   MakeEventPacket(event, data);
 
   // Loop through all the connections
@@ -538,7 +538,7 @@ void TcpSocket::SendToAllExcept(StringParam eventId, SendableEvent* event, uint 
 }
 
 // Make a user data packet and output the buffer
-void TcpSocket::MakeUserPacket(const byte* data, size_t size, PodArray<byte>& dataOut)
+void TcpSocket::MakeUserPacket(const ::byte* data, size_t size, PodArray<::byte>& dataOut)
 {
   // Setup the packet
   SetupPacket(TCPSocketMessageType::UserData, dataOut);
@@ -555,7 +555,7 @@ void TcpSocket::MakeUserPacket(const byte* data, size_t size, PodArray<byte>& da
 }
 
 // Make a guid packet
-void TcpSocket::MakeGuidPacket(NetGuid guid, PodArray<byte>& dataOut)
+void TcpSocket::MakeGuidPacket(NetGuid guid, PodArray<::byte>& dataOut)
 {
   // Setup the packet
   SetupPacket(TCPSocketMessageType::Guid, dataOut);
@@ -572,7 +572,7 @@ void TcpSocket::MakeGuidPacket(NetGuid guid, PodArray<byte>& dataOut)
 }
 
 // Make a packet given a buffer
-void TcpSocket::MakeEventPacket(SendableEvent* event, PodArray<byte>& dataOut)
+void TcpSocket::MakeEventPacket(SendableEvent* event, PodArray<::byte>& dataOut)
 {
   // Make sure the protocol is enabled
   ErrorIf((mProtocolSetup.Protocols & Protocol::Events) == 0,
@@ -604,7 +604,7 @@ void TcpSocket::MakeEventPacket(SendableEvent* event, PodArray<byte>& dataOut)
 }
 
 // Setup a packet (mainly the header)
-void TcpSocket::SetupPacket(TCPSocketMessageType::Enum messageType, PodArray<byte>& dataOut)
+void TcpSocket::SetupPacket(TCPSocketMessageType::Enum messageType, PodArray<::byte>& dataOut)
 {
   // Reserve space for the packet (it could be bigger than this size though!)
   dataOut.Reserve(BufferSize);
@@ -623,12 +623,12 @@ void TcpSocket::SetupPacket(TCPSocketMessageType::Enum messageType, PodArray<byt
   {
     // We use a single character header when protocols are enabled, so we know
     // what kind of packets they are (users can still send their own data!)
-    dataOut.PushBack((byte)messageType);
+    dataOut.PushBack((::byte)messageType);
   }
 }
 
 // Finish setting up the packet
-void TcpSocket::FinalizePacket(PodArray<byte>& dataOut)
+void TcpSocket::FinalizePacket(PodArray<::byte>& dataOut)
 {
   // If we enabled the Chunks protocol and we're using length encoding...
   if (mProtocolSetup.Protocols & Protocol::Chunks && mProtocolSetup.ChunkType == ChunkType::LengthEncoded)
@@ -640,7 +640,7 @@ void TcpSocket::FinalizePacket(PodArray<byte>& dataOut)
 }
 
 // Extract a message into a buffer and return the number of bytes written
-size_t TcpSocket::ExtractIntoBuffer(const BinaryBufferSaver& messageConst, byte* buffer, size_t bufferSize)
+size_t TcpSocket::ExtractIntoBuffer(const BinaryBufferSaver& messageConst, ::byte* buffer, size_t bufferSize)
 {
   // Get rid of the const (HACK)
   BinaryBufferSaver& message = const_cast<BinaryBufferSaver&>(messageConst);
@@ -656,7 +656,7 @@ size_t TcpSocket::ExtractIntoBuffer(const BinaryBufferSaver& messageConst, byte*
 }
 
 // Track a send
-void TcpSocket::TrackSend(const byte* data, size_t size, Socket& socket)
+void TcpSocket::TrackSend(const ::byte* data, size_t size, Socket& socket)
 {
   return;
 
@@ -672,7 +672,7 @@ void TcpSocket::TrackSend(const byte* data, size_t size, Socket& socket)
 }
 
 // Track a receive
-void TcpSocket::TrackReceive(const byte* data, size_t size, Socket& socket)
+void TcpSocket::TrackReceive(const ::byte* data, size_t size, Socket& socket)
 {
   return;
 
@@ -689,7 +689,7 @@ void TcpSocket::TrackReceive(const byte* data, size_t size, Socket& socket)
 }
 
 // Print our data
-void TcpSocket::PrintData(const char* mode, const byte* data, size_t size)
+void TcpSocket::PrintData(const char* mode, const ::byte* data, size_t size)
 {
   Array<char> ascii;
   ascii.Resize(size + 1);
@@ -775,7 +775,7 @@ void TcpSocket::HandleIncomingConnections()
         NetGuid guid = guids.Front();
 
         // We need to tell the other end what our guid is
-        PodArray<byte> data;
+        PodArray<::byte> data;
         MakeGuidPacket(guid, data);
 
         // Send the data to each connection
@@ -828,7 +828,7 @@ void TcpSocket::HandleOutgoingConnections()
       if (mProtocolSetup.Protocols & Protocol::Guid)
       {
         // We need to tell the other end what our guid is
-        PodArray<byte> data;
+        PodArray<::byte> data;
         MakeGuidPacket(mGuid, data);
 
         // Send the data to each connection
@@ -877,7 +877,7 @@ void TcpSocket::HandleOutgoingData()
     if (socketData.PartialSentData.Empty())
       continue;
 
-    PodArray<byte>& partialData = socketData.PartialSentData;
+    PodArray<::byte>& partialData = socketData.PartialSentData;
     size_t amountToSend = partialData.Size();
 
     // Send the data to the current socket
@@ -895,7 +895,7 @@ void TcpSocket::HandleOutgoingData()
     }
 
     // We sent some of the data, remove that range
-    PodArray<byte>::range range(partialData.Begin(), partialData.Begin() + result);
+    PodArray<::byte>::range range(partialData.Begin(), partialData.Begin() + result);
     socketData.PartialReceivedData.Erase(range);
   }
 }
@@ -965,7 +965,7 @@ void TcpSocket::HandleIncomingData()
 TcpSocket::ReceiveState TcpSocket::ReceiveData(SocketData& socketData, size_t index)
 {
   // Keep a buffer for received data
-  byte buffer[BufferSize];
+  ::byte buffer[BufferSize];
 
   // Receive data from each of the connections
   Status status;
@@ -1020,7 +1020,7 @@ TcpSocket::ReceiveState TcpSocket::ReceiveData(SocketData& socketData, size_t in
 }
 
 // Handle chunks if we need to
-void TcpSocket::HandleChunks(SocketData& socketData, const byte* buffer, size_t size)
+void TcpSocket::HandleChunks(SocketData& socketData, const ::byte* buffer, size_t size)
 {
   // Resize the buffer to hold packet data
   size_t lastSize = socketData.PartialReceivedData.Size();
@@ -1053,7 +1053,7 @@ void TcpSocket::HandleChunks(SocketData& socketData, const byte* buffer, size_t 
                              packetSize - sizeof(ChunkLengthType));
 
           // Erase the packet from the received data
-          PodArray<byte>::range range(socketData.PartialReceivedData.Begin(),
+          PodArray<::byte>::range range(socketData.PartialReceivedData.Begin(),
                                       socketData.PartialReceivedData.Begin() + packetSize);
           socketData.PartialReceivedData.Erase(range);
         }
@@ -1093,7 +1093,7 @@ void TcpSocket::HandleChunks(SocketData& socketData, const byte* buffer, size_t 
           HandleReceivedData(socketData, socketData.PartialReceivedData.Data(), i);
 
           // Erase the packet from the received data
-          PodArray<byte>::range range(socketData.PartialReceivedData.Begin(),
+          PodArray<::byte>::range range(socketData.PartialReceivedData.Begin(),
                                       socketData.PartialReceivedData.Begin() + i);
           socketData.PartialReceivedData.Erase(range);
           break;
@@ -1106,7 +1106,7 @@ void TcpSocket::HandleChunks(SocketData& socketData, const byte* buffer, size_t 
 }
 
 // Determine what to do with the received data
-void TcpSocket::HandleReceivedData(const SocketData& socketData, const byte* buffer, size_t size)
+void TcpSocket::HandleReceivedData(const SocketData& socketData, const ::byte* buffer, size_t size)
 {
   // If the protocol we're using is to send packet objects...
   if (mProtocolSetup.RequiresCustomData())
@@ -1124,7 +1124,7 @@ void TcpSocket::HandleReceivedData(const SocketData& socketData, const byte* buf
 }
 
 // Handle any protocols that we might have set
-void TcpSocket::HandleProtocols(const SocketData& socketData, const byte* buffer, size_t size)
+void TcpSocket::HandleProtocols(const SocketData& socketData, const ::byte* buffer, size_t size)
 {
   // If we got an event message
   switch (buffer[0])
@@ -1177,7 +1177,7 @@ void TcpSocket::HandleProtocols(const SocketData& socketData, const byte* buffer
 }
 
 // Handle the guid protocol
-void TcpSocket::HandleGuidProtocol(const SocketData& socketData, const byte* buffer, size_t size)
+void TcpSocket::HandleGuidProtocol(const SocketData& socketData, const ::byte* buffer, size_t size)
 {
   // Read the guid from the buffer
   NetGuid guid = *(const NetGuid*)buffer;
@@ -1186,7 +1186,7 @@ void TcpSocket::HandleGuidProtocol(const SocketData& socketData, const byte* buf
   if (mProtocolSetup.Protocols & Protocol::GuidBroadcaster)
   {
     // We need to tell the other end what our guid is
-    PodArray<byte> data;
+    PodArray<::byte> data;
     MakeGuidPacket(guid, data);
 
     // Loop through all the connections
@@ -1208,13 +1208,13 @@ void TcpSocket::HandleGuidProtocol(const SocketData& socketData, const byte* buf
 }
 
 // Handle the event protocol
-void TcpSocket::HandleEventProtocol(const SocketData& socketData, const byte* buffer, size_t size)
+void TcpSocket::HandleEventProtocol(const SocketData& socketData, const ::byte* buffer, size_t size)
 {
   // Create a binary deserializer (remove the const since the buffer loader
   // doesn't respect it)
   // BinaryBufferLoader loader;
   DataTreeLoader loader;
-  // loader.SetBuffer((byte*)buffer, size);
+  // loader.SetBuffer((::byte*)buffer, size);
   Status status;
   loader.OpenBuffer(status, StringRange((const char*)buffer));
 

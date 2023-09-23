@@ -59,9 +59,9 @@ IndexRange MaterialBlock::AddShaderInputs(Array<ShaderInput>& shaderInputs)
 }
 
 // Helper function for fragment properties.
-static byte* GetFragmentMemberPointer(Call& call, MaterialBlock* materialBlock)
+static ::byte* GetFragmentMemberPointer(Call& call, MaterialBlock* materialBlock)
 {
-  byte* fragmentMemory = (byte*)materialBlock + sizeof(MaterialBlock);
+  ::byte* fragmentMemory = (::byte*)materialBlock + sizeof(MaterialBlock);
   size_t memberOffset = (size_t)call.GetFunction()->UserData;
   return fragmentMemory + memberOffset;
 }
@@ -69,7 +69,7 @@ static byte* GetFragmentMemberPointer(Call& call, MaterialBlock* materialBlock)
 void FragmentConstructor(Call& call, ExceptionReport& report)
 {
   // Get the allocated memory.
-  byte* memory = call.GetHandle(Call::This).Dereference();
+  ::byte* memory = call.GetHandle(Call::This).Dereference();
 
   // Initialize base class.
   MaterialBlock* materialBlock = new (memory) MaterialBlock;
@@ -78,7 +78,7 @@ void FragmentConstructor(Call& call, ExceptionReport& report)
   ByteBufferBlock& defaultMemory = materialBlock->LightningGetDerivedType()->ComplexUserData.ReadObject<ByteBufferBlock>(0);
 
   // Initialize derived class.
-  byte* fragmentMemory = memory + sizeof(MaterialBlock);
+  ::byte* fragmentMemory = memory + sizeof(MaterialBlock);
   memcpy(fragmentMemory, defaultMemory.GetBegin(), defaultMemory.Size());
 }
 
@@ -95,7 +95,7 @@ void FragmentGetter(Call& call, ExceptionReport& report)
 {
   // Get pointer to the property.
   MaterialBlock* materialBlock = call.Get<MaterialBlock*>(Call::This);
-  byte* memberPtr = GetFragmentMemberPointer(call, materialBlock);
+  ::byte* memberPtr = GetFragmentMemberPointer(call, materialBlock);
 
   // Get the type's size off of the return type so that we don't need to store
   // it.
@@ -109,7 +109,7 @@ void FragmentSetter(Call& call, ExceptionReport& report)
 {
   // Get pointer to the property.
   MaterialBlock* materialBlock = call.Get<MaterialBlock*>(Call::This);
-  byte* memberPtr = GetFragmentMemberPointer(call, materialBlock);
+  ::byte* memberPtr = GetFragmentMemberPointer(call, materialBlock);
 
   // Get the type's size off of the parameter type so that we don't need to
   // store it.
@@ -126,7 +126,7 @@ void FragmentTextureGetter(Call& call, ExceptionReport& report)
 {
   // Get pointer to the property.
   MaterialBlock* materialBlock = call.Get<MaterialBlock*>(Call::This);
-  byte* memberPtr = GetFragmentMemberPointer(call, materialBlock);
+  ::byte* memberPtr = GetFragmentMemberPointer(call, materialBlock);
 
   // Lookup Texture from stored ID.
   u64 textureId = *(u64*)(memberPtr);
@@ -139,7 +139,7 @@ void FragmentTextureSetter(Call& call, ExceptionReport& report)
 {
   // Get pointer to the property.
   MaterialBlock* materialBlock = call.Get<MaterialBlock*>(Call::This);
-  byte* memberPtr = GetFragmentMemberPointer(call, materialBlock);
+  ::byte* memberPtr = GetFragmentMemberPointer(call, materialBlock);
 
   // Get the Texture from the parameter.
   Texture* texture = call.Get<Texture*>(0);

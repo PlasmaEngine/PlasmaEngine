@@ -29,7 +29,7 @@ public:
   void Clear(ByteColor color);
 
   /// Clear the pixel buffer with a gray scale color (much faster).
-  void Clear(byte grayScaleColor);
+  void Clear(::byte grayScaleColor);
 
   /// Set a color on an area of pixels in the buffer.
   void FillRect(Vec2Param topLeft, Vec2Param bottomRight, ByteColor color);
@@ -53,7 +53,7 @@ public:
   /// Upload the image data.
   void Upload();
 
-  void SetAll(byte* data);
+  void SetAll(::byte* data);
 
 public:
   /// Store the width and height of the texture.

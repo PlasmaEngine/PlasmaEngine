@@ -62,7 +62,7 @@ public:
 
     if ((size_t)file.Tell() + HeaderSize <= file.Size())
     {
-      file.Read(status, (byte*)&chunk.Type, HeaderSize);
+      file.Read(status, (::byte*)&chunk.Type, HeaderSize);
 
       // Compute offsets
       chunk.StartPos = (uint)file.Tell();
@@ -100,21 +100,21 @@ public:
   void Read(type& data)
   {
     Status status;
-    file.Read(status, (byte*)&data, sizeof(type));
+    file.Read(status, (::byte*)&data, sizeof(type));
   }
 
   template <typename type>
   void ReadArray(type* data, uint count)
   {
     Status status;
-    file.Read(status, (byte*)data, sizeof(type) * count);
+    file.Read(status, (::byte*)data, sizeof(type) * count);
   }
 
   template <typename type>
   void ReadArraySize(type* data, uint size)
   {
     Status status;
-    file.Read(status, (byte*)data, size);
+    file.Read(status, (::byte*)data, size);
   }
 
   template <typename StringType>
@@ -122,7 +122,7 @@ public:
   {
     StringLengthType strSize = 0;
     Read(strSize);
-    byte* data = (byte*)alloca(strSize + 1);
+    ::byte* data = (::byte*)alloca(strSize + 1);
     ReadArray(data, strSize);
     data[strSize] = '\0';
     stringValue = (char*)data;

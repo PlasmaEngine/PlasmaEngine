@@ -311,7 +311,7 @@ void LightningCodeBuilder::TrimEnd()
   size_t amountToBackup = 0;
   for (long long i = (long long)(this->GetSize() - 1); i >= 0; --i)
   {
-    byte b = (*this)[(size_t)i];
+    ::byte b = (*this)[(size_t)i];
     if (isspace(b) == false)
       break;
 

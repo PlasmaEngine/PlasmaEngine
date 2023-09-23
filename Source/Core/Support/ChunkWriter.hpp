@@ -39,7 +39,7 @@ public:
 
     // Move pass the header
     file.Seek(chunkStartPos + sizeof(u32));
-    file.Write((byte*)&chunksize, sizeof(uint));
+    file.Write((::byte*)&chunksize, sizeof(uint));
     file.Seek(curPos);
   }
 
@@ -47,13 +47,13 @@ public:
   template <typename type>
   void Write(const type& data)
   {
-    file.Write((byte*)&data, sizeof(type));
+    file.Write((::byte*)&data, sizeof(type));
   }
 
   template <typename type>
   void Write(type* data, uint count)
   {
-    file.Write((byte*)data, sizeof(type) * count);
+    file.Write((::byte*)data, sizeof(type) * count);
   }
 
   void Write(String& str)

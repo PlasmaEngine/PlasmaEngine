@@ -3,7 +3,7 @@
 namespace Plasma
 {
 
-String PhysicsRaycastProviderDisplayText(const BoundType* type, const byte* data)
+String PhysicsRaycastProviderDisplayText(const BoundType* type, const ::byte* data)
 {
   static String Name("Physics");
   return Name;

@@ -205,7 +205,7 @@ void LightningPluginSource::ForceCopyPluginDependencies()
                           "   \n"
                           "    Lightning::Delegate delegate;                                           "
                           "   \n"
-                          "    delegate.ThisHandle = Lightning::Handle((byte*)receiver, type);         "
+                          "    delegate.ThisHandle = Lightning::Handle((::byte*)receiver, type);         "
                           "   \n"
                           "    delegate.BoundFunction = (*instanceFunctions)[0];                   "
                           "   \n"

@@ -370,7 +370,7 @@ String SoundTagDisplay::GetDebugText(HandleParam object)
   return GetName(object);
 }
 
-String SoundTagToString(const BoundType* type, const byte* instance)
+String SoundTagToString(const BoundType* type, const ::byte* instance)
 {
   SoundTag* soundTag = (SoundTag*)instance;
   return BuildString("SoundTag: ", soundTag->Name);

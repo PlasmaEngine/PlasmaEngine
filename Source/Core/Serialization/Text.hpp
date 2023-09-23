@@ -23,7 +23,7 @@ public:
 
   SerializerClass::Enum GetClass() override;
 
-  void ExtractInto(byte* data, uint size);
+  void ExtractInto(::byte* data, uint size);
   DataBlock ExtractAsDataBlock();
   void Close();
 
@@ -53,7 +53,7 @@ public:
 
   // Array Serialization
   bool ArrayField(
-      cstr typeName, cstr fieldName, byte* data, ArrayType arrayType, uint numberOfElements, uint sizeOftype) override;
+      cstr typeName, cstr fieldName, ::byte* data, ArrayType arrayType, uint numberOfElements, uint sizeOftype) override;
 
   void ArraySize(uint& arraySize){};
 

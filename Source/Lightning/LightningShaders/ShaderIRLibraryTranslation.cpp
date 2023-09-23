@@ -19,7 +19,7 @@ void DummyBoundFunction(Lightning::Call& call, Lightning::ExceptionReport& repor
   Lightning::DelegateType* functionType = call.GetFunction()->FunctionType;
   Lightning::Type* returnType = functionType->Return;
   size_t byteSize = returnType->GetAllocatedSize();
-  byte* returnValue = call.GetReturnUnchecked();
+  ::byte* returnValue = call.GetReturnUnchecked();
   memset(returnValue, 0, byteSize);
   call.MarkReturnAsSet();
 }
@@ -401,7 +401,7 @@ bool IsVectorSwizzle(StringParam memberName)
   // Verify that all components are in the valid range
   for (size_t i = 0; i < memberName.SizeInBytes(); ++i)
   {
-    byte memberValue = *(memberName.Data() + i);
+    ::byte memberValue = *(memberName.Data() + i);
 
     if (memberValue < 'W' || memberValue > 'Z')
       return false;
@@ -411,7 +411,7 @@ bool IsVectorSwizzle(StringParam memberName)
 
 void ResolveScalarComponentAccess(LightningSpirVFrontEnd* translator,
                                   Lightning::MemberAccessNode* memberAccessNode,
-                                  byte componentName,
+                                  ::byte componentName,
                                   LightningSpirVFrontEndContext* context)
 {
   // A scalar component access on a scalar type is just the scalar itself (e.g.
@@ -451,7 +451,7 @@ void ScalarBackupFieldResolver(LightningSpirVFrontEnd* translator,
   // Deal with single component access
   if (memberName.SizeInBytes() == 1)
   {
-    byte memberValue = *memberName.Data();
+    ::byte memberValue = *memberName.Data();
     ResolveScalarComponentAccess(translator, memberAccessNode, memberValue, context);
     return;
   }
@@ -496,7 +496,7 @@ void ResolveVectorCopyConstructor(LightningSpirVFrontEnd* translator, Lightning:
 void ResolveVectorComponentAccess(LightningSpirVFrontEnd* translator,
                                   LightningShaderIROp* selfInstance,
                                   LightningShaderIRType* componentType,
-                                  byte componentName,
+                                  ::byte componentName,
                                   LightningSpirVFrontEndContext* context)
 {
   // Convert the index to [0, 3] using a nice modulus trick
@@ -525,7 +525,7 @@ void ResolveVectorComponentAccess(LightningSpirVFrontEnd* translator,
 
 void ResolveVectorComponentAccess(LightningSpirVFrontEnd* translator,
                                   Lightning::MemberAccessNode* memberAccessNode,
-                                  byte componentName,
+                                  ::byte componentName,
                                   LightningSpirVFrontEndContext* context)
 {
   // Walk the left hand side of the member access node
@@ -557,7 +557,7 @@ void ResolveVectorSwizzle(LightningSpirVFrontEnd* translator,
   // that as an argument
   for (size_t i = 0; i < memberName.SizeInBytes(); ++i)
   {
-    byte memberValue = *(memberName.Data() + i);
+    ::byte memberValue = *(memberName.Data() + i);
     int index = (memberValue - 'X' + 4) % 4;
     LightningShaderIRConstantLiteral* indexLiteral = translator->GetOrCreateConstantLiteral(index);
     swizzleOp->mArguments.PushBack(indexLiteral);
@@ -589,7 +589,7 @@ void VectorBackupFieldResolver(LightningSpirVFrontEnd* translator,
   // Deal with single component access
   if (memberName.SizeInBytes() == 1)
   {
-    byte memberValue = *memberName.Data();
+    ::byte memberValue = *memberName.Data();
     ResolveVectorComponentAccess(translator, memberAccessNode, memberValue, context);
     return;
   }
@@ -637,7 +637,7 @@ void ResolverVectorSwizzleSetter(LightningSpirVFrontEnd* translator,
 
   for(u32 i = 0; i < static_cast<u32>(memberName.SizeInBytes()); ++i)
   {
-    byte memberValue = *(memberName.Data() + i);
+    ::byte memberValue = *(memberName.Data() + i);
     u32 index = (memberValue - 'X' + 4) % 4;
     indices[index] = i + instanceComponentCount;
   }
@@ -808,7 +808,7 @@ void QuaternionBackupFieldResolver(LightningSpirVFrontEnd* translator,
   // Deal with single component access
   if (memberName.SizeInBytes() == 1)
   {
-    byte memberValue = *memberName.Data();
+    ::byte memberValue = *memberName.Data();
     ResolveVectorComponentAccess(translator, vec4Instance, realType, memberValue, context);
     return;
   }
@@ -846,7 +846,7 @@ void QuaternionBackupPropertySetter(LightningSpirVFrontEnd* translator,
   // Deal with single component access
   if (memberName.SizeInBytes() == 1)
   {
-    byte memberValue = *memberName.Data();
+    ::byte memberValue = *memberName.Data();
     ResolveVectorComponentAccess(translator, vec4Instance, realType, memberValue, context);
     translator->BuildStoreOp(context->GetCurrentBlock(), context->PopIRStack(), resultValue, context);
     return;

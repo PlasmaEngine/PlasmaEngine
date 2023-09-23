@@ -27,11 +27,11 @@ DeclareBitField4(FileShare, Read, Write, Delete, Unspecified);
 // Position in file
 typedef u64 FilePosition;
 
-PlasmaShared byte* ReadFileIntoMemory(cstr path, size_t& fileSize, size_t extra = 0);
+PlasmaShared ::byte* ReadFileIntoMemory(cstr path, size_t& fileSize, size_t extra = 0);
 PlasmaShared DataBlock ReadFileIntoDataBlock(cstr path);
 PlasmaShared ByteBufferBlock ReadFileIntoByteBufferBlock(cstr path);
 PlasmaShared String ReadFileIntoString(StringParam path);
-PlasmaShared size_t WriteToFile(cstr filePath, const byte* data, size_t bufferSize);
+PlasmaShared size_t WriteToFile(cstr filePath, const ::byte* data, size_t bufferSize);
 
 // Auxiliary functions defined once for every platform
 PlasmaShared bool CompareFile(Status& status, StringParam filePath1, StringParam filePath2);
@@ -74,10 +74,10 @@ public:
   bool Seek(FilePosition filePosition, SeekOrigin::Enum origin = SeekOrigin::Begin);
 
   /// Write data to the file
-  size_t Write(byte* data, size_t sizeInBytes);
+  size_t Write(::byte* data, size_t sizeInBytes);
 
   /// Read data from the file
-  size_t Read(Status& status, byte* data, size_t sizeInBytes);
+  size_t Read(Status& status, ::byte* data, size_t sizeInBytes);
 
   /// Is there data left to read from this file. Primarily for use when the file
   /// is a pipe.
@@ -117,8 +117,8 @@ public:
   u64 Size() override;
   bool Seek(u64 filePosition, SeekOrigin::Enum origin = SeekOrigin::Begin) override;
   u64 Tell() override;
-  size_t Write(byte* data, size_t sizeInBytes) override;
-  size_t Read(byte* data, size_t sizeInBytes) override;
+  size_t Write(::byte* data, size_t sizeInBytes) override;
+  size_t Read(::byte* data, size_t sizeInBytes) override;
   bool HasData() override;
   bool IsEof() override;
   void Flush() override;

@@ -44,9 +44,9 @@ source%
 template <typename FunctionType, FunctionType function, typename Class[,]$ReturnTypeName$[,]$ArgumentTypeNames$>
 $ReturnType$ VirtualThunk$Return$($ArgumentParameters$)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
@@ -62,7 +62,7 @@ $ReturnType$ VirtualThunk$Return$($ArgumentParameters$)
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);

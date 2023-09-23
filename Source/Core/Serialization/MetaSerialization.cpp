@@ -185,7 +185,7 @@ bool EnumMetaSerialization::ConvertFromString(StringParam input, Any& output)
 
   if (foundEnumValue)
   {
-    output = Any((byte*)foundEnumValue, mEnumType);
+    output = Any((::byte*)foundEnumValue, mEnumType);
     return true;
   }
 

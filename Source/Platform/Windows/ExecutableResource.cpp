@@ -16,7 +16,7 @@ bool GetExecutableResource(const char* name, const char* type, ByteBufferBlock& 
   if (!resoureData)
     return false;
 
-  byte* data = (byte*)LockResource(resoureData);
+  ::byte* data = (::byte*)LockResource(resoureData);
 
   output.SetData(data, size, false);
   return true;
@@ -35,7 +35,7 @@ ExecutableResourceUpdater::~ExecutableResourceUpdater()
   EndUpdateResource(mHandle, FALSE);
 }
 
-void ExecutableResourceUpdater::Update(const char* name, const char* type, const byte* data, size_t size)
+void ExecutableResourceUpdater::Update(const char* name, const char* type, const ::byte* data, size_t size)
 {
   BOOL result = UpdateResource((HANDLE)mHandle,
                                Widen(type).c_str(),
@@ -96,7 +96,7 @@ uint GroupIconSize = sizeof(GRPICONDIR) - sizeof(GRPICONDIRENTRY) * 1;
 
 #pragma pack(pop)
 
-void ExecutableResourceUpdater::UpdateIcon(const byte* buffer, size_t size)
+void ExecutableResourceUpdater::UpdateIcon(const ::byte* buffer, size_t size)
 {
   /// Add/Update a icon resources from the icon file.
   ICONDIR& iconDir = *(ICONDIR*)buffer;

@@ -256,7 +256,7 @@ bool File::Seek(FilePosition pos, SeekOrigin::Enum rel)
   return (success != 0);
 }
 
-size_t File::Write(byte* data, size_t sizeInBytes)
+size_t File::Write(::byte* data, size_t sizeInBytes)
 {
   PlasmaGetPrivateData(FilePrivateData);
   ErrorIf(self->mHandle == INVALID_HANDLE_VALUE, "File handle is not valid.");
@@ -265,7 +265,7 @@ size_t File::Write(byte* data, size_t sizeInBytes)
   return bytesWritten;
 }
 
-size_t File::Read(Status& status, byte* data, size_t sizeInBytes)
+size_t File::Read(Status& status, ::byte* data, size_t sizeInBytes)
 {
   PlasmaGetPrivateData(FilePrivateData);
   // We don't assert here because its legal to close the handle from another
@@ -295,7 +295,7 @@ bool File::HasData(Status& status)
   }
   else if (fileType == FILE_TYPE_PIPE)
   {
-    byte buffer[2];
+    ::byte buffer[2];
 
     DWORD bytesRead, bytesAvailable, bytesLeft;
     bool result = PeekNamedPipe(self->mHandle, buffer, 1, &bytesRead, &bytesAvailable, &bytesLeft);

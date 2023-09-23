@@ -162,7 +162,7 @@ Rune AsciiEncoding::Read(IStreamClass& stream)
 
 Integer Utf8Encoding::Write(Rune rune, IStreamClass& stream)
 {
-  byte utf8Bytes[4] = {0};
+  ::byte utf8Bytes[4] = {0};
   Integer encodedByteCount = static_cast<Integer>(Plasma::UTF8::UnpackUtf8RuneIntoBuffer(rune.mValue, utf8Bytes));
 
   for (Integer i = 0; i < encodedByteCount; ++i)
@@ -180,14 +180,14 @@ Integer Utf8Encoding::Write(Rune rune, IStreamClass& stream)
 Rune Utf8Encoding::Read(IStreamClass& stream)
 {
   // Read the first rune byte
-  byte utf8Bytes[4] = {0};
+  ::byte utf8Bytes[4] = {0};
   Integer firstByte = stream.ReadByte();
   if (firstByte == -1)
     return Rune();
 
-  utf8Bytes[0] = (byte)firstByte;
+  utf8Bytes[0] = (::byte)firstByte;
 
-  size_t encodedByteCount = Plasma::UTF8::EncodedCodepointLength((byte)firstByte);
+  size_t encodedByteCount = Plasma::UTF8::EncodedCodepointLength((::byte)firstByte);
 
   // We start at 1 since we've already read the first byte
   for (size_t i = 1; i < encodedByteCount; ++i)
@@ -196,7 +196,7 @@ Rune Utf8Encoding::Read(IStreamClass& stream)
     if (readByte == -1)
       return Rune();
 
-    utf8Bytes[i] = (byte)readByte;
+    utf8Bytes[i] = (::byte)readByte;
   }
 
   Rune rune = Plasma::UTF8::ReadUtf8Rune(utf8Bytes);

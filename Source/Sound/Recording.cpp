@@ -58,7 +58,7 @@ void RecordingNode::StartRecording()
     mSamplesRecorded = 0;
 
     WavHeader header = {0};
-    mFileStream.Write(reinterpret_cast<byte*>(&header), sizeof(header));
+    mFileStream.Write(reinterpret_cast<::byte*>(&header), sizeof(header));
 
     mRecording.Set(cTrue);
   }
@@ -89,7 +89,7 @@ void RecordingNode::StopRecording()
                       mSamplesRecorded * 2};
 
   mFileStream.Seek(0);
-  mFileStream.Write(reinterpret_cast<byte*>(&header), sizeof(header));
+  mFileStream.Write(reinterpret_cast<::byte*>(&header), sizeof(header));
 
   // If samples are being saved, write them to the file
   if (!mStreaming)
@@ -99,7 +99,7 @@ void RecordingNode::StopRecording()
       // Convert from float to short
       short shortValue = (short)(sample * cMaxValue);
 
-      mFileStream.Write(reinterpret_cast<byte*>(&shortValue), sizeof(short));
+      mFileStream.Write(reinterpret_cast<::byte*>(&shortValue), sizeof(short));
     }
 
     mSavedSamples.Clear();
@@ -175,7 +175,7 @@ void RecordingNode::WriteBuffer(Plasma::Array<float>* buffer, unsigned numberOfC
     {
       short shortValue = (short)(sample * cMaxValue);
 
-      mFileStream.Write(reinterpret_cast<byte*>(&shortValue), sizeof(short));
+      mFileStream.Write(reinterpret_cast<::byte*>(&shortValue), sizeof(short));
       ++mSamplesRecorded;
     }
   }

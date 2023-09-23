@@ -55,11 +55,11 @@ inline BitAlignment::Enum BitStream::GetAlignment() const
   return mAlignment;
 }
 
-inline const byte* BitStream::GetData() const
+inline const ::byte* BitStream::GetData() const
 {
   return mData;
 }
-inline byte* BitStream::GetDataExposed()
+inline ::byte* BitStream::GetDataExposed()
 {
   return mData;
 }
@@ -295,7 +295,7 @@ inline Bits BitStream::SerializeBit(SerializeDirection::Enum direction, bool& va
 {
   return (direction == SerializeDirection::Write) ? WriteBit(value) : ReadBit(value);
 }
-inline Bits BitStream::SerializeBits(SerializeDirection::Enum direction, byte* data, Bits dataBits)
+inline Bits BitStream::SerializeBits(SerializeDirection::Enum direction, ::byte* data, Bits dataBits)
 {
   return (direction == SerializeDirection::Write) ? WriteBits(data, dataBits) : ReadBits(data, dataBits);
 }
@@ -304,7 +304,7 @@ inline Bits BitStream::SerializeByte(SerializeDirection::Enum direction, uint8& 
 {
   return (direction == SerializeDirection::Write) ? WriteByte(value) : ReadByte(value);
 }
-inline Bits BitStream::SerializeBytes(SerializeDirection::Enum direction, byte* data, Bytes dataBytes)
+inline Bits BitStream::SerializeBytes(SerializeDirection::Enum direction, ::byte* data, Bytes dataBytes)
 {
   return (direction == SerializeDirection::Write) ? WriteBytes(data, dataBytes) : ReadBytes(data, dataBytes);
 }
@@ -418,7 +418,7 @@ inline R_ENABLE_IF(is_integral<T>::value, Bits) BitStream::Write(T value)
   value = NetworkFlip(value);
 
   // Write value
-  return WriteBits((const byte*)&value, BYTES_TO_BITS(sizeof(value)));
+  return WriteBits((const ::byte*)&value, BYTES_TO_BITS(sizeof(value)));
 }
 template <typename T>
 inline R_ENABLE_IF(is_floating_point<T>::value, Bits) BitStream::Write(T value)
@@ -480,7 +480,7 @@ inline R_ENABLE_IF(is_floating_point<T>::value, Bits) BitStream::Write(T value)
   result = NetworkFlip(result);
 
   // Write the result
-  return WriteBits((const byte*)&result, totalBits);
+  return WriteBits((const ::byte*)&result, totalBits);
 
 #else
 
@@ -488,7 +488,7 @@ inline R_ENABLE_IF(is_floating_point<T>::value, Bits) BitStream::Write(T value)
   value = NetworkFlip(value);
 
   // Write the value
-  return WriteBits((const byte*)&value, BYTES_TO_BITS(sizeof(value)));
+  return WriteBits((const ::byte*)&value, BYTES_TO_BITS(sizeof(value)));
 
 #endif
 }
@@ -591,7 +591,7 @@ inline R_ENABLE_IF(is_integral<T>::value&& is_integral<R>::value,
   UV rightAlignedQuantizedValue = NetworkFlip(leftShiftedQuantizedValue);
 
   // Write the right-aligned quantized value
-  return WriteBits((const byte*)&rightAlignedQuantizedValue, bitSize);
+  return WriteBits((const ::byte*)&rightAlignedQuantizedValue, bitSize);
 }
 template <typename T, typename R>
 inline R_ENABLE_IF(is_floating_point<T>::value,
@@ -650,7 +650,7 @@ inline R_ENABLE_IF(is_floating_point<T>::value,
   UV rightAlignedQuantizedValue = NetworkFlip(leftShiftedQuantizedValue);
 
   // Write the right-aligned quantized value
-  return WriteBits((const byte*)&rightAlignedQuantizedValue, bitSize);
+  return WriteBits((const ::byte*)&rightAlignedQuantizedValue, bitSize);
 }
 template <Bits N, bool WrapAware, typename R>
 inline R_ENABLE_IF(is_enum_or_integral<R>::value,
@@ -738,7 +738,7 @@ template <typename T>
 inline R_ENABLE_IF(is_integral<T>::value, Bits) BitStream::Read(T& value) const
 {
   // Read the value
-  Bits bitsRead = ReadBits((byte*)&value, BYTES_TO_BITS(sizeof(value)));
+  Bits bitsRead = ReadBits((::byte*)&value, BYTES_TO_BITS(sizeof(value)));
   if (!bitsRead) // Unable?
     return 0;
 
@@ -765,7 +765,7 @@ inline R_ENABLE_IF(is_floating_point<T>::value, Bits) BitStream::Read(T& value) 
 
   // Read the result
   uintType result = 0;
-  Bits bitsRead = ReadBits((byte*)&result, totalBits);
+  Bits bitsRead = ReadBits((::byte*)&result, totalBits);
   if (!bitsRead) // Unable?
     return 0;
 
@@ -808,7 +808,7 @@ inline R_ENABLE_IF(is_floating_point<T>::value, Bits) BitStream::Read(T& value) 
 #else
 
   // Read the value
-  Bits bitsRead = ReadBits((byte*)&value, BYTES_TO_BITS(sizeof(value)));
+  Bits bitsRead = ReadBits((::byte*)&value, BYTES_TO_BITS(sizeof(value)));
   if (!bitsRead) // Unable?
     return 0;
 
@@ -904,7 +904,7 @@ BitStream::ReadQuantized(T& value_, R minValue_, R maxValue_, R quantum_) const
 
   // Read the right-aligned quantized value
   UV rightAlignedQuantizedValue;
-  Bits bitsRead = ReadBits((byte*)&rightAlignedQuantizedValue, bitSize);
+  Bits bitsRead = ReadBits((::byte*)&rightAlignedQuantizedValue, bitSize);
   if (!bitsRead) // Unable?
     return 0;
 
@@ -966,7 +966,7 @@ BitStream::ReadQuantized(T& value_, R minValue_, R maxValue_, R quantum_) const
 
   // Read the right-aligned quantized value
   UV rightAlignedQuantizedValue;
-  Bits bitsRead = ReadBits((byte*)&rightAlignedQuantizedValue, bitSize);
+  Bits bitsRead = ReadBits((::byte*)&rightAlignedQuantizedValue, bitSize);
   if (!bitsRead) // Unable?
     return 0;
 

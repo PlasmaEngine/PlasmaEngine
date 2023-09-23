@@ -14,7 +14,7 @@ namespace Plasma
 {
 void WriteStringRangeToFile(StringParam path, StringRange range)
 {
-  WriteToFile(path.c_str(), (byte*)range.Data(), range.SizeInBytes());
+  WriteToFile(path.c_str(), (::byte*)range.Data(), range.SizeInBytes());
 }
 
 bool MoveFolderContents(StringParam dest, StringParam source, FileFilter* filter)
@@ -202,7 +202,7 @@ void BackUpFile(StringParam backupPath, StringParam fileName)
 DataBlock AllocateBlock(size_t size)
 {
   DataBlock block;
-  block.Data = (byte*)plAllocate(size);
+  block.Data = (::byte*)plAllocate(size);
   block.Size = size;
   return block;
 }
@@ -215,7 +215,7 @@ void FreeBlock(DataBlock& block)
 
 void CloneBlock(DataBlock& destBlock, const DataBlock& source)
 {
-  destBlock.Data = (byte*)plAllocate(source.Size);
+  destBlock.Data = (::byte*)plAllocate(source.Size);
   destBlock.Size = source.Size;
   memcpy(destBlock.Data, source.Data, source.Size);
 }
@@ -275,9 +275,9 @@ void PopulateVirtualFileSystemWithZip(void* userData)
   }
 }
 
-void Download(StringParam fileName, const Array<byte>& binaryData)
+void Download(StringParam fileName, const Array<::byte>& binaryData)
 {
-  Os::DownloadFile(fileName.c_str(), DataBlock((byte*)binaryData.Data(), binaryData.Size()));
+  Os::DownloadFile(fileName.c_str(), DataBlock((::byte*)binaryData.Data(), binaryData.Size()));
 }
 
 void Download(StringParam fileName, const DataBlock& binaryData)
@@ -287,7 +287,7 @@ void Download(StringParam fileName, const DataBlock& binaryData)
 
 void Download(StringParam fileName, StringParam binaryData)
 {
-  Os::DownloadFile(fileName.c_str(), DataBlock((byte*)binaryData.Data(), binaryData.SizeInBytes()));
+  Os::DownloadFile(fileName.c_str(), DataBlock((::byte*)binaryData.Data(), binaryData.SizeInBytes()));
 }
 
 void Download(StringParam fileName, const ByteBufferBlock& binaryData)

@@ -22,7 +22,7 @@ String SoundAttenuatorDisplay::GetDebugText(HandleParam object)
   return GetName(object);
 }
 
-String SoundAttenuationToString(const BoundType* meta, const byte* data)
+String SoundAttenuationToString(const BoundType* meta, const ::byte* data)
 {
   SoundAttenuator* soundAtten = (SoundAttenuator*)data;
   return BuildString("SoundAttenuator: ", soundAtten->Name);

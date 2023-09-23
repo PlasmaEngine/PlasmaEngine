@@ -107,7 +107,7 @@ void Archetype::BinaryCache(Cog* cog, CogCreationContext* creationContext)
 
   // Allocate a data block to save cached archetype
   mBinaryCache.Size = saver.GetSize();
-  mBinaryCache.Data = (byte*)Archetype::CacheHeap->Allocate(mBinaryCache.Size);
+  mBinaryCache.Data = (::byte*)Archetype::CacheHeap->Allocate(mBinaryCache.Size);
 
   saver.ExtractInto(mBinaryCache);
 }

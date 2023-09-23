@@ -9,7 +9,7 @@ static bool FindNewline(Stream* stream, char* newline)
 {
   while (!stream->IsEof())
   {
-    byte character = stream->ReadByte();
+    ::byte character = stream->ReadByte();
     if (character == '\r')
     {
       newline[0] = '\r';
@@ -269,7 +269,7 @@ void ParseHdrHeader(Status& status, Stream* stream, uint& width, uint& height)
   size_t headerSize = (size_t)stream->Tell();
   Plasma::StringNode* node = Plasma::String::AllocateNode(headerSize);
   stream->Seek(0);
-  stream->Read((byte*)node->Data, headerSize);
+  stream->Read((::byte*)node->Data, headerSize);
   String header(node);
 
   HdrHeaderParser::Parse(status, header, width, height);
@@ -280,15 +280,15 @@ void ParseHdrHeader(Status& status, Stream* stream, uint& width, uint& height)
   if (data + (count) > endData)                                                                                        \
     return false;
 
-bool DecodeHdrScanline(byte*& imageData, const byte* endData, uint imageWidth, byte* scanline)
+bool DecodeHdrScanline(::byte*& imageData, const ::byte* endData, uint imageWidth, ::byte* scanline)
 {
   uint index = 0;
   ValidateRead(imageData, endData, index + 4);
 
-  byte byte0 = imageData[index++];
-  byte byte1 = imageData[index++];
-  byte byte2 = imageData[index++];
-  byte byte3 = imageData[index++];
+  ::byte byte0 = imageData[index++];
+  ::byte byte1 = imageData[index++];
+  ::byte byte2 = imageData[index++];
+  ::byte byte3 = imageData[index++];
 
   uint scanWidth = (uint)byte2 << 8 | byte3;
 
@@ -311,7 +311,7 @@ bool DecodeHdrScanline(byte*& imageData, const byte* endData, uint imageWidth, b
         if (count > 128)
         {
           count -= 128;
-          byte value = imageData[index++];
+          ::byte value = imageData[index++];
 
           // Stride is every 4 bytes since channels are separated
           for (uint run = 0; run < count; ++run)
@@ -344,7 +344,7 @@ bool DecodeHdrScanline(byte*& imageData, const byte* endData, uint imageWidth, b
 bool IsHdr(Stream* stream)
 {
   size_t signatureSize = cHdrSignature.SizeInBytes();
-  byte* buffer = (byte*)alloca(signatureSize);
+  ::byte* buffer = (::byte*)alloca(signatureSize);
   size_t amountRead = stream->Read(buffer, signatureSize);
   stream->Seek(0);
   return amountRead == signatureSize && memcmp(buffer, cHdrSignature.Data(), signatureSize) == 0;
@@ -372,7 +372,7 @@ bool IsHdrSaveFormat(TextureFormat::Enum format)
 
 void LoadHdr(Status& status,
              Stream* stream,
-             byte** output,
+             ::byte** output,
              uint* width,
              uint* height,
              TextureFormat::Enum* format,
@@ -399,8 +399,8 @@ void LoadHdr(Status& status,
   if (status.Failed())
     return;
 
-  byte* imageData = block.GetBegin();
-  const byte* endData = imageData + size;
+  ::byte* imageData = block.GetBegin();
+  const ::byte* endData = imageData + size;
 
   // Allocate full size of final image
   float* outputImage = (float*)plAllocate(sizeof(float) * imageWidth * imageHeight * 3);
@@ -412,7 +412,7 @@ void LoadHdr(Status& status,
   }
 
   // Scratch buffer for decoding a single scanline
-  byte* scanline = (byte*)plAllocate(sizeof(byte) * imageWidth * 4);
+  ::byte* scanline = (::byte*)plAllocate(sizeof(::byte) * imageWidth * 4);
 
   if (!scanline)
   {
@@ -441,13 +441,13 @@ void LoadHdr(Status& status,
   plDeallocate(scanline);
   *width = imageWidth;
   *height = imageHeight;
-  *output = (byte*)outputImage;
+  *output = (::byte*)outputImage;
 
   // We always output the RGB32f format.
   *format = TextureFormat::RGB32f;
 }
 
-void SaveHdr(Status& status, Stream* stream, const byte* image, uint width, uint height, TextureFormat::Enum format)
+void SaveHdr(Status& status, Stream* stream, const ::byte* image, uint width, uint height, TextureFormat::Enum format)
 {
   if (!IsHdrSaveFormat(format))
   {
@@ -462,7 +462,7 @@ void SaveHdr(Status& status, Stream* stream, const byte* image, uint width, uint
   }
 
   uint dataSize = width * height * 4;
-  byte* outputData = new byte[dataSize];
+  ::byte* outputData = new ::byte[dataSize];
 
   for (uint i = 0; i < width * height; ++i)
     Rgb32fToRgbe((float*)image + i * 3, outputData + i * 4);
@@ -476,7 +476,7 @@ void SaveHdr(Status& status, Stream* stream, const byte* image, uint width, uint
 
   // Write header
   uint headerSize = header.GetSize();
-  byte* headerData = new byte[headerSize];
+  ::byte* headerData = new ::byte[headerSize];
   header.ExtractInto(headerData, headerSize);
   stream->Write(headerData, headerSize);
   delete[] headerData;
@@ -485,9 +485,9 @@ void SaveHdr(Status& status, Stream* stream, const byte* image, uint width, uint
   stream->Write(outputData, dataSize);
 }
 
-void RgbeToRgb32f(byte* rgbe, float* rgb32f)
+void RgbeToRgb32f(::byte* rgbe, float* rgb32f)
 {
-  byte e = rgbe[3];
+  ::byte e = rgbe[3];
   if (e != 0)
   {
     float exp = ldexp(1.0f / 256.0f, (int)e - 128);
@@ -503,7 +503,7 @@ void RgbeToRgb32f(byte* rgbe, float* rgb32f)
   }
 }
 
-void Rgb32fToRgbe(float* rgb32f, byte* rgbe)
+void Rgb32fToRgbe(float* rgb32f, ::byte* rgbe)
 {
   float maxValue = rgb32f[0];
   if (rgb32f[1] > maxValue)
@@ -519,10 +519,10 @@ void Rgb32fToRgbe(float* rgb32f, byte* rgbe)
   {
     int exp;
     float scale = frexp(maxValue, &exp) * 256.0f / maxValue;
-    rgbe[0] = (byte)(rgb32f[0] * scale);
-    rgbe[1] = (byte)(rgb32f[1] * scale);
-    rgbe[2] = (byte)(rgb32f[2] * scale);
-    rgbe[3] = (byte)(exp + 128);
+    rgbe[0] = (::byte)(rgb32f[0] * scale);
+    rgbe[1] = (::byte)(rgb32f[1] * scale);
+    rgbe[2] = (::byte)(rgb32f[2] * scale);
+    rgbe[3] = (::byte)(exp + 128);
   }
 }
 

@@ -196,7 +196,7 @@ bool StringRange::operator!=(char c) const
 
 StringRange StringRange::FindFirstOf(Rune rune) const
 {
-  byte buffer[4];
+  ::byte buffer[4];
   uint sizeInBytes = UTF8::UnpackUtf8RuneIntoBuffer(rune, buffer);
 
   return FindFirstByBytes((char*)buffer, sizeInBytes);
@@ -209,7 +209,7 @@ StringRange StringRange::FindFirstOf(StringRangeParam value) const
 
 StringRange StringRange::FindLastOf(Rune rune) const
 {
-  byte buffer[4];
+  ::byte buffer[4];
   uint sizeInBytes = UTF8::UnpackUtf8RuneIntoBuffer(rune, buffer);
 
   return FindLastByBytes((char*)buffer, sizeInBytes);
@@ -597,7 +597,7 @@ void StringRange::DecrementPointerByRune(cstr& ptr)
 Rune StringRange::ReadCurrentRune() const
 {
   // if(ValidateByte(mBegin))
-  return UTF8::ReadUtf8Rune((byte*)mBegin);
+  return UTF8::ReadUtf8Rune((::byte*)mBegin);
   // return Rune('\0');
 }
 

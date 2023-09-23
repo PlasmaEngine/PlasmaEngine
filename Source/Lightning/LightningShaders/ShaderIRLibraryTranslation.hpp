@@ -159,7 +159,7 @@ void TranslateCompositeSplatConstructor(LightningSpirVFrontEnd* translator,
 bool IsVectorSwizzle(StringParam memberName);
 void ResolveScalarComponentAccess(LightningSpirVFrontEnd* translator,
                                   Lightning::MemberAccessNode* memberAccessNode,
-                                  byte componentName,
+                                  ::byte componentName,
                                   LightningSpirVFrontEndContext* context);
 void ResolveScalarSwizzle(LightningSpirVFrontEnd* translator,
                           Lightning::MemberAccessNode* memberAccessNode,
@@ -172,11 +172,11 @@ void ResolveVectorCopyConstructor(LightningSpirVFrontEnd* translator, Lightning:
 void ResolveVectorComponentAccess(LightningSpirVFrontEnd* translator,
                                   LightningShaderIROp* selfInstance,
                                   LightningShaderIRType* componentType,
-                                  byte componentName,
+                                  ::byte componentName,
                                   LightningSpirVFrontEndContext* context);
 void ResolveVectorComponentAccess(LightningSpirVFrontEnd* translator,
                                   Lightning::MemberAccessNode* memberAccessNode,
-                                  byte componentName,
+                                  ::byte componentName,
                                   LightningSpirVFrontEndContext* context);
 void ResolveVectorSwizzle(LightningSpirVFrontEnd* translator,
                           ILightningShaderIR* selfInstance,

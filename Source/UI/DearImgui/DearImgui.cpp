@@ -52,7 +52,7 @@ namespace Plasma
             io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
 
             mFontTexture = new Texture();
-            mFontTexture->Upload(width, height, TextureFormat::RGBA8, (byte*)pixels, sizeof(int) * width * height, true);
+            mFontTexture->Upload(width, height, TextureFormat::RGBA8, (::byte*)pixels, sizeof(int) * width * height, true);
 
             io.Fonts->SetTexID(mFontTexture);
         }

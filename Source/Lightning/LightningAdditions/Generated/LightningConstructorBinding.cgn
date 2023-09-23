@@ -28,7 +28,7 @@ static void BoundConstructorVirtual(Call& call, ExceptionReport& report)
 $BoundReadArguments$
   
   Handle& handle = call.GetHandle(Call::This);
-  byte* data = handle.Dereference();
+  ::byte* data = handle.Dereference();
   new (data) Class($Arguments$);
   
   call.GetState()->UpdateCppVirtualTable(data, LightningTypeId(Class), handle.StoredType);
@@ -58,7 +58,7 @@ static void BoundConstructor(Call& call, ExceptionReport& report)
 $BoundReadArguments$
   
   Handle& handle = call.GetHandle(Call::This);
-  byte* data = handle.Dereference();
+  ::byte* data = handle.Dereference();
   new (data) Class($Arguments$);
 }
 

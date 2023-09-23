@@ -227,7 +227,7 @@ public:
 
   // Button For this Event
   MouseButtons::Enum MouseButton;
-  byte ButtonDown[MouseButtons::Size];
+  ::byte ButtonDown[MouseButtons::Size];
 
   void Serialize(Serializer& stream);
 };

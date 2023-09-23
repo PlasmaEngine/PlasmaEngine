@@ -5,7 +5,7 @@ namespace Plasma
 {
 void Stream::ReadMemoryBlock(Status& status, ByteBufferBlock& block, size_t sizeInBytes)
 {
-  byte* data = (byte*)plAllocate(sizeInBytes);
+  ::byte* data = (::byte*)plAllocate(sizeInBytes);
   if (data == nullptr)
   {
     status.SetFailed("Failed to allocate memory to read the stream");
@@ -15,9 +15,9 @@ void Stream::ReadMemoryBlock(Status& status, ByteBufferBlock& block, size_t size
   block.SetData(data, amountRead, true);
 }
 
-byte Stream::ReadByte()
+::byte Stream::ReadByte()
 {
-  byte value;
+  ::byte value;
   if (Read(&value, 1))
     return value;
 
@@ -25,13 +25,13 @@ byte Stream::ReadByte()
   return 0;
 }
 
-byte Stream::ReadByteAt(u64 index)
+::byte Stream::ReadByteAt(u64 index)
 {
   Seek(index, SeekOrigin::Begin);
   return ReadByte();
 }
 
-size_t Stream::Peek(byte* data, size_t sizeInBytes)
+size_t Stream::Peek(::byte* data, size_t sizeInBytes)
 {
   u64 position = Tell();
   size_t result = Read(data, sizeInBytes);
@@ -46,29 +46,29 @@ void Stream::PeekMemoryBlock(Status& status, ByteBufferBlock& block, size_t size
   Seek(position);
 }
 
-byte Stream::PeekByte()
+::byte Stream::PeekByte()
 {
   u64 position = Tell();
-  byte value = ReadByte();
+  ::byte value = ReadByte();
   Seek(position);
   return value;
 }
 
-byte Stream::PeekByteAt(u64 index)
+::byte Stream::PeekByteAt(u64 index)
 {
   u64 position = Tell();
-  byte value = ReadByteAt(index);
+  ::byte value = ReadByteAt(index);
   Seek(position);
   return value;
 }
 
-void Stream::WriteByte(byte value)
+void Stream::WriteByte(::byte value)
 {
   if (Write(&value, 1) == 0)
     Error("WriteByte failed. Make sure the Stream is within the bounds");
 }
 
-void Stream::WriteByteAt(byte value, size_t index)
+void Stream::WriteByteAt(::byte value, size_t index)
 {
   Seek(index, SeekOrigin::Begin);
   return WriteByte(value);
@@ -78,7 +78,7 @@ FixedMemoryStream::FixedMemoryStream() : FixedMemoryStream(nullptr, 0)
 {
 }
 
-FixedMemoryStream::FixedMemoryStream(byte* data, size_t size) : mData(data), mSize(size), mCurrent(0)
+FixedMemoryStream::FixedMemoryStream(::byte* data, size_t size) : mData(data), mSize(size), mCurrent(0)
 {
 }
 
@@ -94,7 +94,7 @@ FixedMemoryStream::FixedMemoryStream(ByteBufferBlock& block) : FixedMemoryStream
 {
 }
 
-FixedMemoryStream::FixedMemoryStream(StringParam string) : FixedMemoryStream((byte*)string.Data(), string.SizeInBytes())
+FixedMemoryStream::FixedMemoryStream(StringParam string) : FixedMemoryStream((::byte*)string.Data(), string.SizeInBytes())
 {
 }
 
@@ -135,7 +135,7 @@ u64 FixedMemoryStream::Tell()
   return mCurrent;
 }
 
-size_t FixedMemoryStream::Write(byte* data, size_t sizeInBytes)
+size_t FixedMemoryStream::Write(::byte* data, size_t sizeInBytes)
 {
   if (!HasData())
     return 0;
@@ -149,7 +149,7 @@ size_t FixedMemoryStream::Write(byte* data, size_t sizeInBytes)
   return sizeInBytes;
 }
 
-size_t FixedMemoryStream::Read(byte* data, size_t sizeInBytes)
+size_t FixedMemoryStream::Read(::byte* data, size_t sizeInBytes)
 {
   if (!HasData())
     return 0;
@@ -197,7 +197,7 @@ ByteBufferMemoryStream::ByteBufferMemoryStream()
 {
 }
 
-ByteBufferMemoryStream::ByteBufferMemoryStream(const byte* data, size_t size)
+ByteBufferMemoryStream::ByteBufferMemoryStream(const ::byte* data, size_t size)
 {
   mBuffer.Write(data, size);
 }
@@ -216,7 +216,7 @@ ByteBufferMemoryStream::ByteBufferMemoryStream(const ByteBufferBlock& block) :
 {
 }
 
-ByteBufferMemoryStream::ByteBufferMemoryStream(const Array<byte>& block) :
+ByteBufferMemoryStream::ByteBufferMemoryStream(const Array<::byte>& block) :
     ByteBufferMemoryStream(block.Data(), block.Size())
 {
 }
@@ -239,7 +239,7 @@ u64 ByteBufferMemoryStream::Tell()
   return mBuffer.GetSize();
 }
 
-size_t ByteBufferMemoryStream::Write(byte* data, size_t sizeInBytes)
+size_t ByteBufferMemoryStream::Write(::byte* data, size_t sizeInBytes)
 {
   if (!HasData())
     return 0;
@@ -248,7 +248,7 @@ size_t ByteBufferMemoryStream::Write(byte* data, size_t sizeInBytes)
   return sizeInBytes;
 }
 
-size_t ByteBufferMemoryStream::Read(byte* data, size_t sizeInBytes)
+size_t ByteBufferMemoryStream::Read(::byte* data, size_t sizeInBytes)
 {
   Error("Reading on ByteBufferMemoryStream is not supported");
   return 0;
@@ -272,7 +272,7 @@ ArrayByteMemoryStream::ArrayByteMemoryStream()
 {
 }
 
-ArrayByteMemoryStream::ArrayByteMemoryStream(const byte* data, size_t size) : mCurrent(0)
+ArrayByteMemoryStream::ArrayByteMemoryStream(const ::byte* data, size_t size) : mCurrent(0)
 {
   mBuffer.Insert(mBuffer.Begin(), data, data + size);
 }
@@ -291,7 +291,7 @@ ArrayByteMemoryStream::ArrayByteMemoryStream(const ByteBufferBlock& block) :
 {
 }
 
-ArrayByteMemoryStream::ArrayByteMemoryStream(const Array<byte>& block) :
+ArrayByteMemoryStream::ArrayByteMemoryStream(const Array<::byte>& block) :
     ArrayByteMemoryStream(block.Data(), block.Size())
 {
 }
@@ -333,7 +333,7 @@ u64 ArrayByteMemoryStream::Tell()
   return mCurrent;
 }
 
-size_t ArrayByteMemoryStream::Write(byte* data, size_t sizeInBytes)
+size_t ArrayByteMemoryStream::Write(::byte* data, size_t sizeInBytes)
 {
   if (!HasData())
     return 0;
@@ -347,7 +347,7 @@ size_t ArrayByteMemoryStream::Write(byte* data, size_t sizeInBytes)
   return sizeInBytes;
 }
 
-size_t ArrayByteMemoryStream::Read(byte* data, size_t sizeInBytes)
+size_t ArrayByteMemoryStream::Read(::byte* data, size_t sizeInBytes)
 {
   if (!HasData())
     return 0;

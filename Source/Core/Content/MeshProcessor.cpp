@@ -166,7 +166,7 @@ void MeshProcessor::ExtractAndProcessMeshData(const aiScene* scene)
           aiVertexWeight vertWeight = bone->mWeights[weightIndex];
           BoneData boneData;
           boneData.mBoneWeight = vertWeight.mWeight;
-          boneData.mBoneIndex = (byte)boneIndex;
+          boneData.mBoneIndex = (::byte)boneIndex;
           boneWeightData[vertWeight.mVertexId].PushBack(boneData);
         }
       }
@@ -345,14 +345,14 @@ void MeshProcessor::WriteSingleMeshes(String outputPath)
       uint numIndices = meshData.mIndexBuffer.Size();
 
       IndexElementType::Enum indexType = DetermineIndexType(numIndices);
-      byte indexTypeByte = (byte)indexType;
+      ::byte indexTypeByte = (::byte)indexType;
       writer.Write(indexTypeByte);
       writer.Write(numIndices);
 
       switch (indexType)
       {
       case IndexElementType::Byte:
-        WriteIndexData<byte>(meshData.mIndexBuffer, writer);
+        WriteIndexData<::byte>(meshData.mIndexBuffer, writer);
         break;
       case IndexElementType::Ushort:
         WriteIndexData<ushort>(meshData.mIndexBuffer, writer);

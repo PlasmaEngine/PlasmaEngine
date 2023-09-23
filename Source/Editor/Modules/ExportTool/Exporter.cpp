@@ -577,7 +577,7 @@ void Exporter::UpdateIcon(ProjectSettings* project, ExecutableResourceUpdater& u
   {
     // Read the file into memory
     size_t bufferSize = 0;
-    byte* buffer = ReadFileIntoMemory(iconFile.c_str(), bufferSize);
+    ::byte* buffer = ReadFileIntoMemory(iconFile.c_str(), bufferSize);
 
     if (buffer && bufferSize)
       updater.UpdateIcon(buffer, bufferSize);

@@ -48,7 +48,7 @@ public:
   {
   }
 
-  bool ArrayField(cstr, cstr, byte*, ArrayType arrayType, uint, uint) override
+  bool ArrayField(cstr, cstr, ::byte*, ArrayType arrayType, uint, uint) override
   {
     return false;
   }

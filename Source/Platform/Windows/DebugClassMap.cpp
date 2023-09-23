@@ -202,7 +202,7 @@ ClassMap* BuildMap(TypeModule& types, uint typeIndex)
   return classMap;
 }
 
-void Check(TypeModule& typeModule, cstr className, byte* classMemory, uint typeIndex)
+void Check(TypeModule& typeModule, cstr className, ::byte* classMemory, uint typeIndex)
 {
 
   // Get the class map
@@ -211,7 +211,7 @@ void Check(TypeModule& typeModule, cstr className, byte* classMemory, uint typeI
   // Check all member variables for uninitialized memory
   forRange (MemberVariable& var, classMap->mVariables.All())
   {
-    const byte DebugByte = 0xCD;
+    const ::byte DebugByte = 0xCD;
     bool good = false;
     uint dwords = var.Size;
     for (uint i = 0; i < var.Size; ++i)
@@ -240,7 +240,7 @@ void Check(TypeModule& typeModule, cstr className, byte* classMemory, uint typeI
 bool SymbolsLoaded = false;
 bool CanScanSymbols = true;
 
-void CheckClassMemory(cstr className, byte* classMemory)
+void CheckClassMemory(cstr className, ::byte* classMemory)
 {
   if (!CanScanSymbols)
     return;

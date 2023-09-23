@@ -518,7 +518,7 @@ void FontRasterizer::LoadGlyphsOntoTexture(bool isOriginalTexture)
     int textureSize = mRenderFont->mTextureSize;
     texture = Texture::CreateRuntime();
     texture->mFiltering = TextureFiltering::Bilinear;
-    texture->Upload(textureSize, textureSize, TextureFormat::RGBA8, (byte*)mFontImage.Data, mFontImage.SizeInBytes);
+    texture->Upload(textureSize, textureSize, TextureFormat::RGBA8, (::byte*)mFontImage.Data, mFontImage.SizeInBytes);
 
     // None of these steps should be repeated for new textures altogether
     // Load all the data into the Rendered Font

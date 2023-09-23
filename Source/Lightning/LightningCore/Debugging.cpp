@@ -162,7 +162,7 @@ Any Debugger::QueryExpression(StringParam expression, Array<QueryResult>& result
             continue;
 
           // Get the stack location of the variable
-          byte* variableStackMemory = frame->Frame + variable->Local;
+          ::byte* variableStackMemory = frame->Frame + variable->Local;
           currentValue = Any(variableStackMemory, variable->ResultType);
 
           // If this is the first value, then write out its value (otherwise the

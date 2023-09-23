@@ -365,7 +365,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  String Rune::ToString(const BoundType* type, const byte* data)
+  String Rune::ToString(const BoundType* type, const ::byte* data)
   {
     Rune* rune = (Rune*)data;
     return String(rune->mValue);
@@ -415,7 +415,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  String RuneIterator::ToString(const BoundType* type, const byte* data)
+  String RuneIterator::ToString(const BoundType* type, const ::byte* data)
   {
     RuneIterator* iterator = (RuneIterator*)data;
 
@@ -608,7 +608,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  String StringRangeExtended::ToString(const BoundType* type, const byte* data)
+  String StringRangeExtended::ToString(const BoundType* type, const ::byte* data)
   {
     StringRangeExtended* range = (StringRangeExtended*)data;
 

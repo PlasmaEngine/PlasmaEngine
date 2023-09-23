@@ -67,7 +67,7 @@ void ShaderStreamWriter::Write(StringParam text)
   size_t totalSize = GetPaddedByteCount(text);
 
   size_t wordCount = byteCount / 4;
-  byte* data = (byte*)text.Data();
+  ::byte* data = (::byte*)text.Data();
   size_t i = 0;
   while (i < totalSize)
   {
@@ -97,21 +97,21 @@ void ShaderByteStream::Load(Array<uint32>& words)
 {
   size_t byteCount = words.Size() * 4;
   mData.Resize(byteCount);
-  memcpy(mData.Data(), (byte*)words.Data(), byteCount);
+  memcpy(mData.Data(), (::byte*)words.Data(), byteCount);
 }
 
 void ShaderByteStream::Load(StringParam str)
 {
   mData.Resize(str.SizeInBytes());
-  Load((byte*)str.Data(), str.SizeInBytes());
+  Load((::byte*)str.Data(), str.SizeInBytes());
 }
 
 void ShaderByteStream::Load(const char* source, size_t sizeInBytes)
 {
-  Load((byte*)source, sizeInBytes);
+  Load((::byte*)source, sizeInBytes);
 }
 
-void ShaderByteStream::Load(const byte* source, size_t sizeInBytes)
+void ShaderByteStream::Load(const ::byte* source, size_t sizeInBytes)
 {
   mData.Resize(sizeInBytes);
   memcpy(mData.Data(), source, sizeInBytes);
@@ -120,7 +120,7 @@ void ShaderByteStream::Load(const byte* source, size_t sizeInBytes)
 void ShaderByteStream::LoadWords(const uint32* data, size_t wordCount)
 {
   size_t byteCount = wordCount * 4;
-  Load((const byte*)data, byteCount);
+  Load((const ::byte*)data, byteCount);
 }
 
 void ShaderByteStream::SaveTo(Array<uint32>& words)
@@ -128,7 +128,7 @@ void ShaderByteStream::SaveTo(Array<uint32>& words)
   size_t sizeInBytes = mData.Size();
   size_t wordCount = sizeInBytes / 4;
   words.Resize(wordCount);
-  memcpy(words.Data(), (byte*)mData.Data(), sizeInBytes);
+  memcpy(words.Data(), (::byte*)mData.Data(), sizeInBytes);
 }
 
 String ShaderByteStream::ToString()
@@ -137,7 +137,7 @@ String ShaderByteStream::ToString()
   return str;
 }
 
-byte* ShaderByteStream::Data()
+::byte* ShaderByteStream::Data()
 {
   return mData.Data();
 }
@@ -175,12 +175,12 @@ ShaderByteStreamWriter::~ShaderByteStreamWriter()
 
 void ShaderByteStreamWriter::WriteWord(uint32 word)
 {
-  byte* bytes = (byte*)&word;
+  ::byte* bytes = (::byte*)&word;
   for (size_t i = 0; i < 4; ++i)
     mByteStream->mData.PushBack(bytes[i]);
 }
 
-byte* ShaderByteStreamWriter::Data()
+::byte* ShaderByteStreamWriter::Data()
 {
   return mByteStream->mData.Data();
 }

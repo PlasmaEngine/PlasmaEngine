@@ -50,7 +50,7 @@ namespace Lightning
     // Use the macro 'LightningDefineEventDelegateHelpers' to automatically implement these virtual methods
 
     // Copy the event delegate in place
-    virtual void CopyInto(byte* destination) = 0;
+    virtual void CopyInto(::byte* destination) = 0;
 
     // Get a unique id or pointer that lets us identify the owner of the delegate (who the delegate is bound to)
     virtual void* GetThisPointerOrUniqueId() = 0;
@@ -69,7 +69,7 @@ namespace Lightning
   // When we create new event delegates, we put this at the top to automatically implement 'GetSize' and 'CopyInto'
   // Our implementation of 'CopyInto' just invokes the copy constructor via placement new
   #define LightningDefineEventDelegateHelpers(SelfType)                                     \
-    void CopyInto(byte* destination) override                                           \
+    void CopyInto(::byte* destination) override                                           \
     {                                                                                   \
       static_assert(sizeof(SelfType) <= MaxEventDelegateSize,                           \
         "The size of the event delegate must not exceed MaxEventDelegateSize");         \

@@ -663,7 +663,7 @@ void OsMouseEvent::Serialize(Serializer& stream)
 
   SerializeEnumNameDefault(MouseButtons, MouseButton, MouseButtons::None);
 
-  static_assert(sizeof(bool) == sizeof(byte), "For this trick work the size must be the same");
+  static_assert(sizeof(bool) == sizeof(::byte), "For this trick work the size must be the same");
   bool& LeftButton = (bool&)ButtonDown[MouseButtons::Left];
   bool& RightButton = (bool&)ButtonDown[MouseButtons::Right];
   bool& MiddleButton = (bool&)ButtonDown[MouseButtons::Middle];

@@ -11,8 +11,8 @@ public:
 
   bool Open(StringParam name, uint baudRate);
   void Close();
-  uint Read(byte* buffer, uint bytesToRead);
-  void Write(byte* buffer, uint bytesToWrite);
+  uint Read(::byte* buffer, uint bytesToRead);
+  void Write(::byte* buffer, uint bytesToWrite);
 
   OsHandle mComHandle;
 };

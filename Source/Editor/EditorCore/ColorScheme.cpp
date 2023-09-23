@@ -89,7 +89,7 @@ ColorScheme::~ColorScheme()
 // ByteColor so swap the order for saving / loading
 uint ConvertByteColorHexOrder(const uint& inputColor)
 {
-  return ByteColorRGBA(((byte*)&inputColor)[2], ((byte*)&inputColor)[1], ((byte*)&inputColor)[0], 0xFF);
+  return ByteColorRGBA(((::byte*)&inputColor)[2], ((::byte*)&inputColor)[1], ((::byte*)&inputColor)[0], 0xFF);
 }
 
 void SerializeRGBColor(Serializer& stream, cstr fieldName, uint& colorValue)

@@ -101,7 +101,7 @@ void StringBuilder::Append(StringRange range)
 
 void StringBuilder::Append(char character)
 {
-  ByteBuffer::Append((const byte*)&character, sizeof(character));
+  ByteBuffer::Append((const ::byte*)&character, sizeof(character));
 }
 
 void StringBuilder::AppendFormat(cstr format, ...)
@@ -120,7 +120,7 @@ void StringBuilder::Append(cstr begin, uint sizeInBytes)
 
 void StringBuilder::Append(Rune rune)
 {
-  byte utf8Bytes[4];
+  ::byte utf8Bytes[4];
   int bytesRead = UTF8::UnpackUtf8RuneIntoBuffer(rune, utf8Bytes);
   ByteBuffer::Append(utf8Bytes, bytesRead);
 }

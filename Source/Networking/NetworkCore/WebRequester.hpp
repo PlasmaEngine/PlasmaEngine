@@ -152,7 +152,7 @@ private:
   void OnWebResponseHeadersInternal(WebResponseEvent* event);
 
   // Occurs when we receive data.
-  static void OnDataReceived(const byte* data, size_t size, u64 totalDownloaded, WebRequest* request);
+  static void OnDataReceived(const ::byte* data, size_t size, u64 totalDownloaded, WebRequest* request);
   void OnWebResponsePartialDataInternal(WebResponseEvent* event);
 
   // Occurs when the web request is complete (can be due to an error).

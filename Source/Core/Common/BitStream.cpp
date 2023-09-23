@@ -11,7 +11,7 @@ BitStream::BitStream()
   Initialize();
 }
 BitStream::BitStream(const BitStream& rhs) :
-    mData(rhs.mByteCapacity ? new byte[rhs.mByteCapacity] : nullptr),
+    mData(rhs.mByteCapacity ? new ::byte[rhs.mByteCapacity] : nullptr),
     mByteCapacity(rhs.mByteCapacity),
     mBitsWritten(rhs.mBitsWritten),
     mBitsRead(rhs.mBitsRead),
@@ -125,7 +125,7 @@ Bits BitStream::WriteBit(bool value)
   Bits remBitsWritten = MOD8(mBitsWritten);
 
   // Write value at cursor
-  byte* writeCursor = mData + fullBytesWritten;
+  ::byte* writeCursor = mData + fullBytesWritten;
   ASSIGN_LBIT(value, writeCursor, remBitsWritten);
 
   ++mBitsWritten;
@@ -133,7 +133,7 @@ Bits BitStream::WriteBit(bool value)
   // Success
   return 1;
 }
-Bits BitStream::WriteBits(const byte* data, Bits dataBits)
+Bits BitStream::WriteBits(const ::byte* data, Bits dataBits)
 {
   // There must be data to write
   Assert(data && dataBits);
@@ -170,8 +170,8 @@ Bits BitStream::WriteBits(const byte* data, Bits dataBits)
   Bits remBitsWritten = MOD8(mBitsWritten);
   Bytes fullDataBytes = DIV8(dataBits);
   Bits remDataBits = MOD8(dataBits);
-  byte* writeCursor = mData + fullBytesWritten;
-  byte* dataCursor = (byte*)data;
+  ::byte* writeCursor = mData + fullBytesWritten;
+  ::byte* dataCursor = (::byte*)data;
   bool writeCursorByteAligned = !remBitsWritten;
 
   Assert(BYTES_TO_BITS(fullBytesWritten) + remBitsWritten == mBitsWritten &&
@@ -239,16 +239,16 @@ Bits BitStream::WriteBits(const byte* data, Bits dataBits)
 
 Bits BitStream::WriteByte(uint8 value)
 {
-  return WriteBits((byte*)&value, BYTES_TO_BITS(1));
+  return WriteBits((::byte*)&value, BYTES_TO_BITS(1));
 }
-Bits BitStream::WriteBytes(const byte* data, Bytes dataBytes)
+Bits BitStream::WriteBytes(const ::byte* data, Bytes dataBytes)
 {
   return WriteBits(data, BYTES_TO_BITS(dataBytes));
 }
 
 Bits BitStream::Write(const String& value)
 {
-  return WriteBits((const byte*)value.c_str(), BYTES_TO_BITS(value.SizeInBytes() + 1));
+  return WriteBits((const ::byte*)value.c_str(), BYTES_TO_BITS(value.SizeInBytes() + 1));
 }
 
 Bits BitStream::WriteUntilByteAligned()
@@ -351,7 +351,7 @@ Bits BitStream::ReadBit(bool& value) const
   Bits remBitsRead = MOD8(mBitsRead);
 
   // Read value at cursor
-  const byte* readCursor = mData + fullBytesRead;
+  const ::byte* readCursor = mData + fullBytesRead;
   value = *readCursor & LBIT(remBitsRead) ? true : false;
 
   ++mBitsRead;
@@ -359,7 +359,7 @@ Bits BitStream::ReadBit(bool& value) const
   // Success
   return 1;
 }
-Bits BitStream::ReadBits(byte* data, Bits dataBits) const
+Bits BitStream::ReadBits(::byte* data, Bits dataBits) const
 {
   // There must be data to read
   Assert(data && dataBits);
@@ -405,8 +405,8 @@ Bits BitStream::ReadBits(byte* data, Bits dataBits) const
   Bits remBitsRead = MOD8(mBitsRead);
   Bytes fullDataBytes = DIV8(dataBits);
   Bits remDataBits = MOD8(dataBits);
-  byte* readCursor = mData + fullBytesRead;
-  byte* dataCursor = data;
+  ::byte* readCursor = mData + fullBytesRead;
+  ::byte* dataCursor = data;
   bool readCursorByteAligned = !remBitsRead;
 
   Assert(BYTES_TO_BITS(fullBytesRead) + remBitsRead == mBitsRead &&
@@ -474,9 +474,9 @@ Bits BitStream::ReadBits(byte* data, Bits dataBits) const
 
 Bits BitStream::ReadByte(uint8& value) const
 {
-  return ReadBits((byte*)&value, BYTES_TO_BITS(1));
+  return ReadBits((::byte*)&value, BYTES_TO_BITS(1));
 }
-Bits BitStream::ReadBytes(byte* data, Bytes dataBytes) const
+Bits BitStream::ReadBytes(::byte* data, Bytes dataBytes) const
 {
   return ReadBits(data, BYTES_TO_BITS(dataBytes));
 }
@@ -502,7 +502,7 @@ Bits BitStream::Read(String& value) const
     StringNode* node = String::AllocateNode(stringBytes);
 
     // Read string
-    bitsRead1 = ReadBits((byte*)node->Data, BYTES_TO_BITS(stringBytes));
+    bitsRead1 = ReadBits((::byte*)node->Data, BYTES_TO_BITS(stringBytes));
     if (!bitsRead1)
     {
       // Failure
@@ -613,9 +613,9 @@ void BitStream::Reallocate(Bytes capacity, bool copyData)
 {
   Assert(capacity <= BITSTREAM_MAX_BYTES);
 
-  byte* temp = mData;
+  ::byte* temp = mData;
   Bytes tempCapacity = GetByteCapacity();
-  mData = new byte[capacity];
+  mData = new ::byte[capacity];
   mByteCapacity = capacity;
 
   Assert(mByteCapacity > tempCapacity);

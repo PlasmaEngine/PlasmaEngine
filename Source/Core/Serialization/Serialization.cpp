@@ -151,9 +151,9 @@ void EncodeBinary(ByteBufferBlock& buffer, String& encodedOut)
 
   for (size_t i = 0; i < buffer.Size(); ++i)
   {
-    byte c = buffer.GetBegin()[i];
-    byte high = c / 16;
-    byte low = c % 16;
+    ::byte c = buffer.GetBegin()[i];
+    ::byte high = c / 16;
+    ::byte low = c % 16;
 
     high += (high < 10) ? '0' : 'A';
     low += (low < 10) ? '0' : 'A';
@@ -171,17 +171,17 @@ bool DecodeBinary(ByteBufferBlock& buffer, const String& encoded)
   if (encoded.Empty())
     return false;
 
-  byte version = *encoded.Data();
+  ::byte version = *encoded.Data();
 
   if (version == '0')
   {
     size_t bufferSize = (encoded.SizeInBytes() - 1) / 2;
-    buffer.SetData(new byte[bufferSize], bufferSize, true);
+    buffer.SetData(new ::byte[bufferSize], bufferSize, true);
 
     for (size_t i = 0; i < bufferSize; ++i)
     {
-      byte high = encoded.Data()[i * 2 + 1];
-      byte low = encoded.Data()[i * 2 + 2];
+      ::byte high = encoded.Data()[i * 2 + 1];
+      ::byte low = encoded.Data()[i * 2 + 2];
 
       high -= (high < 'A') ? '0' : 'A';
       low -= (low < 'A') ? '0' : 'A';

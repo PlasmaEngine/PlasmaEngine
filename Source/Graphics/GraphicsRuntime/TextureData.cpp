@@ -42,7 +42,7 @@ TextureData::TextureData(TextureFormat::Enum format, int width, int height) : mP
 
   mPixelSize = GetPixelSize(format);
   mDataSize = mPixelCount * mPixelSize;
-  mData = new byte[mDataSize];
+  mData = new ::byte[mDataSize];
   memset(mData, 0, mDataSize);
 }
 

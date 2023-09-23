@@ -112,7 +112,7 @@ public:
   Thread mReadWriteThread;
   OsEvent mWriteSignal;
   ThreadLock mWriteLock;
-  Array<byte> mWriteData;
+  Array<::byte> mWriteData;
   bool mWriteComplete;
 };
 

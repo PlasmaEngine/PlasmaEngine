@@ -169,13 +169,13 @@ void SpriteSheetImporter::UpdateTexture()
       Sampling == SpriteSampling::Nearest ? TextureFiltering::Nearest : TextureFiltering::Bilinear;
   mSourceTextrue->SetFiltering(filtering);
 
-  byte* data = (byte*)mSourcePixels.Data;
+  ::byte* data = (::byte*)mSourcePixels.Data;
   if (UseAlphaColorKey)
   {
     mFixedPixels.Allocate(SourceSizeX, SourceSizeY);
     CopyImage(&mFixedPixels, &mSourcePixels);
     SetColorToAlpha(&mFixedPixels, ToByteColor(AlphaColor));
-    data = (byte*)mFixedPixels.Data;
+    data = (::byte*)mFixedPixels.Data;
   }
 
   mSourceTextrue->Upload(mSourcePixels);

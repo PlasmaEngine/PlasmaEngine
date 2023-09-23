@@ -85,7 +85,7 @@ namespace Lightning
     // Send a full packet to the remote end
     // This function will block until the entire packet is sent
     // It is safe to call this function from another thread (only one thread at a time though)
-    void SendFullPacket(Status& status, const byte* data, size_t length, WebSocketPacketType::Enum packetType);
+    void SendFullPacket(Status& status, const ::byte* data, size_t length, WebSocketPacketType::Enum packetType);
 
     // Receives an entire packet of data into an array
     // This function will block until the entire packet is received, or an error occurs
@@ -105,7 +105,7 @@ namespace Lightning
     //******** Internal ********//
     
     // As we read data, we place it into this buffer
-    Array<byte> ReadData;
+    Array<::byte> ReadData;
   };
 
   // Listens for incoming web-socket connections

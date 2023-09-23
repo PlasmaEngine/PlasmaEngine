@@ -217,7 +217,7 @@ Any ConvertBasicVariantToAny(const Variant& variantValue)
   if (lightningType->IsHandle())
   {
     // Create a handle containing our value data
-    Handle handle((const byte*)variantData, Type::GetBoundType(lightningType));
+    Handle handle((const ::byte*)variantData, Type::GetBoundType(lightningType));
 
     // Copy handle to new any
     Any result(handle);
@@ -226,7 +226,7 @@ Any ConvertBasicVariantToAny(const Variant& variantValue)
   else
   {
     // Copy value to new any
-    Any result((const byte*)variantData, lightningType);
+    Any result((const ::byte*)variantData, lightningType);
     return result;
   }
 }

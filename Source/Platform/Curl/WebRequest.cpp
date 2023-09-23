@@ -97,7 +97,7 @@ static size_t OnWebRequestDataReceived(char* data, size_t size, size_t nmemb, vo
     if (!request)
       return 0;
     if (request->mOnDataReceived)
-      request->mOnDataReceived((byte*)data, totalSize, shared->mTotalDownloaded, request);
+      request->mOnDataReceived((::byte*)data, totalSize, shared->mTotalDownloaded, request);
   }
 
   // Return how much data we consumed

@@ -35,7 +35,7 @@ struct PatchLayer
   uint ElementSize;
 
   // Data
-  byte* Data;
+  ::byte* Data;
 };
 
 /// HeightMapSource stores data needed for height maps. Data is stored on

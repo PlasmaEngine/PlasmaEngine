@@ -36,7 +36,7 @@ public:
   /// Load memory into this byte stream (copies data).
   void Load(const char* source, size_t sizeInBytes);
   /// Load memory into this byte stream (copies data).
-  void Load(const byte* source, size_t sizeInBytes);
+  void Load(const ::byte* source, size_t sizeInBytes);
   /// Load memory from an array of words (copies data).
   /// Simple helper to avoid copying word->byte conversions everywhere.
   void LoadWords(const uint32* data, size_t wordCount);
@@ -47,11 +47,11 @@ public:
   /// Convert data to a string. Assumes the underlying data was actually a
   /// string (only valid depending on the backend type, such as glsl).
   String ToString();
-  byte* Data();
+  ::byte* Data();
   size_t ByteCount() const;
   size_t WordCount() const;
 
-  Array<byte> mData;
+  Array<::byte> mData;
 };
 
 /// A writer for a shader byte stream.
@@ -64,7 +64,7 @@ public:
 
   void WriteWord(uint32 word) override;
 
-  byte* Data();
+  ::byte* Data();
   size_t ByteCount() const;
   size_t WordCount() const;
 

@@ -218,7 +218,7 @@ void DataDrivenLexer::Parse(StringParam input,
   // parserTreeBuilder.mTree->GetDebugRepresentation();
   //
   // String graph = parserTreeBuilder.mTree->GetGraphRepresentation();
-  // Plasma::WriteToFile("C:\\Sandbox\\Graph.gv", (const byte*)graph.c_str(),
+  // Plasma::WriteToFile("C:\\Sandbox\\Graph.gv", (const ::byte*)graph.c_str(),
   // graph.size()); system("C:\\Progra~2\\Graphviz2.38\\bin\\dot.exe -Tpng
   // \"C:\\Sandbox\\Graph.gv\" > \"C:\\Sandbox\\Graph.png\"");
   // system("C:\\Sandbox\\Graph.png");

@@ -250,7 +250,7 @@ namespace Lightning
     EventSwapAll(&savedEvents, state);
 
     // Temporary space used for traversing object paths and copying Lightning objects (Delegate is the largest object)
-    byte tempSpace[sizeof(Delegate)];
+    ::byte tempSpace[sizeof(Delegate)];
 
     // Send a message back to answer the expression query
     JsonBuilder builder;
@@ -303,7 +303,7 @@ namespace Lightning
                   continue;
 
                 // Get the stack location of the variable
-                byte* variableStackMemory = frame->Frame + variable->Local;
+                ::byte* variableStackMemory = frame->Frame + variable->Local;
                 type->GenericCopyConstruct(tempSpace, variableStackMemory);
 
                 // If this is the first value, then write out its value (otherwise the parent would have written out our value)
@@ -327,7 +327,7 @@ namespace Lightning
                 while (splitter.Empty() == false)
                 {
                   // Get the most virtual version of that memory (dereferences handles, gets the most derived type, etc)
-                  byte* valueMemory = type->GenericGetMemory(tempSpace);
+                  ::byte* valueMemory = type->GenericGetMemory(tempSpace);
                   type = type->GenericGetVirtualType(tempSpace);
 
                   // Get the current property name
@@ -366,7 +366,7 @@ namespace Lightning
                     if (report.HasThrownExceptions())
                       goto END;
 
-                    byte* returnValue = call.GetReturnUnchecked();
+                    ::byte* returnValue = call.GetReturnUnchecked();
                     type->GenericCopyConstruct(tempSpace, returnValue);
                   }
                   else
@@ -387,7 +387,7 @@ namespace Lightning
                 while (boundType != nullptr)
                 {
                   // Either dereference the handle or get the memory for the value
-                  byte* memory = boundType->GenericGetMemory(tempSpace);
+                  ::byte* memory = boundType->GenericGetMemory(tempSpace);
 
                   // Loop through all the instance properties
                   PropertyArray& properties = boundType->AllProperties;
@@ -420,13 +420,13 @@ namespace Lightning
                     }
                     else
                     {
-                      byte* returnValue = call.GetReturnUnchecked();
+                      ::byte* returnValue = call.GetReturnUnchecked();
 
                       // If the property should be hidden when null...
                       if (property->IsHiddenWhenNull)
                       {
                         // If the dereferenced property is null, then skip it
-                        byte* returnValueDereferenced = property->PropertyType->GenericGetMemory(returnValue);
+                        ::byte* returnValueDereferenced = property->PropertyType->GenericGetMemory(returnValue);
                         if (returnValueDereferenced == nullptr)
                           continue;
                       }
@@ -459,7 +459,7 @@ namespace Lightning
                     // print out fields (because we know their type and know where they exist in memory
                     //if (Field* field = Type::DynamicCast<Field*>(property))
                     //{
-                    //  byte* fieldData = memory + field->Offset;
+                    //  ::byte* fieldData = memory + field->Offset;
                     //  
                     //  // Stringify the variable (gets its value)
                     //  String fieldValue = field->PropertyType->GenericToString(fieldData);

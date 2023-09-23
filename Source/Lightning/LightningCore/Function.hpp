@@ -93,7 +93,7 @@ public:
     size_t compactedIndex = this->OpcodeBuilder.RelativeSize();
 
     // Get an element of memory with the size of the opcode
-    byte* element = this->OpcodeBuilder.RequestElementOfSize(sizeof(T));
+    ::byte* element = this->OpcodeBuilder.RequestElementOfSize(sizeof(T));
 
     // Get a reference to the opcode
     T& opcode = *new (element) T();
@@ -220,7 +220,7 @@ public:
   UntypedBlockArray<1024> OpcodeBuilder;
 
   // The opcode for this function compacted into a linear array
-  Array<byte> CompactedOpcode;
+  Array<::byte> CompactedOpcode;
 
   // Store a list of pointers to opcodes for debugging purposes
   Array<size_t> OpcodeCompactedIndices;

@@ -17,7 +17,7 @@ namespace Plasma
 static int StbRead(void* userData, char* data, int size)
 {
   Stream* stream = (Stream*)userData;
-  return stream->Read((byte*)data, size);
+  return stream->Read((::byte*)data, size);
 }
 
 static void StbSkip(void* userData, int bytes)
@@ -35,7 +35,7 @@ static int StbEof(void* userData)
 static void StbWrite(void* userData, void* data, int size)
 {
   Stream* stream = (Stream*)userData;
-  size_t amountWritten = stream->Write((byte*)data, (size_t)size);
+  size_t amountWritten = stream->Write((::byte*)data, (size_t)size);
   ErrorIf(amountWritten != (size_t)size,
           "Not all bytes were written in call to StbWrite "
           "(stb does not support write calls that don't write all bytes)");
@@ -255,7 +255,7 @@ bool ReadImageInfo(StringParam filename, ImageInfo& info)
   return ReadImageInfo(file, info);
 }
 
-bool ReadImageInfo(byte* encoded, size_t size, ImageInfo& info)
+bool ReadImageInfo(::byte* encoded, size_t size, ImageInfo& info)
 {
   FixedMemoryStream stream(encoded, size);
   return ReadImageInfo(&stream, info);
@@ -263,7 +263,7 @@ bool ReadImageInfo(byte* encoded, size_t size, ImageInfo& info)
 
 void LoadImage(Status& status,
                Stream* stream,
-               byte** output,
+               ::byte** output,
                uint* width,
                uint* height,
                TextureFormat::Enum* format,
@@ -312,15 +312,15 @@ void LoadImage(Status& status,
   switch (requireDepth)
   {
   case ImageBitDepth::F32:
-    *output = (byte*)stbi_loadf_from_callbacks(
+    *output = (::byte*)stbi_loadf_from_callbacks(
         &callbacks, stream, (int*)width, (int*)height, &componentsOut, requireComponents);
     break;
   case ImageBitDepth::I16:
-    *output = (byte*)stbi_load_16_from_callbacks(
+    *output = (::byte*)stbi_load_16_from_callbacks(
         &callbacks, stream, (int*)width, (int*)height, &componentsOut, requireComponents);
     break;
   case ImageBitDepth::I8:
-    *output = (byte*)stbi_load_from_callbacks(
+    *output = (::byte*)stbi_load_from_callbacks(
         &callbacks, stream, (int*)width, (int*)height, &componentsOut, requireComponents);
     break;
   case ImageBitDepth::None:
@@ -342,7 +342,7 @@ void LoadImage(Status& status,
     stream->Seek(0);
     static const String cGifHeader("GIF");
     static const size_t cGifBytes = 3;
-    byte gifHeader[cGifBytes];
+    ::byte gifHeader[cGifBytes];
     if (stream->Peek(gifHeader, cGifBytes) == cGifBytes && memcmp(gifHeader, cGifHeader.Data(), cGifBytes) == 0)
     {
       // Read the entire stream into memory
@@ -374,7 +374,7 @@ void LoadImage(Status& status,
         // Copy a single frame to the output (we don't care about multiple
         // frames)
         size_t singleFrameSize = *width * *height * componentsOut;
-        *output = (byte*)plAllocate(singleFrameSize);
+        *output = (::byte*)plAllocate(singleFrameSize);
         memcpy(*output, allFrames, singleFrameSize);
       }
 
@@ -396,7 +396,7 @@ void LoadImage(Status& status,
 
 void LoadImage(Status& status,
                File& file,
-               byte** output,
+               ::byte** output,
                uint* width,
                uint* height,
                TextureFormat::Enum* format,
@@ -408,7 +408,7 @@ void LoadImage(Status& status,
 
 void LoadImage(Status& status,
                StringParam filename,
-               byte** output,
+               ::byte** output,
                uint* width,
                uint* height,
                TextureFormat::Enum* format,
@@ -422,9 +422,9 @@ void LoadImage(Status& status,
 }
 
 void LoadImage(Status& status,
-               byte* encoded,
+               ::byte* encoded,
                size_t size,
-               byte** output,
+               ::byte** output,
                uint* width,
                uint* height,
                TextureFormat::Enum* format,
@@ -437,7 +437,7 @@ void LoadImage(Status& status,
 void LoadImage(Status& status, Stream* stream, Image* imageOut)
 {
   // Images only support 8 bit depth, so force it if we can
-  byte* output = nullptr;
+  ::byte* output = nullptr;
   uint width = 0;
   uint height = 0;
   TextureFormat::Enum format = TextureFormat::None;
@@ -466,7 +466,7 @@ void LoadImage(Status& status, StringParam filename, Image* imageOut)
   return LoadImage(status, file, imageOut);
 }
 
-void LoadImage(Status& status, byte* encoded, size_t size, Image* imageOut)
+void LoadImage(Status& status, ::byte* encoded, size_t size, Image* imageOut)
 {
   FixedMemoryStream stream(encoded, size);
   LoadImage(status, &stream, imageOut);
@@ -474,7 +474,7 @@ void LoadImage(Status& status, byte* encoded, size_t size, Image* imageOut)
 
 void SaveImage(Status& status,
                Stream* stream,
-               const byte* image,
+               const ::byte* image,
                uint width,
                uint height,
                TextureFormat::Enum format,
@@ -549,7 +549,7 @@ void SaveImage(Status& status,
 
 void SaveImage(Status& status,
                File& file,
-               const byte* image,
+               const ::byte* image,
                uint width,
                uint height,
                TextureFormat::Enum format,
@@ -561,7 +561,7 @@ void SaveImage(Status& status,
 
 void SaveImage(Status& status,
                StringParam filename,
-               const byte* image,
+               const ::byte* image,
                uint width,
                uint height,
                TextureFormat::Enum format,
@@ -575,7 +575,7 @@ void SaveImage(Status& status,
 
 void SaveImage(Status& status, Stream* stream, Image* image, ImageSaveFormat::Enum imageType)
 {
-  return SaveImage(status, stream, (byte*)image->Data, image->Width, image->Height, TextureFormat::RGBA8, imageType);
+  return SaveImage(status, stream, (::byte*)image->Data, image->Width, image->Height, TextureFormat::RGBA8, imageType);
 }
 
 void SaveImage(Status& status, File& file, Image* image, ImageSaveFormat::Enum imageType)

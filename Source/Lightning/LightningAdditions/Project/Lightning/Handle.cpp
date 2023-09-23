@@ -104,13 +104,13 @@ namespace Lightning
   }
 
   //***************************************************************************
-  Handle::Handle(const byte* data, BoundType* type, HandleManager* manager, ExecutableState* state)
+  Handle::Handle(const ::byte* data, BoundType* type, HandleManager* manager, ExecutableState* state)
   {
     this->Initialize(data, type, manager, state);
   }
 
   //***************************************************************************
-  void Handle::Initialize(const byte* data, BoundType* type, HandleManager* manager, ExecutableState* state)
+  void Handle::Initialize(const ::byte* data, BoundType* type, HandleManager* manager, ExecutableState* state)
   {
     type->IsInitializedAssert();
     this->StoredType = type;
@@ -335,8 +335,8 @@ namespace Lightning
   bool Handle::operator==(const Handle& rhs) const
   {
     // Check whether either handle is null
-    byte* objectLhs = this->Dereference();
-    byte* objectRhs = rhs.Dereference();
+    ::byte* objectLhs = this->Dereference();
+    ::byte* objectRhs = rhs.Dereference();
     bool nullLhs = (objectLhs == nullptr);
     bool nullRhs = (objectRhs == nullptr);
 
@@ -427,7 +427,7 @@ namespace Lightning
     // Note we CANNOT just use StoredType because it is always a BoundType, even when
     // a handle is pointing at a value type, which can only occur if it is an IndirectType
     Type* type = this->GetBoundOrIndirectType();
-    return type->GenericToString((const byte*)this);
+    return type->GenericToString((const ::byte*)this);
   }
 
   //***************************************************************************
@@ -450,7 +450,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  byte* Handle::Dereference() const
+  ::byte* Handle::Dereference() const
   {
     // If this handle is the null manager... (this is the trivial case of a cleared handle)
     if (this->Manager == nullptr || this->StoredType == nullptr)
@@ -516,7 +516,7 @@ namespace Lightning
     ExecutableState* state = ExecutableState::CallingState;
 
     // Get a pointer to our own object's data
-    byte* self = this->Dereference();
+    ::byte* self = this->Dereference();
 
     // Error checking
     ErrorIf(self == nullptr,

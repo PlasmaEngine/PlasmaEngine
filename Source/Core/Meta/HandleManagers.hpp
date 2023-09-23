@@ -178,12 +178,12 @@ public:
     }
   }
 
-  void ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize) override
+  void ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize) override
   {
     ObjectToHandleInternal(object, type, handleToInitialize);
   }
 
-  byte* HandleToObject(const Handle& handle) override
+  ::byte* HandleToObject(const Handle& handle) override
   {
     return HandleToObjectInternal(handle);
   }
@@ -205,7 +205,7 @@ public:
   // ObjectToHandle
   // Only reference counted
   template <typename U = T>
-  void ObjectToHandleInternal(const byte* object,
+  void ObjectToHandleInternal(const ::byte* object,
                               BoundType* type,
                               Handle& handleToInitialize,
                               P_ENABLE_IF(IsReferenceCounted<U>::value && !IsSafeId<U>::value))
@@ -215,12 +215,12 @@ public:
     if (instance != nullptr)
       instance->AddReference();
 
-    handleToInitialize.HandlePointer = (byte*)object;
+    handleToInitialize.HandlePointer = (::byte*)object;
   }
 
   // Only safe id
   template <typename U = T>
-  void ObjectToHandleInternal(const byte* object,
+  void ObjectToHandleInternal(const ::byte* object,
                               BoundType* type,
                               Handle& handleToInitialize,
                               P_ENABLE_IF(!IsReferenceCounted<U>::value && IsSafeId<U>::value))
@@ -234,7 +234,7 @@ public:
 
   // Reference counted and safe id
   template <typename U = T>
-  void ObjectToHandleInternal(const byte* object,
+  void ObjectToHandleInternal(const ::byte* object,
                               BoundType* type,
                               Handle& handleToInitialize,
                               P_ENABLE_IF(IsReferenceCounted<U>::value&& IsSafeId<U>::value))
@@ -254,37 +254,37 @@ public:
   // HandleToObject
   // Only reference counted
   template <typename U = T>
-  byte* HandleToObjectInternal(const Handle& handle, P_ENABLE_IF(IsReferenceCounted<U>::value && !IsSafeId<U>::value))
+  ::byte* HandleToObjectInternal(const Handle& handle, P_ENABLE_IF(IsReferenceCounted<U>::value && !IsSafeId<U>::value))
   {
-    return (byte*)handle.HandlePointer;
+    return (::byte*)handle.HandlePointer;
   }
 
   // Only safe id
   template <typename U = T>
-  byte* HandleToObjectInternal(const Handle& handle, P_ENABLE_IF(IsSafeId<U>::value && !IsThreadSafe<U>::value))
+  ::byte* HandleToObjectInternal(const Handle& handle, P_ENABLE_IF(IsSafeId<U>::value && !IsThreadSafe<U>::value))
   {
     HandleData& data = *(HandleData*)(handle.Data);
 
     if (data.mRawObject)
-      return (byte*)data.mRawObject;
+      return (::byte*)data.mRawObject;
 
     T* object = T::mPlasmaHandleLiveObjects.FindValue(data.mId, nullptr);
-    return (byte*)object;
+    return (::byte*)object;
   }
 
   // Thread safe id
   template <typename U = T>
-  byte* HandleToObjectInternal(const Handle& handle, P_ENABLE_IF(IsSafeId<U>::value&& IsThreadSafe<U>::value))
+  ::byte* HandleToObjectInternal(const Handle& handle, P_ENABLE_IF(IsSafeId<U>::value&& IsThreadSafe<U>::value))
   {
     HandleData& data = *(HandleData*)(handle.Data);
 
     if (data.mRawObject)
-      return (byte*)data.mRawObject;
+      return (::byte*)data.mRawObject;
 
     T::mPlasmaHandleLock.Lock();
     T* object = T::mPlasmaHandleLiveObjects.FindValue(data.mId, nullptr);
     T::mPlasmaHandleLock.Unlock();
-    return (byte*)object;
+    return (::byte*)object;
   }
 
   // AddReference

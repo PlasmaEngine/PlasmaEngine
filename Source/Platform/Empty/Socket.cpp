@@ -493,27 +493,27 @@ void Socket::Close(Status& status)
   status.SetFailed("Socket not implemented");
 }
 
-size_t Socket::Send(Status& status, const byte* data, size_t dataLength, SocketFlags::Enum flags)
+size_t Socket::Send(Status& status, const ::byte* data, size_t dataLength, SocketFlags::Enum flags)
 {
   status.SetFailed("Socket not implemented");
   return 0;
 }
 
 size_t
-Socket::SendTo(Status& status, const byte* data, size_t dataLength, const SocketAddress& to, SocketFlags::Enum flags)
+Socket::SendTo(Status& status, const ::byte* data, size_t dataLength, const SocketAddress& to, SocketFlags::Enum flags)
 {
   status.SetFailed("Socket not implemented");
   return 0;
 }
 
-size_t Socket::Receive(Status& status, byte* dataOut, size_t dataLength, SocketFlags::Enum flags)
+size_t Socket::Receive(Status& status, ::byte* dataOut, size_t dataLength, SocketFlags::Enum flags)
 {
   status.SetFailed("Socket not implemented");
   return 0;
 }
 
 size_t
-Socket::ReceiveFrom(Status& status, byte* dataOut, size_t dataLength, SocketAddress& from, SocketFlags::Enum flags)
+Socket::ReceiveFrom(Status& status, ::byte* dataOut, size_t dataLength, SocketAddress& from, SocketFlags::Enum flags)
 {
   status.SetFailed("Socket not implemented");
   return 0;

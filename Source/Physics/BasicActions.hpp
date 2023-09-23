@@ -91,7 +91,7 @@ struct InsertionAction
   InsertionAction(Collider* collider);
 
   ///Used when we know if we are going to static or dynamic.
-  InsertionAction(Collider* collider, byte state);
+  InsertionAction(Collider* collider, ::byte state);
 
 private:
   void Queue(Collider* collider);

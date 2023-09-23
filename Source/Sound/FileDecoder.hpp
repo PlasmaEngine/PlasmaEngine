@@ -39,7 +39,7 @@ public:
   void InitializeDecoder();
   // Decodes a single packet of data and allocates a buffer for the decoded
   // data.
-  void DecodePacket(const byte* packetData, const unsigned dataSize, float*& decodedData, unsigned& numberOfSamples);
+  void DecodePacket(const ::byte* packetData, const unsigned dataSize, float*& decodedData, unsigned& numberOfSamples);
 
 private:
   // Used for repeated calls to DecodePacket
@@ -53,13 +53,13 @@ class PacketDecoder
 public:
   // Decodes the provided packet and returns the number of samples
   // Allocates memory for the decoded data
-  static int DecodePacket(const byte* packetData, unsigned dataSize, OpusDecoder* decoder, float** decodedData);
+  static int DecodePacket(const ::byte* packetData, unsigned dataSize, OpusDecoder* decoder, float** decodedData);
   // Decodes the provided packet and returns the number of samples
   // Assumes the memory for the decoded data is already allocated
-  static int DecodePacket(const byte* packetData, unsigned dataSize, OpusDecoder* decoder, float* decodedData);
+  static int DecodePacket(const ::byte* packetData, unsigned dataSize, OpusDecoder* decoder, float* decodedData);
   // Reads the header from the provided buffer and returns the size of the
   // associated data, or -1 if there is an error
-  static int GetPacketDataSize(const byte* packetHeader);
+  static int GetPacketDataSize(const ::byte* packetHeader);
   // Reads the header data of the file into the object and returns the size of
   // the file's data
   static unsigned OpenAndReadHeader(Plasma::Status& status, const String& fileName, File* file, FileHeader* header);
@@ -73,11 +73,11 @@ public:
   // data. Returns -1 if getting packet fails or if the end of the data was
   // reached.
   static int
-  GetPacketFromMemory(byte* packetDataToWrite, const byte* inputData, unsigned inputDataSize, unsigned* dataIndex);
+  GetPacketFromMemory(::byte* packetDataToWrite, const ::byte* inputData, unsigned inputDataSize, unsigned* dataIndex);
   // Fills in the provided buffer with the next packet data from a file.
   // Returns -1 if getting packet fails or if the end of the data was reached.
   static int
-  GetPacketFromFile(byte* packetDataToWrite, File* inputFile, FilePosition* filePosition, ThreadLock* lockObject);
+  GetPacketFromFile(::byte* packetDataToWrite, File* inputFile, FilePosition* filePosition, ThreadLock* lockObject);
 };
 
 // File Decoder
@@ -94,7 +94,7 @@ public:
   virtual void DecodingLoopThreaded() = 0;
   // Fills in the provided buffer with the next packet data. Returns -1 if
   // getting packet fails or if the end of the data was reached.
-  virtual int GetNextPacket(byte* packetData) = 0;
+  virtual int GetNextPacket(::byte* packetData) = 0;
   // Called to decode the next packet when the system is not threaded
   void RunDecodingTask();
   // Requests the next chunk of decoded data
@@ -145,7 +145,7 @@ public:
   void DecodingLoopThreaded() override;
   // Fills in the provided buffer with the next packet data. Returns -1 if
   // getting packet fails or if the end of the data was reached.
-  int GetNextPacket(byte* packetData) override;
+  int GetNextPacket(::byte* packetData) override;
 
 private:
   // Opens a file and reads in its data
@@ -154,7 +154,7 @@ private:
   void ClearData() override;
 
   // The data read in from the file
-  byte* mCompressedData;
+  ::byte* mCompressedData;
   // The current read position for the compressed data
   unsigned mDataIndex;
   // The size of the compressed data
@@ -178,7 +178,7 @@ public:
   // The input data buffer must already exist, and will not be deleted by this
   // decoder
   StreamingDecoder(Plasma::Status& status,
-                   byte* inputData,
+                   ::byte* inputData,
                    unsigned dataSize,
                    unsigned channels,
                    unsigned frames,
@@ -189,14 +189,14 @@ public:
   void DecodingLoopThreaded() override;
   // Fills in the provided buffer with the next packet data. Returns -1 if
   // getting packet fails or if the end of the data was reached.
-  int GetNextPacket(byte* packetData) override;
+  int GetNextPacket(::byte* packetData) override;
   // Resets streaming decoding to the beginning
   void Reset();
 
 private:
   // The data read in from the file, if streaming from memory (will not be
   // deleted)
-  byte* mCompressedData;
+  ::byte* mCompressedData;
   // The current read position for the compressed data, if streaming from memory
   unsigned mDataIndex;
   // The size of the compressed data, if streaming from memory

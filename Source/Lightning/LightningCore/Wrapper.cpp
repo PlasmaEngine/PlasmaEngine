@@ -89,7 +89,7 @@ void Wrapper::ConstructorCall(Call& call, ExceptionReport& report)
       call.GetState()->AllocateDefaultConstructedHeapObject(innerType, report, HeapFlags::ReferenceCounted);
 
   // Copy the handle after our base class
-  byte* outerBytes = outerThisHandle.Dereference() + outerBaseSize;
+  ::byte* outerBytes = outerThisHandle.Dereference() + outerBaseSize;
   new (outerBytes) Handle(innerHandle);
 }
 
@@ -107,8 +107,8 @@ void Wrapper::FunctionCall(Call& outerCall, ExceptionReport& report)
   Call innerCall(inner, outerCall.GetState());
   if (!inner->IsStatic)
   {
-    byte* ourMemory = outerCall.GetHandle(Call::This).Dereference();
-    byte* handleMemory = ourMemory + outerType->Size - sizeof(Handle);
+    ::byte* ourMemory = outerCall.GetHandle(Call::This).Dereference();
+    ::byte* handleMemory = ourMemory + outerType->Size - sizeof(Handle);
     Handle& innerHandle = *(Handle*)handleMemory;
     innerCall.SetHandle(Call::This, innerHandle);
   }
@@ -118,14 +118,14 @@ void Wrapper::FunctionCall(Call& outerCall, ExceptionReport& report)
   for (size_t i = 0; i < parameters.Size(); ++i)
   {
     DelegateParameter& parameter = parameters[i];
-    byte* outerParameterBytes = outerCall.GetParameterUnchecked(i);
-    byte* innerParameterBytes = innerCall.GetParameterUnchecked(i);
+    ::byte* outerParameterBytes = outerCall.GetParameterUnchecked(i);
+    ::byte* innerParameterBytes = innerCall.GetParameterUnchecked(i);
     parameter.ParameterType->GenericCopyConstruct(innerParameterBytes, outerParameterBytes);
   }
   innerCall.Invoke(report);
 
-  byte* outerReturnBytes = outerCall.GetReturnUnchecked();
-  byte* innerReturnBytes = innerCall.GetReturnUnchecked();
+  ::byte* outerReturnBytes = outerCall.GetReturnUnchecked();
+  ::byte* innerReturnBytes = innerCall.GetReturnUnchecked();
   delegateType->Return->GenericCopyConstruct(outerReturnBytes, innerReturnBytes);
 
   outerCall.DisableReturnChecks();

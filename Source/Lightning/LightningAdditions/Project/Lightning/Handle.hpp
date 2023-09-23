@@ -37,7 +37,7 @@ namespace Lightning
       // If a handle was purely initialized via memory setting to zero, we ignore it
       InitializedByConstructor = 2,
     };
-    typedef byte Compact;
+    typedef ::byte Compact;
   }
 
   DeclareEnum2(GetOptions, ReturnDefaultOrNull, AssertOnNull);
@@ -77,7 +77,7 @@ namespace Lightning
     // Constructs a handle from a type and a data pointer
     // This will invoke ObjectToHandle on the handle manager
     // The 'data' passed in should be a pointer to the object (the same as that returned from Dereference)
-    Handle(const byte* data, BoundType* type, HandleManager* manager = nullptr, ExecutableState* state = nullptr);
+    Handle(const ::byte* data, BoundType* type, HandleManager* manager = nullptr, ExecutableState* state = nullptr);
 
     // Destructor
     ~Handle();
@@ -106,7 +106,7 @@ namespace Lightning
     String ToString() const;
 
     // Get a pointer to the data, or return null if it isn't valid
-    byte* Dereference() const;
+    ::byte* Dereference() const;
 
     // Releases the handle and clears it out to zero
     void Clear();
@@ -135,7 +135,7 @@ namespace Lightning
     void ReleaseAndClearForBinding();
 
   private:
-    void Initialize(const byte* data, BoundType* type, HandleManager* manager, ExecutableState* state = nullptr);
+    void Initialize(const ::byte* data, BoundType* type, HandleManager* manager, ExecutableState* state = nullptr);
     
     // Clear the handle to a null handle
     // Warning: This does not do reference counting or properly delete the object!
@@ -181,7 +181,7 @@ namespace Lightning
     union
     {
       // The user data stored on the handle (of a fixed size)
-      byte Data[HandleUserDataSize];
+      ::byte Data[HandleUserDataSize];
 
       // These are only provided for convenience (rather than casting Data into a structure)
       void* HandlePointer;

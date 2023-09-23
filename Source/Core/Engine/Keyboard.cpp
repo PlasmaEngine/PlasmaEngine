@@ -311,7 +311,7 @@ void Keyboard::Update()
 {
   for (uint i = 0; i < Keys::KeyMax; ++i)
   {
-    byte& state = States[i];
+    ::byte& state = States[i];
     if (state == KeyPressed)
       state = KeyHeld;
     else if (state == KeyReleased)
@@ -328,7 +328,7 @@ void Keyboard::Clear()
 {
   for (uint i = 0; i < Keys::KeyMax; ++i)
   {
-    byte& state = States[i];
+    ::byte& state = States[i];
     state = KeyNotHeld;
   }
 
@@ -342,7 +342,7 @@ void Keyboard::UpdateKeys(KeyboardEvent& event)
     return;
 
   // Update the internal key state
-  byte& state = States[event.Key];
+  ::byte& state = States[event.Key];
   if (event.State == KeyState::Down)
   {
     switch (state)

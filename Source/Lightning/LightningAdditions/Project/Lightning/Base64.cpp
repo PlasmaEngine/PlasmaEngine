@@ -17,7 +17,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  String Base64Encoder::Encode(const byte* data, size_t length)
+  String Base64Encoder::Encode(const ::byte* data, size_t length)
   {
     Base64Encoder encoder;
     size_t computedLength = ComputeSize(length);
@@ -25,7 +25,7 @@ namespace Lightning
     // The data that we're encoding as we go along
     // Eventually this should probably be refactored to be a ByteBuffer (similar to other builders)
     Plasma::StringNode* node = String::AllocateNode(computedLength);
-    byte* encodedData = (byte*)node->Data;
+    ::byte* encodedData = (::byte*)node->Data;
     size_t written = encoder.EncodeData(data, length, encodedData);
     encoder.EncodeEnd(encodedData + written);
 
@@ -58,7 +58,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  size_t Base64Encoder::EncodeData(const byte* data, size_t length, byte* output)
+  size_t Base64Encoder::EncodeData(const ::byte* data, size_t length, ::byte* output)
   {
     const char* plainchar = (const char*)data;
     const char* plaintextend = plainchar + length;
@@ -124,7 +124,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  size_t Base64Encoder::EncodeEnd(byte* output)
+  size_t Base64Encoder::EncodeEnd(::byte* output)
   {
     char* codechar = (char*)output;
 

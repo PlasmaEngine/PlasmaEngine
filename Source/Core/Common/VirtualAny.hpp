@@ -68,10 +68,10 @@ protected:
     }
   }
 
-  typedef BaseType* (*CopyConstructorFn)(byte*, const BaseType*);
+  typedef BaseType* (*CopyConstructorFn)(::byte*, const BaseType*);
 
   template <typename T>
-  static BaseType* CopyConstructor(byte* dest, const BaseType* source)
+  static BaseType* CopyConstructor(::byte* dest, const BaseType* source)
   {
     return (BaseType*)(new (dest) T(*(const T*)source));
   }
@@ -80,7 +80,7 @@ protected:
   CopyConstructorFn mCopyConstructor;
 
   union {
-    byte mObjectData[MaxDerivedSize];
+    ::byte mObjectData[MaxDerivedSize];
     MaxAlignmentType mObjectDataAligned[PlasmaAlignCount(MaxDerivedSize)];
   };
 

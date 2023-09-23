@@ -157,7 +157,7 @@ namespace Lightning
   bool PerFrameData::IsVariableInitialized(Variable* variable)
   {
     // Get the stack location of the variable
-    byte* variableStackMemory = this->Frame + variable->Local;
+    ::byte* variableStackMemory = this->Frame + variable->Local;
 
     // If this is a value type...
     if (variable->ResultType->IsCopyComplex() == false)
@@ -171,7 +171,7 @@ namespace Lightning
       DelegateType* delegateType = this->CurrentFunction->FunctionType;
 
       // If the variable is the this handle...
-      byte* thisLocation = delegateType->ThisHandleStackOffset + this->Frame;
+      ::byte* thisLocation = delegateType->ThisHandleStackOffset + this->Frame;
       if (thisLocation == variableStackMemory)
         return true;
 
@@ -180,7 +180,7 @@ namespace Lightning
       for (size_t k = 0; k < parameters.Size(); ++k)
       {
         // Get the current offset of the parameter...
-        byte* parameterLocation = parameters[k].StackOffset + this->Frame;
+        ::byte* parameterLocation = parameters[k].StackOffset + this->Frame;
                     
         // If the parameter is the current variable we're looking at...
         if (parameterLocation == variableStackMemory)
@@ -348,7 +348,7 @@ namespace Lightning
 
     // Clear the stack (including reserved space)
     size_t totalStackSize = this->StackSize + this->OverflowStackSize;
-    this->Stack = new byte[totalStackSize];
+    this->Stack = new ::byte[totalStackSize];
     memset(this->Stack, 0xCD, totalStackSize);
 
     // Create a frame data that points to the beginning of the stack
@@ -393,12 +393,12 @@ namespace Lightning
     // We need to clean up memory for static variables (release handles/delegates)
     // Technically code could run during this phase (even code that accesses other deleted statics)
     // To be entirely safe, we wait to delete the static memory (so we don't magically attempt to allocate it again on access)
-    typedef Pair<Field*, byte*> StaticFieldPair;
+    typedef Pair<Field*, ::byte*> StaticFieldPair;
     LightningForEach(StaticFieldPair& pair, this->StaticFieldToMemory)
     {
       // Pull out the two values from the pair for convenience
       Field* field = pair.first;
-      byte* staticMemory = pair.second;
+      ::byte* staticMemory = pair.second;
 
       // Destruct the memory in place and then delete the memory
       // Note: When we actually flag statics as being initialized, keep that flag on
@@ -418,7 +418,7 @@ namespace Lightning
     }
 
     // Loop through all native v-tables we created
-    HashMap<BoundType*, byte*>::valuerange virtualTables = this->NativeVirtualTables.Values();
+    HashMap<BoundType*, ::byte*>::valuerange virtualTables = this->NativeVirtualTables.Values();
     while (virtualTables.Empty() == false)
     {
       // Clean up each v-table and move on
@@ -440,7 +440,7 @@ namespace Lightning
     LightningForEach(StaticFieldPair& pair, this->StaticFieldToMemory)
     {
       // Get the static memory and delete it
-      byte* staticMemory = pair.second;
+      ::byte* staticMemory = pair.second;
       delete[] staticMemory;
     }
 
@@ -454,13 +454,13 @@ namespace Lightning
   }
 
   //***************************************************************************
-  byte* ExecutableState::GetCurrentStackFrame()
+  ::byte* ExecutableState::GetCurrentStackFrame()
   {
     return this->StackFrames.Back()->Frame;
   }
 
   //***************************************************************************
-  byte* ExecutableState::GetNextStackFrame()
+  ::byte* ExecutableState::GetNextStackFrame()
   {
     // Get the current frame data
     PerFrameData* current = this->StackFrames.Back();
@@ -474,14 +474,14 @@ namespace Lightning
   PlasmaForceInline PerFrameData* ExecutableState::PushFrame(Function* function)
   {
     // Get the next frame before we push our own frame data
-    byte* frame = this->GetNextStackFrame();
+    ::byte* frame = this->GetNextStackFrame();
 
     // Call the internal function
     return this->PushFrame(frame, function);
   }
 
   //***************************************************************************
-  PlasmaForceInline PerFrameData* ExecutableState::PushFrame(byte* frame, Function* function)
+  PlasmaForceInline PerFrameData* ExecutableState::PushFrame(::byte* frame, Function* function)
   {
     // Unfortunately we incur an overhead for patched functions, however, this should
     // be descently quick if the patched functions hash table is empty (it 'early outs' internally)
@@ -516,10 +516,10 @@ namespace Lightning
     }
 
     // Compute the next frame on the stack
-    byte* nextFrame = frame + function->RequiredStackSpace;
+    ::byte* nextFrame = frame + function->RequiredStackSpace;
 
     // Compute the end of the real stack
-    byte* endOfStack = this->Stack + this->StackSize;
+    ::byte* endOfStack = this->Stack + this->StackSize;
 
     // If the next frame exceeds our max stack size...
     if (nextFrame >= endOfStack)
@@ -615,7 +615,7 @@ namespace Lightning
     if (this->HitStackOverflow)
     {
       // If we popped enough frames to come out of stack overlfow mode...
-      byte* endOfStack = this->Stack + this->StackSize;
+      ::byte* endOfStack = this->Stack + this->StackSize;
       if (frame->NextFrame < endOfStack && this->StackFrames.Size() < this->MaxRecursionDepth)
       {
         // Clear the flag that lets us use extra stack space
@@ -686,7 +686,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  void ExecutableState::InitializeStackHandle(Handle& handle, byte* location, PerScopeData* scope, BoundType* type)
+  void ExecutableState::InitializeStackHandle(Handle& handle, ::byte* location, PerScopeData* scope, BoundType* type)
   {
     // Set the handle's manager
     handle.Manager = this->StackObjects;
@@ -702,7 +702,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  void ExecutableState::InitializePointerHandle(Handle& handle, byte* location, BoundType* type)
+  void ExecutableState::InitializePointerHandle(Handle& handle, ::byte* location, BoundType* type)
   {
     // Set the handle's manager
     handle.Manager = this->PointerObjects;
@@ -891,7 +891,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  void ExecutableState::UpdateCppVirtualTable(byte* objectWithBaseVTable, BoundType* cppBaseType, BoundType* derivedType)
+  void ExecutableState::UpdateCppVirtualTable(::byte* objectWithBaseVTable, BoundType* cppBaseType, BoundType* derivedType)
   {
     // Error checking
     ErrorIf(cppBaseType->BoundNativeVirtualCount > cppBaseType->RawNativeVirtualCount,
@@ -907,7 +907,7 @@ namespace Lightning
     TypeBinding::VirtualTableFn*& virtualTable = *(TypeBinding::VirtualTableFn**)objectWithBaseVTable;
 
     // Check to see if we've already mapped up this virtual table
-    byte* foundVirtualTable = this->NativeVirtualTables.FindValue(cppBaseType, nullptr);
+    ::byte* foundVirtualTable = this->NativeVirtualTables.FindValue(cppBaseType, nullptr);
 
     // If we did find it (already made one)
     if (foundVirtualTable != nullptr)
@@ -922,7 +922,7 @@ namespace Lightning
 
     // Create the new virtual table to store the executable state,
     // and a copy (with replacements) of the native virtual table
-    byte* fullVirtualTable = new byte[sizeof(BoundType*) + sizeof(ExecutableState*) + nativeVTableSizeBytes];
+    ::byte* fullVirtualTable = new ::byte[sizeof(BoundType*) + sizeof(ExecutableState*) + nativeVTableSizeBytes];
 
     // Insert the type at the front of the v-table so we can resolve the virtual function
     // This must be properly destructed with the executable state
@@ -1027,8 +1027,8 @@ namespace Lightning
   class RemappedField
   {
   public:
-    byte* OldMemory;
-    byte* NewMemory;
+    ::byte* OldMemory;
+    ::byte* NewMemory;
     Type* SameType;
   };
   
@@ -1082,7 +1082,7 @@ namespace Lightning
         PlasmaTodo("We MUST respect the HeapManagerExtraPatchSize to make sure we don't go outside! What do we do in that case though... fail patching?");
 
         // Loop through all heap objects and check if any of them are the old type
-        LightningForEach(const byte* object, this->HeapObjects->LiveObjects)
+        LightningForEach(const ::byte* object, this->HeapObjects->LiveObjects)
         {
           // Just behind the allocated object is the header
           ObjectHeader& header = *(ObjectHeader*)(object - sizeof(ObjectHeader));
@@ -1101,10 +1101,10 @@ namespace Lightning
 
           // Create a temporary buffer to copy all the values from the old heap type over
           size_t oldSize = oldHeapType->GetAllocatedSize();
-          byte* temporaryBuffer = new byte[oldSize];
+          ::byte* temporaryBuffer = new ::byte[oldSize];
           memset(temporaryBuffer, 0x00, oldSize);
 
-          byte* memory = (byte*)object;
+          ::byte* memory = (::byte*)object;
 
           Array<RemappedField> remappedFields;
           HashSet<Field*> handledNewFields;
@@ -1118,12 +1118,12 @@ namespace Lightning
 
             Field* newInstanceField = newHeapType->InstanceFields.FindValue(oldInstanceField->Name, nullptr);
 
-            byte* oldInstanceFieldMemory = memory + oldInstanceField->Offset;
+            ::byte* oldInstanceFieldMemory = memory + oldInstanceField->Offset;
 
             // If there's a new field AND it is of the same type...
             if (newInstanceField != nullptr && Type::IsSame(oldInstanceField->PropertyType, newInstanceField->PropertyType))
             {
-              byte* temporaryOldInstanceFieldMemory = temporaryBuffer + oldInstanceField->Offset;
+              ::byte* temporaryOldInstanceFieldMemory = temporaryBuffer + oldInstanceField->Offset;
               newInstanceField->PropertyType->GenericCopyConstruct(temporaryOldInstanceFieldMemory, oldInstanceFieldMemory);
 
               handledNewFields.InsertOrError(newInstanceField);
@@ -1161,7 +1161,7 @@ namespace Lightning
             if (handledNewFields.Contains(newInstanceField))
               continue;
 
-            byte* newInstanceFieldMemory = memory + newInstanceField->Offset;
+            ::byte* newInstanceFieldMemory = memory + newInstanceField->Offset;
             newInstanceField->PropertyType->GenericDefaultConstruct(newInstanceFieldMemory);
           }
         }
@@ -1262,7 +1262,7 @@ namespace Lightning
     // To be entirely safe, we wait to delete the static memory (so we don't magically attempt to allocate it again on access)
     LightningForEach(Field* field, library->StaticFields)
     {
-      byte* staticMemory = this->StaticFieldToMemory.FindValue(field, nullptr);
+      ::byte* staticMemory = this->StaticFieldToMemory.FindValue(field, nullptr);
       if (staticMemory == nullptr)
         continue;
 
@@ -1279,7 +1279,7 @@ namespace Lightning
     // Now delete all static memory
     LightningForEach(Field* field, library->StaticFields)
     {
-      byte* staticMemory = this->StaticFieldToMemory.FindValue(field, nullptr);
+      ::byte* staticMemory = this->StaticFieldToMemory.FindValue(field, nullptr);
       if (staticMemory != nullptr)
       {
         delete[] staticMemory;
@@ -1311,7 +1311,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  Handle ExecutableState::AllocateStackObject(byte* stackLocation, PerScopeData* scope, BoundType* type, ExceptionReport& report)
+  Handle ExecutableState::AllocateStackObject(::byte* stackLocation, PerScopeData* scope, BoundType* type, ExceptionReport& report)
   {
     // Verify that the given pointer is within our stack
     ErrorIf(stackLocation < this->Stack || stackLocation > this->Stack + this->StackSize,
@@ -1501,7 +1501,7 @@ namespace Lightning
     handle.Manager->Allocate(type, handle, flags);
 
     //HACK (forces all handles to be direct pointers)
-    //byte* obj = handle.Dereference();
+    //::byte* obj = handle.Dereference();
     //handle.Manager = this->PointerObjects;
     //this->PointerObjects->ObjectToHandle(obj, handle);
 
@@ -1608,7 +1608,7 @@ namespace Lightning
       "Allocating the default exception object should NEVER throw an exception");
 
     // Dereference a handle and grab a pointer to the exception object
-    byte* memory = handle.Dereference();
+    ::byte* memory = handle.Dereference();
 
     // Because an exception can be null if we truly run out of memory, then just skip this portion
     if (memory != nullptr)
@@ -1720,24 +1720,24 @@ namespace Lightning
   }
 
   //***************************************************************************
-  const byte* ExecutableState::GetRawStack()
+  const ::byte* ExecutableState::GetRawStack()
   {
     return this->Stack;
   }
   
   //***************************************************************************
-  byte* ExecutableState::GetStaticField(Field* field, ExceptionReport& report)
+  ::byte* ExecutableState::GetStaticField(Field* field, ExceptionReport& report)
   {
     // Look for the static memory in a map of the fields on our state
     // Static fields are done per executable state, so they get wiped each time we quit
-    byte*& staticMemory = this->StaticFieldToMemory[field];
+    ::byte*& staticMemory = this->StaticFieldToMemory[field];
 
     // If no memory was allocated yet, then allocate some and clear it
     if (staticMemory == nullptr)
     {
       // Allocate enough memory to store the field
       size_t fieldSize = field->PropertyType->GetCopyableSize();
-      staticMemory = new byte[field->PropertyType->GetCopyableSize()];
+      staticMemory = new ::byte[field->PropertyType->GetCopyableSize()];
       
       // All handles, value types, etc support being memset to 0
       memset(staticMemory, 0, fieldSize);
@@ -1867,7 +1867,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  byte* Call::GetChecked(size_t index, size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io)
+  ::byte* Call::GetChecked(size_t index, size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io)
   {
     // If we're setting this... we need to mark that we did for debugging!
     if (io == Direction::Set)
@@ -1894,7 +1894,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  byte* Call::GetUnchecked(size_t index)
+  ::byte* Call::GetUnchecked(size_t index)
   {
     // Based on the type of index...
     switch(index)
@@ -1914,7 +1914,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  byte* Call::GetThisChecked(size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io)
+  ::byte* Call::GetThisChecked(size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io)
   {
     // As long as the user didn't disable checks...
     if (!(this->Data->Debug & CallDebug::NoThisChecking))
@@ -1940,7 +1940,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  byte* Call::GetReturnChecked(size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io)
+  ::byte* Call::GetReturnChecked(size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io)
   {
     // As long as the user didn't disable checks...
     if (!(this->Data->Debug & CallDebug::NoReturnChecking))
@@ -1958,7 +1958,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  byte* Call::GetParameterChecked(size_t parameterIndex, size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io)
+  ::byte* Call::GetParameterChecked(size_t parameterIndex, size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io)
   {
     // Get a reference to the parameters
     ParameterArray& parameters = this->Data->CurrentFunction->FunctionType->Parameters;
@@ -1982,10 +1982,10 @@ namespace Lightning
   }
 
   //***************************************************************************
-  void Call::SetValue(size_t index, const byte* input, size_t size)
+  void Call::SetValue(size_t index, const ::byte* input, size_t size)
   {
     // Get the stack location and perform checks
-    byte* stack = this->GetChecked(index, size, nullptr, CheckPrimitive::Value, Direction::Set);
+    ::byte* stack = this->GetChecked(index, size, nullptr, CheckPrimitive::Value, Direction::Set);
 
     // Copy the input into the stack position
     memcpy(stack, input, size);
@@ -1995,7 +1995,7 @@ namespace Lightning
   void Call::SetHandle(size_t index, const Handle& value)
   {
     // Get the stack location and perform checks
-    byte* stack = this->GetChecked(index, sizeof(Handle), value.StoredType, CheckPrimitive::Handle, Direction::Set);
+    ::byte* stack = this->GetChecked(index, sizeof(Handle), value.StoredType, CheckPrimitive::Handle, Direction::Set);
 
     // Now copy the handle to the stack
     new (stack) Handle(value);
@@ -2008,17 +2008,17 @@ namespace Lightning
     Function* function = value.BoundFunction;
 
     // Get the stack location and perform checks
-    byte* stack = this->GetChecked(index, sizeof(Delegate), function->FunctionType, CheckPrimitive::Delegate, Direction::Set);
+    ::byte* stack = this->GetChecked(index, sizeof(Delegate), function->FunctionType, CheckPrimitive::Delegate, Direction::Set);
 
     // Now copy the handle to the stack
     new (stack) Delegate(value);
   }
   
   //***************************************************************************
-  void Call::GetValue(size_t index, byte* output, size_t size)
+  void Call::GetValue(size_t index, ::byte* output, size_t size)
   {
     // Get the stack location and perform checks
-    byte* stack = this->GetChecked(index, size, nullptr, CheckPrimitive::Value, Direction::Get);
+    ::byte* stack = this->GetChecked(index, size, nullptr, CheckPrimitive::Value, Direction::Get);
     
     // Copy the stack into the output
     memcpy(output, stack, size);
@@ -2028,14 +2028,14 @@ namespace Lightning
   Handle& Call::GetHandle(size_t index)
   {
     // Get the stack location and perform checks
-    byte* stack = this->GetChecked(index, sizeof(Handle), nullptr, CheckPrimitive::Handle, Direction::Get);
+    ::byte* stack = this->GetChecked(index, sizeof(Handle), nullptr, CheckPrimitive::Handle, Direction::Get);
 
     // Return a reference to the stack
     return *(Handle*)stack;
   }
     
   //***************************************************************************
-  byte* Call::GetHandlePointer(size_t index)
+  ::byte* Call::GetHandlePointer(size_t index)
   {
     // Get the stack location and perform checks
     return this->GetChecked(index, sizeof(Handle), nullptr, CheckPrimitive::Handle, Direction::Get);
@@ -2045,14 +2045,14 @@ namespace Lightning
   Delegate& Call::GetDelegate(size_t index)
   {
     // Get the stack location and perform checks
-    byte* stack = this->GetChecked(index, sizeof(Delegate), nullptr, CheckPrimitive::Delegate, Direction::Get);
+    ::byte* stack = this->GetChecked(index, sizeof(Delegate), nullptr, CheckPrimitive::Delegate, Direction::Get);
 
     // Return a reference to the stack
     return *(Delegate*)stack;
   }
 
   //***************************************************************************
-  byte* Call::GetDelegatePointer(size_t index)
+  ::byte* Call::GetDelegatePointer(size_t index)
   {
     // Get the stack location and perform checks
     return this->GetChecked(index, sizeof(Delegate), nullptr, CheckPrimitive::Delegate, Direction::Get);
@@ -2065,27 +2065,27 @@ namespace Lightning
   }
 
   //***************************************************************************
-  byte* Call::GetStackUnchecked()
+  ::byte* Call::GetStackUnchecked()
   {
     return this->Data->Frame;
   }
     
   //***************************************************************************
-  byte* Call::GetThisUnchecked()
+  ::byte* Call::GetThisUnchecked()
   {
     // Get the stack offsetted by to the 'this' handle location
     return this->Data->Frame + this->Data->CurrentFunction->FunctionType->ThisHandleStackOffset;
   }
 
   //***************************************************************************
-  byte* Call::GetParametersUnchecked()
+  ::byte* Call::GetParametersUnchecked()
   {
     // Get the stack offsetted by the size of the return (to where the parameters are)
     return this->Data->Frame + this->Data->CurrentFunction->FunctionType->Return->GetCopyableSize();
   }
 
   //***************************************************************************
-  byte* Call::GetParameterUnchecked(size_t parameterIndex)
+  ::byte* Call::GetParameterUnchecked(size_t parameterIndex)
   {
     // Get a reference to the parameters
     ParameterArray& parameters = this->Data->CurrentFunction->FunctionType->Parameters;
@@ -2099,7 +2099,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  byte* Call::GetReturnUnchecked()
+  ::byte* Call::GetReturnUnchecked()
   {
     // General error checking for our own assumptions
     ErrorIf(this->Data->CurrentFunction->FunctionType->ReturnStackOffset != 0,
@@ -2285,7 +2285,7 @@ namespace Lightning
         DelegateParameter& parameter = parameters[i];
 
         // Get the stack offset of that parameter
-        byte* stack = this->Data->Frame + parameter.StackOffset;
+        ::byte* stack = this->Data->Frame + parameter.StackOffset;
 
         // Release / destruct that parameter
         parameter.ParameterType->GenericDestruct(stack);
@@ -2299,7 +2299,7 @@ namespace Lightning
       if (function->This != nullptr)
       {
         // Get the stack offset of the this handle
-        byte* thisStack = this->Data->Frame + function->FunctionType->ThisHandleStackOffset;
+        ::byte* thisStack = this->Data->Frame + function->FunctionType->ThisHandleStackOffset;
 
         // Destroy the this handle
         ((Handle*)thisStack)->~Handle();
@@ -2316,7 +2316,7 @@ namespace Lightning
       if (function->FunctionType->Return != core.VoidType)
       {
         // Get the return stack frame (should be right at the front)
-        byte* returnStack = this->Data->Frame;
+        ::byte* returnStack = this->Data->Frame;
       
         // Verify that return position is always at the front
         ErrorIf(function->FunctionType->ReturnStackOffset != 0,
@@ -2416,7 +2416,7 @@ namespace Lightning
       Handle& thisHandle = *(Handle*)(topFrame->Frame + function->This->Local);
 
       // Dereference the handle and get a pointer back (may be null)
-      byte* thisData = thisHandle.Dereference();
+      ::byte* thisData = thisHandle.Dereference();
 
       // If the 'this' handle was actually null...
       if (thisData == nullptr)
@@ -2481,7 +2481,7 @@ namespace Lightning
   void CallHelper<Any>::Set(Call& call, size_t index, const Any& value)
   {
     // Get the stack location and perform checks
-    byte* stack = call.GetChecked(index, sizeof(Any), LightningTypeId(Any), CheckPrimitive::Any, Direction::Set);
+    ::byte* stack = call.GetChecked(index, sizeof(Any), LightningTypeId(Any), CheckPrimitive::Any, Direction::Set);
       
     // Write the value to the stack
     new (stack) Any(value);
@@ -2497,7 +2497,7 @@ namespace Lightning
   Any* CallHelper<Any*>::Get(Call& call, size_t index)
   {
     // Get the stack location and perform checks
-    byte* stack = call.GetChecked(index, sizeof(Any), LightningTypeId(Any), CheckPrimitive::Any, Direction::Get);
+    ::byte* stack = call.GetChecked(index, sizeof(Any), LightningTypeId(Any), CheckPrimitive::Any, Direction::Get);
       
     // Read the value from the stack and return it (or convert it)
     return (Any*)stack;
@@ -2510,30 +2510,30 @@ namespace Lightning
   const Any& CallHelper<const Any&>::Get(Call& call, size_t index) { return *CallHelper<Any*>::Get(call, index); }
   
   //***************************************************************************
-  byte* CallHelper<Any*>::GetArgumentPointer(Call& call, size_t index)
+  ::byte* CallHelper<Any*>::GetArgumentPointer(Call& call, size_t index)
   {
     // Get the stack location and perform checks
     return call.GetChecked(index, sizeof(Any), LightningTypeId(Any), CheckPrimitive::Any, Direction::Get);
   }
   
   //***************************************************************************
-  byte* CallHelper<      Any >::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Any*>::GetArgumentPointer(call, index); }
-  byte* CallHelper<      Any&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Any*>::GetArgumentPointer(call, index); }
-  byte* CallHelper<const Any*>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Any*>::GetArgumentPointer(call, index); }
-  byte* CallHelper<const Any&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Any*>::GetArgumentPointer(call, index); }
+  ::byte* CallHelper<      Any >::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Any*>::GetArgumentPointer(call, index); }
+  ::byte* CallHelper<      Any&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Any*>::GetArgumentPointer(call, index); }
+  ::byte* CallHelper<const Any*>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Any*>::GetArgumentPointer(call, index); }
+  ::byte* CallHelper<const Any&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Any*>::GetArgumentPointer(call, index); }
   
   //***************************************************************************
-  Any* CallHelper<Any*>::CastArgumentPointer(byte* stackPointer)
+  Any* CallHelper<Any*>::CastArgumentPointer(::byte* stackPointer)
   {
     // Read the value from the stack and return it (or convert it)
     return (Any*)stackPointer;
   }
   
   //***************************************************************************
-        Any  CallHelper<      Any >::CastArgumentPointer(byte* stackPointer) { return *CallHelper<Any*>::CastArgumentPointer(stackPointer); }
-        Any& CallHelper<      Any&>::CastArgumentPointer(byte* stackPointer) { return *CallHelper<Any*>::CastArgumentPointer(stackPointer); }
-  const Any* CallHelper<const Any*>::CastArgumentPointer(byte* stackPointer) { return  CallHelper<Any*>::CastArgumentPointer(stackPointer); }
-  const Any& CallHelper<const Any&>::CastArgumentPointer(byte* stackPointer) { return *CallHelper<Any*>::CastArgumentPointer(stackPointer); }
+        Any  CallHelper<      Any >::CastArgumentPointer(::byte* stackPointer) { return *CallHelper<Any*>::CastArgumentPointer(stackPointer); }
+        Any& CallHelper<      Any&>::CastArgumentPointer(::byte* stackPointer) { return *CallHelper<Any*>::CastArgumentPointer(stackPointer); }
+  const Any* CallHelper<const Any*>::CastArgumentPointer(::byte* stackPointer) { return  CallHelper<Any*>::CastArgumentPointer(stackPointer); }
+  const Any& CallHelper<const Any&>::CastArgumentPointer(::byte* stackPointer) { return *CallHelper<Any*>::CastArgumentPointer(stackPointer); }
   
   //***************************************************************************
   void CallHelper<Handle>::Set(Call& call, size_t index, const Handle& value)
@@ -2560,28 +2560,28 @@ namespace Lightning
   const Handle& CallHelper<const Handle&>::Get(Call& call, size_t index) { return *CallHelper<Handle*>::Get(call, index); }
   
   //***************************************************************************
-  byte* CallHelper<Handle*>::GetArgumentPointer(Call& call, size_t index)
+  ::byte* CallHelper<Handle*>::GetArgumentPointer(Call& call, size_t index)
   {
     return call.GetHandlePointer(index);
   }
   
   //***************************************************************************
-  byte* CallHelper<      Handle >::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Handle*>::GetArgumentPointer(call, index); }
-  byte* CallHelper<      Handle&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Handle*>::GetArgumentPointer(call, index); }
-  byte* CallHelper<const Handle*>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Handle*>::GetArgumentPointer(call, index); }
-  byte* CallHelper<const Handle&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Handle*>::GetArgumentPointer(call, index); }
+  ::byte* CallHelper<      Handle >::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Handle*>::GetArgumentPointer(call, index); }
+  ::byte* CallHelper<      Handle&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Handle*>::GetArgumentPointer(call, index); }
+  ::byte* CallHelper<const Handle*>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Handle*>::GetArgumentPointer(call, index); }
+  ::byte* CallHelper<const Handle&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Handle*>::GetArgumentPointer(call, index); }
   
   //***************************************************************************
-  Handle* CallHelper<Handle*>::CastArgumentPointer(byte* stackPointer)
+  Handle* CallHelper<Handle*>::CastArgumentPointer(::byte* stackPointer)
   {
     return (Handle*)stackPointer;
   }
   
   //***************************************************************************
-        Handle  CallHelper<      Handle >::CastArgumentPointer(byte* stackPointer) { return *CallHelper<Handle*>::CastArgumentPointer(stackPointer); }
-        Handle& CallHelper<      Handle&>::CastArgumentPointer(byte* stackPointer) { return *CallHelper<Handle*>::CastArgumentPointer(stackPointer); }
-  const Handle* CallHelper<const Handle*>::CastArgumentPointer(byte* stackPointer) { return  CallHelper<Handle*>::CastArgumentPointer(stackPointer); }
-  const Handle& CallHelper<const Handle&>::CastArgumentPointer(byte* stackPointer) { return *CallHelper<Handle*>::CastArgumentPointer(stackPointer); }
+        Handle  CallHelper<      Handle >::CastArgumentPointer(::byte* stackPointer) { return *CallHelper<Handle*>::CastArgumentPointer(stackPointer); }
+        Handle& CallHelper<      Handle&>::CastArgumentPointer(::byte* stackPointer) { return *CallHelper<Handle*>::CastArgumentPointer(stackPointer); }
+  const Handle* CallHelper<const Handle*>::CastArgumentPointer(::byte* stackPointer) { return  CallHelper<Handle*>::CastArgumentPointer(stackPointer); }
+  const Handle& CallHelper<const Handle&>::CastArgumentPointer(::byte* stackPointer) { return *CallHelper<Handle*>::CastArgumentPointer(stackPointer); }
   
   //***************************************************************************
   void CallHelper<Delegate>::Set(Call& call, size_t index, const Delegate& value)
@@ -2608,26 +2608,26 @@ namespace Lightning
   const Delegate& CallHelper<const Delegate&>::Get(Call& call, size_t index) { return *CallHelper<Delegate*>::Get(call, index); }
 
   //***************************************************************************
-  byte* CallHelper<Delegate*>::GetArgumentPointer(Call& call, size_t index)
+  ::byte* CallHelper<Delegate*>::GetArgumentPointer(Call& call, size_t index)
   {
     return call.GetDelegatePointer(index);
   }
   
   //***************************************************************************
-  byte* CallHelper<      Delegate >::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Delegate*>::GetArgumentPointer(call, index); }
-  byte* CallHelper<      Delegate&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Delegate*>::GetArgumentPointer(call, index); }
-  byte* CallHelper<const Delegate*>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Delegate*>::GetArgumentPointer(call, index); }
-  byte* CallHelper<const Delegate&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Delegate*>::GetArgumentPointer(call, index); }
+  ::byte* CallHelper<      Delegate >::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Delegate*>::GetArgumentPointer(call, index); }
+  ::byte* CallHelper<      Delegate&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Delegate*>::GetArgumentPointer(call, index); }
+  ::byte* CallHelper<const Delegate*>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Delegate*>::GetArgumentPointer(call, index); }
+  ::byte* CallHelper<const Delegate&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<Delegate*>::GetArgumentPointer(call, index); }
   
   //***************************************************************************
-  Delegate* CallHelper<Delegate*>::CastArgumentPointer(byte* stackPointer)
+  Delegate* CallHelper<Delegate*>::CastArgumentPointer(::byte* stackPointer)
   {
     return (Delegate*)stackPointer;
   }
   
   //***************************************************************************
-        Delegate  CallHelper<      Delegate >::CastArgumentPointer(byte* stackPointer) { return *CallHelper<Delegate*>::CastArgumentPointer(stackPointer); }
-        Delegate& CallHelper<      Delegate&>::CastArgumentPointer(byte* stackPointer) { return *CallHelper<Delegate*>::CastArgumentPointer(stackPointer); }
-  const Delegate* CallHelper<const Delegate*>::CastArgumentPointer(byte* stackPointer) { return  CallHelper<Delegate*>::CastArgumentPointer(stackPointer); }
-  const Delegate& CallHelper<const Delegate&>::CastArgumentPointer(byte* stackPointer) { return *CallHelper<Delegate*>::CastArgumentPointer(stackPointer); }  
+        Delegate  CallHelper<      Delegate >::CastArgumentPointer(::byte* stackPointer) { return *CallHelper<Delegate*>::CastArgumentPointer(stackPointer); }
+        Delegate& CallHelper<      Delegate&>::CastArgumentPointer(::byte* stackPointer) { return *CallHelper<Delegate*>::CastArgumentPointer(stackPointer); }
+  const Delegate* CallHelper<const Delegate*>::CastArgumentPointer(::byte* stackPointer) { return  CallHelper<Delegate*>::CastArgumentPointer(stackPointer); }
+  const Delegate& CallHelper<const Delegate&>::CastArgumentPointer(::byte* stackPointer) { return *CallHelper<Delegate*>::CastArgumentPointer(stackPointer); }  
 }

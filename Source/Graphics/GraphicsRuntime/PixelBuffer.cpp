@@ -39,7 +39,7 @@ PixelBuffer::PixelBuffer(ByteColor clearColor, uint width, uint height) :
 {
   Clear(clearColor);
 
-  Image->Upload(width, height, TextureFormat::RGBA8, (byte*)Data, Total * sizeof(ByteColor));
+  Image->Upload(width, height, TextureFormat::RGBA8, (::byte*)Data, Total * sizeof(ByteColor));
 }
 
 PixelBuffer::~PixelBuffer()
@@ -124,7 +124,7 @@ void PixelBuffer::Resize(
   if (Upload)
   {
     uint dataSize = width * height * sizeof(ByteColor);
-    Image->Upload(width, height, TextureFormat::RGBA8, (byte*)newData, dataSize);
+    Image->Upload(width, height, TextureFormat::RGBA8, (::byte*)newData, dataSize);
   }
 }
 
@@ -143,7 +143,7 @@ void PixelBuffer::Clear(ByteColor color)
 }
 
 // Clear the pixel buffer with a gray scale color (much faster)
-void PixelBuffer::Clear(byte grayScaleColor)
+void PixelBuffer::Clear(::byte grayScaleColor)
 {
   memset(Data, grayScaleColor, Total * sizeof(ByteColor));
 }
@@ -218,10 +218,10 @@ void PixelBuffer::GetCoordinates(uint index, uint* x, uint* y)
 // Upload the image data
 void PixelBuffer::Upload()
 {
-  Image->Upload(Width, Height, TextureFormat::RGBA8, (byte*)Data, Total * sizeof(ByteColor));
+  Image->Upload(Width, Height, TextureFormat::RGBA8, (::byte*)Data, Total * sizeof(ByteColor));
 }
 
-void PixelBuffer::SetAll(byte* data)
+void PixelBuffer::SetAll(::byte* data)
 {
   memcpy(Data, data, Total * sizeof(ByteColor));
   Upload();

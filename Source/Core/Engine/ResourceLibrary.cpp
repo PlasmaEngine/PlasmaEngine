@@ -76,7 +76,7 @@ Plasma::ResourceTemplate* ResourceEntry::GetResourceTemplate()
   return nullptr;
 }
 
-String ResourcePackageToString(const BoundType* type, const byte* value)
+String ResourcePackageToString(const BoundType* type, const ::byte* value)
 {
   ResourcePackage* resourcePackage = (ResourcePackage*)value;
   return String::Format("Resource Package %s", resourcePackage->Name.c_str());

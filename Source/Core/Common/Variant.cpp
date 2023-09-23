@@ -345,7 +345,7 @@ void* Variant::InternalGetData() const
   if (IsSmallType(mNativeType))
   {
     // Value is stored in local buffer
-    return const_cast<byte*>(mData);
+    return const_cast<::byte*>(mData);
   }
   // Large stored type?
   else
@@ -388,7 +388,7 @@ void Variant::InternalAllocateHeapBuffer()
   Assert(mDataAsPointer == nullptr);
 
   // Allocate heap buffer large enough to fit the stored type
-  mDataAsPointer = new byte[mNativeType->mTypeSize];
+  mDataAsPointer = new ::byte[mNativeType->mTypeSize];
 }
 
 void Variant::InternalFreeHeapBuffer()
@@ -400,7 +400,7 @@ void Variant::InternalFreeHeapBuffer()
   Assert(mDataAsPointer != nullptr);
 
   // Free heap buffer
-  delete[](byte*) mDataAsPointer;
+  delete[](::byte*) mDataAsPointer;
   mDataAsPointer = nullptr;
 
   // (Local buffer should now be plasmaed, albeit incidentally)

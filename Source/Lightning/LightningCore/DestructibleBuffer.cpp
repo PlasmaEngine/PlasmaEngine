@@ -42,8 +42,8 @@ DestructibleBuffer::DestructibleBuffer(const DestructibleBuffer& from) : Entries
     // Copy construct this element from its old memory to the new memory
     // (does not destruct the old or anything weird like that)
     DestructibleBuffer& fromNonConst = const_cast<DestructibleBuffer&>(from);
-    byte* fromElement = fromNonConst.Data.GetAbsoluteElement(entry.AbsolutePosition);
-    byte* toElement = this->Data.GetAbsoluteElement(entry.AbsolutePosition);
+    ::byte* fromElement = fromNonConst.Data.GetAbsoluteElement(entry.AbsolutePosition);
+    ::byte* toElement = this->Data.GetAbsoluteElement(entry.AbsolutePosition);
     entry.CopyConstructor(fromElement, toElement);
   }
 }
@@ -76,7 +76,7 @@ void DestructibleBuffer::Clear()
     Entry& entry = this->Entries[i];
 
     // Get the pointer to where the object exists in our memory
-    byte* object = this->Data.GetAbsoluteElement(entry.AbsolutePosition);
+    ::byte* object = this->Data.GetAbsoluteElement(entry.AbsolutePosition);
 
     // Invoke its destructor since we're being erased
     if (entry.Destructor != nullptr)
@@ -88,7 +88,7 @@ void DestructibleBuffer::Clear()
   this->Data.Clear();
 }
 
-byte* DestructibleBuffer::Allocate(size_t size,
+::byte* DestructibleBuffer::Allocate(size_t size,
                                    DestructFn destructor,
                                    CopyConstructFn copyConstructor,
                                    size_t* positionOut)
@@ -98,7 +98,7 @@ byte* DestructibleBuffer::Allocate(size_t size,
 
   // Get a pointer directly to the new data
   size_t absolutePosition = 0;
-  byte* newData = this->Data.RequestElementOfSize(size, &absolutePosition);
+  ::byte* newData = this->Data.RequestElementOfSize(size, &absolutePosition);
 
   // If the user also wants the position...
   if (positionOut != nullptr)
@@ -128,10 +128,10 @@ byte* DestructibleBuffer::Allocate(size_t size,
   return newData;
 }
 
-byte* DestructibleBuffer::WriteMemory(void* source, size_t size, DestructFn destructor)
+::byte* DestructibleBuffer::WriteMemory(void* source, size_t size, DestructFn destructor)
 {
   // Allocate data and use the given destructor (it may be null)
-  byte* newData = this->Allocate(size, destructor);
+  ::byte* newData = this->Allocate(size, destructor);
 
   // Copy the user's data over the new data
   memcpy(newData, source, size);
@@ -140,13 +140,13 @@ byte* DestructibleBuffer::WriteMemory(void* source, size_t size, DestructFn dest
   return newData;
 }
 
-byte* DestructibleBuffer::Read(size_t position, size_t length, size_t* nextPositionOut)
+::byte* DestructibleBuffer::Read(size_t position, size_t length, size_t* nextPositionOut)
 {
   // Make sure we only jump by full aligned blocks
   length = AlignToBusWidth(length);
 
   // Get the position of the memory the user is reading
-  byte* memory = this->Data.GetAbsoluteElement(position);
+  ::byte* memory = this->Data.GetAbsoluteElement(position);
 
   // Error checking
   ErrorIf(position != 0 && nextPositionOut == nullptr,
@@ -174,7 +174,7 @@ byte* DestructibleBuffer::Read(size_t position, size_t length, size_t* nextPosit
   return memory;
 }
 
-byte* DestructibleBuffer::GetElement(size_t position)
+::byte* DestructibleBuffer::GetElement(size_t position)
 {
   return this->Data.GetAbsoluteElement(position);
 }

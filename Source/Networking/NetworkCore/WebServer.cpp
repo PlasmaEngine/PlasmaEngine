@@ -168,7 +168,7 @@ OsInt WebServerConnection::ReadWriteThread(void* userData)
 
   while (webServer->mRunning)
   {
-    byte buffer[4096];
+    ::byte buffer[4096];
     Status status;
     size_t amount = self->mSocket.Receive(status, buffer, sizeof(buffer));
 
@@ -305,7 +305,7 @@ OsInt WebServerConnection::ReadWriteThread(void* userData)
 
   if (running)
   {
-    Array<byte> writeData;
+    Array<::byte> writeData;
 
     // Loop until we're no longer running, or an error occurs.
     for (;;)
@@ -321,7 +321,7 @@ OsInt WebServerConnection::ReadWriteThread(void* userData)
       running = !self->mWriteComplete;
       self->mWriteLock.Unlock();
 
-      byte* buffer = writeData.Data();
+      ::byte* buffer = writeData.Data();
       size_t size = writeData.Size();
 
       // Write out all the data we have.

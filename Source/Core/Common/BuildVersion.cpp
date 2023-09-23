@@ -197,7 +197,7 @@ int GetVersionId(StringParam versionIdFilePath)
   if (FileExists(versionIdFilePath))
   {
     size_t fileSize;
-    byte* data = ReadFileIntoMemory(versionIdFilePath.c_str(), fileSize, 1);
+    ::byte* data = ReadFileIntoMemory(versionIdFilePath.c_str(), fileSize, 1);
     data[fileSize] = 0;
     if (data == nullptr)
       return localVersionId;

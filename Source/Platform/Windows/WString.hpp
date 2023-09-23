@@ -23,7 +23,7 @@ public:
   size_t Size() const;
   size_t SizeInBytes() const;
 
-  byte* Data();
+  ::byte* Data();
 
   bool IsEmpty() const;
 

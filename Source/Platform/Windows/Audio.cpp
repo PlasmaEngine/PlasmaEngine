@@ -373,7 +373,7 @@ StreamStatus::Enum WasapiDevice::StartStream(WASAPICallbackType* callback, void*
       if (RenderClient)
       {
         // Get the entire buffer from the RenderClient
-        byte* data;
+        ::byte* data;
         HRESULT result = RenderClient->GetBuffer(BufferFrameCount, &data);
 
         // Set the buffer to plasma
@@ -569,7 +569,7 @@ void WasapiDevice::GetOutput()
     frames = BufferFrameCount - frames;
 
     // Get a buffer section from WASAPI
-    byte* data;
+    ::byte* data;
     result = RenderClient->GetBuffer(frames, &data);
 
     // If successful, call the client callback function
@@ -589,7 +589,7 @@ void WasapiDevice::GetInput()
   // Make sure it's not empty
   if (packetFrames != 0)
   {
-    byte* data;
+    ::byte* data;
     DWORD flags;
 
     // Get the buffer (size will match previous call to GetNextPacketSize)

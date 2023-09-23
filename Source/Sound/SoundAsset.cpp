@@ -142,7 +142,7 @@ StreamingDataPerInstance::StreamingDataPerInstance(
 }
 
 StreamingDataPerInstance::StreamingDataPerInstance(
-    Status& status, byte* inputData, unsigned dataSize, unsigned channels, unsigned frames, unsigned instanceID) :
+    Status& status, ::byte* inputData, unsigned dataSize, unsigned channels, unsigned frames, unsigned instanceID) :
     mDecoder(status, inputData, dataSize, channels, frames, StreamingDecodingCallback, this),
     mPreviousSamples(0),
     mInstanceID(instanceID)

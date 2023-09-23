@@ -437,7 +437,7 @@ namespace Lightning
   }
 
   //***************************************************************************
-  void Console::DumpValue(StringBuilderExtended& builder, Type* type, const byte* value, Integer howDeep, Integer currentDepth)
+  void Console::DumpValue(StringBuilderExtended& builder, Type* type, const ::byte* value, Integer howDeep, Integer currentDepth)
   {
     // First write the generic value of the type...
     String baseValueString = type->GenericToString(value);
@@ -451,7 +451,7 @@ namespace Lightning
     BoundType* boundType = Type::DynamicCast<BoundType*>(type);
     if (boundType != nullptr)
     {
-      byte* instanceData = boundType->GenericGetMemory(value);
+      ::byte* instanceData = boundType->GenericGetMemory(value);
       if (instanceData)
       {
         // Loop through all the instance properties
@@ -477,7 +477,7 @@ namespace Lightning
             builder.Write(field->Name);
             builder.Write(": ");
 
-            byte* fieldData = instanceData + field->Offset;
+            ::byte* fieldData = instanceData + field->Offset;
           
             // Recursively dumping will imediately print out the property value
             DumpValue(builder, field->PropertyType, fieldData, howDeep, currentDepth + 1);

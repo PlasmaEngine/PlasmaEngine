@@ -127,7 +127,7 @@ public:
   }
 
   NodeType* mNode;
-  byte mReserved[ReserveSizeInBytes];
+  ::byte mReserved[ReserveSizeInBytes];
   bool mAllocated;
 };
 

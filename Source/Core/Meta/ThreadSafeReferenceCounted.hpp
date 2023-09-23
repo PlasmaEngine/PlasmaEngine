@@ -27,7 +27,7 @@ public:
     data.mRawObject = plAllocate(type->Size);
   }
 
-  void ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize) override
+  void ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize) override
   {
     if (object == nullptr)
       return;
@@ -41,12 +41,12 @@ public:
     instance->AddReference();
   }
 
-  byte* HandleToObject(const Handle& handle) override
+  ::byte* HandleToObject(const Handle& handle) override
   {
     ThreadSafeReferenceCountedHandleData& data = *(ThreadSafeReferenceCountedHandleData*)(handle.Data);
 
     if (data.mRawObject)
-      return (byte*)data.mRawObject;
+      return (::byte*)data.mRawObject;
 
     T::mLock.Lock();
     T* val = T::mLiveObjects.FindValue(data.mId, nullptr);
@@ -54,7 +54,7 @@ public:
     // METAREFACTOR - This manager is currently expected to be used on the base
     // class define below (ThreadSafeReferenceCounted) when getting the derived
     // object, I do not believe this will thunk correctly if required.
-    return (byte*)val;
+    return (::byte*)val;
   }
 
   void AddReference(const Handle& handle) override

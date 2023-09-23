@@ -59,7 +59,7 @@ void ToValue(StringRange range, Mat3& value);
 void ToValue(StringRange range, Mat4& value);
 
 template <typename T>
-String MetaToString(const BoundType* type, const byte* data)
+String MetaToString(const BoundType* type, const ::byte* data)
 {
   T& value = *(T*)data;
   return ToString(value);

@@ -141,28 +141,28 @@ VertexSemanticRange VertexBuffer::GetAttributes()
 
 void VertexBuffer::AddByte(int value)
 {
-  WriteData((byte)value);
+  WriteData((::byte)value);
 }
 
 void VertexBuffer::AddByte(IntVec2 value)
 {
-  WriteData((byte)value.x);
-  WriteData((byte)value.y);
+  WriteData((::byte)value.x);
+  WriteData((::byte)value.y);
 }
 
 void VertexBuffer::AddByte(IntVec3 value)
 {
-  WriteData((byte)value.x);
-  WriteData((byte)value.y);
-  WriteData((byte)value.z);
+  WriteData((::byte)value.x);
+  WriteData((::byte)value.y);
+  WriteData((::byte)value.z);
 }
 
 void VertexBuffer::AddByte(IntVec4 value)
 {
-  WriteData((byte)value.x);
-  WriteData((byte)value.y);
-  WriteData((byte)value.z);
-  WriteData((byte)value.w);
+  WriteData((::byte)value.x);
+  WriteData((::byte)value.y);
+  WriteData((::byte)value.z);
+  WriteData((::byte)value.w);
 }
 
 void VertexBuffer::AddShort(int value)
@@ -224,7 +224,7 @@ Vec4 VertexBuffer::GetVertexData(uint vertexIndex, VertexSemantic::Enum semantic
   if (vertexOffset + elementSize * attribute.mCount > mDataSize)
     return value;
 
-  byte* vertexData = mData + vertexOffset;
+  ::byte* vertexData = mData + vertexOffset;
   ReadVertexData(vertexData, attribute, value);
 
   return value;
@@ -264,7 +264,7 @@ Vec4 VertexBuffer::GetVertexData(uint vertexIndex,
     return value;
   }
 
-  byte* vertexData = mData + vertexOffset;
+  ::byte* vertexData = mData + vertexOffset;
   ReadVertexData(vertexData, attribute, value);
 
   return value;
@@ -332,7 +332,7 @@ void VertexBuffer::Grow(uint minExtra)
   uint newCapacity = mDataCapacity == 0 ? 128 : mDataCapacity * 2;
   newCapacity = Math::Max(newCapacity, mDataSize + minExtra);
 
-  byte* newData = new byte[newCapacity];
+  ::byte* newData = new ::byte[newCapacity];
   memcpy(newData, mData, mDataSize);
   delete[] mData;
 
@@ -378,7 +378,7 @@ uint VertexBuffer::GetElementSize(VertexElementType::Enum type)
   }
 }
 
-void VertexBuffer::ReadVertexData(byte* vertexData, VertexAttribute& attribute, Vec4& output)
+void VertexBuffer::ReadVertexData(::byte* vertexData, VertexAttribute& attribute, Vec4& output)
 {
   for (uint i = 0; i < attribute.mCount; ++i)
   {
@@ -788,7 +788,7 @@ uint GetIndexSize(IndexElementType::Enum indexType)
 }
 
 template <typename T>
-void FillIndexBuffer(IndexBuffer* indexBuffer, byte* indexBufferData, uint indexCount)
+void FillIndexBuffer(IndexBuffer* indexBuffer, ::byte* indexBufferData, uint indexCount)
 {
   T* indexData = (T*)indexBufferData;
   for (uint i = 0; i < indexCount; ++i)
@@ -808,7 +808,7 @@ void LoadVertexChunk(Mesh& mesh, streamType& file)
   file.Read(numVertices);
 
   uint vertexBufferSize = numVertices * vertexBuffer->mFixedDesc.mVertexSize;
-  byte* vertexBufferData = new byte[vertexBufferSize];
+  ::byte* vertexBufferData = new ::byte[vertexBufferSize];
   file.ReadArraySize(vertexBufferData, vertexBufferSize);
 
   delete[] vertexBuffer->mData;
@@ -823,7 +823,7 @@ template <typename streamType>
 void LoadIndexChunk(Mesh& mesh, streamType& file)
 {
   IndexBuffer* indexBuffer = &mesh.mIndices;
-  byte indexTypeByte;
+  ::byte indexTypeByte;
   uint numIndicies;
   file.Read(indexTypeByte);
   file.Read(numIndicies);
@@ -831,7 +831,7 @@ void LoadIndexChunk(Mesh& mesh, streamType& file)
   IndexElementType::Enum indexType = (IndexElementType::Enum)indexTypeByte;
 
   uint indexBufferSize = GetIndexSize(indexType) * numIndicies;
-  byte* indexBufferData = new byte[indexBufferSize];
+  ::byte* indexBufferData = new ::byte[indexBufferSize];
   file.ReadArray(indexBufferData, indexBufferSize);
 
   indexBuffer->mIndexSize = 4;
@@ -840,7 +840,7 @@ void LoadIndexChunk(Mesh& mesh, streamType& file)
   switch (indexType)
   {
   case Plasma::IndexElementType::Byte:
-    FillIndexBuffer<byte>(indexBuffer, indexBufferData, numIndicies);
+    FillIndexBuffer<::byte>(indexBuffer, indexBufferData, numIndicies);
     break;
   case Plasma::IndexElementType::Ushort:
     FillIndexBuffer<ushort>(indexBuffer, indexBufferData, numIndicies);

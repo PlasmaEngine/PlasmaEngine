@@ -27,7 +27,7 @@ public:
     return (const EnumType)mValue;
   }
 
-  byte mValue;
+  ::byte mValue;
 };
 
 #define DeclareByteEnumGetSet(enumType, name)                                                                          \
