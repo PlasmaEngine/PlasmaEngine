@@ -92,15 +92,15 @@ void DiffTest01(Array<Diff>& diffs)
   String diffParserTreeOutput = parserTreeBuilder.mTree->GetDebugRepresentation();
 
   //String graph = parserTreeBuilder.mTree->GetGraphRepresentation();
-  //Plasma::WriteToFile("C:\\Sandbox\\Graph.gv", (const byte*)graph.c_str(), graph.size());
+  //Plasma::WriteToFile("C:\\Sandbox\\Graph.gv", (const ::byte*)graph.c_str(), graph.size());
 
   //system("C:\\Progra~2\\Graphviz2.38\\bin\\dot.exe -Tpng \"C:\\Sandbox\\Graph.gv\" > \"C:\\Sandbox\\Graph.png\"");
   //system("C:\\Sandbox\\Graph.png");
 
-  //Plasma::WriteToFile("DiffTokenDebug01.txt",  (const byte*)diffTokenDebugOutput.c_str(),  diffTokenDebugOutput.size());
-  //Plasma::WriteToFile("DiffTokenTree01.txt",   (const byte*)diffTokenTreeOutput.c_str(),   diffTokenTreeOutput.size());
-  //Plasma::WriteToFile("DiffParserDebug01.txt", (const byte*)diffParserDebugOutput.c_str(), diffParserDebugOutput.size());
-  //Plasma::WriteToFile("DiffParserTree01.txt",  (const byte*)diffParserTreeOutput.c_str(),  diffParserTreeOutput.size());
+  //Plasma::WriteToFile("DiffTokenDebug01.txt",  (const ::byte*)diffTokenDebugOutput.c_str(),  diffTokenDebugOutput.size());
+  //Plasma::WriteToFile("DiffTokenTree01.txt",   (const ::byte*)diffTokenTreeOutput.c_str(),   diffTokenTreeOutput.size());
+  //Plasma::WriteToFile("DiffParserDebug01.txt", (const ::byte*)diffParserDebugOutput.c_str(), diffParserDebugOutput.size());
+  //Plasma::WriteToFile("DiffParserTree01.txt",  (const ::byte*)diffParserTreeOutput.c_str(),  diffParserTreeOutput.size());
 
   diffs.PushBack(Diff(diffTokenDebugSource,  diffTokenDebugOutput));
   diffs.PushBack(Diff(diffTokenTreeSource,   diffTokenTreeOutput));

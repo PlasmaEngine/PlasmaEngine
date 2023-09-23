@@ -245,7 +245,7 @@ class SaveToImageJob : public Job
 {
 public:
   void Execute() override;
-  byte* mImage;
+  ::byte* mImage;
   uint mWidth;
   uint mHeight;
   TextureFormat::Enum mFormat;

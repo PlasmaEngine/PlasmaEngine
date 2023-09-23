@@ -319,15 +319,15 @@ namespace Plasma
                 // for initializing fragments to the default values.
                 ByteBufferBlock& defaultMemory = boundType->ComplexUserData.CreateObject<ByteBufferBlock>();
                 size_t derivedTypeSize = fragmentSize - baseSize;
-                defaultMemory.SetData(static_cast<byte*>(plAllocate(derivedTypeSize)), derivedTypeSize, true);
-                byte* defaultMemoryPtr = defaultMemory.GetBegin();
+                defaultMemory.SetData(static_cast<::byte*>(plAllocate(derivedTypeSize)), derivedTypeSize, true);
+                ::byte* defaultMemoryPtr = defaultMemory.GetBegin();
                 memset(defaultMemoryPtr, 0, defaultMemory.Size());
 
                 // Add all found properties to the new type.
                 forRange(ShaderPropertyInfo& shaderProperty, shaderProperties.All())
                 {
                     // Address of the default value for this property.
-                    byte* defaultElement = defaultMemoryPtr + shaderProperty.mMemberOffset;
+                    ::byte* defaultElement = defaultMemoryPtr + shaderProperty.mMemberOffset;
 
                     BoundFn getter;
                     BoundFn setter;

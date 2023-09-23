@@ -11,7 +11,7 @@ LightningDefineType(ContentItem, builder, type)
   LightningBindGetterProperty(Name);
 }
 
-void ContentItemHandleManager::ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize)
+void ContentItemHandleManager::ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize)
 {
   if (object == nullptr)
     return;
@@ -20,9 +20,9 @@ void ContentItemHandleManager::ObjectToHandle(const byte* object, BoundType* typ
   handleToInitialize.HandleU32 = item->Id;
 }
 
-byte* ContentItemHandleManager::HandleToObject(const Handle& handle)
+::byte* ContentItemHandleManager::HandleToObject(const Handle& handle)
 {
-  return (byte*)PL::gContentSystem->LoadedItems.FindValue(handle.HandleU32, nullptr);
+  return (::byte*)PL::gContentSystem->LoadedItems.FindValue(handle.HandleU32, nullptr);
 }
 
 ContentItem::ContentItem()

@@ -55,7 +55,7 @@ private:
   size_t mBlockSize;
   size_t mBlocksPerPage;
   size_t mPageSize;
-  Array<byte*> mPages;
+  Array<::byte*> mPages;
   void PushOnFreeList(MemPtr chunk);
   MemPtr PopOnFreeList();
   void AllocatePage();

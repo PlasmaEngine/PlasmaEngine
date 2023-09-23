@@ -49,7 +49,7 @@ private:
   // buffer
   static void ReadOgg(Status& status, File& file, StringParam fileName, AudioFileData& data);
   // Translates PCM audio data to floats
-  static bool PcmToFloat(byte* inputBuffer,
+  static bool PcmToFloat(::byte* inputBuffer,
                          float** samplesPerChannel,
                          const unsigned totalSampleCount,
                          const unsigned channelCount,
@@ -97,7 +97,7 @@ public:
   void InitializeEncoder();
   // Encodes a single packet of data and allocates a buffer for the encoded
   // data. Number of samples must be the same as PacketFrames
-  void EncodePacket(const float* dataBuffer, const unsigned samples, Plasma::Array<byte>& encodedData);
+  void EncodePacket(const float* dataBuffer, const unsigned samples, Plasma::Array<::byte>& encodedData);
 
   static const unsigned cChannels = 1;
 

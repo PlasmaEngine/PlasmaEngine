@@ -85,12 +85,12 @@ namespace Lightning
 
   //***************************************************************************
   // Hash a single 512-bit block (this is the core of the algorithm)
-  void Sha1BuilderTransform(u32 state[5], const byte buffer[64])
+  void Sha1BuilderTransform(u32 state[5], const ::byte buffer[64])
   {
     u32 a, b, c, d, e;
     typedef union
     {
-      byte c[64];
+      ::byte c[64];
       u32 l[16];
     }
     CHAR64LONG16;
@@ -139,7 +139,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  void Sha1Builder::Append(const byte* data, size_t length)
+  void Sha1Builder::Append(const ::byte* data, size_t length)
   {
     size_t i, j;
 
@@ -154,7 +154,7 @@ namespace Lightning
       Sha1BuilderTransform(this->State, this->Buffer);
       for (; i + 63 < length; i += 64)
       {
-        byte temp[64];
+        ::byte temp[64];
         memcpy(temp, data + i, 64);
         Sha1BuilderTransform(this->State, temp);
       }
@@ -172,7 +172,7 @@ namespace Lightning
   //***************************************************************************
   void Sha1Builder::Append(StringRange data)
   {
-    this->Append((byte*)data.Data(), data.SizeInBytes());
+    this->Append((::byte*)data.Data(), data.SizeInBytes());
   }
   
   //***************************************************************************
@@ -183,7 +183,7 @@ namespace Lightning
       return false;
 
     // Read all the contents of the file chunk by chunk, running Sha1 on each chunk
-    byte buffer[4096] = {0};
+    ::byte buffer[4096] = {0};
     Status status;
     LightningLoop
     {
@@ -199,13 +199,13 @@ namespace Lightning
   }
   
   //***************************************************************************
-  void Sha1Builder::OutputHash(byte* hashOut)
+  void Sha1Builder::OutputHash(::byte* hashOut)
   {
     // Make a temporary copy of the builder
     Sha1Builder copy = *this;
 
     u32 i;
-    byte finalcount[8];
+    ::byte finalcount[8];
 
     for (i = 0; i < 8; i++)
     {
@@ -213,11 +213,11 @@ namespace Lightning
       finalcount[i] = (unsigned char)((this->Count[(i >= 4 ? 0 : 1)] >> ((3-(i & 3)) * 8) ) & 255);
     }
 
-    this->Append((const byte*)"\200", 1);
+    this->Append((const ::byte*)"\200", 1);
 
     while ((this->Count[0] & 504) != 448)
     {
-      this->Append((const byte*)"\0", 1);
+      this->Append((const ::byte*)"\0", 1);
     }
 
     // Should cause a Sha1BuilderTransform()
@@ -225,7 +225,7 @@ namespace Lightning
 
     for (i = 0; i < Sha1Builder::Sha1ByteSize; i++)
     {
-      hashOut[i] = (byte)((this->State[i>>2] >> ((3-(i & 3)) * 8) ) & 255);
+      hashOut[i] = (::byte)((this->State[i>>2] >> ((3-(i & 3)) * 8) ) & 255);
     }
 
     // Return everything to its original state
@@ -233,7 +233,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  void Sha1Builder::OutputHash(Array<byte>& hashOut)
+  void Sha1Builder::OutputHash(Array<::byte>& hashOut)
   {
     hashOut.Resize(Sha1Builder::Sha1ByteSize);
     this->OutputHash(hashOut.Data());
@@ -242,7 +242,7 @@ namespace Lightning
   //***************************************************************************
   String Sha1Builder::OutputHashString()
   {
-    byte hash[Sha1ByteSize] = {0};
+    ::byte hash[Sha1ByteSize] = {0};
     this->OutputHash(hash);
 
     // Turn the SHA1 into a hex string

@@ -69,7 +69,7 @@ size_t HashString(const char* str, size_t l)
   size_t step = (l >> 5) + 1;
   size_t l1;
   for (l1 = l; l1 >= step; l1 -= step) /* compute hash */
-    h = h ^ ((h << 5) + (h >> 2) + byte(str[l1 - 1]));
+    h = h ^ ((h << 5) + (h >> 2) + ::byte(str[l1 - 1]));
   return h;
 }
 
@@ -132,7 +132,7 @@ String::String(char character)
 
 String::String(Rune rune)
 {
-  byte utf8Bytes[4];
+  ::byte utf8Bytes[4];
   int bytesRead = UTF8::UnpackUtf8RuneIntoBuffer(rune, utf8Bytes);
 
   Assign((char*)utf8Bytes, bytesRead);
@@ -800,7 +800,7 @@ String String::ToLower() const
 
 String String::Repeat(Rune rune, size_t numberOfTimes)
 {
-  byte utf8Bytes[4];
+  ::byte utf8Bytes[4];
   int bytesRead = UTF8::UnpackUtf8RuneIntoBuffer(rune, utf8Bytes);
   // Create a temporary memory buffer that Contains the character repeated over
   // and over

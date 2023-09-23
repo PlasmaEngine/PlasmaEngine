@@ -445,8 +445,8 @@ void StressTestDialog::Log(cstr format, ...)
     va_start(args, format);
     String logLine = String::FormatArgs(format, args);
     cstr newLine = "\r\n";
-    mLogFile.Write((byte*)logLine.Data(), logLine.SizeInBytes());
-    mLogFile.Write((byte*)newLine, strlen(newLine));
+    mLogFile.Write((::byte*)logLine.Data(), logLine.SizeInBytes());
+    mLogFile.Write((::byte*)newLine, strlen(newLine));
     mLogFile.Flush();
     va_end(args);
     mLogFile.Close();

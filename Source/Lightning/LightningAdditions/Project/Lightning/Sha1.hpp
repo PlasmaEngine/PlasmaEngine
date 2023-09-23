@@ -14,7 +14,7 @@ namespace Lightning
     Sha1Builder();
 
     // Updates the Sha1 with new data
-    void Append(const byte* data, size_t length);
+    void Append(const ::byte* data, size_t length);
 
     // Updates the Sha1 with string data
     void Append(StringRange data);
@@ -25,10 +25,10 @@ namespace Lightning
 
     // Outputs the hash to an array of bytes (does not modify our builder)
     // The byte array must be at least 'Sha1ByteSize'
-    void OutputHash(byte* hashOut);
+    void OutputHash(::byte* hashOut);
 
     // Resizes the array and outputs the hash to it (does not modify our builder)
-    void OutputHash(Array<byte>& hashOut);
+    void OutputHash(Array<::byte>& hashOut);
 
     // Outputs the hash to a hex string (does not modify our builder)
     String OutputHashString();
@@ -48,7 +48,7 @@ namespace Lightning
 
     u32 State[5];
     u32 Count[2];
-    byte Buffer[64];
+    ::byte Buffer[64];
   };
 
 }

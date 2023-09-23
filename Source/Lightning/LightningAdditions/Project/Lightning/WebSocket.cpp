@@ -41,10 +41,10 @@ namespace Lightning
   }
   
   //***************************************************************************
-  void BlockingWebSocketConnection::SendFullPacket(Status& status, const byte* data, size_t length, WebSocketPacketType::Enum packetType)
+  void BlockingWebSocketConnection::SendFullPacket(Status& status, const ::byte* data, size_t length, WebSocketPacketType::Enum packetType)
   {
     // The header has a maximum size without the mask, lets build that header
-    byte header[10] = {0};
+    ::byte header[10] = {0};
     size_t headerSize = 0;
 
     // Write the first two bytes (flags / opcode, and the payload)
@@ -52,12 +52,12 @@ namespace Lightning
     header[0] |= 0x80;
 
     // Set the opcode bit depending on if we're in text or binary or some other control opcode
-    header[0] |= (byte)packetType;
+    header[0] |= (::byte)packetType;
 
     // We don't bother to set the mask bit, so just set the second byte as the size (and onward if we need it)
     if (length < 126)
     {
-      header[1] = (byte)length;
+      header[1] = (::byte)length;
       headerSize = 2;
     }
     // If we're using 2 bytes to describe the size (1 byte just to say we're using 2 bytes...)
@@ -118,7 +118,7 @@ namespace Lightning
       const int ReceiveBufferSize = 4096;
 
       // Read the data from the socket
-      byte buffer[ReceiveBufferSize];
+      ::byte buffer[ReceiveBufferSize];
       int amountReceived = this->RemoteSocket.Receive(status, buffer, ReceiveBufferSize, SocketFlags::None);
       
       // If the receive call failed, or we gracefully disconnected...
@@ -127,14 +127,14 @@ namespace Lightning
 
       // Add the data to a remaining buffer
       this->ReadData.Insert(this->ReadData.End(), buffer, buffer + amountReceived);
-      byte* data = this->ReadData.Data();
+      ::byte* data = this->ReadData.Data();
 
       // The minimum amount of data a packet can be is 6, but the header can be larger because of extended sizes
       // This includes the opcode/starting bits (1), the payload length (1), and the mask (4)
       if (readHeader == false && this->ReadData.Size() >= 6)
       {
         // First, read the header byte which tells us all the options
-        byte headerByte = data[0];
+        ::byte headerByte = data[0];
         fin  = (headerByte & 0x80) != 0;
         rsv1 = (headerByte & 0x40) != 0;
         rsv2 = (headerByte & 0x20) != 0;
@@ -142,7 +142,7 @@ namespace Lightning
         opcode = (WebSocketPacketType::Enum)(headerByte & 0x0F);
         
         // Read the size of our packet
-        byte sizeByte = data[1];
+        ::byte sizeByte = data[1];
 
         // The highest bit is always set, basically clear it
         sizeByte &= 0x7F;
@@ -193,7 +193,7 @@ namespace Lightning
           position += 4;
 
           // Remove the header from the data
-          this->ReadData.Erase(Array<byte>::range(data, data + position));
+          this->ReadData.Erase(Array<::byte>::range(data, data + position));
         }
       }
 
@@ -201,7 +201,7 @@ namespace Lightning
       if (readHeader && this->ReadData.Size() >= payloadSize)
       {
         // Get a pointer to the data (for convenience)
-        byte* readData = this->ReadData.Data();
+        ::byte* readData = this->ReadData.Data();
 
         // Directly create a string node that we'll Assign to a string (where we copy our data into)
         Plasma::StringNode* node = String::AllocateNode(payloadSize);
@@ -219,7 +219,7 @@ namespace Lightning
         dataOut = String(node);
 
         // We're done, we read a full packet, remove the data we read so that the next packet can be processed
-        this->ReadData.Erase(Array<byte>::range(readData, readData + payloadSize));
+        this->ReadData.Erase(Array<::byte>::range(readData, readData + payloadSize));
         return opcode;
       }
     }
@@ -282,7 +282,7 @@ namespace Lightning
     // and stuff it into this array before we try and parse it (keeps data contiguous)
     // A better data structure would be able to work with the temporary received data, and then
     // only Append what isn't read at the end
-    Array<byte> remainingHeaderData;
+    Array<::byte> remainingHeaderData;
 
     // Whether or not we read the full header (denoted when we read two newlines in a row)
     bool readFullHttpHeader = false;
@@ -291,7 +291,7 @@ namespace Lightning
     do
     {
       // Read the data from the socket
-      byte buffer[ReceiveBufferSize];
+      ::byte buffer[ReceiveBufferSize];
       int amountReceived = connectionOut.RemoteSocket.Receive(status, buffer, ReceiveBufferSize, SocketFlags::None);
       
       // If the receive call failed, or we gracefully disconnected...
@@ -391,7 +391,7 @@ namespace Lightning
       }
 
       // Erase all the data we processed already
-      remainingHeaderData.Erase(Array<byte>::range((byte*)data, (byte*)lastLineStart));
+      remainingHeaderData.Erase(Array<::byte>::range((::byte*)data, (::byte*)lastLineStart));
     }
     // Loop until we read the full header
     while (readFullHttpHeader == false);
@@ -415,9 +415,9 @@ namespace Lightning
     String concatenatedKey = BuildString(*key, ServerGuid);
 
     // Get the sha1 on of the concatenated key
-    byte finalSha1[Sha1Builder::Sha1ByteSize];
+    ::byte finalSha1[Sha1Builder::Sha1ByteSize];
     Sha1Builder sha1Builder;
-    sha1Builder.Append((byte*)concatenatedKey.Data(), concatenatedKey.SizeInBytes());
+    sha1Builder.Append((::byte*)concatenatedKey.Data(), concatenatedKey.SizeInBytes());
     sha1Builder.OutputHash(finalSha1);
 
     // Lastly, we need to base64 encode the sha1 hash
@@ -435,7 +435,7 @@ namespace Lightning
     );
     
     // This should be the last thing we have to send!
-    connectionOut.RemoteSocket.Send(status, (byte*)response.Data(), (int)response.SizeInBytes(), SocketFlags::None);
+    connectionOut.RemoteSocket.Send(status, (::byte*)response.Data(), (int)response.SizeInBytes(), SocketFlags::None);
   }
   
   //***************************************************************************
@@ -673,7 +673,7 @@ namespace Lightning
         errorEvent.Connection = self;
 
         // Send the full packet over
-        self->BlockingConnection.SendFullPacket(errorEvent.ErrorStatus, (const byte*)message.Data.Data(), message.Data.SizeInBytes(), message.PacketType);
+        self->BlockingConnection.SendFullPacket(errorEvent.ErrorStatus, (const ::byte*)message.Data.Data(), message.Data.SizeInBytes(), message.PacketType);
 
         // If we encountered an error when sending...
         if (errorEvent.ErrorStatus.Failed())

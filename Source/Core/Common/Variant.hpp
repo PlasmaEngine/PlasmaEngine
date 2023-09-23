@@ -344,7 +344,7 @@ public:
   /// Contains the small stored value or a pointer to the large stored value
   /// (Should be plasmaed if the variant is empty)
   union {
-    byte mData[16];
+    ::byte mData[16];
     int mDataAsInts[4];
     float mDataAsFloats[4];
     // String mDataAsString;

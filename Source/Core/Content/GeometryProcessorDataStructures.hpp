@@ -9,7 +9,7 @@ class BoneData
 {
 public:
   float mBoneWeight;
-  byte mBoneIndex;
+  ::byte mBoneIndex;
 };
 
 // bone data is keyed by the vertex index that this data effects
@@ -30,7 +30,7 @@ public:
   Vec4 mColor0;
   Vec4 mColor1;
   float mBoneWeights[cMaxBonesWeights];
-  byte mBoneIndices[cMaxBonesWeights];
+  ::byte mBoneIndices[cMaxBonesWeights];
 };
 
 typedef Array<VertexData> VertexArray;

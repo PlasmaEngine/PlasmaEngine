@@ -54,7 +54,7 @@ public:
   /// Array Serialization
   bool ArrayField(cstr typeName,
                   cstr fieldName,
-                  byte* data,
+                  ::byte* data,
                   ArrayType simpleTypeId,
                   uint numberOfElements,
                   uint sizeOftype) override;

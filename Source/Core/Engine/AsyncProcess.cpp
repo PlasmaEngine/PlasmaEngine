@@ -284,7 +284,7 @@ OsInt AsyncProcess::RunThread(AsyncProcess* asyncProcess,
 {
   ThreadInfo& threadInfo = asyncProcess->mThreads[streamType];
   const size_t bufferSize = AsyncProcess::mReadBufferSize;
-  byte buffer[bufferSize];
+  ::byte buffer[bufferSize];
   Status status;
 
   // Keep reading as long as the process is running.

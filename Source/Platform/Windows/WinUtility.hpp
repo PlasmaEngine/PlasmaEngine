@@ -40,6 +40,6 @@ PWCHAR* CommandLineToArgvW(PWCHAR CmdLine, int* _argc);
 
 // Create a bitmap buffer (a device independent bitmap in memory) from a Image
 // Buffer
-void CreateBitmapBuffer(Image* image, byte*& outputBuffer, uint& outSize);
+void CreateBitmapBuffer(Image* image, ::byte*& outputBuffer, uint& outSize);
 
 } // namespace Plasma

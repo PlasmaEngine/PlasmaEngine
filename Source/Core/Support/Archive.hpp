@@ -12,8 +12,8 @@ class ByteBuffer;
 class ByteBufferBlock;
 class FileFilter;
 
-int RawDeflate(byte* outputData, uint outsize, byte* inputData, uint inSize, int level);
-int RawInflate(byte* outputData, uint outSize, byte* inputData, uint inSize);
+int RawDeflate(::byte* outputData, uint outsize, ::byte* inputData, uint inSize, int level);
+int RawInflate(::byte* outputData, uint outSize, ::byte* inputData, uint inSize);
 
 struct ArchiveEntry
 {

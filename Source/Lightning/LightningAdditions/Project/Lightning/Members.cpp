@@ -464,7 +464,7 @@ namespace Lightning
       return Any();
     
     // Fetch the return value and construct an any from it
-    byte* returnValue = call.GetReturnUnchecked();
+    ::byte* returnValue = call.GetReturnUnchecked();
     return Any(returnValue, this->PropertyType);
   }
 
@@ -517,8 +517,8 @@ namespace Lightning
     call.DisableParameterChecks();
 
     // Copy the value from the any to the Lightning stack (as its actual value)
-    byte* stackParameter = call.GetParameterUnchecked(0);
-    const byte* argumentData = value.GetData();
+    ::byte* stackParameter = call.GetParameterUnchecked(0);
+    const ::byte* argumentData = value.GetData();
     value.StoredType->GenericCopyConstruct(stackParameter, argumentData);
 
     // Finally invoke the function and get our result back

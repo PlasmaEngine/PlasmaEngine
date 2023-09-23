@@ -165,7 +165,7 @@ void ConvertImage(HDC hdc, HBITMAP bitmapHandle, Image* image)
 
   // Row size is padded to 32 bits
   DWORD dwBmpSize = ((bmpScreen.bmWidth * bi.biBitCount + 31) / 32) * 4 * bmpScreen.bmHeight;
-  byte* rawBitmapData = (byte*)plAllocate(dwBmpSize);
+  ::byte* rawBitmapData = (::byte*)plAllocate(dwBmpSize);
 
   // Gets the "bits" from the bitmap and copies them into a buffer
   // which is pointed to by lpbitmap.
@@ -178,7 +178,7 @@ void ConvertImage(HDC hdc, HBITMAP bitmapHandle, Image* image)
   {
     for (int x = 0; x < bmpScreen.bmWidth; ++x)
     {
-      byte* data = rawBitmapData + bmpScreen.bmWidth * 4 * (bmpScreen.bmHeight - y - 1) + x * 4;
+      ::byte* data = rawBitmapData + bmpScreen.bmWidth * 4 * (bmpScreen.bmHeight - y - 1) + x * 4;
       image->GetPixel(x, y) = ByteColorRGBA(data[2], data[1], data[0], 255);
     }
   }
@@ -787,7 +787,7 @@ void RawInputMessage(ShellWindow* window, WPARAM wParam, LPARAM lParam)
 
         // Send the raw buffer to the joystick to be interpreted by the custom
         // mapping
-        byte* bytes = (byte*)rawInput->data.hid.bRawData;
+        ::byte* bytes = (::byte*)rawInput->data.hid.bRawData;
 
         window->mOnInputDeviceChanged(inputDevice, buttons, axes, DataBlock(bytes, bufferSize), window);
       }

@@ -62,7 +62,7 @@ void UnPackLexicographicId(u32& id1, u32& id2, u64 pairId)
 bool IsBigEndian()
 {
   int i = 1;
-  byte* lowByte = (byte*)&i;
+  ::byte* lowByte = (::byte*)&i;
 
   return (*lowByte == 0);
 }

@@ -1661,7 +1661,7 @@ namespace Lightning
       handle.StoredType = Type::DynamicCast<BoundType*>(node->ResultType);
 
       // Store the pointer to the compile time type into the handle
-      handle.Manager->ObjectToHandle((byte*)node->CompileTimeType, handle.StoredType, handle);
+      handle.Manager->ObjectToHandle((::byte*)node->CompileTimeType, handle.StoredType, handle);
     }
     else
     {
@@ -1697,7 +1697,7 @@ namespace Lightning
     handle.StoredType = Type::DynamicCast<BoundType*>(node->ResultType);
 
     // Store the pointer to the accessed type into the handle
-    handle.Manager->ObjectToHandle((byte*)node->Member->AccessedMember, handle.StoredType, handle);
+    handle.Manager->ObjectToHandle((::byte*)node->Member->AccessedMember, handle.StoredType, handle);
   }
 
   //***************************************************************************
@@ -2056,7 +2056,7 @@ namespace Lightning
         // Copy a string into the handle
         // This method will actually increase the reference count
         // which means we would need to store an array of destructors for constant memory (which we do)
-        handle.Manager->ObjectToHandle((byte*)&stringLiteral, handle.StoredType, handle);
+        handle.Manager->ObjectToHandle((::byte*)&stringLiteral, handle.StoredType, handle);
         break;
       }
       
@@ -2084,7 +2084,7 @@ namespace Lightning
         // At the moment, since we use null for handles, delegates, etc, we just allocate wiped space (with 0s) that
         // is big enough to support all nullable things (all primitives support being set to all 0)
         size_t largeIndex;
-        byte* data = function->Constants.Allocate(sizeof(Delegate), nullptr, nullptr, &largeIndex);
+        ::byte* data = function->Constants.Allocate(sizeof(Delegate), nullptr, nullptr, &largeIndex);
         memset(data, 0, sizeof(Delegate));
         node->Access.HandleConstantLocal = (OperandIndex)largeIndex;
         break;

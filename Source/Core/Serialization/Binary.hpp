@@ -41,7 +41,7 @@ public:
     ErrorIf(info.mFlags.U32Field != 0, "Patching not supported in binary serialization");
     // BoundType* objectType = info.mObject.StoredType;
     u32 signature = 0;
-    BinaryType()->Data((byte*)&signature, sizeof(signature));
+    BinaryType()->Data((::byte*)&signature, sizeof(signature));
   }
 
   bool GetPolymorphic(PolymorphicNode& node) override
@@ -54,14 +54,14 @@ public:
   void EndPolymorphic() override
   {
     u32 end = BinaryEndSignature;
-    BinaryType()->Data((byte*)&end, sizeof(end));
+    BinaryType()->Data((::byte*)&end, sizeof(end));
   }
 
   // serialization
   template <typename type>
   bool FundamentalType(type& value)
   {
-    BinaryType()->Data((byte*)&value, sizeof(value));
+    BinaryType()->Data((::byte*)&value, sizeof(value));
     return true;
   }
 
@@ -69,8 +69,8 @@ public:
   bool StringField(cstr typeName, cstr fieldName, StringRange& stringRange) override
   {
     size_t sizeInBytes = stringRange.SizeInBytes();
-    BinaryType()->Data((byte*)&sizeInBytes, sizeof(sizeInBytes));
-    BinaryType()->Data((byte*)stringRange.Data(), sizeInBytes * sizeof(byte));
+    BinaryType()->Data((::byte*)&sizeInBytes, sizeof(sizeInBytes));
+    BinaryType()->Data((::byte*)stringRange.Data(), sizeInBytes * sizeof(::byte));
     return true;
   }
 
@@ -84,15 +84,15 @@ public:
 
   // Serialization
   bool ArrayField(
-      cstr typeName, cstr fieldName, byte* data, ArrayType arrayType, uint numberOfElements, uint sizeOftype) override
+      cstr typeName, cstr fieldName, ::byte* data, ArrayType arrayType, uint numberOfElements, uint sizeOftype) override
   {
-    BinaryType()->Data((byte*)data, sizeOftype * numberOfElements);
+    BinaryType()->Data((::byte*)data, sizeOftype * numberOfElements);
     return true;
   }
 
   void ArraySize(uint& arraySize) override
   {
-    BinaryType()->Data((byte*)&arraySize, sizeof(arraySize));
+    BinaryType()->Data((::byte*)&arraySize, sizeof(arraySize));
   }
 
   // Serialization decorators does nothing for binary serializers
@@ -141,7 +141,7 @@ public:
   template <typename type>
   bool FundamentalType(type& value)
   {
-    BinaryType()->Data((byte*)&value, sizeof(value));
+    BinaryType()->Data((::byte*)&value, sizeof(value));
     return true;
   }
 
@@ -172,7 +172,7 @@ public:
   void EndPolymorphic() override
   {
     u32 end = BinaryEndSignature;
-    BinaryType()->Data((byte*)&end, sizeof(end));
+    BinaryType()->Data((::byte*)&end, sizeof(end));
     ErrorIf(end != BinaryEndSignature,
             "Binary buffer serialization error did "
             "not read the end element. A different number of bytes was "
@@ -181,15 +181,15 @@ public:
 
   // Serialization
   bool ArrayField(
-      cstr typeName, cstr fieldName, byte* data, ArrayType arrayType, uint numberOfElements, uint sizeOftype) override
+      cstr typeName, cstr fieldName, ::byte* data, ArrayType arrayType, uint numberOfElements, uint sizeOftype) override
   {
-    BinaryType()->Data((byte*)data, sizeOftype * numberOfElements);
+    BinaryType()->Data((::byte*)data, sizeOftype * numberOfElements);
     return true;
   }
 
   void ArraySize(uint& arraySize) override
   {
-    BinaryType()->Data((byte*)&arraySize, sizeof(arraySize));
+    BinaryType()->Data((::byte*)&arraySize, sizeof(arraySize));
   }
 
   bool EnumField(cstr enumTypeName, cstr fieldName, uint& enumValue, BoundType*) override
@@ -223,7 +223,7 @@ public:
   bool StringField(cstr typeName, cstr fieldName, StringRange& stringRange) override;
   bool OpenFile(Status& status, cstr filename);
   void Close();
-  void Data(byte* data, uint size);
+  void Data(::byte* data, uint size);
   bool TestForObjectEnd(BoundType** runtimeType);
 
 private:
@@ -236,7 +236,7 @@ class BinaryFileSaver : public BinarySaver<BinaryFileSaver>
 public:
   bool Open(Status& status, cstr filename);
   void Close();
-  void Data(byte* data, uint size);
+  void Data(::byte* data, uint size);
 
 private:
   File mFile;
@@ -252,11 +252,11 @@ public:
   uint GetSize();
   void Deallocate();
 
-  void ExtractInto(byte* data, uint size);
+  void ExtractInto(::byte* data, uint size);
   void ExtractInto(DataBlock& block);
   DataBlock ExtractAsDataBlock() override;
 
-  void Data(byte* data, uint size);
+  void Data(::byte* data, uint size);
 
 private:
   ByteBuffer mBuffer;
@@ -266,16 +266,16 @@ class BinaryBufferLoader : public BinaryLoader<BinaryBufferLoader>
 {
 public:
   bool StringField(cstr typeName, cstr fieldName, StringRange& stringRange) override;
-  void SetBuffer(byte* data, uint size);
+  void SetBuffer(::byte* data, uint size);
   void SetBlock(DataBlock block);
 
-  void Data(byte* data, uint size);
+  void Data(::byte* data, uint size);
   bool TestForObjectEnd(BoundType** runtimeType);
 
 private:
   uint mBufferSize;
-  byte* mCurrentPosition;
-  byte* mBuffer;
+  ::byte* mCurrentPosition;
+  ::byte* mBuffer;
 };
 
 } // namespace Plasma

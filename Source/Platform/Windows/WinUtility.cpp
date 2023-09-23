@@ -201,7 +201,7 @@ PWCHAR* CommandLineToArgvW(PWCHAR CmdLine, int* _argc)
   return argv;
 }
 
-void CreateBitmapBuffer(Image* image, byte*& outputBuffer, uint& outSize)
+void CreateBitmapBuffer(Image* image, ::byte*& outputBuffer, uint& outSize)
 {
   // Create a bitmap in memory
   uint width = image->Width;
@@ -209,7 +209,7 @@ void CreateBitmapBuffer(Image* image, byte*& outputBuffer, uint& outSize)
   // Each line is padded
   uint pitch = (3 * width + 3) & ~3;
 
-  byte* sourceData = (byte*)image->Data;
+  ::byte* sourceData = (::byte*)image->Data;
 
   // A Bitmap is BITMAPFILEHEADER a BITMAPINFOHEADER and
   // then the padded image bytes.
@@ -218,10 +218,10 @@ void CreateBitmapBuffer(Image* image, byte*& outputBuffer, uint& outSize)
   uint imageBytes = pitch * height;
 
   uint bufferSize = imageBytes + headerSize + infoSize;
-  byte* bitmapBuffer = (byte*)plAllocate(bufferSize);
+  ::byte* bitmapBuffer = (::byte*)plAllocate(bufferSize);
 
   // Offset to the image data
-  byte* imageData = bitmapBuffer + headerSize + infoSize;
+  ::byte* imageData = bitmapBuffer + headerSize + infoSize;
 
   // Create the header sections
   BITMAPFILEHEADER* fileHeader = (BITMAPFILEHEADER*)(bitmapBuffer);
@@ -247,11 +247,11 @@ void CreateBitmapBuffer(Image* image, byte*& outputBuffer, uint& outSize)
   for (uint line = 0; line < height; ++line)
   {
     // All lines are flipped
-    byte* lineStart = imageData + (pitch * (height - line - 1));
+    ::byte* lineStart = imageData + (pitch * (height - line - 1));
     for (uint p = 0; p < width; ++p)
     {
-      byte* dest = lineStart + p * 3;
-      byte* source = sourceData + (line * width + p) * 4;
+      ::byte* dest = lineStart + p * 3;
+      ::byte* source = sourceData + (line * width + p) * 4;
       // RGB is converted to BGR
       dest[0] = source[2];
       dest[1] = source[1];

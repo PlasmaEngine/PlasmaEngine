@@ -63,7 +63,7 @@ AudioFileData AudioFileEncoder::OpenFile(Status& status, StringParam fileName)
 
   // Read in the header from the input file
   WavRiffHeader header;
-  if (file.Read(status, (byte*)(&header), sizeof(header)) < sizeof(header))
+  if (file.Read(status, (::byte*)(&header), sizeof(header)) < sizeof(header))
   {
     status.SetFailed(String::Format("Unable to read from file %s", fileName.c_str()));
     return data;
@@ -130,14 +130,14 @@ void AudioFileEncoder::ReadWav(Status& status, File& file, StringParam fileName,
 {
   // Read in the next chunk header
   WavChunkHeader chunkHeader;
-  file.Read(status, (byte*)(&chunkHeader), sizeof(chunkHeader));
+  file.Read(status, (::byte*)(&chunkHeader), sizeof(chunkHeader));
   // If this isn't the fmt chunk, keep looking
   while (chunkHeader.chunk_name[0] != 'f' || chunkHeader.chunk_name[1] != 'm' || chunkHeader.chunk_name[2] != 't')
   {
     // Skip over this chunk
     file.Seek(chunkHeader.chunk_size, SeekOrigin::Current);
     // Read in the next chunk header
-    file.Read(status, (byte*)(&chunkHeader), sizeof(chunkHeader));
+    file.Read(status, (::byte*)(&chunkHeader), sizeof(chunkHeader));
 
     if (status.Failed())
       return;
@@ -145,21 +145,21 @@ void AudioFileEncoder::ReadWav(Status& status, File& file, StringParam fileName,
 
   // Read in the fmt chunk data
   WavFmtData fmtChunkData;
-  file.Read(status, (byte*)(&fmtChunkData), sizeof(fmtChunkData));
+  file.Read(status, (::byte*)(&fmtChunkData), sizeof(fmtChunkData));
 
   // If the chunk size is larger than the WavFmtData struct, skip ahead
   if (chunkHeader.chunk_size > sizeof(fmtChunkData))
     file.Seek(chunkHeader.chunk_size - sizeof(fmtChunkData), SeekOrigin::Current);
 
   // Get the data chunk header
-  file.Read(status, (byte*)(&chunkHeader), sizeof(chunkHeader));
+  file.Read(status, (::byte*)(&chunkHeader), sizeof(chunkHeader));
   // If this isn't the data chunk, keep looking
   while (chunkHeader.chunk_name[0] != 'd' || chunkHeader.chunk_name[1] != 'a' || chunkHeader.chunk_name[2] != 't')
   {
     // Skip over this chunk
     file.Seek(chunkHeader.chunk_size, SeekOrigin::Current);
     // Read in the next chunk header
-    file.Read(status, (byte*)(&chunkHeader), sizeof(chunkHeader));
+    file.Read(status, (::byte*)(&chunkHeader), sizeof(chunkHeader));
 
     if (status.Failed())
       return;
@@ -171,7 +171,7 @@ void AudioFileEncoder::ReadWav(Status& status, File& file, StringParam fileName,
   data.SampleRate = fmtChunkData.sampling_rate;
 
   // Create the buffer for reading in data from the file
-  byte* rawDataBuffer = new byte[chunkHeader.chunk_size];
+  ::byte* rawDataBuffer = new ::byte[chunkHeader.chunk_size];
 
   // Read in the audio data
   size_t sizeRead = file.Read(status, rawDataBuffer, chunkHeader.chunk_size);
@@ -211,7 +211,7 @@ void AudioFileEncoder::ReadOgg(Status& status, File& file, StringParam fileName,
   unsigned fileSize = (unsigned)file.CurrentFileSize();
 
   // Create the buffer for reading in data from the file
-  byte* rawDataBuffer = new byte[fileSize];
+  ::byte* rawDataBuffer = new ::byte[fileSize];
 
   // Read in the entire file
   size_t sizeRead = file.Read(status, rawDataBuffer, fileSize);
@@ -255,7 +255,7 @@ void AudioFileEncoder::ReadOgg(Status& status, File& file, StringParam fileName,
   stb_vorbis_close(oggStream);
 }
 
-bool AudioFileEncoder::PcmToFloat(byte* inputBuffer,
+bool AudioFileEncoder::PcmToFloat(::byte* inputBuffer,
                                   float** samplesPerChannel,
                                   const unsigned totalSampleCount,
                                   const unsigned channelCount,
@@ -403,7 +403,7 @@ void AudioFileEncoder::EncodeFile(Status& status, File& outputFile, AudioFileDat
   ErrorIf(fileHeader.Channels <= 0);
 
   // Write the header to the output file
-  outputFile.Write((byte*)&fileHeader, sizeof(fileHeader));
+  outputFile.Write((::byte*)&fileHeader, sizeof(fileHeader));
 
   // Create the packet header object
   PacketHeader packetHeader;
@@ -461,9 +461,9 @@ void AudioFileEncoder::EncodeFile(Status& status, File& outputFile, AudioFileDat
       packetHeader.Channel = channel;
 
       // Write the header to the file
-      outputFile.Write((byte*)&packetHeader, sizeof(packetHeader));
+      outputFile.Write((::byte*)&packetHeader, sizeof(packetHeader));
       // Write the encoded packet to the file
-      outputFile.Write((byte*)encodedPacket, packetHeader.Size);
+      outputFile.Write((::byte*)encodedPacket, packetHeader.Size);
     }
   }
 
@@ -490,7 +490,7 @@ void PacketEncoder::InitializeEncoder()
   Encoder = opus_encoder_create(AudioConstants::cSystemSampleRate, cChannels, OPUS_APPLICATION_VOIP, &error);
 }
 
-void PacketEncoder::EncodePacket(const float* dataBuffer, const unsigned samples, Array<byte>& encodedData)
+void PacketEncoder::EncodePacket(const float* dataBuffer, const unsigned samples, Array<::byte>& encodedData)
 {
   ReturnIf(!Encoder, , "Tried to encode packet without initializing encoder");
   ReturnIf(samples != AudioFileEncoder::cPacketFrames, , "Tried to encode packet with incorrect number of samples");

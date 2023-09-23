@@ -84,7 +84,7 @@ public:
 
   static Keyboard* Instance;
   uint mStateDownCount;
-  byte States[Keys::KeyMax];
+  ::byte States[Keys::KeyMax];
 };
 
 DeclareEnum3(KeyState, Up, Down, Repeated);

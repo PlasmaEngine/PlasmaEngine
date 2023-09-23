@@ -84,7 +84,7 @@ namespace Lightning
       Class* self = (Class*)call.GetHandle(Call::This).Dereference();
 
       // Read in the value that we're trying to set
-      byte* stackPointer = call.GetArgumentPointer<LightningBindingType(FieldType)>(0);
+      ::byte* stackPointer = call.GetArgumentPointer<LightningBindingType(FieldType)>(0);
 
       // If read is invalid, throw a more specific exception
       if (report.HasThrownExceptions())
@@ -143,7 +143,7 @@ namespace Lightning
     static void BoundStaticSet(Call& call, ExceptionReport& report)
     {
       // Read in the value that we're trying to set
-      byte* stackPointer = call.GetArgumentPointer<LightningBindingType(FieldType)>(0);
+      ::byte* stackPointer = call.GetArgumentPointer<LightningBindingType(FieldType)>(0);
 
       // If read is invalid, throw a more specific exception
       if (report.HasThrownExceptions())

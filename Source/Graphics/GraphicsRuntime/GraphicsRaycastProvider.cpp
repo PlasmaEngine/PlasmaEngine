@@ -5,7 +5,7 @@
 namespace Plasma
 {
 
-String GraphicsRaycastProviderToString(const BoundType* type, const byte* value)
+String GraphicsRaycastProviderToString(const BoundType* type, const ::byte* value)
 {
   static String Name("Graphics");
   return Name;

@@ -1,9 +1,9 @@
 template <typename FunctionType, FunctionType function, typename Class>
 void VirtualThunk()
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -15,7 +15,7 @@ void VirtualThunk()
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   ExceptionReport report;
@@ -51,9 +51,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Arg0>
 void VirtualThunk(Arg0 arg0)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -65,7 +65,7 @@ void VirtualThunk(Arg0 arg0)
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -104,9 +104,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Arg0, typename Arg1>
 void VirtualThunk(Arg0 arg0, Arg1 arg1)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -118,7 +118,7 @@ void VirtualThunk(Arg0 arg0, Arg1 arg1)
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -160,9 +160,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Arg0, typename Arg1, typename Arg2>
 void VirtualThunk(Arg0 arg0, Arg1 arg1, Arg2 arg2)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -174,7 +174,7 @@ void VirtualThunk(Arg0 arg0, Arg1 arg1, Arg2 arg2)
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -219,9 +219,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Arg0, typename Arg1, typename Arg2, typename Arg3>
 void VirtualThunk(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -233,7 +233,7 @@ void VirtualThunk(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3)
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -281,9 +281,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
 void VirtualThunk(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -295,7 +295,7 @@ void VirtualThunk(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -346,9 +346,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
 void VirtualThunk(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -360,7 +360,7 @@ void VirtualThunk(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 ar
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -414,9 +414,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6>
 void VirtualThunk(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Arg6 arg6)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -428,7 +428,7 @@ void VirtualThunk(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 ar
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -485,9 +485,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Return>
 Return VirtualThunkReturn()
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -499,7 +499,7 @@ Return VirtualThunkReturn()
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   ExceptionReport report;
@@ -535,9 +535,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Return, typename Arg0>
 Return VirtualThunkReturn(Arg0 arg0)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -549,7 +549,7 @@ Return VirtualThunkReturn(Arg0 arg0)
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -588,9 +588,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Return, typename Arg0, typename Arg1>
 Return VirtualThunkReturn(Arg0 arg0, Arg1 arg1)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -602,7 +602,7 @@ Return VirtualThunkReturn(Arg0 arg0, Arg1 arg1)
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -644,9 +644,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Return, typename Arg0, typename Arg1, typename Arg2>
 Return VirtualThunkReturn(Arg0 arg0, Arg1 arg1, Arg2 arg2)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -658,7 +658,7 @@ Return VirtualThunkReturn(Arg0 arg0, Arg1 arg1, Arg2 arg2)
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -703,9 +703,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Return, typename Arg0, typename Arg1, typename Arg2, typename Arg3>
 Return VirtualThunkReturn(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -717,7 +717,7 @@ Return VirtualThunkReturn(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3)
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -765,9 +765,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Return, typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
 Return VirtualThunkReturn(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -779,7 +779,7 @@ Return VirtualThunkReturn(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -830,9 +830,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Return, typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
 Return VirtualThunkReturn(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -844,7 +844,7 @@ Return VirtualThunkReturn(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4,
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);
@@ -898,9 +898,9 @@ static Function* FromVirtual(LibraryBuilder& builder, BoundType* classBoundType,
 template <typename FunctionType, FunctionType function, typename Class, typename Return, typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6>
 Return VirtualThunkReturn(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Arg6 arg6)
 {
-  byte* virtualTable = *(byte**)this;
-  byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
-  byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
+  ::byte* virtualTable = *(::byte**)this;
+  ::byte* typePointer = virtualTable - sizeof(BoundType*) - sizeof(ExecutableState*);
+  ::byte* executableStatePointer = virtualTable - sizeof(ExecutableState*);
   BoundType* type = *(BoundType**)typePointer;
   ExecutableState* state = *(ExecutableState**)(executableStatePointer);
   GuidType virtualId = type->Hash() ^ TypeBinding::GetFunctionUniqueId<FunctionType, function>();
@@ -912,7 +912,7 @@ Return VirtualThunkReturn(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4,
   Handle thisHandle;
   thisHandle.Manager = pointerManager;
   thisHandle.StoredType = type;
-  pointerManager->ObjectToHandle((byte*)this, type, thisHandle);
+  pointerManager->ObjectToHandle((::byte*)this, type, thisHandle);
   Call call(functionToCall, state);
   call.SetHandle(Call::This, thisHandle);
   call.Set<Arg0>(0, arg0);

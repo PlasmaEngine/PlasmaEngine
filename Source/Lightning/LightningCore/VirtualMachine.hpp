@@ -39,19 +39,19 @@ public:
 
   // Executes a destructor not actually from opcode, but
   // rather from a separate handle list on the ClassType
-  static void PostDestructor(BoundType* boundType, byte* objectData);
+  static void PostDestructor(BoundType* boundType, ::byte* objectData);
 
   // When an enum or flags fail and we just print the value, then we also end up
   // printing the type too
-  static String UnknownEnumerationToString(const BoundType* type, const byte* data);
+  static String UnknownEnumerationToString(const BoundType* type, const ::byte* data);
 
   // Conversion from an enumeration into a string (prints out the value of the
   // enum, or an integer if it fails)
-  static String EnumerationToString(const BoundType* type, const byte* data);
+  static String EnumerationToString(const BoundType* type, const ::byte* data);
 
   // Conversion from a flags into a string (prints out all enabled flags, or an
   // integer if it fails)
-  static String FlagsToString(const BoundType* type, const byte* data);
+  static String FlagsToString(const BoundType* type, const ::byte* data);
 
   // Generic integral power (expands to other integral sizes)
   template <typename T>
@@ -258,7 +258,7 @@ PlasmaShared inline bool VirtualMachine::GenericIsZero<Real4>(const Real4& value
 // This is an attempt to force crash reports to store a variable / indirectly
 // referenced memory (not thread safe either) Do NOT ever attempt to access this
 // variable or do anything with it in code
-PlasmaShared extern byte* LightningLastRunningOpcode;
+PlasmaShared extern ::byte* LightningLastRunningOpcode;
 PlasmaShared extern Lightning::Function* LightningLastRunningFunction;
 PlasmaShared extern size_t LightningLastRunningOpcodeLength;
 

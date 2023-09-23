@@ -216,7 +216,7 @@ public:
   virtual bool EnumField(cstr enumTypeName, cstr fieldName, uint& enumValue, BoundType* type) = 0;
   virtual bool StringField(cstr typeName, cstr fieldName, StringRange& stringRange) = 0;
   virtual bool ArrayField(
-      cstr typeName, cstr fieldName, byte* data, ArrayType arrayType, uint numberOfElements, uint sizeOftype) = 0;
+      cstr typeName, cstr fieldName, ::byte* data, ArrayType arrayType, uint numberOfElements, uint sizeOftype) = 0;
 
   virtual DataBlock ExtractAsDataBlock();
 

@@ -19,14 +19,14 @@ struct TransformAction
   };
 
   TransformAction();
-  void QueueState(byte state);
+  void QueueState(::byte state);
   ///Performs the queued actions on the collider and body passed in.
   void CommitState(PhysicsNode* node);
   void EmptyState();
 
   void Validate();
 
-  byte mState;
+  ::byte mState;
 };
 
 ///Action to keep track of what mass properties to recalculate.
@@ -43,14 +43,14 @@ struct MassAction
   };
 
   MassAction();
-  void QueueState(byte state);
+  void QueueState(::byte state);
   ///Performs the queue action on the body passed in.
   void CommitState(RigidBody* owner);
   void EmptyState();
 
   void Validate();
 
-  byte mState;
+  ::byte mState;
 };
 
 struct BroadPhaseBatch
@@ -81,22 +81,22 @@ struct BroadPhaseAction
 
   BroadPhaseAction();
 
-  void PushAction(byte state);
+  void PushAction(::byte state);
   ///Insert the collider based upon it's static/dynamic state.
   void InsertAction(Collider* collider);
   ///Remove the collider based upon it's static/dynamic state.
   void RemoveAction(Collider* collider);
   ///Update the collider based upon it's static/dynamic state.
   void UpdateAction(Collider* collider);
-  void QueueState(byte state);
+  void QueueState(::byte state);
   ///Empties the state but keeps the CurrState info (except for queued).
   void EmptyState();
   void ClearAction();
 
   //Helpers
-  bool IsSet(byte state) const;
-  void SetState(byte state);
-  void ClearState(byte state);
+  bool IsSet(::byte state) const;
+  void SetState(::byte state);
+  void ClearState(::byte state);
   bool IsActionQueued() const;
   bool IsInBroadPhase() const;
   bool IsInDynamicBroadPhase() const;
@@ -105,7 +105,7 @@ struct BroadPhaseAction
 
   void Validate();
 
-  byte mState;
+  ::byte mState;
 };
 
 }//namespace Physics

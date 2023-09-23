@@ -54,7 +54,7 @@ private:
   FreeBlock* mBlockArray[cBlockCount];
 
   // Table used to look up block index from allocation size.
-  static byte BucketLookUp[cMaxBlockSize + 1];
+  static ::byte BucketLookUp[cMaxBlockSize + 1];
   // Is the allocation table initialized.
   static bool SizeTableInitialized;
 

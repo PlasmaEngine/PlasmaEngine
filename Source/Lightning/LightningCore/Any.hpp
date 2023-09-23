@@ -56,7 +56,7 @@ public:
 
     // Allocate room to store this type (may store locally and not actually
     // allocate)
-    byte* destination = this->AllocateData(copyableSize);
+    ::byte* destination = this->AllocateData(copyableSize);
 
     // Store the type and copy construct the data into us
     this->StoredType = type;
@@ -103,7 +103,7 @@ public:
       return GetInvalid<T>();
     }
 
-    byte* data = (byte*)this->GetData();
+    ::byte* data = (::byte*)this->GetData();
 
     // If the type is a reference type... (this is always a handle)
     if (toType->CopyMode == TypeCopyMode::ReferenceType)
@@ -136,7 +136,7 @@ public:
 
   // Constructor that initializes to the given data and type (the data is copied
   // in using GenericCopyConstruct)
-  Any(const byte* data, Type* type);
+  Any(const ::byte* data, Type* type);
 
   // Construct a default instance of a particular type (equivalent of
   // default(T))
@@ -176,7 +176,7 @@ public:
 
   // If the type stored internally is a Handle then this will invoke Dereference
   // on the handle Otherwise this will return the same value as GetData
-  byte* Dereference() const;
+  ::byte* Dereference() const;
 
   // Destruct any data stored by the any
   // This also clears the entire any out to plasma
@@ -184,15 +184,15 @@ public:
 
   // Allocates data if the size goes past the sizeof(this->Data), or returns a
   // pointer to this->Data
-  byte* AllocateData(size_t size);
+  ::byte* AllocateData(size_t size);
 
   // Get the raw type data that we point at (may be our internal Data, or may be
   // allocated)
-  const byte* GetData() const;
+  const ::byte* GetData() const;
 
   // Much like the copy constructor or assignment of an any, except it avoids
   // creating an extra 'any' in cases where we just have the memory and the type
-  void AssignFrom(const byte* data, Type* type);
+  void AssignFrom(const ::byte* data, Type* type);
 
   // Replaces our stored definition with a default constructed version of the
   // given type (equivalent of default(T)) Typically makes handles null,
@@ -202,7 +202,7 @@ public:
   // Generically copies the value of this any to another location
   // This will NOT copy the 'Any' but rather the stored type
   // Make sure the size and type of destination matches!
-  void CopyStoredValueTo(byte* to) const;
+  void CopyStoredValueTo(::byte* to) const;
 
   // Checks if the any is currently holding a value
   // Note that the value MAY be null, which is still technically a value stored
@@ -216,7 +216,7 @@ public:
   // If the size of the type is bigger then can fit here, then we allocate a
   // pointer instead
   union {
-    byte Data[sizeof(Delegate)];
+    ::byte Data[sizeof(Delegate)];
 
     // Ensure alignment on all platforms.
     MaxAlignmentType DataAligned[PlasmaAlignCount(sizeof(Delegate))];
@@ -234,13 +234,13 @@ typedef const Any& AnyParam;
 // This is specialized by the Any type to return an Any that encapsulates the
 // value
 template <typename T>
-T CopyToAnyOrActualType(byte* data, Type* dataType)
+T CopyToAnyOrActualType(::byte* data, Type* dataType)
 {
   // If no data was provided, then return the default value for T
   if (data == nullptr)
   {
     // Not all primitive constructors plasma out the memory, so do that first
-    byte memory[sizeof(T)] = {0};
+    ::byte memory[sizeof(T)] = {0};
     new (memory) T();
     return *(T*)memory;
   }
@@ -251,12 +251,12 @@ T CopyToAnyOrActualType(byte* data, Type* dataType)
 
 // Specialization for the Any type, which will copy the value into an Any
 template <>
-PlasmaShared Any CopyToAnyOrActualType<Any>(byte* data, Type* dataType);
+PlasmaShared Any CopyToAnyOrActualType<Any>(::byte* data, Type* dataType);
 
 // Given a type we know natively, just directly copy it to a location
 // This is specialized by the Any type to only copy its inner value
 template <typename T>
-PlasmaSharedTemplate void CopyFromAnyOrActualType(const T& value, byte* to)
+PlasmaSharedTemplate void CopyFromAnyOrActualType(const T& value, ::byte* to)
 {
   // Just directly construct the value
   new (to) T(value);
@@ -264,7 +264,7 @@ PlasmaSharedTemplate void CopyFromAnyOrActualType(const T& value, byte* to)
 
 // Specialization for the Any type, which will copy the value out of an Any
 template <>
-PlasmaShared void CopyFromAnyOrActualType<Any>(const Any& any, byte* to);
+PlasmaShared void CopyFromAnyOrActualType<Any>(const Any& any, ::byte* to);
 } // namespace Lightning
 
 #endif

@@ -102,10 +102,10 @@ namespace Lightning
   inline ByteColor ToByteColor(Math::Vec4 color)
   {
     return ByteColorRGBA(
-      byte(Math::Round(color.x * 255.f)),
-      byte(Math::Round(color.y * 255.f)),
-      byte(Math::Round(color.z * 255.f)),
-      byte(Math::Round(color.w * 255.f)));
+      ::byte(Math::Round(color.x * 255.f)),
+      ::byte(Math::Round(color.y * 255.f)),
+      ::byte(Math::Round(color.z * 255.f)),
+      ::byte(Math::Round(color.w * 255.f)));
   }
 
   //***************************************************************************

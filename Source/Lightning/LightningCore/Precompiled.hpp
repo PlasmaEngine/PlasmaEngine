@@ -180,7 +180,7 @@ typedef const FunctionArray* (BoundType::*GetOverloadedFunctionsFn)(StringParam 
 typedef Field* (BoundType::*GetFieldFn)(StringParam name) const;
 typedef GetterSetter* (BoundType::*GetGetterSetterFn)(StringParam name) const;
 
-typedef void (*PostDestructorFn)(BoundType* boundType, byte* objectData);
+typedef void (*PostDestructorFn)(BoundType* boundType, ::byte* objectData);
 typedef void (*ThreadLockFn)(bool lock);
 
 // The C++ function that's bound to the script function

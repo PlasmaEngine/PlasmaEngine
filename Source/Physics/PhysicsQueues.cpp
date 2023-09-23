@@ -45,7 +45,7 @@ void PhysicsQueue::ProcessQueue(BroadPhaseBatch& staticBatch, BroadPhaseBatch& d
   typedef BroadPhaseAction BPAction;
   BPAction& action = mBroadPhaseAction;
 
-  byte& state = mBroadPhaseAction.mState;
+  ::byte& state = mBroadPhaseAction.mState;
 
   //deal with dynamic states
   if(action.IsSet(BPAction::DynamicRemoval))

@@ -244,9 +244,9 @@ namespace Lightning
     // Copy each argument from the any to the Lightning stack (as its actual value)
     for (size_t i = 0; i < argumentCount; ++i)
     {
-      byte* stackParameter = call.GetParameterUnchecked(i);
+      ::byte* stackParameter = call.GetParameterUnchecked(i);
       Any& argument = arguments->NativeArray[i];
-      const byte* argumentData = argument.GetData();
+      const ::byte* argumentData = argument.GetData();
       argument.StoredType->GenericCopyConstruct(stackParameter, argumentData);
     }
 
@@ -257,7 +257,7 @@ namespace Lightning
       return Any();
     
     // Fetch the return value and construct and any from it
-    byte* returnValue = call.GetReturnUnchecked();
+    ::byte* returnValue = call.GetReturnUnchecked();
     return Any(returnValue, this->FunctionType->Return);
   }
 }

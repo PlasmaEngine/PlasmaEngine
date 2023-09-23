@@ -168,7 +168,7 @@ bool File::Seek(FilePosition pos, SeekOrigin::Enum rel)
   return (ret == 0);
 }
 
-size_t File::Write(byte* data, size_t sizeInBytes)
+size_t File::Write(::byte* data, size_t sizeInBytes)
 {
   PlasmaGetPrivateData(FilePrivateData);
   if (!self->IsValidFile())
@@ -177,7 +177,7 @@ size_t File::Write(byte* data, size_t sizeInBytes)
   return fwrite(data, 1, sizeInBytes, self->mFileData);
 }
 
-size_t File::Read(Status& status, byte* data, size_t sizeInBytes)
+size_t File::Read(Status& status, ::byte* data, size_t sizeInBytes)
 {
   PlasmaGetPrivateData(FilePrivateData);
   if (!self->IsValidFile())
@@ -224,7 +224,7 @@ void File::Duplicate(Status& status, File& destinationFile)
 
   // Get this files data size in bytes
   size_t fileSizeInBytes = (size_t)CurrentFileSize();
-  byte* buffer = new byte[fileSizeInBytes];
+  ::byte* buffer = new ::byte[fileSizeInBytes];
 
   // Read this files data
   size_t ret = Read(status, buffer, fileSizeInBytes);

@@ -95,7 +95,7 @@ bool IsPngSaveFormat(TextureFormat::Enum format)
 
 void LoadPng(Status& status,
              Stream* stream,
-             byte** output,
+             ::byte** output,
              uint* width,
              uint* height,
              TextureFormat::Enum* format,
@@ -109,7 +109,7 @@ void LoadPng(Status& status,
 
   // Init pointer value so memory can be cleaned up if an error occurs after
   // allocation
-  byte* imageData = nullptr;
+  ::byte* imageData = nullptr;
 
   // Create and initialize the png_struct with the desired error handler
   // functions.  If you want to use the default stderr and longjump method,
@@ -200,7 +200,7 @@ void LoadPng(Status& status,
   uint rowSize = readWidth * pixelSize;
 
   // Allocate space for image
-  imageData = (byte*)plAllocate(imageSize);
+  imageData = (::byte*)plAllocate(imageSize);
 
   if (!imageData)
   {
@@ -209,7 +209,7 @@ void LoadPng(Status& status,
   }
 
   // Set up row pointers to point directly into allocated image
-  png_bytep* rowPointers = (png_bytep*)alloca(readHeight * sizeof(byte*));
+  png_bytep* rowPointers = (png_bytep*)alloca(readHeight * sizeof(::byte*));
   for (uint i = 0; i < readHeight; ++i)
     rowPointers[i] = (png_bytep)(imageData + rowSize * i);
 
@@ -232,7 +232,7 @@ void LoadPng(Status& status,
     *format = TextureFormat::RGBA8;
 }
 
-void SavePng(Status& status, Stream* stream, const byte* image, uint width, uint height, TextureFormat::Enum format)
+void SavePng(Status& status, Stream* stream, const ::byte* image, uint width, uint height, TextureFormat::Enum format)
 {
   if (!IsPngSaveFormat(format))
   {
@@ -282,9 +282,9 @@ void SavePng(Status& status, Stream* stream, const byte* image, uint width, uint
   uint bytesPerRow = width * pixelSize;
 
   // Allocated Rows
-  png_byte** rows = (png_byte**)alloca(height * sizeof(byte*));
+  png_byte** rows = (png_byte**)alloca(height * sizeof(::byte*));
   for (uint y = 0; y < height; ++y)
-    rows[y] = (png_byte*)(byte*)(image + bytesPerRow * y);
+    rows[y] = (png_byte*)(::byte*)(image + bytesPerRow * y);
 
   // Write the image data to the file
   png_set_rows(png_ptr, pngInfo, rows);

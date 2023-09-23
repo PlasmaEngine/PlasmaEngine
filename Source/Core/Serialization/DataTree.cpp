@@ -345,7 +345,7 @@ void ReadArray(DataNode* arrayNode, type* data, uint numberOfElements)
 }
 
 bool DataTreeLoader::ArrayField(
-    cstr typeName, cstr fieldName, byte* data, ArrayType arrayType, uint numberOfElements, uint sizeOftype)
+    cstr typeName, cstr fieldName, ::byte* data, ArrayType arrayType, uint numberOfElements, uint sizeOftype)
 {
   if (InnerStart(typeName, fieldName, StructureType::BasicArray))
   {

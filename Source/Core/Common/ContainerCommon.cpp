@@ -7,7 +7,7 @@ DataBlock::DataBlock() : Data(nullptr), Size(0)
 {
 }
 
-DataBlock::DataBlock(byte* data, size_t size) : Data(data), Size(size)
+DataBlock::DataBlock(::byte* data, size_t size) : Data(data), Size(size)
 {
 }
 

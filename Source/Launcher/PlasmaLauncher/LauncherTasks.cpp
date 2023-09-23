@@ -110,7 +110,7 @@ void DownloadImageTaskJob::OnReponse(WebResponseEvent* event)
   {
     // just save the data
     Status status;
-    LoadImage(status, (byte*)event->mData.Data(), event->mData.SizeInBytes(), &mImage);
+    LoadImage(status, (::byte*)event->mData.Data(), event->mData.SizeInBytes(), &mImage);
 
     if (status.Failed())
     {
@@ -200,7 +200,7 @@ void Install(StringParam installLocation, StringParam data)
 
   // decompress the archive to our install location
   Archive archive(ArchiveMode::Decompressing);
-  ByteBufferBlock buffer((byte*)data.Data(), data.SizeInBytes(), false);
+  ByteBufferBlock buffer((::byte*)data.Data(), data.SizeInBytes(), false);
   // Unfortunately, archive doesn't return any failed state so we could get
   // back an invalid zip. Currently this should only happen if the server code
   // is wrong.
@@ -266,7 +266,7 @@ void InstallBuildTaskJob::LoadFromFile(StringParam filePath)
 {
   // build the task to start the install
   size_t fileSize;
-  byte* data = ReadFileIntoMemory(filePath.c_str(), fileSize, 1);
+  ::byte* data = ReadFileIntoMemory(filePath.c_str(), fileSize, 1);
   data[fileSize] = 0;
   mData = String((char*)data, fileSize);
 }
@@ -467,7 +467,7 @@ void DownloadTemplateTaskJob::OnReponse(WebResponseEvent* event)
   // Save the template zip
   String templateFilePath = FilePath::CombineWithExtension(
       mTemplateInstallLocation, mTemplateNameWithoutExtension, TemplateProject::mExtensionWithDot);
-  WriteToFile(templateFilePath.c_str(), (byte*)data.c_str(), data.SizeInBytes());
+  WriteToFile(templateFilePath.c_str(), (::byte*)data.c_str(), data.SizeInBytes());
 
   // Save the icon image
   String iconFilePath = FilePath::Combine(mTemplateInstallLocation, plasmaTemplate->mIconUrl);
@@ -529,7 +529,7 @@ CachedProject* DownloadAndCreateTemplateTaskJob::GetOrCreateCachedProject(Projec
   if (FileExists(templateFilePath))
     DeleteFile(templateFilePath);
   String data = GetData();
-  WriteToFile(templateFilePath.c_str(), (byte*)data.c_str(), data.SizeInBytes());
+  WriteToFile(templateFilePath.c_str(), (::byte*)data.c_str(), data.SizeInBytes());
 
   // From the downloaded file, create the project
   CreateFromTemplateFile(templateFilePath, projectCache);
@@ -581,7 +581,7 @@ void DownloadLauncherPatchInstallerJob::OnReponse(WebResponseEvent* event)
 
   // extract the archive to the download directory
   Archive archive(ArchiveMode::Decompressing);
-  ByteBufferBlock buffer((byte*)data.Data(), data.SizeInBytes(), false);
+  ByteBufferBlock buffer((::byte*)data.Data(), data.SizeInBytes(), false);
   archive.ReadBuffer(ArchiveReadFlags::All, buffer);
 
   // Find the patch id from the archive. If we failed to find one
@@ -649,7 +649,7 @@ void DownloadLauncherMajorInstallerJob::OnReponse(WebResponseEvent* event)
   if (FileExists(mInstallerPath))
     DeleteFile(mInstallerPath);
 
-  WriteToFile(mInstallerPath.c_str(), (byte*)data.c_str(), data.SizeInBytes());
+  WriteToFile(mInstallerPath.c_str(), (::byte*)data.c_str(), data.SizeInBytes());
   mState = BackgroundTaskState::Completed;
 }
 

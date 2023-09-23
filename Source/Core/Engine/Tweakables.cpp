@@ -21,7 +21,7 @@ void TweakableSetter(Call& call, ExceptionReport& report)
 {
   Property* property = call.GetFunction()->OwningProperty;
 
-  byte* parameter = call.GetParameterUnchecked(0);
+  ::byte* parameter = call.GetParameterUnchecked(0);
 
   if (property->UserData == nullptr)
   {
@@ -30,7 +30,7 @@ void TweakableSetter(Call& call, ExceptionReport& report)
     return;
   }
 
-  property->PropertyType->GenericCopyConstruct((byte*)property->UserData, parameter);
+  property->PropertyType->GenericCopyConstruct((::byte*)property->UserData, parameter);
 
   if (Tweakables::sModifiedCallback)
     (*Tweakables::sModifiedCallback)();
@@ -47,10 +47,10 @@ void TweakableGetter(Call& call, ExceptionReport& report)
   }
 
   Type* returnType = property->PropertyType;
-  byte* returnLocation = call.GetReturnUnchecked();
+  ::byte* returnLocation = call.GetReturnUnchecked();
   call.DisableReturnChecks();
 
-  returnType->GenericCopyConstruct(returnLocation, (const byte*)property->UserData);
+  returnType->GenericCopyConstruct(returnLocation, (const ::byte*)property->UserData);
 }
 
 TweakableNode::TweakableNode(StringParam typeName)

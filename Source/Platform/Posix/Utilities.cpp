@@ -91,7 +91,7 @@ u64 GenerateUniqueId64()
   return idGen + rand();
 }
 
-void CheckClassMemory(cstr className, byte* classMemory)
+void CheckClassMemory(cstr className, ::byte* classMemory)
 {
 }
 

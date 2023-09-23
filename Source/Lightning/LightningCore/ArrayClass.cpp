@@ -108,7 +108,7 @@ public:
     return (Integer)this->NativeArray.Size();
   }
 
-  static String ArrayToString(const BoundType* type, const byte* data)
+  static String ArrayToString(const BoundType* type, const ::byte* data)
   {
     // Read the element size from the current function's user-data
     ArrayUserData& userData = type->ComplexUserData.ReadObject<ArrayUserData>(0);
@@ -123,8 +123,8 @@ public:
     // Loop through all entries in the array
     for (size_t i = 0; i < self->NativeArray.Size(); ++i)
     {
-      // Get a pointer to the value at the given index (as a byte*)
-      byte* valuePointer = (byte*)&self->NativeArray[i];
+      // Get a pointer to the value at the given index (as a ::byte*)
+      ::byte* valuePointer = (::byte*)&self->NativeArray[i];
 
       // Convert that value to a string generically
       String valueString = userData.ContainedType->GenericToString(valuePointer);
@@ -152,7 +152,7 @@ public:
   static void ArrayCopyReturnValue(Call& call, const T& value)
   {
     // Get a pointer to the return value data (on the stack)
-    byte* returnValue = call.GetReturnUnchecked();
+    ::byte* returnValue = call.GetReturnUnchecked();
     call.DisableReturnChecks();
 
     // Generically copy the contained type to the return value
@@ -165,7 +165,7 @@ public:
     ArrayUserData& userData = call.GetFunction()->ComplexUserData.ReadObject<ArrayUserData>(0);
 
     // Get the value
-    byte* valueData = call.GetParameterUnchecked(parameter);
+    ::byte* valueData = call.GetParameterUnchecked(parameter);
 
     // Grab the data out generically (if this is an Any type, we handle that
     // properly)
@@ -366,7 +366,7 @@ public:
     self->NativeArray.Reserve(capacity);
   }
 
-  static void ArrayResizeHelper(Call& call, ExceptionReport& report, byte* defaultValue)
+  static void ArrayResizeHelper(Call& call, ExceptionReport& report, ::byte* defaultValue)
   {
     // Get the user data, because we need to know the template types
     ArrayUserData& userData = call.GetFunction()->ComplexUserData.ReadObject<ArrayUserData>(0);
@@ -411,10 +411,10 @@ public:
     }
   }
 
-  static void ArrayResizeConstructorHelper(Call& call, ExceptionReport& report, byte* defaultValue)
+  static void ArrayResizeConstructorHelper(Call& call, ExceptionReport& report, ::byte* defaultValue)
   {
     // Get ourselves (the array)
-    byte* memory = call.GetHandle(Call::This).Dereference();
+    ::byte* memory = call.GetHandle(Call::This).Dereference();
 
     // Construct the array
     ArrayTemplate* self = new (memory) ArrayTemplate();
@@ -434,7 +434,7 @@ public:
   {
     // The second argument should be the default value we'd like to initialize
     // elements with
-    byte* defaultValue = call.GetParameterUnchecked(1);
+    ::byte* defaultValue = call.GetParameterUnchecked(1);
 
     // Construct the array and resize the number of elements, with no default
     // value
@@ -451,7 +451,7 @@ public:
   {
     // The second argument should be the default value we'd like to initialize
     // elements with
-    byte* defaultValue = call.GetParameterUnchecked(1);
+    ::byte* defaultValue = call.GetParameterUnchecked(1);
 
     // Resize with the given default value
     ArrayResizeHelper(call, report, defaultValue);
@@ -536,7 +536,7 @@ public:
 
   static void SetParameter(Call& call, size_t index, T& value)
   {
-    byte* dest = call.GetParameterUnchecked(index);
+    ::byte* dest = call.GetParameterUnchecked(index);
     CopyFromAnyOrActualType(value, dest);
   }
 
@@ -705,7 +705,7 @@ public:
   {
     // Get ourselves (the range)
     Handle& selfHandle = call.GetHandle(Call::This);
-    byte* selfData = selfHandle.Dereference();
+    ::byte* selfData = selfHandle.Dereference();
 
     // Call our default constructor on the memory
     new (selfData) ArrayRangeTemplate();
@@ -805,7 +805,7 @@ public:
     else
     {
       // Get a pointer to the return value data (on the stack)
-      byte* returnValue = call.GetReturnUnchecked();
+      ::byte* returnValue = call.GetReturnUnchecked();
       call.DisableReturnChecks();
 
       // Copy the value at the array to the return type (this properly deals
@@ -814,7 +814,7 @@ public:
     }
   }
 
-  static String ArrayRangeToString(const BoundType* type, const byte* data)
+  static String ArrayRangeToString(const BoundType* type, const ::byte* data)
   {
     // Get the user data, because we need to know the contained arrays element
     // type
@@ -844,8 +844,8 @@ public:
     // Loop through all entries in the contained native array
     for (Integer i = self->Current; i < end; ++i)
     {
-      // Get a pointer to the value at the given index (as a byte*)
-      byte* valuePointer = (byte*)&array->NativeArray[i];
+      // Get a pointer to the value at the given index (as a ::byte*)
+      ::byte* valuePointer = (::byte*)&array->NativeArray[i];
 
       // Convert that value to a string generically
       String valueString = containedType->GenericToString(valuePointer);

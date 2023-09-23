@@ -186,8 +186,8 @@ namespace Lightning
     bool IsVariableInitialized(Variable* variable);
 
     // For the current stack frame, this is where all the data lies
-    byte* Frame;
-    byte* NextFrame;
+    ::byte* Frame;
+    ::byte* NextFrame;
 
     // We need a pointer back to the state to do certain operations
     ExecutableState* State;
@@ -373,7 +373,7 @@ namespace Lightning
     // position and returns a stack handle to the object
     // Note that the handle will become null when we leave the scope
     // that the object was allocated in (return from a function, etc)
-    Handle AllocateStackObject(byte* stackLocation, PerScopeData* scope, BoundType* type, ExceptionReport& report);
+    Handle AllocateStackObject(::byte* stackLocation, PerScopeData* scope, BoundType* type, ExceptionReport& report);
 
     // Allocates an object on the heap and returns a handle to the object
     // No constructors are called, but the object will be pre-constructed
@@ -410,7 +410,7 @@ namespace Lightning
       if (instance == nullptr)
         return;
 
-      Handle handle(this, LightningTypeId(T), (const byte*)instance);
+      Handle handle(this, LightningTypeId(T), (const ::byte*)instance);
       handle.Delete();
     }
 
@@ -421,7 +421,7 @@ namespace Lightning
     // whose type is actually 'Handle'; handles can be dereferenced to get a
     // direct pointer to the object
     // Only ever read up to the size of your return, parameters, and this handle
-    byte* GetCurrentStackFrame();
+    ::byte* GetCurrentStackFrame();
 
     // Executes a statement or expression and returns the result
     // The dependent libraries are assumed to be the same libraries as the state compiled with (not including patches)
@@ -467,16 +467,16 @@ namespace Lightning
     }
 
     // Update the virtual table of a native C++ object, or do nothing if it's not virtual or native
-    void UpdateCppVirtualTable(byte* objectWithBaseVTable, BoundType* cppBaseType, BoundType* derivedType);
+    void UpdateCppVirtualTable(::byte* objectWithBaseVTable, BoundType* cppBaseType, BoundType* derivedType);
 
     // Get the raw stack array
-    const byte* GetRawStack();
+    const ::byte* GetRawStack();
 
     // Get a static field from this state (must be a field in one of the dependent libraries)
     // If the field is not initialized, it will run the initializer code (user defined code)
     // to attempt to initialize the value, though it is first initialized to zero memory
     // An exception can be thrown from user code when attempting to initialize the field
-    byte* GetStaticField(Field* field, ExceptionReport& report);
+    ::byte* GetStaticField(Field* field, ExceptionReport& report);
 
     // A pointer to any data the user wants to attach
     mutable const void* UserData;
@@ -499,23 +499,23 @@ namespace Lightning
     // position ahead of our current function. If we're not
     // in any functions, it should be the front of the stack
     // Always call this BEFORE you push any frame data
-    byte* GetNextStackFrame();
+    ::byte* GetNextStackFrame();
 
     // Push a new stack frame and returns the location on the stack
     PlasmaForceInline PerFrameData* PushFrame(Function* function);
 
     // A slightly more optimal version of pushing a stack frame (used internally in execution)
-    PlasmaForceInline PerFrameData* PushFrame(byte* frame, Function* function);
+    PlasmaForceInline PerFrameData* PushFrame(::byte* frame, Function* function);
 
     // Pops a stack frame and return a pointer to where the return value should be
     PlasmaForceInline PerFrameData* PopFrame();
 
     // Initialize a handle to point at a location on the stack
-    void InitializeStackHandle(Handle& handle, byte* location, PerScopeData* scope, BoundType* type);
+    void InitializeStackHandle(Handle& handle, ::byte* location, PerScopeData* scope, BoundType* type);
 
     // Initialize a handle with a direct pointer value
     // Generally unsafe, but used in cases such as statics which are guaranteed to exist and therefore safe
-    void InitializePointerHandle(Handle& handle, byte* location, BoundType* type);
+    void InitializePointerHandle(Handle& handle, ::byte* location, BoundType* type);
 
     // Invokes the pre-constructor (which initializes memory) on a handle
     void InvokePreConstructorOrRelease(Handle& handle, ExceptionReport& report);
@@ -564,7 +564,7 @@ namespace Lightning
     // In the future, we'll also run the initializer upon the memory the first time it is accessed
     // We may reserve a header byte to know whether the memory has been fully initialized,
     // because accessing a field that has been created but not fully initialized means there is a cycle
-    HashMap<Field*, byte*> StaticFieldToMemory;
+    HashMap<Field*, ::byte*> StaticFieldToMemory;
 
     // We need a way to map virtual function ids into our function
     HashMap<GuidType, Function*> ThunksToFunctions;
@@ -598,7 +598,7 @@ namespace Lightning
     BoundType* AllocatingType;
 
     // All the virtual tables (of varying sizes) for each native type that has virtual methods bound
-    HashMap<BoundType*, byte*> NativeVirtualTables;
+    HashMap<BoundType*, ::byte*> NativeVirtualTables;
 
     // The handle managers we use to dereference and setup handles
     mutable HashMap<HandleManagerId, HandleManager*> UniqueManagers;
@@ -645,7 +645,7 @@ namespace Lightning
     // The stack data used by the executable state
     // This is the base of the stack, NOT the current stack
     // Note that the stack is of a fixed size, and should never be reallocated
-    byte* Stack;
+    ::byte* Stack;
 
     // Once we hit a stack overflow we no longer have stack space to invoke anything
     // such as destructors, or constructing the exception itself! To fix this issue,
@@ -668,7 +668,7 @@ namespace Lightning
   // You can get the current stack frame by calling 'GetCurrentStackFrame'
   // See 'GetCurrentStackFrame' for the calling conventions
   template <typename T>
-  PlasmaSharedTemplate T InternalReadValue(byte* stackFrame)
+  PlasmaSharedTemplate T InternalReadValue(::byte* stackFrame)
   {
     // Return the read in value and advance the stack forward by the value's size
     typedef typename TypeBinding::StaticTypeId<T>::ReadType ReadType;
@@ -681,7 +681,7 @@ namespace Lightning
   // You can get the current stack frame by calling 'GetCurrentStackFrame'
   // See 'GetCurrentStackFrame' for the calling conventions
   template <typename T>
-  PlasmaSharedTemplate void InternalWriteValue(const T& value, byte* stackFrame)
+  PlasmaSharedTemplate void InternalWriteValue(const T& value, ::byte* stackFrame)
   {
     // Write the value directly to the stack frame
     typedef typename TypeBinding::StaticTypeId<T>::UnqualifiedType& ToType;
@@ -694,20 +694,20 @@ namespace Lightning
   // You can get the current stack frame by calling 'GetCurrentStackFrame'
   // See 'GetCurrentStackFrame' for the calling conventions
   template <typename T>
-  PlasmaSharedTemplate T InternalReadRef(byte* stackFrame)
+  PlasmaSharedTemplate T InternalReadRef(::byte* stackFrame)
   {
     // Read the handle that will point at the string from the stack
     Handle& handle = *(Handle*)stackFrame;
 
     // Read the data from the handle by dereferencing it
-    byte* data = handle.Dereference();
+    ::byte* data = handle.Dereference();
 
     // Read the value from the handle data
     return InternalReadValue<T>(data);
   }
 
   template <typename T>
-  PlasmaSharedTemplate void InternalWriteRef(const T& value, byte* stackFrame, ExecutableState* state)
+  PlasmaSharedTemplate void InternalWriteRef(const T& value, ::byte* stackFrame, ExecutableState* state)
   {
     // Get the type we're trying to write
     LightningStrip(T)* pointerToValue = LightningToPointer(value);
@@ -733,13 +733,13 @@ namespace Lightning
       handle->StoredType = type;
 
       // Setup the newly created handle
-      manager->ObjectToHandle((const byte*)pointerToValue, handle->StoredType, *handle);
+      manager->ObjectToHandle((const ::byte*)pointerToValue, handle->StoredType, *handle);
     }
     else
     {
       // Write the value to a temporary buffer
       size_t size = sizeof(typename LightningStaticType(T)::RepresentedType);
-      byte* data = (byte*)alloca(size);
+      ::byte* data = (::byte*)alloca(size);
 
       // This was a redirect, so just take the type of the redirect and put it on the handle
       handle->StoredType = type;
@@ -762,7 +762,7 @@ namespace Lightning
   public:
     static T Get(Call& call, size_t index);
     static void Set(Call& call, size_t index, const T& value);
-    static byte* GetArgumentPointer(Call& call, size_t index);
+    static ::byte* GetArgumentPointer(Call& call, size_t index);
     static T GetNonNull(Call& call, size_t index)
     {
       T result = Get(call, index);
@@ -781,7 +781,7 @@ namespace Lightning
     }
 
 
-    static T CastArgumentPointer(byte* stackPointer)
+    static T CastArgumentPointer(::byte* stackPointer)
     {
       return InternalReadValue<T>(stackPointer);
     }
@@ -793,8 +793,8 @@ namespace Lightning
     public:                                                                   \
       static T Get(Call& call, size_t index);                                 \
       static void Set(Call& call, size_t index, SetT value);                  \
-      static byte* GetArgumentPointer(Call& call, size_t index);              \
-      static T CastArgumentPointer(byte* stackPointer);                       \
+      static ::byte* GetArgumentPointer(Call& call, size_t index);              \
+      static T CastArgumentPointer(::byte* stackPointer);                       \
     };
 
   #define LightningCallHelperTemplateSpecialization(T, SetT)                      \
@@ -803,8 +803,8 @@ namespace Lightning
     public:                                                                   \
       static T Get(Call& call, size_t index);                                 \
       static void Set(Call& call, size_t index, SetT value);                  \
-      static byte* GetArgumentPointer(Call& call, size_t index);              \
-      static T CastArgumentPointer(byte* stackPointer);                       \
+      static ::byte* GetArgumentPointer(Call& call, size_t index);              \
+      static T CastArgumentPointer(::byte* stackPointer);                       \
     };
 
   // Facilitates invoking Lightning functions including parameter passing and grabbing return values
@@ -830,7 +830,7 @@ namespace Lightning
     static const size_t This    = (size_t)-2;
 
     // Set either a parameter or return for the call (value types only, this not allowed)
-    void SetValue(size_t index, const byte* input, size_t size);
+    void SetValue(size_t index, const ::byte* input, size_t size);
 
     // Set either a parameter, return, or this handle for the call
     void SetHandle(size_t index, const Handle& value);
@@ -847,7 +847,7 @@ namespace Lightning
       BoundType* valueType = LightningVirtualTypeId(pointer);
 
       // Get the stack location and perform checks
-      byte* stack = this->GetChecked(index, sizeof(typename LightningStaticType(T)::RepresentedType), valueType, CheckPrimitive::Value, Direction::Set);
+      ::byte* stack = this->GetChecked(index, sizeof(typename LightningStaticType(T)::RepresentedType), valueType, CheckPrimitive::Value, Direction::Set);
 
       // Finally, copy the input into the stack position
       InternalWriteValue<T>(value, stack);
@@ -862,7 +862,7 @@ namespace Lightning
       BoundType* valueType = LightningVirtualTypeId(pointer);
 
       // Get the stack location and perform checks
-      byte* stack = this->GetChecked(index, sizeof(Handle), valueType, CheckPrimitive::Handle, Direction::Set);
+      ::byte* stack = this->GetChecked(index, sizeof(Handle), valueType, CheckPrimitive::Handle, Direction::Set);
 
       // Finally, copy the input into the stack position
       InternalWriteRef<T>(value, stack, this->Data->State);
@@ -877,26 +877,26 @@ namespace Lightning
     }
 
     // Get either a parameter or return from the call (value types only, this not allowed)
-    void GetValue(size_t index, byte* output, size_t size);
+    void GetValue(size_t index, ::byte* output, size_t size);
     
     // Get either a parameter, return, or this handle from the call
     Handle& GetHandle(size_t index);
     
     // Get either a parameter, return, or this handle from the call
-    byte* GetHandlePointer(size_t index);
+    ::byte* GetHandlePointer(size_t index);
     
     // Get either a parameter or return from the call (this not allowed)
     Delegate& GetDelegate(size_t index);
 
     // Get either a parameter or return from the call (this not allowed)
-    byte* GetDelegatePointer(size_t index);
+    ::byte* GetDelegatePointer(size_t index);
 
     // Get either a parameter or return from the call (value types only, this not allowed)
     template <typename T>
     T GetValue(size_t index)
     {
       // Get the stack location and perform checks
-      byte* stack = this->GetChecked(index, sizeof(typename LightningStaticType(T)::RepresentedType), LightningTypeId(T), CheckPrimitive::Value, Direction::Get);
+      ::byte* stack = this->GetChecked(index, sizeof(typename LightningStaticType(T)::RepresentedType), LightningTypeId(T), CheckPrimitive::Value, Direction::Get);
       
       // Read the value from the stack and return it (or convert it)
       return InternalReadValue<T>(stack);
@@ -907,7 +907,7 @@ namespace Lightning
     T GetHandle(size_t index)
     {
       // Get the stack location and perform checks
-      byte* stack = this->GetChecked(index, sizeof(Handle), LightningTypeId(T), CheckPrimitive::Handle, Direction::Get);
+      ::byte* stack = this->GetChecked(index, sizeof(Handle), LightningTypeId(T), CheckPrimitive::Handle, Direction::Get);
       
       // Read the value from the stack and return it (or convert it)
       return InternalReadRef<T>(stack);
@@ -915,7 +915,7 @@ namespace Lightning
 
     // Get either a parameter or return from the call (value types only, this not allowed)
     template <typename T>
-    byte* GetValuePointer(size_t index)
+    ::byte* GetValuePointer(size_t index)
     {
       // Get the stack location and perform checks
       return this->GetChecked(index, sizeof(typename LightningStaticType(T)::RepresentedType), LightningTypeId(T), CheckPrimitive::Value, Direction::Get);
@@ -923,7 +923,7 @@ namespace Lightning
     
     // Get either a parameter, return, or this handle from the call (reference types only)
     template <typename T>
-    byte* GetHandlePointer(size_t index)
+    ::byte* GetHandlePointer(size_t index)
     {
       // Get the stack location and perform checks
       return this->GetChecked(index, sizeof(Handle), LightningTypeId(T), CheckPrimitive::Handle, Direction::Get);
@@ -948,14 +948,14 @@ namespace Lightning
     // Same as Get but without the type cast
     // Throws exception if casting the data from the stack to the given type will result in a null value cast
     template <typename T>
-    byte* GetArgumentPointer(size_t index)
+    ::byte* GetArgumentPointer(size_t index)
     {
       return CallHelper<T>::GetArgumentPointer(*this, index);
     }
 
     // Does the type cast for the pointer returned by GetArgumentPointer, given type must be the same
     template <typename T>
-    T CastArgumentPointer(byte* stackPointer)
+    T CastArgumentPointer(::byte* stackPointer)
     {
       return CallHelper<T>::CastArgumentPointer(stackPointer);
     }
@@ -973,19 +973,19 @@ namespace Lightning
     ExecutableState* GetState();
 
     // Get a raw pointer to the stack
-    byte* GetStackUnchecked();
+    ::byte* GetStackUnchecked();
     
     // Get a raw pointer to the stack where the 'this' handle is placed
-    byte* GetThisUnchecked();
+    ::byte* GetThisUnchecked();
 
     // Get a raw pointer to the stack where the parameters are placed
-    byte* GetParametersUnchecked();
+    ::byte* GetParametersUnchecked();
 
     // Get a raw pointer to the stack where a particular parameter is placed
-    byte* GetParameterUnchecked(size_t parameterIndex);
+    ::byte* GetParameterUnchecked(size_t parameterIndex);
 
     // Get a raw pointer to the stack where the return is placed
-    byte* GetReturnUnchecked();
+    ::byte* GetReturnUnchecked();
     
     // Get the function involved in the call
     Function* GetFunction();
@@ -1037,10 +1037,10 @@ namespace Lightning
     void MarkParameterAsSet(size_t parameterIndex);
 
     // Get a generic stack location and do error checking
-    byte* GetChecked(size_t index, size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io);
+    ::byte* GetChecked(size_t index, size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io);
 
     // Get a generic stack location and don't do any error checking
-    byte* GetUnchecked(size_t index);
+    ::byte* GetUnchecked(size_t index);
 
   private:
     
@@ -1048,13 +1048,13 @@ namespace Lightning
     void PerformStandardChecks(size_t size, Type* userType, Type* actualType, CheckPrimitive::Enum primitive, Direction::Enum io);
 
     // Get a stack location to the 'this' handle and do error checking
-    byte* GetThisChecked(size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io);
+    ::byte* GetThisChecked(size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io);
 
     // Get a stack location to the return and do error checking
-    byte* GetReturnChecked(size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io);
+    ::byte* GetReturnChecked(size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io);
 
     // Get a stack location to the given parameter and do error checking
-    byte* GetParameterChecked(size_t parameterIndex, size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io);
+    ::byte* GetParameterChecked(size_t parameterIndex, size_t size, Type* userType, CheckPrimitive::Enum primitive, Direction::Enum io);
 
     // Constructor for the virtual machine call
     Call(PerFrameData* data);
@@ -1099,7 +1099,7 @@ namespace Lightning
   }
 
   template <typename T>
-  byte* CallHelper<T>::GetArgumentPointer(Call& call, size_t index)
+  ::byte* CallHelper<T>::GetArgumentPointer(Call& call, size_t index)
   {
     if (LightningTypeId(T)->CopyMode == TypeCopyMode::ReferenceType || index == Call::This)
     {
@@ -1107,7 +1107,7 @@ namespace Lightning
       Handle& handle = *(Handle*)call.GetHandlePointer<T>(index);
 
       // Read the data from the handle by dereferencing it
-      byte* stackPointer = handle.Dereference();
+      ::byte* stackPointer = handle.Dereference();
 
       // Throw exception if there's null for a value or reference type
       if (stackPointer == nullptr && !Plasma::is_pointer<T>::value)
@@ -1177,29 +1177,29 @@ namespace Lightning
 
   //***************************************************************************
   template <typename T>
-  byte* CallHelper<HandleOf<T>*>::GetArgumentPointer(Call& call, size_t index)
+  ::byte* CallHelper<HandleOf<T>*>::GetArgumentPointer(Call& call, size_t index)
   {
     return call.GetHandlePointer(index);
   }
 
   //***************************************************************************
-  template <typename T> byte* CallHelper<      HandleOf<T> >::GetArgumentPointer(Call& call, size_t index) { return CallHelper<HandleOf<T>*>::GetArgumentPointer(call, index); }
-  template <typename T> byte* CallHelper<      HandleOf<T>&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<HandleOf<T>*>::GetArgumentPointer(call, index); }
-  template <typename T> byte* CallHelper<const HandleOf<T>*>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<HandleOf<T>*>::GetArgumentPointer(call, index); }
-  template <typename T> byte* CallHelper<const HandleOf<T>&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<HandleOf<T>*>::GetArgumentPointer(call, index); }
+  template <typename T> ::byte* CallHelper<      HandleOf<T> >::GetArgumentPointer(Call& call, size_t index) { return CallHelper<HandleOf<T>*>::GetArgumentPointer(call, index); }
+  template <typename T> ::byte* CallHelper<      HandleOf<T>&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<HandleOf<T>*>::GetArgumentPointer(call, index); }
+  template <typename T> ::byte* CallHelper<const HandleOf<T>*>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<HandleOf<T>*>::GetArgumentPointer(call, index); }
+  template <typename T> ::byte* CallHelper<const HandleOf<T>&>::GetArgumentPointer(Call& call, size_t index) { return CallHelper<HandleOf<T>*>::GetArgumentPointer(call, index); }
 
   //***************************************************************************
   template <typename T>
-  HandleOf<T>* CallHelper<HandleOf<T>*>::CastArgumentPointer(byte* stackPointer)
+  HandleOf<T>* CallHelper<HandleOf<T>*>::CastArgumentPointer(::byte* stackPointer)
   {
     return (HandleOf<T>*)stackPointer;
   }
 
   //***************************************************************************
-  template <typename T>       HandleOf<T>  CallHelper<      HandleOf<T> >::CastArgumentPointer(byte* stackPointer) { return *CallHelper<HandleOf<T>*>::CastArgumentPointer(stackPointer); }
-  template <typename T>       HandleOf<T>& CallHelper<      HandleOf<T>&>::CastArgumentPointer(byte* stackPointer) { return *CallHelper<HandleOf<T>*>::CastArgumentPointer(stackPointer); }
-  template <typename T> const HandleOf<T>* CallHelper<const HandleOf<T>*>::CastArgumentPointer(byte* stackPointer) { return  CallHelper<HandleOf<T>*>::CastArgumentPointer(stackPointer); }
-  template <typename T> const HandleOf<T>& CallHelper<const HandleOf<T>&>::CastArgumentPointer(byte* stackPointer) { return *CallHelper<HandleOf<T>*>::CastArgumentPointer(stackPointer); }
+  template <typename T>       HandleOf<T>  CallHelper<      HandleOf<T> >::CastArgumentPointer(::byte* stackPointer) { return *CallHelper<HandleOf<T>*>::CastArgumentPointer(stackPointer); }
+  template <typename T>       HandleOf<T>& CallHelper<      HandleOf<T>&>::CastArgumentPointer(::byte* stackPointer) { return *CallHelper<HandleOf<T>*>::CastArgumentPointer(stackPointer); }
+  template <typename T> const HandleOf<T>* CallHelper<const HandleOf<T>*>::CastArgumentPointer(::byte* stackPointer) { return  CallHelper<HandleOf<T>*>::CastArgumentPointer(stackPointer); }
+  template <typename T> const HandleOf<T>& CallHelper<const HandleOf<T>&>::CastArgumentPointer(::byte* stackPointer) { return *CallHelper<HandleOf<T>*>::CastArgumentPointer(stackPointer); }
 }
 
 #endif

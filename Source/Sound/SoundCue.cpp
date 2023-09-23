@@ -24,7 +24,7 @@ String SoundEntryDisplay::GetDebugText(HandleParam object)
   return GetName(object);
 }
 
-String SoundEntryDisplayText(const BoundType* type, const byte* data)
+String SoundEntryDisplayText(const BoundType* type, const ::byte* data)
 {
   SoundEntry* soundEntry = (SoundEntry*)data;
   return BuildString("Sound: ", soundEntry->GetSound()->Name);
@@ -213,7 +213,7 @@ String SoundTagEntryDisplay::GetDebugText(HandleParam object)
   return BuildString("Tag: ", soundTagEntry->GetSoundTag()->Name);
 }
 
-String SoundTagEntryDisplayText(const BoundType* type, const byte* data)
+String SoundTagEntryDisplayText(const BoundType* type, const ::byte* data)
 {
   SoundTagEntry* soundEntry = (SoundTagEntry*)data;
   return BuildString("Tag: ", soundEntry->GetSoundTag()->Name);

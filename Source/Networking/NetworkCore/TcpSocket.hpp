@@ -67,10 +67,10 @@ public:
   LightningDeclareType(ReceivedDataEvent, TypeCopyMode::ReferenceType);
 
   // Constructor
-  ReceivedDataEvent(const ConnectionData* connectionInfo, const byte* data, size_t size);
+  ReceivedDataEvent(const ConnectionData* connectionInfo, const ::byte* data, size_t size);
 
   // The data that was received (packet headers are not included in this data)
-  PodArray<byte> Data;
+  PodArray<::byte> Data;
 
   // This is only so we can make this available to script
   String Buffer;
@@ -95,10 +95,10 @@ struct SocketData
   Socket Handle;
 
   // Received data that is being buffered because it was not a full packet
-  PodArray<byte> PartialReceivedData;
+  PodArray<::byte> PartialReceivedData;
 
   // Any data that wasn't sent will get queued up here
-  PodArray<byte> PartialSentData;
+  PodArray<::byte> PartialSentData;
 };
 
 // Any extra protocols we'd like to tack on top of the socket
@@ -151,7 +151,7 @@ struct ProtocolSetup
 
   // Only applies if Protocol::Chunks is set and the chunk type is set to
   // delimiter The delimiter that separates whole packet chunks from each other
-  PodArray<byte> Delimiter;
+  PodArray<::byte> Delimiter;
 };
 
 DeclareEnum2(TcpSocketBind, Any, Loopback);
@@ -202,11 +202,11 @@ public:
   void Close();
 
   /// Send a message to a specific connection index.
-  void SendBufferTo(const byte* buffer, size_t size, size_t index);
+  void SendBufferTo(const ::byte* buffer, size_t size, size_t index);
   /// Send a message to all connections.
-  void SendBufferToAll(const byte* buffer, size_t size);
+  void SendBufferToAll(const ::byte* buffer, size_t size);
   /// Send a message to all connections except a particular connection index.
-  void SendBufferToAllExcept(const byte* buffer, size_t size, size_t exceptIndex);
+  void SendBufferToAllExcept(const ::byte* buffer, size_t size, size_t exceptIndex);
 
   /// Send an event to a specific connection index.
   void SendTo(StringParam eventId, SendableEvent* event, uint index);
@@ -250,21 +250,21 @@ private:
   void CloseConnection(uint index);
 
   // Extract a message into a buffer and return the number of bytes written
-  static size_t ExtractIntoBuffer(const BinaryBufferSaver& message, byte* buffer, size_t bufferSize);
+  static size_t ExtractIntoBuffer(const BinaryBufferSaver& message, ::byte* buffer, size_t bufferSize);
 
   // Send directly to a particular socket (if there's any queued data, this will
   // fail and instead queue up the data) If not all data is sent, it will also
   // queue up the data (which we attempt to send in HandleOutgoingData)
-  void RawSend(SocketData& socketData, const byte* data, size_t size);
+  void RawSend(SocketData& socketData, const ::byte* data, size_t size);
 
   // Track a send
-  void TrackSend(const byte* data, size_t size, Socket& socket);
+  void TrackSend(const ::byte* data, size_t size, Socket& socket);
 
   // Track a receive
-  void TrackReceive(const byte* data, size_t size, Socket& socket);
+  void TrackReceive(const ::byte* data, size_t size, Socket& socket);
 
   // Print our data
-  void PrintData(const char* mode, const byte* data, size_t size);
+  void PrintData(const char* mode, const ::byte* data, size_t size);
 
   // Re-uses a socket data structure or creates a new one
   // Returns nullptr if we reach the connection limit
@@ -283,13 +283,13 @@ private:
   void HandleOutgoingData();
 
   // Handle any protocols that we might have set
-  void HandleProtocols(const SocketData& socketData, const byte* buffer, size_t size);
+  void HandleProtocols(const SocketData& socketData, const ::byte* buffer, size_t size);
 
   // Handle the event protocol
-  void HandleEventProtocol(const SocketData& socketData, const byte* buffer, size_t size);
+  void HandleEventProtocol(const SocketData& socketData, const ::byte* buffer, size_t size);
 
   // Handle the guid protocol
-  void HandleGuidProtocol(const SocketData& socketData, const byte* buffer, size_t size);
+  void HandleGuidProtocol(const SocketData& socketData, const ::byte* buffer, size_t size);
 
   // Tells us the state of receiving data from a particular connection
   enum ReceiveState
@@ -304,26 +304,26 @@ private:
   ReceiveState ReceiveData(SocketData& socketData, size_t index);
 
   // Handle chunks if we need to
-  void HandleChunks(SocketData& socketData, const byte* buffer, size_t size);
+  void HandleChunks(SocketData& socketData, const ::byte* buffer, size_t size);
 
   // Determine what to do with the received data
-  void HandleReceivedData(const SocketData& socketData, const byte* buffer, size_t size);
+  void HandleReceivedData(const SocketData& socketData, const ::byte* buffer, size_t size);
 
   // Setup a packet (mainly the header)
-  void SetupPacket(TCPSocketMessageType::Enum messageType, PodArray<byte>& dataOut);
+  void SetupPacket(TCPSocketMessageType::Enum messageType, PodArray<::byte>& dataOut);
 
   // Finish setting up the packet
-  void FinalizePacket(PodArray<byte>& dataOut);
+  void FinalizePacket(PodArray<::byte>& dataOut);
 
   // Make a packet given a buffer (the buffer is expected to be of size
   // BufferSize)
-  inline void MakeEventPacket(SendableEvent* event, PodArray<byte>& dataOut);
+  inline void MakeEventPacket(SendableEvent* event, PodArray<::byte>& dataOut);
 
   // Make a user data packet and output the buffer
-  inline void MakeUserPacket(const byte* data, size_t size, PodArray<byte>& dataOut);
+  inline void MakeUserPacket(const ::byte* data, size_t size, PodArray<::byte>& dataOut);
 
   // Make a guid packet
-  inline void MakeGuidPacket(NetGuid guid, PodArray<byte>& dataOut);
+  inline void MakeGuidPacket(NetGuid guid, PodArray<::byte>& dataOut);
 
 public:
   // What version of serialization to use when sending events. Defaulted to the

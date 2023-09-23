@@ -44,7 +44,7 @@ struct MoleculeWalker
 
   union
   {
-    byte* mRawBuffer;
+    ::byte* mRawBuffer;
     ConstraintMolecule* mMolecules;
   };
 

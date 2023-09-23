@@ -28,7 +28,7 @@ private:
 // Denotes a memory range that is used to Insert extra memory into a crash dump.
 struct MemoryRange
 {
-  byte* Begin;
+  ::byte* Begin;
   size_t Length;
 };
 

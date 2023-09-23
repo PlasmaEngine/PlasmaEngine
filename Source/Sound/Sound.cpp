@@ -6,7 +6,7 @@ namespace Plasma
 {
 // Sound
 
-String SoundToString(const BoundType* type, const byte* instance)
+String SoundToString(const BoundType* type, const ::byte* instance)
 {
   Sound* sound = (Sound*)instance;
   return BuildString("Sound: ", sound->Name);
@@ -40,7 +40,7 @@ void Sound::CreateAsset(Status& status, StringParam assetName, StringParam fileN
     {
       // Read in the header data
       FileHeader header;
-      audioFile.Read(status, (byte*)&header, sizeof(header));
+      audioFile.Read(status, (::byte*)&header, sizeof(header));
       // Close the file so it doesn't interfere with creating the asset
       audioFile.Close();
 

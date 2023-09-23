@@ -6,7 +6,7 @@ namespace Plasma
 namespace Memory
 {
 
-byte Block::BucketLookUp[cMaxBlockSize + 1];
+::byte Block::BucketLookUp[cMaxBlockSize + 1];
 bool Block::SizeTableInitialized = false;
 
 size_t Block::BlockSizes[cBlockCount] = {
@@ -39,7 +39,7 @@ Block::Block(cstr name, Graph* parent) : Graph(name, parent)
       if (i > BlockSizes[currentBlock])
         ++currentBlock;
 
-      BucketLookUp[i] = (byte)currentBlock;
+      BucketLookUp[i] = (::byte)currentBlock;
     }
 
     SizeTableInitialized = true;
@@ -101,7 +101,7 @@ void Block::AllocateBlockPage(size_t blockIndex)
   size_t blockSize = BlockSizes[blockIndex];
   size_t blocksOnPage = cPageSize / blockSize;
 
-  byte* memoryPage = (byte*)plAllocate(cPageSize);
+  ::byte* memoryPage = (::byte*)plAllocate(cPageSize);
   DeltaDedicated(cPageSize);
 
   for (size_t i = 0; i < blocksOnPage; ++i)

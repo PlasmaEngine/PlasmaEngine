@@ -42,7 +42,7 @@ void SingleChannelPacketDecoder::InitializeDecoder()
   mDecoder = opus_decoder_create(cSystemSampleRate, PacketEncoder::cChannels, &error);
 }
 
-void SingleChannelPacketDecoder::DecodePacket(const byte* packetData,
+void SingleChannelPacketDecoder::DecodePacket(const ::byte* packetData,
                                               const unsigned dataSize,
                                               float*& decodedData,
                                               unsigned& numberOfSamples)
@@ -54,18 +54,18 @@ void SingleChannelPacketDecoder::DecodePacket(const byte* packetData,
 
 // Packet Decoder
 
-int PacketDecoder::DecodePacket(const byte* packetData, unsigned dataSize, OpusDecoder* decoder, float** decodedData)
+int PacketDecoder::DecodePacket(const ::byte* packetData, unsigned dataSize, OpusDecoder* decoder, float** decodedData)
 {
   *decodedData = new float[AudioFileEncoder::cPacketFrames];
   return opus_decode_float(decoder, packetData, dataSize, *decodedData, AudioFileEncoder::cPacketFrames, 0);
 }
 
-int PacketDecoder::DecodePacket(const byte* packetData, unsigned dataSize, OpusDecoder* decoder, float* decodedData)
+int PacketDecoder::DecodePacket(const ::byte* packetData, unsigned dataSize, OpusDecoder* decoder, float* decodedData)
 {
   return opus_decode_float(decoder, packetData, dataSize, decodedData, AudioFileEncoder::cPacketFrames, 0);
 }
 
-int PacketDecoder::GetPacketDataSize(const byte* packetHeader)
+int PacketDecoder::GetPacketDataSize(const ::byte* packetHeader)
 {
   // Read in the packet header from the buffer
   PacketHeader packHead;
@@ -98,7 +98,7 @@ unsigned PacketDecoder::OpenAndReadHeader(Status& status, const String& fileName
   }
 
   // Read the file header
-  file->Read(status, (byte*)header, sizeof(FileHeader));
+  file->Read(status, (::byte*)header, sizeof(FileHeader));
   // If the read failed, set the status message and return
   if (status.Failed())
   {
@@ -159,8 +159,8 @@ void PacketDecoder::DestroyDecoders(OpusDecoder** decoderArray, int howMany)
   }
 }
 
-int PacketDecoder::GetPacketFromMemory(byte* packetDataToWrite,
-                                       const byte* inputData,
+int PacketDecoder::GetPacketFromMemory(::byte* packetDataToWrite,
+                                       const ::byte* inputData,
                                        unsigned inputDataSize,
                                        unsigned* dataIndex)
 {
@@ -185,7 +185,7 @@ int ReturnError(ThreadLock* lockObject)
   return -1;
 }
 
-int PacketDecoder::GetPacketFromFile(byte* packetDataToWrite,
+int PacketDecoder::GetPacketFromFile(::byte* packetDataToWrite,
                                      File* inputFile,
                                      FilePosition* filePosition,
                                      ThreadLock* lockObject)
@@ -277,7 +277,7 @@ bool AudioFileDecoder::DecodePacketThreaded()
   // Note: This function happens on the decoding thread
 
   int frames = 0;
-  byte packetData[AudioFileEncoder::cMaxPacketSize];
+  ::byte packetData[AudioFileEncoder::cMaxPacketSize];
   float decodedPackets[cMaxChannels][AudioFileEncoder::cPacketFrames];
 
   // Decode a packet for each channel
@@ -423,7 +423,7 @@ void DecompressedDecoder::DecodingLoopThreaded()
   ClearData();
 }
 
-int DecompressedDecoder::GetNextPacket(byte* packetData)
+int DecompressedDecoder::GetNextPacket(::byte* packetData)
 {
   return PacketDecoder::GetPacketFromMemory(packetData, mCompressedData, mDataSize, &mDataIndex);
 }
@@ -437,7 +437,7 @@ void DecompressedDecoder::OpenAndReadFile(Status& status, const String& fileName
     return;
 
   // Create a buffer for the file data and read it in
-  mCompressedData = new byte[mDataSize];
+  mCompressedData = new ::byte[mDataSize];
   inputFile.Read(status, mCompressedData, mDataSize);
 
   // If the read failed, delete the buffer and return
@@ -494,7 +494,7 @@ StreamingDecoder::StreamingDecoder(Status& status,
 }
 
 StreamingDecoder::StreamingDecoder(Status& status,
-                                   byte* inputData,
+                                   ::byte* inputData,
                                    unsigned dataSize,
                                    unsigned channels,
                                    unsigned frames,
@@ -537,7 +537,7 @@ void StreamingDecoder::DecodingLoopThreaded()
   }
 }
 
-int StreamingDecoder::GetNextPacket(byte* packetData)
+int StreamingDecoder::GetNextPacket(::byte* packetData)
 {
   if (mCompressedData)
     return PacketDecoder::GetPacketFromMemory(packetData, mCompressedData, mDataSize, &mDataIndex);

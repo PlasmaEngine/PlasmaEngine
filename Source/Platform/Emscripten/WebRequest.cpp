@@ -33,7 +33,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE void EmscriptenWebRequestOnHeadersReceived(char*
 }
 
 extern "C" EMSCRIPTEN_KEEPALIVE void
-EmscriptenWebRequestOnDataReceived(byte* data, size_t length, size_t totalDownloaded, WebRequest* request)
+EmscriptenWebRequestOnDataReceived(::byte* data, size_t length, size_t totalDownloaded, WebRequest* request)
 {
   // Parameter 'data' is a JavaScript owned Uint8Array (no need to call free).
   if (request->mOnDataReceived)

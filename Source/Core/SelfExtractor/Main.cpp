@@ -127,7 +127,7 @@ void Extract(const Array<String>& arguments)
   if (!file.Seek((u64) - (s64)cSignatureSize, SeekOrigin::End))
     return FatalError("Unable to seek to the end of the file to read the signature.");
 
-  byte buffer[cSignatureSize];
+  ::byte buffer[cSignatureSize];
   Status status;
   size_t amount = file.Read(status, buffer, cSignatureSize);
 
@@ -144,7 +144,7 @@ void Extract(const Array<String>& arguments)
   if (!file.Seek((u64) - (s64)(cSignatureSize + sizeof(archiveSize)), SeekOrigin::End))
     return FatalError("Unable to seek to the end of the file to read the archive size.");
 
-  amount = file.Read(status, (byte*)&archiveSize, sizeof(archiveSize));
+  amount = file.Read(status, (::byte*)&archiveSize, sizeof(archiveSize));
   if (status.Failed() || amount != sizeof(archiveSize))
     return FatalError("Unable to read the size of the archive.");
 
@@ -189,7 +189,7 @@ void PackArchive(Status& status, StringParam executablePath, StringParam archive
   u64 size = 0;
   for (;;)
   {
-    byte buffer[8192];
+    ::byte buffer[8192];
     size_t amountRead = archive.Read(status, buffer, sizeof(buffer));
     size += amountRead;
 
@@ -210,7 +210,7 @@ void PackArchive(Status& status, StringParam executablePath, StringParam archive
   if (IsBigEndian())
     size = EndianSwap(size);
 
-  amountWritten = executable.Write((byte*)&size, sizeof(size));
+  amountWritten = executable.Write((::byte*)&size, sizeof(size));
   if (amountWritten != sizeof(size))
   {
     status.SetFailed("Unable to write size of archive");
@@ -218,7 +218,7 @@ void PackArchive(Status& status, StringParam executablePath, StringParam archive
   }
 
   // Finally, write the signature and we're done!
-  amountWritten = executable.Write((byte*)cSignature, cSignatureSize);
+  amountWritten = executable.Write((::byte*)cSignature, cSignatureSize);
 
   if (amountWritten != cSignatureSize)
   {

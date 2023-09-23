@@ -85,7 +85,7 @@ bool ComPort::Open(StringParam name, uint baudRate)
   return true;
 }
 
-uint ComPort::Read(byte* buffer, uint bytesToRead)
+uint ComPort::Read(::byte* buffer, uint bytesToRead)
 {
   DWORD numBytesRead = 0;
   // Read from com handle
@@ -98,7 +98,7 @@ uint ComPort::Read(byte* buffer, uint bytesToRead)
   return numBytesRead;
 }
 
-void ComPort::Write(byte* buffer, uint bytesToWrite)
+void ComPort::Write(::byte* buffer, uint bytesToWrite)
 {
   DWORD numberOfBytesWritten = 0;
   WriteFile(mComHandle, buffer, bytesToWrite, &numberOfBytesWritten, NULL);

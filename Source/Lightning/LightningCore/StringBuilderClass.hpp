@@ -20,7 +20,7 @@ public:
   Rune(const Plasma::Rune plasmaRune);
   operator Plasma::Rune() const;
 
-  static String ToString(const BoundType* type, const byte* data);
+  static String ToString(const BoundType* type, const ::byte* data);
 
   int GetValue();
   void SetValue(int value);
@@ -100,7 +100,7 @@ class PlasmaShared RuneIterator
 public:
   LightningDeclareType(RuneIterator, TypeCopyMode::ReferenceType);
 
-  static String ToString(const BoundType* type, const byte* data);
+  static String ToString(const BoundType* type, const ::byte* data);
 
   // Range interface
   static void All(Call& call, ExceptionReport& report);
@@ -131,7 +131,7 @@ class PlasmaShared StringRangeExtended
 {
   LightningDeclareType(StringRangeExtended, TypeCopyMode::ReferenceType);
 
-  static String ToString(const BoundType* type, const byte* data);
+  static String ToString(const BoundType* type, const ::byte* data);
 
   // Range interface
   static void All(Call& call, ExceptionReport& report);

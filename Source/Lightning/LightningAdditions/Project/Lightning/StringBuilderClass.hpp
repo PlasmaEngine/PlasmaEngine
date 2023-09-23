@@ -18,7 +18,7 @@ namespace Lightning
     Rune(const Plasma::Rune zeroRune);
     operator Plasma::Rune() const;
 
-    static String ToString(const BoundType* type, const byte* data);
+    static String ToString(const BoundType* type, const ::byte* data);
 
     int GetValue();
     void SetValue(int value);
@@ -98,7 +98,7 @@ namespace Lightning
   public:
     LightningDeclareType(RuneIterator, TypeCopyMode::ReferenceType);
     
-    static String ToString(const BoundType* type, const byte* data);
+    static String ToString(const BoundType* type, const ::byte* data);
 
     // Range interface
     static void All(Call& call, ExceptionReport& report);
@@ -128,7 +128,7 @@ namespace Lightning
   {
     LightningDeclareType(StringRangeExtended, TypeCopyMode::ReferenceType);
 
-    static String ToString(const BoundType* type, const byte* data);
+    static String ToString(const BoundType* type, const ::byte* data);
 
     // Range interface
     static void All(Call& call, ExceptionReport& report);

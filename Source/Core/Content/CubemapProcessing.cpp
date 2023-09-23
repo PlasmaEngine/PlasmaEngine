@@ -106,12 +106,12 @@ CubemapLayout::Enum GetCubemapLayout(uint width, uint height)
     return CubemapLayout::Invalid;
 }
 
-void CopyFaces(const byte* image, uint offsets[6], uint dim, uint pixelSize, uint stride, byte* faces[6])
+void CopyFaces(const ::byte* image, uint offsets[6], uint dim, uint pixelSize, uint stride, ::byte* faces[6])
 {
   for (uint f = 0; f < 6; ++f)
   {
-    const byte* imagePtr = image + offsets[f];
-    byte* facePtr = faces[f];
+    const ::byte* imagePtr = image + offsets[f];
+    ::byte* facePtr = faces[f];
 
     for (uint y = 0; y < dim; ++y)
     {
@@ -126,7 +126,7 @@ void CopyFaces(const byte* image, uint offsets[6], uint dim, uint pixelSize, uin
 }
 
 void SetToFaceData(
-    Array<MipHeader>& mipHeaders, Array<byte*>& imageData, uint width, uint height, uint size, byte* faces[6])
+    Array<MipHeader>& mipHeaders, Array<::byte*>& imageData, uint width, uint height, uint size, ::byte* faces[6])
 {
   TextureFace::Enum faceEnums[] = {TextureFace::PositiveX,
                                    TextureFace::PositiveY,
@@ -154,7 +154,7 @@ void SetToFaceData(
   imageData.EraseAt(0);
 }
 
-void RotateFace(byte* imageData, uint width, uint height, uint pixelSize)
+void RotateFace(::byte* imageData, uint width, uint height, uint pixelSize)
 {
   uint byteWidth = width * pixelSize;
 
@@ -182,16 +182,16 @@ void RotateFace(byte* imageData, uint width, uint height, uint pixelSize)
   }
 }
 
-void ProcessCubemap1_6(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, TextureFormat::Enum format)
+void ProcessCubemap1_6(Array<MipHeader>& mipHeaders, Array<::byte*>& imageData, TextureFormat::Enum format)
 {
   uint pixelSize = GetPixelSize(format);
   uint faceWidth = mipHeaders[0].mWidth;
   uint faceHeight = mipHeaders[0].mHeight / 6;
   uint faceSize = faceWidth * faceHeight * pixelSize;
 
-  byte* faces[6];
+  ::byte* faces[6];
   for (uint i = 0; i < 6; ++i)
-    faces[i] = new byte[faceSize];
+    faces[i] = new ::byte[faceSize];
 
   uint heigtOffset = faceSize;
   uint offsets[6] = {0, heigtOffset * 2, heigtOffset * 4, heigtOffset, heigtOffset * 3, heigtOffset * 5};
@@ -200,16 +200,16 @@ void ProcessCubemap1_6(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Te
   SetToFaceData(mipHeaders, imageData, faceWidth, faceHeight, faceSize, faces);
 }
 
-void ProcessCubemap6_1(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, TextureFormat::Enum format)
+void ProcessCubemap6_1(Array<MipHeader>& mipHeaders, Array<::byte*>& imageData, TextureFormat::Enum format)
 {
   uint pixelSize = GetPixelSize(format);
   uint faceWidth = mipHeaders[0].mWidth / 6;
   uint faceHeight = mipHeaders[0].mHeight;
   uint faceSize = faceWidth * faceHeight * pixelSize;
 
-  byte* faces[6];
+  ::byte* faces[6];
   for (uint i = 0; i < 6; ++i)
-    faces[i] = new byte[faceSize];
+    faces[i] = new ::byte[faceSize];
 
   uint widthOffset = faceWidth * pixelSize;
   uint offsets[6] = {0, widthOffset * 2, widthOffset * 4, widthOffset, widthOffset * 3, widthOffset * 5};
@@ -218,16 +218,16 @@ void ProcessCubemap6_1(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Te
   SetToFaceData(mipHeaders, imageData, faceWidth, faceHeight, faceSize, faces);
 }
 
-void ProcessCubemap2_3(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, TextureFormat::Enum format)
+void ProcessCubemap2_3(Array<MipHeader>& mipHeaders, Array<::byte*>& imageData, TextureFormat::Enum format)
 {
   uint pixelSize = GetPixelSize(format);
   uint faceWidth = mipHeaders[0].mWidth / 2;
   uint faceHeight = mipHeaders[0].mHeight / 3;
   uint faceSize = faceWidth * faceHeight * pixelSize;
 
-  byte* faces[6];
+  ::byte* faces[6];
   for (uint i = 0; i < 6; ++i)
-    faces[i] = new byte[faceSize];
+    faces[i] = new ::byte[faceSize];
 
   uint widthOffset = faceWidth * pixelSize;
   uint heightOffset = faceSize * 2;
@@ -238,16 +238,16 @@ void ProcessCubemap2_3(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Te
   SetToFaceData(mipHeaders, imageData, faceWidth, faceHeight, faceSize, faces);
 }
 
-void ProcessCubemap3_2(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, TextureFormat::Enum format)
+void ProcessCubemap3_2(Array<MipHeader>& mipHeaders, Array<::byte*>& imageData, TextureFormat::Enum format)
 {
   uint pixelSize = GetPixelSize(format);
   uint faceWidth = mipHeaders[0].mWidth / 3;
   uint faceHeight = mipHeaders[0].mHeight / 2;
   uint faceSize = faceWidth * faceHeight * pixelSize;
 
-  byte* faces[6];
+  ::byte* faces[6];
   for (uint i = 0; i < 6; ++i)
-    faces[i] = new byte[faceSize];
+    faces[i] = new ::byte[faceSize];
 
   uint widthOffset = faceWidth * pixelSize;
   uint heightOffset = faceSize * 3;
@@ -258,16 +258,16 @@ void ProcessCubemap3_2(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Te
   SetToFaceData(mipHeaders, imageData, faceWidth, faceHeight, faceSize, faces);
 }
 
-void ProcessCubemap3_4(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, TextureFormat::Enum format)
+void ProcessCubemap3_4(Array<MipHeader>& mipHeaders, Array<::byte*>& imageData, TextureFormat::Enum format)
 {
   uint pixelSize = GetPixelSize(format);
   uint faceWidth = mipHeaders[0].mWidth / 3;
   uint faceHeight = mipHeaders[0].mHeight / 4;
   uint faceSize = faceWidth * faceHeight * pixelSize;
 
-  byte* faces[6];
+  ::byte* faces[6];
   for (uint i = 0; i < 6; ++i)
-    faces[i] = new byte[faceSize];
+    faces[i] = new ::byte[faceSize];
 
   uint widthOffset = faceWidth * pixelSize;
   uint heightOffset = faceSize * 3;
@@ -284,16 +284,16 @@ void ProcessCubemap3_4(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Te
   RotateFace(imageData[5], faceWidth, faceHeight, pixelSize);
 }
 
-void ProcessCubemap4_3(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, TextureFormat::Enum format)
+void ProcessCubemap4_3(Array<MipHeader>& mipHeaders, Array<::byte*>& imageData, TextureFormat::Enum format)
 {
   uint pixelSize = GetPixelSize(format);
   uint faceWidth = mipHeaders[0].mWidth / 4;
   uint faceHeight = mipHeaders[0].mHeight / 3;
   uint faceSize = faceWidth * faceHeight * pixelSize;
 
-  byte* faces[6];
+  ::byte* faces[6];
   for (uint i = 0; i < 6; ++i)
-    faces[i] = new byte[faceSize];
+    faces[i] = new ::byte[faceSize];
 
   uint widthOffset = faceWidth * pixelSize;
   uint heightOffset = faceSize * 4;
@@ -355,18 +355,18 @@ int WrapCoord(int value, int size)
   return value;
 }
 
-void ProcessCubemap4_2(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, TextureFormat::Enum format)
+void ProcessCubemap4_2(Array<MipHeader>& mipHeaders, Array<::byte*>& imageData, TextureFormat::Enum format)
 {
   uint pixelSize = GetPixelSize(format);
   uint faceWidth = mipHeaders[0].mWidth / 4;
   uint faceHeight = mipHeaders[0].mHeight / 2;
   uint faceSize = faceWidth * faceHeight * pixelSize;
 
-  byte* faces[6];
+  ::byte* faces[6];
   for (uint i = 0; i < 6; ++i)
-    faces[i] = new byte[faceSize];
+    faces[i] = new ::byte[faceSize];
 
-  byte* image = imageData[0];
+  ::byte* image = imageData[0];
   uint width = mipHeaders[0].mWidth;
   uint height = mipHeaders[0].mHeight;
 
@@ -379,7 +379,7 @@ void ProcessCubemap4_2(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Te
                                    TextureFace::NegativeY,
                                    TextureFace::NegativeZ};
 
-  byte* sample = new byte[pixelSize];
+  ::byte* sample = new ::byte[pixelSize];
 
   for (uint f = 0; f < 6; ++f)
   {
@@ -407,10 +407,10 @@ void ProcessCubemap4_2(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Te
         y0 = Math::Clamp(y0, 0, (int)height - 1);
         y1 = Math::Clamp(y1, 0, (int)height - 1);
 
-        byte* sample00 = &image[(x0 + y0 * width) * pixelSize];
-        byte* sample10 = &image[(x1 + y0 * width) * pixelSize];
-        byte* sample01 = &image[(x0 + y1 * width) * pixelSize];
-        byte* sample11 = &image[(x1 + y1 * width) * pixelSize];
+        ::byte* sample00 = &image[(x0 + y0 * width) * pixelSize];
+        ::byte* sample10 = &image[(x1 + y0 * width) * pixelSize];
+        ::byte* sample01 = &image[(x0 + y1 * width) * pixelSize];
+        ::byte* sample11 = &image[(x1 + y1 * width) * pixelSize];
 
         if (format == TextureFormat::RGB32f)
         {
@@ -429,7 +429,7 @@ void ProcessCubemap4_2(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Te
         else if (format == TextureFormat::SRGB8A8)
         {
           for (uint i = 0; i < 3; ++i)
-            sample[i] = (byte)Math::Pow(
+            sample[i] = (::byte)Math::Pow(
                 Math::Lerp(Math::Lerp(Math::Pow((float)sample00[i], 2.2), Math::Pow((float)sample10[i], 2.2), xT),
                            Math::Lerp(Math::Pow((float)sample01[i], 2.2), Math::Pow((float)sample11[i], 2.2), xT),
                            yT),
@@ -470,7 +470,7 @@ void ProcessCubemap4_2(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Te
 
 void ExtractCubemapFaces(Status& status,
                          Array<MipHeader>& mipHeaders,
-                         Array<byte*>& imageData,
+                         Array<::byte*>& imageData,
                          TextureFormat::Enum format)
 {
   if (mipHeaders.Empty() || imageData.Empty())
@@ -731,7 +731,7 @@ float Random(Vec2 uv)
   return Math::Fractional(Math::Sin(uv.x * 12.9898f + uv.y * 78.233f) * 43758.5453f);
 }
 
-Vec3 SampleEnvMap(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, uint pixelSize, uint index, Vec3 dir)
+Vec3 SampleEnvMap(Array<MipHeader>& mipHeaders, Array<::byte*>& imageData, uint pixelSize, uint index, Vec3 dir)
 {
   TextureFace::Enum face;
   Vec2 uv;
@@ -749,7 +749,7 @@ Vec3 SampleEnvMap(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, uint pi
 }
 
 Vec3 FilterEnvMap(Array<MipHeader>& mipHeaders,
-                  Array<byte*>& imageData,
+                  Array<::byte*>& imageData,
                   uint pixelSize,
                   uint index,
                   Vec3 n,
@@ -825,7 +825,7 @@ public:
   }
 
   Array<MipHeader>* mMipHeaders;
-  Array<byte*>* mImageData;
+  Array<::byte*>* mImageData;
   uint mPixelSize;
   uint mSourceIndex;
   uint mTargetIndex;
@@ -835,7 +835,7 @@ public:
   CountdownEvent* mCountdownEvent;
 };
 
-void MipmapCubemap(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, TextureFormat::Enum format, bool compressed)
+void MipmapCubemap(Array<MipHeader>& mipHeaders, Array<::byte*>& imageData, TextureFormat::Enum format, bool compressed)
 {
   if (mipHeaders.Size() != 6 || imageData.Size() != 6)
     return;
@@ -860,7 +860,7 @@ void MipmapCubemap(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Textur
       for (uint i = 0; i < mipHeaders.Size(); ++i)
       {
         uint newSize = newWidth * newWidth * GetPixelSize(format);
-        byte* newImage = new byte[newSize];
+        ::byte* newImage = new ::byte[newSize];
         ResizeImage(format, imageData[i], width, width, newImage, newWidth, newWidth);
 
         delete[] imageData[i];
@@ -888,8 +888,8 @@ void MipmapCubemap(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Textur
       uint pixelCount = width * width;
       uint faceSize = pixelCount * targetPixelSize;
 
-      float* targetFace = (float*)(new byte[faceSize]);
-      byte* sourceFace = imageData[i];
+      float* targetFace = (float*)(new ::byte[faceSize]);
+      ::byte* sourceFace = imageData[i];
       for (uint p = 0; p < pixelCount; ++p)
       {
         targetFace[p * 3 + 0] = sourceFace[p * 4 + 0] / 255.0f;
@@ -898,7 +898,7 @@ void MipmapCubemap(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Textur
       }
 
       delete[] imageData[i];
-      imageData[i] = (byte*)targetFace;
+      imageData[i] = (::byte*)targetFace;
 
       mipHeaders[i].mDataSize = faceSize;
       mipHeaders[i].mDataOffset = dataOffset;
@@ -930,7 +930,7 @@ void MipmapCubemap(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Textur
       dataOffset += size;
 
       mipHeaders.PushBack(header);
-      imageData.PushBack(new byte[size]);
+      imageData.PushBack(new ::byte[size]);
     }
 
     ++currentMip;
@@ -1012,14 +1012,14 @@ void MipmapCubemap(Array<MipHeader>& mipHeaders, Array<byte*>& imageData, Textur
       uint pixelCount = width * width;
       uint faceSize = pixelCount * targetPixelSize;
 
-      byte* targetFace = new byte[faceSize];
+      ::byte* targetFace = new ::byte[faceSize];
       float* sourceFace = (float*)imageData[i];
       for (uint p = 0; p < pixelCount; ++p)
       {
-        targetFace[p * 4 + 0] = (byte)Math::Clamp(sourceFace[p * 3 + 0] * 255.0f, 0.0f, 255.0f);
-        targetFace[p * 4 + 1] = (byte)Math::Clamp(sourceFace[p * 3 + 1] * 255.0f, 0.0f, 255.0f);
-        targetFace[p * 4 + 2] = (byte)Math::Clamp(sourceFace[p * 3 + 2] * 255.0f, 0.0f, 255.0f);
-        targetFace[p * 4 + 3] = (byte)255;
+        targetFace[p * 4 + 0] = (::byte)Math::Clamp(sourceFace[p * 3 + 0] * 255.0f, 0.0f, 255.0f);
+        targetFace[p * 4 + 1] = (::byte)Math::Clamp(sourceFace[p * 3 + 1] * 255.0f, 0.0f, 255.0f);
+        targetFace[p * 4 + 2] = (::byte)Math::Clamp(sourceFace[p * 3 + 2] * 255.0f, 0.0f, 255.0f);
+        targetFace[p * 4 + 3] = (::byte)255;
       }
 
       delete[] imageData[i];

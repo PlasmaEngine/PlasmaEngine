@@ -164,7 +164,7 @@ void ComponentHandleManager::Allocate(BoundType* type, Handle& handleToInitializ
   data.mComponentType = type;
 }
 
-void ComponentHandleManager::ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize)
+void ComponentHandleManager::ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize)
 {
   if (object == nullptr)
     return;
@@ -193,14 +193,14 @@ void ComponentHandleManager::ObjectToHandle(const byte* object, BoundType* type,
 // primary id and a sub object if of the component type
 // this allow the Cog to control lifetime and the component
 // to be removed and have the handle still work.
-byte* ComponentHandleManager::HandleToObject(const Handle& handle)
+::byte* ComponentHandleManager::HandleToObject(const Handle& handle)
 {
   const ComponentHandleData& data = *(const ComponentHandleData*)(handle.Data);
 
   if (data.mRawObject)
   {
     Component* component = (Component*)data.mRawObject;
-    return (byte*)component;
+    return (::byte*)component;
   }
 
   // Check the cog handle
@@ -209,7 +209,7 @@ byte* ComponentHandleManager::HandleToObject(const Handle& handle)
     // Check for the component
     if (Component* component = cog->QueryComponentType(data.mComponentType))
     {
-      return (byte*)component;
+      return (::byte*)component;
     }
   }
   return nullptr;

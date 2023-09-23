@@ -31,7 +31,7 @@ void ResourceHandleManager::Allocate(BoundType* type, Handle& handleToInitialize
   data.mId = 0;
 }
 
-void ResourceHandleManager::ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize)
+void ResourceHandleManager::ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize)
 {
   if (object == nullptr)
     return;
@@ -49,9 +49,9 @@ void ResourceHandleManager::ObjectToHandle(const byte* object, BoundType* type, 
     data.mId = resource->mResourceId;
 }
 
-byte* ResourceHandleManager::HandleToObject(const Handle& handle)
+::byte* ResourceHandleManager::HandleToObject(const Handle& handle)
 {
-  return (byte*)GetResource(handle, true);
+  return (::byte*)GetResource(handle, true);
 }
 
 void ResourceHandleManager::AddReference(const Handle& handle)
@@ -217,7 +217,7 @@ bool ResourceMetaSerialization::ConvertFromString(StringParam input, Any& output
   return true;
 }
 
-String ResourceToString(const BoundType* type, const byte* value)
+String ResourceToString(const BoundType* type, const ::byte* value)
 {
   // Convert a Resource to a String
   Resource* resource = (Resource*)value;

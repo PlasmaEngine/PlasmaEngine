@@ -132,7 +132,7 @@ void LightningPluginBuilder::BuildContent(BuildOptions& buildOptions)
   // We output a dummy empty shared library so that content won't get mad at us
   if (!FileExists(sourceFile))
   {
-    byte value = 0;
+    ::byte value = 0;
     WriteToFile(sourceFile.c_str(), &value, 0);
   }
 
@@ -208,7 +208,7 @@ ContentItem* MakeLightningPluginContent(ContentInitializer& initializer)
     data = data.Replace(ReplaceName, pluginName);
     data = data.Replace(ReplaceGuid, guid);
 
-    WriteToFile(outputFile.Data(), (byte*)data.Data(), data.SizeInBytes());
+    WriteToFile(outputFile.Data(), (::byte*)data.Data(), data.SizeInBytes());
   }
 
   return content;

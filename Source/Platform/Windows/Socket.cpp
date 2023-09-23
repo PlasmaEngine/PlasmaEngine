@@ -1263,7 +1263,7 @@ void Socket::Close(Status& status)
   Clear(*this);
 }
 
-size_t Socket::Send(Status& status, const byte* data, size_t dataLength, SocketFlags::Enum flags)
+size_t Socket::Send(Status& status, const ::byte* data, size_t dataLength, SocketFlags::Enum flags)
 {
   // Translate platform-specific enums as necessary
   TRANSLATE_TO_PLATFORM_ENUM_OR_RETURN_FAILURE_VALUE(flags, 0);
@@ -1281,7 +1281,7 @@ size_t Socket::Send(Status& status, const byte* data, size_t dataLength, SocketF
 }
 
 size_t
-Socket::SendTo(Status& status, const byte* data, size_t dataLength, const SocketAddress& to, SocketFlags::Enum flags)
+Socket::SendTo(Status& status, const ::byte* data, size_t dataLength, const SocketAddress& to, SocketFlags::Enum flags)
 {
   // Translate platform-specific enums as necessary
   TRANSLATE_TO_PLATFORM_ENUM_OR_RETURN_FAILURE_VALUE(flags, 0);
@@ -1305,7 +1305,7 @@ Socket::SendTo(Status& status, const byte* data, size_t dataLength, const Socket
   return result;
 }
 
-size_t Socket::Receive(Status& status, byte* dataOut, size_t dataLength, SocketFlags::Enum flags)
+size_t Socket::Receive(Status& status, ::byte* dataOut, size_t dataLength, SocketFlags::Enum flags)
 {
   // Translate platform-specific enums as necessary
   TRANSLATE_TO_PLATFORM_ENUM_OR_RETURN_FAILURE_VALUE(flags, 0);
@@ -1323,7 +1323,7 @@ size_t Socket::Receive(Status& status, byte* dataOut, size_t dataLength, SocketF
 }
 
 size_t
-Socket::ReceiveFrom(Status& status, byte* dataOut, size_t dataLength, SocketAddress& from, SocketFlags::Enum flags)
+Socket::ReceiveFrom(Status& status, ::byte* dataOut, size_t dataLength, SocketAddress& from, SocketFlags::Enum flags)
 {
   // Translate platform-specific enums as necessary
   TRANSLATE_TO_PLATFORM_ENUM_OR_RETURN_FAILURE_VALUE(flags, 0);

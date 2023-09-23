@@ -94,12 +94,12 @@ namespace Plasma
         VertexAttribute()
         {
         };
-        VertexAttribute(VertexSemantic::Enum semantic, VertexElementType::Enum type, byte count, byte offset);
+        VertexAttribute(VertexSemantic::Enum semantic, VertexElementType::Enum type, ::byte count, ::byte offset);
 
         ByteEnum<VertexSemantic::Enum> mSemantic;
         ByteEnum<VertexElementType::Enum> mType;
-        byte mCount;
-        byte mOffset;
+        ::byte mCount;
+        ::byte mOffset;
     };
 #pragma pack(pop)
 
@@ -276,20 +276,20 @@ namespace Plasma
 
     uint GetPixelSize(TextureFormat::Enum format);
 
-    void SetPixelData(byte* data, uint index, Vec4 value, TextureFormat::Enum format);
-    void ReadPixelData(byte* data, uint index, Vec4& value, TextureFormat::Enum format);
+    void SetPixelData(::byte* data, uint index, Vec4 value, TextureFormat::Enum format);
+    void ReadPixelData(::byte* data, uint index, Vec4& value, TextureFormat::Enum format);
 
-    void SetPixelDataByte(byte* data, uint index, Vec4 value, uint elementCount);
-    void SetPixelDataShort(byte* data, uint index, Vec4 value, uint elementCount);
-    void SetPixelDataHalfFloat(byte* data, uint index, Vec4 value, uint elementCount);
-    void SetPixelDataFloat(byte* data, uint index, Vec4 value, uint elementCount);
-    void SetPixelDataGamma(byte* data, uint index, Vec4 value, uint elementCount);
+    void SetPixelDataByte(::byte* data, uint index, Vec4 value, uint elementCount);
+    void SetPixelDataShort(::byte* data, uint index, Vec4 value, uint elementCount);
+    void SetPixelDataHalfFloat(::byte* data, uint index, Vec4 value, uint elementCount);
+    void SetPixelDataFloat(::byte* data, uint index, Vec4 value, uint elementCount);
+    void SetPixelDataGamma(::byte* data, uint index, Vec4 value, uint elementCount);
 
-    void ReadPixelDataByte(byte* data, uint index, Vec4& value, uint elementCount);
-    void ReadPixelDataShort(byte* data, uint index, Vec4& value, uint elementCount);
-    void ReadPixelDataHalfFloat(byte* data, uint index, Vec4& value, uint elementCount);
-    void ReadPixelDataFloat(byte* data, uint index, Vec4& value, uint elementCount);
-    void ReadPixelDataGamma(byte* data, uint index, Vec4& value, uint elementCount);
+    void ReadPixelDataByte(::byte* data, uint index, Vec4& value, uint elementCount);
+    void ReadPixelDataShort(::byte* data, uint index, Vec4& value, uint elementCount);
+    void ReadPixelDataHalfFloat(::byte* data, uint index, Vec4& value, uint elementCount);
+    void ReadPixelDataFloat(::byte* data, uint index, Vec4& value, uint elementCount);
+    void ReadPixelDataGamma(::byte* data, uint index, Vec4& value, uint elementCount);
 
     bool IsColorFormat(TextureFormat::Enum format);
     bool IsShortColorFormat(TextureFormat::Enum format);
@@ -297,9 +297,9 @@ namespace Plasma
     bool IsDepthFormat(TextureFormat::Enum format);
     bool IsDepthStencilFormat(TextureFormat::Enum format);
 
-    void YInvertNonCompressed(byte* imageData, uint width, uint height, uint pixelSize);
+    void YInvertNonCompressed(::byte* imageData, uint width, uint height, uint pixelSize);
     void YInvertBlockCompressed(
-        byte* imageData, uint width, uint height, uint dataSize, TextureCompression::Enum compression);
+        ::byte* imageData, uint width, uint height, uint dataSize, TextureCompression::Enum compression);
 
     void BuildOrthographicTransformPlasma(
         Mat4& matrix, float verticalSize, float aspectRatio, float nearDistance, float farDistance);
@@ -361,7 +361,7 @@ namespace Plasma
         u32 mSamplerSettings;
 
         static const size_t MaxSize = sizeof(Mat4);
-        byte mValue[MaxSize];
+        ::byte mValue[MaxSize];
     };
 
     typedef Pair<String, String> StringPair;
@@ -381,10 +381,10 @@ namespace Plasma
         MeshRenderData* mRenderData;
         uint mVertexSize;
         uint mVertexCount;
-        byte* mVertexData;
+        ::byte* mVertexData;
         uint mIndexSize;
         uint mIndexCount;
-        byte* mIndexData;
+        ::byte* mIndexData;
         Array<VertexAttribute> mVertexAttributes;
         PrimitiveType::Enum mPrimitiveType;
         Array<MeshBone> mBones;
@@ -400,7 +400,7 @@ namespace Plasma
         uint mMipCount;
         uint mTotalDataSize;
         MipHeader* mMipHeaders;
-        byte* mImageData;
+        ::byte* mImageData;
 
         TextureType::Enum mType;
         TextureFormat::Enum mFormat;
@@ -426,7 +426,7 @@ namespace Plasma
         TextureFormat::Enum mFormat;
         uint mWidth;
         uint mHeight;
-        byte* mImage;
+        ::byte* mImage;
     };
 
     class ShowProgressInfo
@@ -599,12 +599,12 @@ namespace Plasma
         /// pass.
         DeclareByteEnumGetSet(StencilOp::Enum, DepthPassOp);
         /// Bit mask for buffer value and test value when being compared.
-        byte mStencilReadMask;
+        ::byte mStencilReadMask;
         /// Bit mask for which bits in the buffer can be modified.
-        byte mStencilWriteMask;
+        ::byte mStencilWriteMask;
         /// Value that will be used to compare against the stencil buffer for all
         /// pixels.
-        byte mStencilTestValue;
+        ::byte mStencilTestValue;
 
         // If separable front/back face settings are desired
         /// Comparison function for stencil test, for triangle back faces if in
@@ -621,13 +621,13 @@ namespace Plasma
         DeclareByteEnumGetSet(StencilOp::Enum, DepthPassOpBackFace);
         /// Bit mask for buffer value and test value when being compared, for triangle
         /// back faces if in separate mode.
-        byte mStencilReadMaskBackFace;
+        ::byte mStencilReadMaskBackFace;
         /// Bit mask for which bits in the buffer can be modified, for triangle back
         /// faces if in separate mode.
-        byte mStencilWriteMaskBackFace;
+        ::byte mStencilWriteMaskBackFace;
         /// Value that will be used to compare against the stencil buffer for all
         /// pixels, for triangle back faces if in separate mode.
-        byte mStencilTestValueBackFace;
+        ::byte mStencilTestValueBackFace;
 
         static void (*Constructed)(DepthSettings*);
         static void (*Destructed)(DepthSettings*);
@@ -940,7 +940,7 @@ namespace Plasma
 
         uint mTaskCount;
         uint mCurrentIndex;
-        Array<byte> mRenderTaskData;
+        Array<::byte> mRenderTaskData;
     };
 
     class RenderTaskRange

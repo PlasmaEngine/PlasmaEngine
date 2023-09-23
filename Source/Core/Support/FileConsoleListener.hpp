@@ -48,7 +48,7 @@ public:
     }
 
     if (logFile != nullptr)
-      logFile->Write((byte*)message, strlen(message));
+      logFile->Write((::byte*)message, strlen(message));
   }
 
   String GetLogFilePath()

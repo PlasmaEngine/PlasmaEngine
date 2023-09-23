@@ -132,7 +132,7 @@ void VectorDefaultConstructor(Call& call, ExceptionReport& report)
 {
   // Get the handle to ourselves
   Handle& selfHandle = call.GetHandle(Call::This);
-  byte* self = selfHandle.Dereference();
+  ::byte* self = selfHandle.Dereference();
 
   // Clear out the object's data (for all vector types)
   memset(self, 0, Components * sizeof(ComponentType));
@@ -191,8 +191,8 @@ void VectorComponentConstructor(Call& call, ExceptionReport& report)
   for (size_t i = 0; i < parameters.Size(); ++i)
   {
     // Get the stack memory where the parameter's values live
-    byte* stackParam = call.GetParameterUnchecked(i);
-    byte* stackParamEnd = stackParam + parameters[i].ParameterType->GetCopyableSize();
+    ::byte* stackParam = call.GetParameterUnchecked(i);
+    ::byte* stackParamEnd = stackParam + parameters[i].ParameterType->GetCopyableSize();
     // Copy each component value from the parameter
     while (stackParam < stackParamEnd)
     {
@@ -206,17 +206,17 @@ void VectorComponentConstructor(Call& call, ExceptionReport& report)
   }
 }
 
-void ScalarTypeRealOne(byte* outData)
+void ScalarTypeRealOne(::byte* outData)
 {
   *(Real*)outData = 1.0f;
 }
 
-void ScalarTypeIntegerOne(byte* outData)
+void ScalarTypeIntegerOne(::byte* outData)
 {
   *(Integer*)outData = 1;
 }
 
-void ScalarTypeBooleanOne(byte* outData)
+void ScalarTypeBooleanOne(::byte* outData)
 {
   *(Boolean*)outData = true;
 }
@@ -418,7 +418,7 @@ void QuaternionDefaultConstructor(Call& call, ExceptionReport& report)
 {
   // Get our own object
   Handle& selfHandle = call.GetHandle(Call::This);
-  byte* self = selfHandle.Dereference();
+  ::byte* self = selfHandle.Dereference();
 
   // Set the quaternion to the identity quaternion (0, 0, 0, 1)
   *(Quaternion*)self = Quaternion::cIdentity;
@@ -1717,7 +1717,7 @@ void StringFormatC(Call& call, ExceptionReport& report)
               // precision)
               const Any& argument = *arguments[argumentIndex];
               Type* argumentType = argument.StoredType;
-              const byte* argumentData = argument.GetData();
+              const ::byte* argumentData = argument.GetData();
               ++argumentIndex;
 
               // Make sure the type was an integer
@@ -1763,7 +1763,7 @@ void StringFormatC(Call& call, ExceptionReport& report)
           // Grab the current argument for the format specifier
           const Any& argument = *arguments[argumentIndex];
           Type* argumentType = argument.StoredType;
-          const byte* argumentData = argument.GetData();
+          const ::byte* argumentData = argument.GetData();
 
           // We're using a format specifier that accepts a DoubleInteger
           if (inputType == FormatCInputType::DoubleInteger)
@@ -2078,87 +2078,87 @@ String DoubleRealToString(DoubleReal value)
   return String::Format("%gd", value);
 }
 
-String StringToString(const BoundType* type, const byte* data)
+String StringToString(const BoundType* type, const ::byte* data)
 {
   return *(String*)data;
 }
 
-String ByteToString(const BoundType* type, const byte* data)
+String ByteToString(const BoundType* type, const ::byte* data)
 {
   return ByteToString(*(Byte*)data);
 }
 
-String BooleanToString(const BoundType* type, const byte* data)
+String BooleanToString(const BoundType* type, const ::byte* data)
 {
   return BooleanToString(*(Boolean*)data);
 }
 
-String Boolean2ToString(const BoundType* type, const byte* data)
+String Boolean2ToString(const BoundType* type, const ::byte* data)
 {
   return Boolean2ToString(*(Boolean2*)data);
 }
 
-String Boolean3ToString(const BoundType* type, const byte* data)
+String Boolean3ToString(const BoundType* type, const ::byte* data)
 {
   return Boolean3ToString(*(Boolean3*)data);
 }
 
-String Boolean4ToString(const BoundType* type, const byte* data)
+String Boolean4ToString(const BoundType* type, const ::byte* data)
 {
   return Boolean4ToString(*(Boolean4*)data);
 }
 
-String IntegerToString(const BoundType* type, const byte* data)
+String IntegerToString(const BoundType* type, const ::byte* data)
 {
   return IntegerToString(*(Integer*)data);
 }
 
-String Integer2ToString(const BoundType* type, const byte* data)
+String Integer2ToString(const BoundType* type, const ::byte* data)
 {
   return Integer2ToString(*(Integer2*)data);
 }
 
-String Integer3ToString(const BoundType* type, const byte* data)
+String Integer3ToString(const BoundType* type, const ::byte* data)
 {
   return Integer3ToString(*(Integer3*)data);
 }
 
-String Integer4ToString(const BoundType* type, const byte* data)
+String Integer4ToString(const BoundType* type, const ::byte* data)
 {
   return Integer4ToString(*(Integer4*)data);
 }
 
-String RealToString(const BoundType* type, const byte* data)
+String RealToString(const BoundType* type, const ::byte* data)
 {
   return RealToString(*(Real*)data);
 }
 
-String Real2ToString(const BoundType* type, const byte* data)
+String Real2ToString(const BoundType* type, const ::byte* data)
 {
   return Real2ToString(*(Real2*)data);
 }
 
-String Real3ToString(const BoundType* type, const byte* data)
+String Real3ToString(const BoundType* type, const ::byte* data)
 {
   return Real3ToString(*(Real3*)data);
 }
 
-String Real4ToString(const BoundType* type, const byte* data)
+String Real4ToString(const BoundType* type, const ::byte* data)
 {
   return Real4ToString(*(Real4*)data);
 }
 
-String QuaternionToString(const BoundType* type, const byte* data)
+String QuaternionToString(const BoundType* type, const ::byte* data)
 {
   return QuaternionToString(*(Quaternion*)data);
 }
 
-String DoubleIntegerToString(const BoundType* type, const byte* data)
+String DoubleIntegerToString(const BoundType* type, const ::byte* data)
 {
   return DoubleIntegerToString(*(DoubleInteger*)data);
 }
 
-String DoubleRealToString(const BoundType* type, const byte* data)
+String DoubleRealToString(const BoundType* type, const ::byte* data)
 {
   return DoubleRealToString(*(DoubleReal*)data);
 }
@@ -2341,7 +2341,7 @@ void VectorCount(Call& call, ExceptionReport& report)
   call.Set(Call::Return, dimension);
 }
 
-void SetVectorAxis(byte* returnData, VectorUserData& userData, size_t axis, size_t typeIndex)
+void SetVectorAxis(::byte* returnData, VectorUserData& userData, size_t axis, size_t typeIndex)
 {
   // Get the element type of the vector (Real, Integer, etc...)
   Core& core = Core::GetInstance();
@@ -2350,7 +2350,7 @@ void SetVectorAxis(byte* returnData, VectorUserData& userData, size_t axis, size
   size_t elementSize = elementType->Size;
   for (size_t i = 0; i < userData.Count; ++i)
   {
-    byte* data = returnData + i * elementSize;
+    ::byte* data = returnData + i * elementSize;
 
     // If this is the specified axis then call the appropriate function to set
     // the value to 1 for the current element type (1.0f for floats, 1 for ints,
@@ -2373,7 +2373,7 @@ void VectorGetAxis(Call& call, ExceptionReport& report)
 
   // Set the return data to be a vector of all plasma except for the specified
   // axis
-  byte* returnData = call.GetReturnUnchecked();
+  ::byte* returnData = call.GetReturnUnchecked();
   SetVectorAxis(returnData, userData, axis, userData.ElementTypeIndex);
 }
 
@@ -2388,7 +2388,7 @@ void VectorAxisFunction(Call& call, ExceptionReport& report)
 
   // Set the return data to be a vector of all plasma except for the specified
   // axis
-  byte* returnData = call.GetReturnUnchecked();
+  ::byte* returnData = call.GetReturnUnchecked();
   SetVectorAxis(returnData, userData, axis, userData.ElementTypeIndex);
 }
 
@@ -2405,7 +2405,7 @@ void VectorZeroFunction(Call& call, ExceptionReport& report)
 
   // Set the entire array to zero (based upon the size of the element type and
   // the number of elements)
-  byte* returnData = call.GetReturnUnchecked();
+  ::byte* returnData = call.GetReturnUnchecked();
   memset(returnData, 0, elementType->Size * userData.Count);
 }
 
@@ -2423,7 +2423,7 @@ void VectorOneFunction(Call& call, ExceptionReport& report)
   Core::ScalarTypeOneFunction oneFunction = core.ScalarTypeOneFunctions[userData.ElementTypeIndex];
   // Set the entire array to one based upon a callback function for the bound
   // type
-  byte* returnData = call.GetReturnUnchecked();
+  ::byte* returnData = call.GetReturnUnchecked();
   for (size_t i = 0; i < userData.Count; ++i)
   {
     oneFunction(returnData);
@@ -3159,10 +3159,10 @@ void AllNonPlasma(Call& call, ExceptionReport& report)
   size_t elementSize = userData.Type->Size / userData.Size;
 
   // This should always be a small allocation so just allocate it on the stack
-  byte* data = (byte*)alloca(elementSize);
+  ::byte* data = (::byte*)alloca(elementSize);
   memset(data, 0, elementSize);
 
-  byte* input = call.GetParameterUnchecked(0);
+  ::byte* input = call.GetParameterUnchecked(0);
 
   bool allTrue = true;
   for (size_t i = 0; i < userData.Size; ++i)
@@ -3181,10 +3181,10 @@ void AnyNonPlasma(Call& call, ExceptionReport& report)
   size_t elementSize = userData.Type->Size / userData.Size;
 
   // This should always be a small allocation so just allocate it on the stack
-  byte* data = (byte*)alloca(elementSize);
+  ::byte* data = (::byte*)alloca(elementSize);
   memset(data, 0, elementSize);
 
-  byte* input = call.GetParameterUnchecked(0);
+  ::byte* input = call.GetParameterUnchecked(0);
 
   bool anyTrue = false;
   for (size_t i = 0; i < userData.Size; ++i)
@@ -3228,7 +3228,7 @@ void SimpleSplatWithError(Call& call, ExceptionReport& report)
       // The user data of this function should contain a format string with
       // one %s in it to display the input value that failed.
       cstr errFormat = userData.ErrorFormat;
-      String inputAsString = userData.Type->GenericToString((byte*)input);
+      String inputAsString = userData.Type->GenericToString((::byte*)input);
       String msg = String::Format(errFormat, inputAsString.c_str());
       call.GetState()->ThrowException(report, msg);
       return;
@@ -3271,8 +3271,8 @@ void FullTwoParameterSplatWithError(Call& call, ExceptionReport& report)
       // The user data of this function should contain a format string with
       // two %s in it to display the input value that failed.
       cstr errFormat = userData.ErrorFormat;
-      String input0AsString = userData.Type->GenericToString((byte*)input0);
-      String input1AsString = userData.Type->GenericToString((byte*)input1);
+      String input0AsString = userData.Type->GenericToString((::byte*)input0);
+      String input1AsString = userData.Type->GenericToString((::byte*)input1);
       String msg = String::Format(errFormat, input0AsString.c_str(), input1AsString.c_str());
       call.GetState()->ThrowException(report, msg);
       return;

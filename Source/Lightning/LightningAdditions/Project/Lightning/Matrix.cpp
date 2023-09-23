@@ -4,7 +4,7 @@ namespace Lightning
 {
   //***************************************************************************
   // Helper functions to Index into a matrix while allowing them to be row or column basis
-  byte* IndexIntoMatrix(byte* memory, size_t indexX, size_t indexY, size_t sizeX, size_t sizeY, size_t elementSize)
+  ::byte* IndexIntoMatrix(::byte* memory, size_t indexX, size_t indexY, size_t sizeX, size_t sizeY, size_t elementSize)
   {
 #if ColumnBasis == 1
     return memory + (indexX + indexY * sizeX) * elementSize;
@@ -13,7 +13,7 @@ namespace Lightning
 #endif
   }
   
-  const byte* IndexIntoMatrix(const byte* memory, size_t indexX, size_t indexY, size_t sizeX, size_t sizeY, size_t elementSize)
+  const ::byte* IndexIntoMatrix(const ::byte* memory, size_t indexX, size_t indexY, size_t sizeX, size_t sizeY, size_t elementSize)
   {
 #if ColumnBasis == 1
     return memory + (indexX + indexY * sizeX) * elementSize;
@@ -41,7 +41,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  void MultiplyAddReal(byte* outData, byte* inputA, byte* inputB)
+  void MultiplyAddReal(::byte* outData, ::byte* inputA, ::byte* inputB)
   {
     Real& out = *(Real*)outData;
     Real& a = *(Real*)inputA;
@@ -50,7 +50,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  void MultiplyAddInteger(byte* outData, byte* inputA, byte* inputB)
+  void MultiplyAddInteger(::byte* outData, ::byte* inputA, ::byte* inputB)
   {
     Integer& out = *(Integer*)outData;
     Integer& a = *(Integer*)inputA;
@@ -59,7 +59,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  void MultiplyAddBoolean(byte* outData, byte* inputA, byte* inputB)
+  void MultiplyAddBoolean(::byte* outData, ::byte* inputA, ::byte* inputB)
   {
     Boolean& out = *(Boolean*)outData;
     Boolean& a = *(Boolean*)inputA;
@@ -68,7 +68,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  String MatrixToString(const BoundType* type, const byte* data)
+  String MatrixToString(const BoundType* type, const ::byte* data)
   {
     MatrixUserData& userData = type->ComplexUserData.ReadObject<MatrixUserData>(0);
     Core& core = Core::GetInstance();
@@ -82,7 +82,7 @@ namespace Lightning
       builder.Append("(");
       for (size_t x = 0; x < userData.SizeX; ++x)
       {
-        const byte* item = IndexIntoMatrix(data, x, y, userData.SizeX, userData.SizeY, elementType->Size);
+        const ::byte* item = IndexIntoMatrix(data, x, y, userData.SizeX, userData.SizeY, elementType->Size);
 
         builder.Append(elementType->GenericToString(item));
 
@@ -108,7 +108,7 @@ namespace Lightning
     BoundType* elementType = core.MatrixElementTypes[userData.ElementTypeIndex];
 
     // Get ourselves (the matrix)
-    byte* memory = call.GetHandle(Call::This).Dereference();
+    ::byte* memory = call.GetHandle(Call::This).Dereference();
     // Zero out the matrix memory
     memset(memory, 0, userData.SizeX * userData.SizeY * elementType->Size);
   }
@@ -121,14 +121,14 @@ namespace Lightning
     BoundType* elementType = core.MatrixElementTypes[userData.ElementTypeIndex];
 
     // Get ourselves (the matrix)
-    byte* matrixData = call.GetHandle(Call::This).Dereference();
-    byte* parameters = call.GetParametersUnchecked();
+    ::byte* matrixData = call.GetHandle(Call::This).Dereference();
+    ::byte* parameters = call.GetParametersUnchecked();
     for (size_t y = 0; y < userData.SizeY; ++y)
     {
       for (size_t x = 0; x < userData.SizeX; ++x)
       {
-        byte* matrixItem = IndexIntoMatrix(matrixData, x, y, userData.SizeX, userData.SizeY, elementType->Size);
-        byte* parameterItem = parameters + (x + y * userData.SizeX) * elementType->Size;
+        ::byte* matrixItem = IndexIntoMatrix(matrixData, x, y, userData.SizeX, userData.SizeY, elementType->Size);
+        ::byte* parameterItem = parameters + (x + y * userData.SizeX) * elementType->Size;
         
         memcpy(matrixItem, parameterItem, elementType->Size);
       }
@@ -143,13 +143,13 @@ namespace Lightning
     BoundType* elementType = core.MatrixElementTypes[userData.ElementTypeIndex];
 
     // Get ourselves (the matrix)
-    byte* matrixData = call.GetHandle(Call::This).Dereference();
-    byte* parameter = call.GetParametersUnchecked();
+    ::byte* matrixData = call.GetHandle(Call::This).Dereference();
+    ::byte* parameter = call.GetParametersUnchecked();
     for(size_t y = 0; y < userData.SizeY; ++y)
     {
       for(size_t x = 0; x < userData.SizeX; ++x)
       {
-        byte* matrixItem = IndexIntoMatrix(matrixData, x, y, userData.SizeX, userData.SizeY, elementType->Size);
+        ::byte* matrixItem = IndexIntoMatrix(matrixData, x, y, userData.SizeX, userData.SizeY, elementType->Size);
 
         memcpy(matrixItem, parameter, elementType->Size);
       }
@@ -174,11 +174,11 @@ namespace Lightning
     BoundType* elementType = core.MatrixElementTypes[userData.ElementTypeIndex];
 
     // Get ourselves (the matrix)
-    byte* memory = call.GetHandle(Call::This).Dereference();
+    ::byte* memory = call.GetHandle(Call::This).Dereference();
 
     // Index to the item we are getting and set the return to that
-    byte* item = IndexIntoMatrix(memory, indexX, indexY, userData.SizeX, userData.SizeY, elementType->Size);
-    byte* returnData = call.GetReturnUnchecked();
+    ::byte* item = IndexIntoMatrix(memory, indexX, indexY, userData.SizeX, userData.SizeY, elementType->Size);
+    ::byte* returnData = call.GetReturnUnchecked();
     elementType->GenericCopyConstruct(returnData, item);
   }
   
@@ -199,11 +199,11 @@ namespace Lightning
     BoundType* elementType = core.MatrixElementTypes[userData.ElementTypeIndex];
 
     // Get ourselves (the matrix)
-    byte* memory = call.GetHandle(Call::This).Dereference();
+    ::byte* memory = call.GetHandle(Call::This).Dereference();
 
     // Index to the item in the matrix and set it to the passed in value
-    byte* setData = call.GetParameterUnchecked(2);
-    byte* item = IndexIntoMatrix(memory, indexX, indexY, userData.SizeX, userData.SizeY, elementType->Size);
+    ::byte* setData = call.GetParameterUnchecked(2);
+    ::byte* item = IndexIntoMatrix(memory, indexX, indexY, userData.SizeX, userData.SizeY, elementType->Size);
     elementType->GenericCopyConstruct(item, setData);
   }
 
@@ -227,11 +227,11 @@ namespace Lightning
     BoundType* elementType = core.MatrixElementTypes[userData.ElementTypeIndex];
 
     // Get ourselves (the matrix)
-    byte* memory = call.GetHandle(Call::This).Dereference();
+    ::byte* memory = call.GetHandle(Call::This).Dereference();
 
     // Index to the item we are getting and set the return to that
-    byte* item = memory + index * elementType->Size;
-    byte* returnData = call.GetReturnUnchecked();
+    ::byte* item = memory + index * elementType->Size;
+    ::byte* returnData = call.GetReturnUnchecked();
     elementType->GenericCopyConstruct(returnData, item);
   }
   
@@ -254,11 +254,11 @@ namespace Lightning
     BoundType* elementType = core.MatrixElementTypes[userData.ElementTypeIndex];
 
     // Get ourselves (the matrix)
-    byte* memory = call.GetHandle(Call::This).Dereference();
+    ::byte* memory = call.GetHandle(Call::This).Dereference();
 
     // Index to the item in the matrix and set it to the passed in value
-    byte* setData = call.GetParameterUnchecked(1);
-    byte* item = memory + index * elementType->Size;
+    ::byte* setData = call.GetParameterUnchecked(1);
+    ::byte* item = memory + index * elementType->Size;
     elementType->GenericCopyConstruct(item, setData);
   }
   
@@ -281,14 +281,14 @@ namespace Lightning
     BoundType* elementType = core.MatrixElementTypes[userData.ElementTypeIndex];
 
     // Get ourselves (the matrix)
-    byte* memory = call.GetHandle(Call::This).Dereference();
-    byte* returnData = call.GetReturnUnchecked();
+    ::byte* memory = call.GetHandle(Call::This).Dereference();
+    ::byte* returnData = call.GetReturnUnchecked();
 
     for (size_t indexX = 0; indexX < userData.SizeX; ++indexX)
     {
       // Index to the item we are getting and set the return to that
-      byte* matrixItem = IndexIntoMatrix(memory, indexX, indexY, userData.SizeX, userData.SizeY, elementType->Size);
-      byte* returnItem = returnData + indexX * elementType->Size;
+      ::byte* matrixItem = IndexIntoMatrix(memory, indexX, indexY, userData.SizeX, userData.SizeY, elementType->Size);
+      ::byte* returnItem = returnData + indexX * elementType->Size;
 
       memcpy(returnItem, matrixItem, elementType->Size);
     }
@@ -313,14 +313,14 @@ namespace Lightning
     BoundType* elementType = core.MatrixElementTypes[userData.ElementTypeIndex];
 
     // Get ourselves (the matrix)
-    byte* memory = call.GetHandle(Call::This).Dereference();
-    byte* vectorData = call.GetParameterUnchecked(1);
+    ::byte* memory = call.GetHandle(Call::This).Dereference();
+    ::byte* vectorData = call.GetParameterUnchecked(1);
 
     for (size_t indexX = 0; indexX < userData.SizeX; ++indexX)
     {
       // Index to the item we are getting and set the return to that
-      byte* vectorItem = vectorData + indexX * elementType->Size;
-      byte* matrixItem = IndexIntoMatrix(memory, indexX, indexY, userData.SizeX, userData.SizeY, elementType->Size);
+      ::byte* vectorItem = vectorData + indexX * elementType->Size;
+      ::byte* matrixItem = IndexIntoMatrix(memory, indexX, indexY, userData.SizeX, userData.SizeY, elementType->Size);
       
       memcpy(matrixItem, vectorItem, elementType->Size);
     }
@@ -355,16 +355,16 @@ namespace Lightning
     Core& core = Core::GetInstance();
     BoundType* elementType = core.MatrixElementTypes[userData.ElementTypeIndex];
     
-    byte* inMatrix = call.GetParameterUnchecked(0);
-    byte* outMatrix = call.GetReturnUnchecked();
+    ::byte* inMatrix = call.GetParameterUnchecked(0);
+    ::byte* outMatrix = call.GetReturnUnchecked();
 
     // Swap the x and y elements
     for (size_t y = 0; y < userData.SizeY; ++y)
     {
       for (size_t x = 0; x < userData.SizeX; ++x)
       {
-        byte* inputElement = IndexIntoMatrix(inMatrix, x, y, userData.SizeX, userData.SizeY, elementType->Size);
-        byte* outputElement = IndexIntoMatrix(outMatrix, y, x, userData.SizeY, userData.SizeX, elementType->Size);
+        ::byte* inputElement = IndexIntoMatrix(inMatrix, x, y, userData.SizeX, userData.SizeY, elementType->Size);
+        ::byte* outputElement = IndexIntoMatrix(outMatrix, y, x, userData.SizeY, userData.SizeX, elementType->Size);
 
         elementType->GenericCopyConstruct(outputElement, inputElement);
       }
@@ -379,7 +379,7 @@ namespace Lightning
   {
     call.DisableReturnChecks();
 
-    byte* inMatrix = call.GetParameterUnchecked(0);
+    ::byte* inMatrix = call.GetParameterUnchecked(0);
     Real* output = (Real*)call.GetReturnUnchecked();
 
     MatrixType mat((Real*)inMatrix);
@@ -394,8 +394,8 @@ namespace Lightning
   {
     call.DisableReturnChecks();
 
-    byte* inMatrix = call.GetParameterUnchecked(0);
-    byte* output = call.GetReturnUnchecked();
+    ::byte* inMatrix = call.GetParameterUnchecked(0);
+    ::byte* output = call.GetReturnUnchecked();
 
     MatrixType mat((Real*)inMatrix);
     MatrixType result = mat.Inverted();
@@ -412,8 +412,8 @@ namespace Lightning
     BoundType* elementType = core.MatrixElementTypes[userData.ElementTypeIndex];
 
     Handle& selfHandle = call.GetHandle(Call::This);
-    byte* matrixA = (byte*)selfHandle.Dereference();
-    byte* matrixB = call.GetParameterUnchecked(0);
+    ::byte* matrixA = (::byte*)selfHandle.Dereference();
+    ::byte* matrixB = call.GetParameterUnchecked(0);
 
     // See if all the elements in the matrices are equal
     bool IsEqual = true;
@@ -421,8 +421,8 @@ namespace Lightning
     {
       for (size_t x = 0; x < userData.SizeX; ++x)
       {
-        byte* elementA = IndexIntoMatrix(matrixA, x, y, userData.SizeX, userData.SizeY, elementType->Size);
-        byte* elementB = IndexIntoMatrix(matrixB, x, y, userData.SizeX, userData.SizeY, elementType->Size);
+        ::byte* elementA = IndexIntoMatrix(matrixA, x, y, userData.SizeX, userData.SizeY, elementType->Size);
+        ::byte* elementB = IndexIntoMatrix(matrixB, x, y, userData.SizeX, userData.SizeY, elementType->Size);
 
         bool result = memcmp(elementA, elementB, elementType->Size) == 0;
         IsEqual &= result;
@@ -466,15 +466,15 @@ namespace Lightning
 
     // We flip the matrix order in the function so it reads nicer (Transform(the, by))
     // but to do the math we need to flip them back to the right order
-    byte* matrix0 = call.GetParameterUnchecked(0);
-    byte* matrix1 = call.GetParameterUnchecked(1);
-    byte* returnMatrix = call.GetReturnUnchecked();
+    ::byte* matrix0 = call.GetParameterUnchecked(0);
+    ::byte* matrix1 = call.GetParameterUnchecked(1);
+    ::byte* returnMatrix = call.GetReturnUnchecked();
     
     for (size_t matrix0Y = 0; matrix0Y < userData.Matrix0SizeY; ++matrix0Y)
     {
       for (size_t matrix1X = 0; matrix1X < userData.Matrix1SizeX; ++matrix1X)
       {
-        byte* returnElement = IndexIntoMatrix(returnMatrix, matrix1X, matrix0Y, userData.Matrix1SizeX, userData.Matrix1SizeY, elementType->Size);
+        ::byte* returnElement = IndexIntoMatrix(returnMatrix, matrix1X, matrix0Y, userData.Matrix1SizeX, userData.Matrix1SizeY, elementType->Size);
         // To properly accumulate the multiplications the initial value first needs to be zeroed out
         memset(returnElement, 0, elementType->Size);
 
@@ -484,8 +484,8 @@ namespace Lightning
           // same (just make this variable for clarity)
           size_t matrix0X = matrix1Y;
 
-          byte* matrix0Element = IndexIntoMatrix(matrix0, matrix0X, matrix0Y, userData.Matrix0SizeX, userData.Matrix0SizeY, elementType->Size);
-          byte* matrix1Element = IndexIntoMatrix(matrix1, matrix1X, matrix1Y, userData.Matrix1SizeX, userData.Matrix1SizeY, elementType->Size);
+          ::byte* matrix0Element = IndexIntoMatrix(matrix0, matrix0X, matrix0Y, userData.Matrix0SizeX, userData.Matrix0SizeY, elementType->Size);
+          ::byte* matrix1Element = IndexIntoMatrix(matrix1, matrix1X, matrix1Y, userData.Matrix1SizeX, userData.Matrix1SizeY, elementType->Size);
 
           // We need to accumulate the multiplications of matrix0 and matrix1 but
           // we don't know what the inner type is or how to perform add or multiply,
@@ -516,7 +516,7 @@ namespace Lightning
 
     for (size_t matrix0Y = 0; matrix0Y < userData.Matrix0SizeY; ++matrix0Y)
     {
-      Real* returnElement = (Real*)IndexIntoMatrix((byte*)tempReturnVector, 0, matrix0Y, userData.Matrix1SizeX, userData.Matrix1SizeY, elementType->Size);
+      Real* returnElement = (Real*)IndexIntoMatrix((::byte*)tempReturnVector, 0, matrix0Y, userData.Matrix1SizeX, userData.Matrix1SizeY, elementType->Size);
       // To properly accumulate the multiplications the initial value first needs to be zeroed out
       memset(returnElement, 0, elementType->Size);
 
@@ -524,13 +524,13 @@ namespace Lightning
       {
         size_t matrix0X = vector0Y;
 
-        Real* matrix0Element = (Real*)IndexIntoMatrix((byte*)matrix0, matrix0X, matrix0Y, userData.Matrix0SizeX, userData.Matrix0SizeY, elementType->Size);
-        Real* vector0Element = (Real*)IndexIntoMatrix((byte*)vector0,        0, vector0Y, userData.Matrix1SizeX, userData.Matrix1SizeY, elementType->Size);
+        Real* matrix0Element = (Real*)IndexIntoMatrix((::byte*)matrix0, matrix0X, matrix0Y, userData.Matrix0SizeX, userData.Matrix0SizeY, elementType->Size);
+        Real* vector0Element = (Real*)IndexIntoMatrix((::byte*)vector0,        0, vector0Y, userData.Matrix1SizeX, userData.Matrix1SizeY, elementType->Size);
         
         *returnElement += (*matrix0Element) * (*vector0Element);
       }
 
-      Real* matrix0Element = (Real*)IndexIntoMatrix((byte*)matrix0, userData.Matrix0SizeX - 1, matrix0Y, userData.Matrix0SizeX, userData.Matrix0SizeY, elementType->Size);
+      Real* matrix0Element = (Real*)IndexIntoMatrix((::byte*)matrix0, userData.Matrix0SizeX - 1, matrix0Y, userData.Matrix0SizeX, userData.Matrix0SizeY, elementType->Size);
       *returnElement += *matrix0Element;
     }
 
@@ -558,7 +558,7 @@ namespace Lightning
 
     for(size_t matrix0Y = 0; matrix0Y < userData.Matrix0SizeY; ++matrix0Y)
     {
-      Real* returnElement = (Real*)IndexIntoMatrix((byte*)tempReturnVector, 0, matrix0Y, userData.Matrix1SizeX, userData.Matrix1SizeY, elementType->Size);
+      Real* returnElement = (Real*)IndexIntoMatrix((::byte*)tempReturnVector, 0, matrix0Y, userData.Matrix1SizeX, userData.Matrix1SizeY, elementType->Size);
       // To properly accumulate the multiplications the initial value first needs to be zeroed out
       memset(returnElement, 0, elementType->Size);
 
@@ -566,13 +566,13 @@ namespace Lightning
       {
         size_t matrix0X = vector0Y;
 
-        Real* matrix0Element = (Real*)IndexIntoMatrix((byte*)matrix0, matrix0X, matrix0Y, userData.Matrix0SizeX, userData.Matrix0SizeY, elementType->Size);
-        Real* vector0Element = (Real*)IndexIntoMatrix((byte*)vector0, 0, vector0Y, userData.Matrix1SizeX, userData.Matrix1SizeY, elementType->Size);
+        Real* matrix0Element = (Real*)IndexIntoMatrix((::byte*)matrix0, matrix0X, matrix0Y, userData.Matrix0SizeX, userData.Matrix0SizeY, elementType->Size);
+        Real* vector0Element = (Real*)IndexIntoMatrix((::byte*)vector0, 0, vector0Y, userData.Matrix1SizeX, userData.Matrix1SizeY, elementType->Size);
 
         *returnElement += (*matrix0Element) * (*vector0Element);
       }
 
-      Real* matrix0Element = (Real*)IndexIntoMatrix((byte*)matrix0, userData.Matrix0SizeX - 1, matrix0Y, userData.Matrix0SizeX, userData.Matrix0SizeY, elementType->Size);
+      Real* matrix0Element = (Real*)IndexIntoMatrix((::byte*)matrix0, userData.Matrix0SizeX - 1, matrix0Y, userData.Matrix0SizeX, userData.Matrix0SizeY, elementType->Size);
       *returnElement += *matrix0Element;
     }
   }
@@ -595,7 +595,7 @@ namespace Lightning
         nameBuilder.Append(componentNames[sizeX]);
 
         // Get the offset into the matrix structure for the current member (by offsetting from 0)
-        size_t offset = (size_t)IndexIntoMatrix((byte*)nullptr, sizeX, sizeY, matrixUserData.SizeX, matrixUserData.SizeY, elementType->Size);
+        size_t offset = (size_t)IndexIntoMatrix((::byte*)nullptr, sizeX, sizeY, matrixUserData.SizeX, matrixUserData.SizeY, elementType->Size);
         builder.AddBoundField(type, nameBuilder.ToString(), elementType, offset, MemberOptions::None);
       }
     }

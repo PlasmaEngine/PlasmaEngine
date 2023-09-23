@@ -102,7 +102,7 @@ void SpriteSourceBuilder::BuildContent(BuildOptions& buildOptions)
   // Append SpriteData to the end of the png
   File file;
   file.Open(destFile.c_str(), FileMode::Append, FileAccessPattern::Sequential);
-  file.Write((byte*)&GetSpriteData(), sizeof(SpriteData));
+  file.Write((::byte*)&GetSpriteData(), sizeof(SpriteData));
   file.Close();
 }
 

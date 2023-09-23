@@ -94,7 +94,7 @@ public:
   // The input data buffer must already exist, and will not be deleted by this
   // decoder
   StreamingDataPerInstance(
-      Status& status, byte* inputData, unsigned dataSize, unsigned channels, unsigned frames, unsigned instanceID);
+      Status& status, ::byte* inputData, unsigned dataSize, unsigned channels, unsigned frames, unsigned instanceID);
 
   // Resets the data to start streaming from the beginning of the file
   void Reset();
@@ -158,7 +158,7 @@ private:
   // The name of the file
   String mFileName;
   // If streaming from memory, the data read in from the file
-  Array<byte> mInputFileData;
+  Array<::byte> mInputFileData;
   // Used to lock when reading from the input file
   ThreadLock mLock;
 };

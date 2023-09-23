@@ -165,7 +165,7 @@ private:
   Transform* mTransform;
   float mVerticalAngle;
   float mHorizontalAngle;
-  byte mMovement[ControllerButton::NumButtons];
+  ::byte mMovement[ControllerButton::NumButtons];
   bool mInvertGamepadPitch;
   bool mMoving;
   bool mMouseDragging;

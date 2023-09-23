@@ -106,8 +106,8 @@ PlasmaShared bool IsValid(real val);
 
 PlasmaShared double DoublePositiveMax();
 PlasmaShared double DoublePositiveMin();
-PlasmaShared byte BytePositiveMax();
-PlasmaShared byte BytePositiveMin();
+PlasmaShared ::byte BytePositiveMax();
+PlasmaShared ::byte BytePositiveMin();
 PlasmaShared int IntegerPositiveMax();
 PlasmaShared int IntegerNegativeMin();
 PlasmaShared long long int DoubleIntegerPositiveMax();

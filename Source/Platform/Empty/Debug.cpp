@@ -4,7 +4,7 @@
 namespace Plasma
 {
 
-void CheckClassMemory(cstr className, byte* classMemory)
+void CheckClassMemory(cstr className, ::byte* classMemory)
 {
 }
 

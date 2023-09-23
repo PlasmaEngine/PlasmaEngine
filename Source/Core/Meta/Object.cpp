@@ -4,7 +4,7 @@
 namespace Plasma
 {
 // @TrevorS: Move this to be filled out automatically in my binding!
-BoundType* ObjectBindingVirtualTypeFn(const byte* memory)
+BoundType* ObjectBindingVirtualTypeFn(const ::byte* memory)
 {
   const Object* object = (const Object*)memory;
   return object->LightningGetDerivedType();

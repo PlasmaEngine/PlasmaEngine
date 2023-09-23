@@ -31,9 +31,9 @@ ImporterResult::Type Importer::CheckForImport()
   // Read the unique export name  from the data section
   Status status;
   u32 uniqueNameSize = 0;
-  buffer.Read(status, (byte*)&uniqueNameSize, sizeof(uniqueNameSize));
+  buffer.Read(status, (::byte*)&uniqueNameSize, sizeof(uniqueNameSize));
   StringNode* node = String::AllocateNode(uniqueNameSize);
-  buffer.Read(status, (byte*)node->Data, node->Size);
+  buffer.Read(status, (::byte*)node->Data, node->Size);
   String uniqueName(node);
 
   mOutputDirectory = FilePath::Combine(GetUserApplicationDirectory(), uniqueName);
@@ -63,7 +63,7 @@ ImporterResult::Type Importer::CheckForImport()
     engineArchive.ExportToDirectory(ArchiveExportMode::OverwriteIfNewer, mOutputDirectory);
 
     // Extract the project package
-    byte* data = buffer.GetCurrent();
+    ::byte* data = buffer.GetCurrent();
     size_t size = buffer.Size() - buffer.Tell();
     ByteBufferBlock importBuffer(data, size, false);
     DoImport(buffer);

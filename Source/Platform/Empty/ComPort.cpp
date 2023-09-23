@@ -21,12 +21,12 @@ bool ComPort::Open(StringParam name, uint baudRate)
   return false;
 }
 
-uint ComPort::Read(byte* buffer, uint bytesToRead)
+uint ComPort::Read(::byte* buffer, uint bytesToRead)
 {
   return 0;
 }
 
-void ComPort::Write(byte* buffer, uint bytesToWrite)
+void ComPort::Write(::byte* buffer, uint bytesToWrite)
 {
 }
 

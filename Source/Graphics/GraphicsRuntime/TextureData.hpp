@@ -45,7 +45,7 @@ public:
 
   uint mPixelSize;
   uint mDataSize;
-  byte* mData;
+  ::byte* mData;
 };
 
 } // namespace Plasma

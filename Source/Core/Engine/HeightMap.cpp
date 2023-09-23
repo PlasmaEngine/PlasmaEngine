@@ -2130,7 +2130,7 @@ void HeightMap::SaveToObj(StringParam fileName, HeightMap* heightMap)
 
   // Turn off smoothing groups
   String sOff = "s off\n";
-  file.Write((byte*)sOff.Data(), sOff.SizeInBytes());
+  file.Write((::byte*)sOff.Data(), sOff.SizeInBytes());
 
   // We want to transform the points by our owners transform
   Mat4 worldTransform = heightMap->GetOwner()->has(Transform)->GetWorldMatrix();
@@ -2160,12 +2160,12 @@ void HeightMap::SaveToObj(StringParam fileName, HeightMap* heightMap)
 
       // Write it to the file
       String vertexLine = String::Format("v %f %f %f\n", pos.x, pos.y, pos.z);
-      file.Write((byte*)vertexLine.Data(), vertexLine.SizeInBytes());
+      file.Write((::byte*)vertexLine.Data(), vertexLine.SizeInBytes());
     }
 
     // Write out the current patch
     String patchLine = String::Format("\ng Patch_%i\n", patchIndex);
-    file.Write((byte*)patchLine.Data(), patchLine.SizeInBytes());
+    file.Write((::byte*)patchLine.Data(), patchLine.SizeInBytes());
 
     // Generate the indices for triangles
     Array<uint> indices;
@@ -2190,7 +2190,7 @@ void HeightMap::SaveToObj(StringParam fileName, HeightMap* heightMap)
       // Write the triangle out to the file
       // + 1 is because the .obj file format isn't 0 based
       String triLine = String::Format("f %i %i %i\n", i0 + 1 + indexOffset, i1 + 1 + indexOffset, i2 + 1 + indexOffset);
-      file.Write((byte*)triLine.Data(), triLine.SizeInBytes());
+      file.Write((::byte*)triLine.Data(), triLine.SizeInBytes());
     }
 
     // Offset the indices for the next patch

@@ -160,7 +160,7 @@ void CustomAudioNode::SendMicUncompressedData(const HandleOf<ArrayClass<float>>&
       this);
 }
 
-void CustomAudioNode::SendMicCompressedData(const HandleOf<ArrayClass<byte>>& audioData)
+void CustomAudioNode::SendMicCompressedData(const HandleOf<ArrayClass<::byte>>& audioData)
 {
   // If we haven't created the decoder yet, create it
   if (!mAudioDecoder)

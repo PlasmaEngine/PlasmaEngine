@@ -42,7 +42,7 @@ enum Enum
   // setting to plasma, we ignore it
   InitializedByConstructor = 2,
 };
-typedef byte Compact;
+typedef ::byte Compact;
 } // namespace HandleFlags
 
 DeclareEnum2(GetOptions, ReturnDefaultOrNull, AssertOnNull);
@@ -85,7 +85,7 @@ public:
   // This will invoke ObjectToHandle on the handle manager
   // The 'data' passed in should be a pointer to the object (the same as that
   // returned from Dereference)
-  Handle(const byte* data, BoundType* type, HandleManager* manager = nullptr, ExecutableState* state = nullptr);
+  Handle(const ::byte* data, BoundType* type, HandleManager* manager = nullptr, ExecutableState* state = nullptr);
 
   // Destructor
   ~Handle();
@@ -114,7 +114,7 @@ public:
   String ToString() const;
 
   // Get a pointer to the data, or return null if it isn't valid
-  byte* Dereference() const;
+  ::byte* Dereference() const;
 
   // Releases the handle and clears it out to plasma
   void Clear();
@@ -145,7 +145,7 @@ public:
   void ReleaseAndClearForBinding();
 
 private:
-  void Initialize(const byte* data, BoundType* type, HandleManager* manager, ExecutableState* state = nullptr);
+  void Initialize(const ::byte* data, BoundType* type, HandleManager* manager, ExecutableState* state = nullptr);
 
   // Clear the handle to a null handle
   // Warning: This does not do reference counting or properly delete the object!
@@ -193,7 +193,7 @@ public:
 
   union {
     // The user data stored on the handle (of a fixed size)
-    byte Data[HandleUserDataSize];
+    ::byte Data[HandleUserDataSize];
 
     // Ensure alignment on all platforms.
     MaxAlignmentType DataAligned[PlasmaAlignCount(HandleUserDataSize)];

@@ -139,8 +139,8 @@ namespace Lightning
   (
     const Handle& handleLhs,
     const Handle& handleRhs,
-    const byte* objectLhs,
-    const byte* objectRhs
+    const ::byte* objectLhs,
+    const ::byte* objectRhs
   )
   {
     // Compare the dereferenced handles
@@ -222,12 +222,12 @@ namespace Lightning
   }
   
   //***************************************************************************
-  byte* HeapManager::HandleToObject(const Handle& handle)
+  ::byte* HeapManager::HandleToObject(const Handle& handle)
   {
     HeapHandleData& data = *(HeapHandleData*)handle.Data;
 
     // The pointer to the object is just after the header
-    byte* object = ((byte*)data.Header) + sizeof(ObjectHeader);
+    ::byte* object = ((::byte*)data.Header) + sizeof(ObjectHeader);
 
     // First check if the object is even live
     if (this->LiveObjects.Contains(object) == false)
@@ -250,7 +250,7 @@ namespace Lightning
     // 'ObjectToHandle' can recreate a handle via the slot data pointer
     size_t objectSize = type->GetAllocatedSize();
     size_t fullSize = sizeof(ObjectHeader) + objectSize + HeapManagerExtraPatchSize;
-    byte* memory = (byte*)Plasma::plAllocate(fullSize);
+    ::byte* memory = (::byte*)Plasma::plAllocate(fullSize);
 
     // If the memory failed to allocate, early out
     if (memory == nullptr)
@@ -261,7 +261,7 @@ namespace Lightning
     }
 
     // Make sure we mark this as a live object
-    byte* object = memory + sizeof(ObjectHeader);
+    ::byte* object = memory + sizeof(ObjectHeader);
     this->LiveObjects.Insert(object);
 
     // All primitives should support being zeroed out
@@ -289,7 +289,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  void HeapManager::ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize)
+  void HeapManager::ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize)
   {
     // We weren't given a valid object, just null out the handle
     if (object == nullptr)
@@ -343,7 +343,7 @@ namespace Lightning
     while (this->LiveObjects.Empty() == false)
     {
       // Just get the first object and attempt to free it
-      const byte* object = this->LiveObjects.All().Front();
+      const ::byte* object = this->LiveObjects.All().Front();
 
       // Just behind the allocated object is the header
       ObjectHeader& header = *(ObjectHeader*)(object - sizeof(ObjectHeader));
@@ -375,7 +375,7 @@ namespace Lightning
     HeapHandleData& data = *(HeapHandleData*)handle.Data;
 
     // The pointer to the object is just after the header
-    byte* object = ((byte*)data.Header) + sizeof(ObjectHeader);
+    ::byte* object = ((::byte*)data.Header) + sizeof(ObjectHeader);
     
     // Remove the object from the list of live objects
     this->LiveObjects.Erase(object);
@@ -454,7 +454,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  byte* StackManager::HandleToObject(const Handle& handle)
+  ::byte* StackManager::HandleToObject(const Handle& handle)
   {
     StackHandleData& data = *(StackHandleData*)handle.Data;
     
@@ -468,10 +468,10 @@ namespace Lightning
   }
   
   //***************************************************************************
-  void StackManager::ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize)
+  void StackManager::ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize)
   {
     StackHandleData& data = *(StackHandleData*)handleToInitialize.Data;
-    data.StackLocation = const_cast<byte*>(object);
+    data.StackLocation = const_cast<::byte*>(object);
     Error("Use ExecutableState's InitializeStackHandle to create a handle to an object on the stack");
   }
   
@@ -489,9 +489,9 @@ namespace Lightning
   }
   
   //***************************************************************************
-  byte* PointerManager::HandleToObject(const Handle& handle)
+  ::byte* PointerManager::HandleToObject(const Handle& handle)
   {
-    return *(byte**)handle.Data;
+    return *(::byte**)handle.Data;
   }
   
   //***************************************************************************
@@ -514,7 +514,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  void PointerManager::ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize)
+  void PointerManager::ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize)
   {
     handleToInitialize.Flags |= HandleFlags::NoReferenceCounting;
     handleToInitialize.HandlePointer = (void*)object;
@@ -534,10 +534,10 @@ namespace Lightning
   }
   
   //***************************************************************************
-  byte* StringManager::HandleToObject(const Handle& handle)
+  ::byte* StringManager::HandleToObject(const Handle& handle)
   {
     // Interpret the user data as if it was the 'String' type
-    return (byte*)(String*)handle.Data;
+    return (::byte*)(String*)handle.Data;
   }
 
   //***************************************************************************
@@ -554,7 +554,7 @@ namespace Lightning
   }
   
   //***************************************************************************
-  void StringManager::ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize)
+  void StringManager::ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize)
   {
     String& str = *(String*)object;
     new (handleToInitialize.Data) String(str);
@@ -565,8 +565,8 @@ namespace Lightning
   (
     const Handle& handleLhs,
     const Handle& handleRhs,
-    const byte* objectLhs,
-    const byte* objectRhs
+    const ::byte* objectLhs,
+    const ::byte* objectRhs
   )
   {
     // Get the two string nodes so we can compare them

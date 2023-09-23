@@ -149,7 +149,7 @@ public:
   bool ButtonDown;
 
   /// State of all the mouse buttons
-  byte mButtonDown[MouseButtons::Size];
+  ::byte mButtonDown[MouseButtons::Size];
   /// Position of the Mouse.
   Vec2 Position;
   /// Movement since last mouse move.

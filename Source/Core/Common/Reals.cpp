@@ -329,14 +329,14 @@ PlasmaShared double DoublePositiveMin()
   return DBL_MIN;
 }
 
-PlasmaShared byte BytePositiveMax()
+PlasmaShared ::byte BytePositiveMax()
 {
   return UCHAR_MAX;
 }
 
-PlasmaShared byte BytePositiveMin()
+PlasmaShared ::byte BytePositiveMin()
 {
-  return (byte)0;
+  return (::byte)0;
 }
 
 int IntegerPositiveMax()

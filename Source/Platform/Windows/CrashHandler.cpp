@@ -421,7 +421,7 @@ void WriteCallstack(CrashHandlerParameters& params, void* crashData, CrashInfo& 
   // Create a temporary file name
   DWORD pathLength = GetTempPath(MAX_TEMP_PATH, stackFileName);
   PlasmaStrCatW(stackFileName, MAX_TEMP_PATH, Widen(info.mStackName).c_str());
-  WriteToFile(Narrow(stackFileName).c_str(), (byte*)stack.Data(), stack.SizeInBytes());
+  WriteToFile(Narrow(stackFileName).c_str(), (::byte*)stack.Data(), stack.SizeInBytes());
 
   // Add the stack file to the parameters
   params.AddParameter("Stack", Narrow(stackFileName).c_str());

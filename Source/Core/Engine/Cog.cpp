@@ -39,7 +39,7 @@ Handle CogGetOwner(HandleParam object)
   return nullptr;
 }
 
-String CogToString(const BoundType* type, const byte* data)
+String CogToString(const BoundType* type, const ::byte* data)
 {
   Cog* cog = (Cog*)(data);
   return cog->GetDescription();
@@ -2297,7 +2297,7 @@ void CogHandleManager::Allocate(BoundType* type, Handle& handleToInitialize, siz
   data.mRawObject = plAllocate(type->Size);
 }
 
-void CogHandleManager::ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize)
+void CogHandleManager::ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize)
 {
   if (object == nullptr)
     return;
@@ -2308,17 +2308,17 @@ void CogHandleManager::ObjectToHandle(const byte* object, BoundType* type, Handl
   data.mRawObject = nullptr;
 }
 
-byte* CogHandleManager::HandleToObject(const Handle& handle)
+::byte* CogHandleManager::HandleToObject(const Handle& handle)
 {
   const CogHandleData& data = *(const CogHandleData*)(handle.Data);
 
   if (data.mRawObject)
   {
     Cog* cog = (Cog*)data.mRawObject;
-    return (byte*)cog;
+    return (::byte*)cog;
   }
 
-  return (byte*)(Cog*)data.mCogId;
+  return (::byte*)(Cog*)data.mCogId;
 }
 
 void CogHandleManager::Delete(const Handle& handle)

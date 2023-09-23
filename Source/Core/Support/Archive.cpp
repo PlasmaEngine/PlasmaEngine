@@ -27,7 +27,7 @@ public:
     deflateEnd(&stream);
   }
 
-  void Deflate(byte* input, byte* output, int availableIn, int availableOut, int finished)
+  void Deflate(::byte* input, ::byte* output, int availableIn, int availableOut, int finished)
   {
     int flushStatus = finished ? Z_FINISH : Z_NO_FLUSH;
     stream.avail_in = availableIn;
@@ -62,7 +62,7 @@ public:
     inflateEnd(&stream);
   }
 
-  void Inflate(byte* input, byte* output, int availableIn, int availableOut)
+  void Inflate(::byte* input, ::byte* output, int availableIn, int availableOut)
   {
     stream.avail_in = availableIn;
     stream.next_in = input;
@@ -76,14 +76,14 @@ public:
   }
 };
 
-int RawDeflate(byte* outputData, uint outsize, byte* inputData, uint inSize, int level)
+int RawDeflate(::byte* outputData, uint outsize, ::byte* inputData, uint inSize, int level)
 {
   Deflater deflater(level);
   deflater.Deflate(inputData, outputData, inSize, outsize, true);
   return deflater.written;
 }
 
-int RawInflate(byte* outputData, uint outSize, byte* inputData, uint inSize)
+int RawInflate(::byte* outputData, uint outSize, ::byte* inputData, uint inSize)
 {
   Inflater inflater;
   inflater.Inflate(inputData, outputData, inSize, outSize);
@@ -154,7 +154,7 @@ void Archive::AddFileRelative(StringParam basePath, StringParam relativeName)
 
 void Archive::AddFileBlock(StringParam relativeName, DataBlock sourceBlock)
 {
-  byte* destBuffer = 0;
+  ::byte* destBuffer = 0;
   uLong compressedSize = 0;
 
   // Compute Crc
@@ -165,7 +165,7 @@ void Archive::AddFileBlock(StringParam relativeName, DataBlock sourceBlock)
   {
     // No compression, just copy data into buffer
     compressedSize = sourceBlock.Size;
-    destBuffer = (byte*)plAllocate(sourceBlock.Size);
+    destBuffer = (::byte*)plAllocate(sourceBlock.Size);
     memcpy(destBuffer, sourceBlock.Data, sourceBlock.Size);
   }
   else
@@ -174,7 +174,7 @@ void Archive::AddFileBlock(StringParam relativeName, DataBlock sourceBlock)
     uint maxCompressedSize = compressBound(sourceBlock.Size);
 
     // Allocate the output buffer
-    destBuffer = (byte*)plAllocate(maxCompressedSize);
+    destBuffer = (::byte*)plAllocate(maxCompressedSize);
 
     // Deflate the buffer to the compressed size
     compressedSize = RawDeflate(destBuffer, maxCompressedSize, sourceBlock.Data, sourceBlock.Size, mCompressionLevel);
@@ -185,7 +185,7 @@ void Archive::AddFileBlock(StringParam relativeName, DataBlock sourceBlock)
     const bool shrinkToActualCompressedSize = true;
     if (shrinkToActualCompressedSize)
     {
-      byte* compressed = (byte*)plAllocate(compressedSize);
+      ::byte* compressed = (::byte*)plAllocate(compressedSize);
       memcpy(compressed, destBuffer, compressedSize);
       plDeallocate(destBuffer);
       destBuffer = compressed;
@@ -262,7 +262,7 @@ void Archive::DecompressEntry(ArchiveEntry& entry)
     else
     {
       // Inflate Data
-      entry.Full.Data = (byte*)plAllocate(entry.Full.Size);
+      entry.Full.Data = (::byte*)plAllocate(entry.Full.Size);
       RawInflate(entry.Full.Data, entry.Full.Size, entry.Compressed.Data, entry.Compressed.Size);
 
       // Free compressed data
@@ -455,8 +455,8 @@ void Archive::WriteZipInternal(Stream& file)
     header.Signature = LocalHeader;
     FillEntry(header.Info, entry, compressionMethod);
     Write(file, header);
-    file.Write((byte*)entry.Name.Data(), entry.Name.SizeInBytes());
-    file.Write((byte*)entry.Compressed.Data, entry.Compressed.Size);
+    file.Write((::byte*)entry.Name.Data(), entry.Name.SizeInBytes());
+    file.Write((::byte*)entry.Compressed.Data, entry.Compressed.Size);
   }
 
   u32 centralOffset = (u32)file.Tell();
@@ -472,7 +472,7 @@ void Archive::WriteZipInternal(Stream& file)
     header.Offset = entry.Offset;
     FillEntry(header.Info, entry, compressionMethod);
     Write(file, header);
-    file.Write((byte*)entry.Name.Data(), entry.Name.SizeInBytes());
+    file.Write((::byte*)entry.Name.Data(), entry.Name.SizeInBytes());
   }
 
   EndCentral endCentral;
@@ -543,7 +543,7 @@ void Archive::ReadZipFileInternal(ArchiveReadFlags::Enum readFlags, Stream& file
       if (readFlags & ArchiveReadFlags::Data)
       {
         // Read the compressed data into a heap allocated block
-        byte* buffer = (byte*)plAllocate(localFile.Info.CompressedSize);
+        ::byte* buffer = (::byte*)plAllocate(localFile.Info.CompressedSize);
         file.Read(status, buffer, localFile.Info.CompressedSize);
         entry.Compressed.Data = buffer;
 
@@ -599,7 +599,7 @@ void Archive::Extract(File& file, StringParam name, StringParam destfile)
     if (entry.Name == name)
     {
       Status status;
-      byte* buffer = (byte*)plAllocate(entry.Compressed.Size);
+      ::byte* buffer = (::byte*)plAllocate(entry.Compressed.Size);
       file.Seek(entry.Offset, SeekOrigin::Begin);
       file.Read(status, buffer, entry.Compressed.Size);
       entry.Compressed.Data = buffer;
@@ -680,7 +680,7 @@ void Archive::DecompressEntryInternal(ArchiveEntry& entry, Stream& file)
   file.Seek(mFileOriginBegin + entry.Offset, SeekOrigin::Begin);
 
   // Read the compressed data into a heap allocated block
-  byte* buffer = (byte*)plAllocate(entry.Compressed.Size);
+  ::byte* buffer = (::byte*)plAllocate(entry.Compressed.Size);
   Status status;
   file.Read(status, buffer, entry.Compressed.Size);
   entry.Compressed.Data = buffer;

@@ -127,12 +127,12 @@ void ByteBuffer::Backup(size_t sizeInBytes)
   mCurBlockSize -= sizeInBytes;
 }
 
-byte ByteBuffer::operator[](size_t index) const
+::byte ByteBuffer::operator[](size_t index) const
 {
   return (*(ByteBuffer*)this)[index];
 }
 
-byte& ByteBuffer::operator[](size_t index)
+::byte& ByteBuffer::operator[](size_t index)
 {
   ErrorIf(index > mTotalSize, "ByteBuffer index out of bounds");
 
@@ -166,7 +166,7 @@ void ByteBuffer::ExtractInto(ByteBufferBlock& buffer) const
 {
   buffer.Deallocate();
   buffer.mSize = mTotalSize;
-  buffer.mData = (byte*)plAllocate(mTotalSize);
+  buffer.mData = (::byte*)plAllocate(mTotalSize);
   buffer.mCurrent = buffer.mData;
   buffer.mOwnsData = true;
   ExtractInto(buffer.mData, buffer.mSize);
@@ -223,7 +223,7 @@ ByteBufferBlock::ByteBufferBlock(const ByteBufferBlock& rhs) : mSize(rhs.mSize),
 {
   if (mOwnsData)
   {
-    mData = (byte*)plAllocate(rhs.mSize);
+    mData = (::byte*)plAllocate(rhs.mSize);
     memcpy(mData, rhs.mData, mSize);
     mCurrent = mData + (rhs.mCurrent - rhs.mData);
   }
@@ -236,13 +236,13 @@ ByteBufferBlock::ByteBufferBlock(const ByteBufferBlock& rhs) : mSize(rhs.mSize),
 
 ByteBufferBlock::ByteBufferBlock(size_t size)
 {
-  mData = (byte*)plAllocate(size);
+  mData = (::byte*)plAllocate(size);
   mCurrent = mData;
   mSize = size;
   mOwnsData = true;
 }
 
-ByteBufferBlock::ByteBufferBlock(byte* data, size_t size, bool owned)
+ByteBufferBlock::ByteBufferBlock(::byte* data, size_t size, bool owned)
 {
   mData = data;
   mCurrent = data;
@@ -250,7 +250,7 @@ ByteBufferBlock::ByteBufferBlock(byte* data, size_t size, bool owned)
   mOwnsData = owned;
 }
 
-void ByteBufferBlock::SetData(byte* data, size_t size, bool owned)
+void ByteBufferBlock::SetData(::byte* data, size_t size, bool owned)
 {
   Deallocate();
   mData = data;
@@ -299,7 +299,7 @@ void ByteBufferBlock::Seek(int offset, uint /*origin*/)
   mCurrent += offset;
 }
 
-size_t ByteBufferBlock::Read(Status& status, byte* data, size_t sizeInBytes)
+size_t ByteBufferBlock::Read(Status& status, ::byte* data, size_t sizeInBytes)
 {
   ErrorIf(mCurrent + sizeInBytes > mData + mSize, "Buffer Overflow Read");
   memcpy(data, mCurrent, sizeInBytes);
@@ -307,7 +307,7 @@ size_t ByteBufferBlock::Read(Status& status, byte* data, size_t sizeInBytes)
   return sizeInBytes;
 }
 
-size_t ByteBufferBlock::Write(byte* data, size_t sizeInBytes)
+size_t ByteBufferBlock::Write(::byte* data, size_t sizeInBytes)
 {
   ErrorIf(mCurrent + sizeInBytes > mData + mSize, "Buffer Overflow Write");
   memcpy(mCurrent, data, sizeInBytes);
@@ -315,7 +315,7 @@ size_t ByteBufferBlock::Write(byte* data, size_t sizeInBytes)
   return sizeInBytes;
 }
 
-size_t ByteBufferBlock::Write(byte value)
+size_t ByteBufferBlock::Write(::byte value)
 {
   return Write(&value, 1);
 }
@@ -325,7 +325,7 @@ size_t ByteBufferBlock::Size() const
   return mSize;
 }
 
-byte* ByteBufferBlock::GetCurrent()
+::byte* ByteBufferBlock::GetCurrent()
 {
   return mCurrent;
 }
@@ -335,7 +335,7 @@ size_t ByteBufferBlock::Tell()
   return mCurrent - mData;
 }
 
-byte* ByteBufferBlock::GetBegin()
+::byte* ByteBufferBlock::GetBegin()
 {
   return mData;
 }
@@ -348,7 +348,7 @@ String ByteBuffer::ToString() const
   StringNode* node = String::AllocateNode(bufferSize);
 
   // Copy data into buffer
-  ExtractInto((byte*)node->Data, bufferSize);
+  ExtractInto((::byte*)node->Data, bufferSize);
 
   return String(node);
 }
@@ -361,7 +361,7 @@ String ByteBuffer::ToString(size_t subStringSizeBytes) const
   StringNode* node = String::AllocateNode(bufferSize, subStringSizeBytes);
 
   // Copy data into buffer
-  ExtractInto((byte*)node->Data, bufferSize);
+  ExtractInto((::byte*)node->Data, bufferSize);
   node->Data[subStringSizeBytes] = '\0';
 
   return String(node);

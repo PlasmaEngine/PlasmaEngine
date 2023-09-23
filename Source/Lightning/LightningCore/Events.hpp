@@ -55,7 +55,7 @@ public:
   // methods
 
   // Copy the event delegate in place
-  virtual void CopyInto(byte* destination) = 0;
+  virtual void CopyInto(::byte* destination) = 0;
 
   // Get a unique id or pointer that lets us identify the owner of the delegate
   // (who the delegate is bound to)
@@ -78,7 +78,7 @@ public:
 // implement 'GetSize' and 'CopyInto' Our implementation of 'CopyInto' just
 // invokes the copy constructor via placement new
 #  define LightningDefineEventDelegateHelpers(SelfType)                                                                    \
-    void CopyInto(byte* destination) override                                                                          \
+    void CopyInto(::byte* destination) override                                                                          \
     {                                                                                                                  \
       static_assert(sizeof(SelfType) <= MaxEventDelegateSize,                                                          \
                     "The size of the event delegate must not exceed "                                                  \

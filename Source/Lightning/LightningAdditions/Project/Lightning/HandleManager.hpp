@@ -122,12 +122,12 @@ namespace Lightning
     // The 'object' is the same pointer that we would get back from Dereferencing the handle
     // Note that the only portion of the handle the needs to be initialized is the Data field,
     // and that the handle will have been memory cleared to all 0 (the Type and Manager will be set externally)
-    virtual void ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize) = 0;
+    virtual void ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize) = 0;
 
     // Dereference the user-data stored on the handle and
     // turn it into an instance pointer to the user's object
     // Return a null pointer if the object handle is null
-    virtual byte* HandleToObject(const Handle& handle) = 0;
+    virtual ::byte* HandleToObject(const Handle& handle) = 0;
 
     // Get the name of the handle manager, only for debugging and exceptions
     virtual String GetName();
@@ -183,8 +183,8 @@ namespace Lightning
     (
       const Handle& handleLhs,
       const Handle& handleRhs,
-      const byte* objectLhs,
-      const byte* objectRhs
+      const ::byte* objectLhs,
+      const ::byte* objectRhs
     );
 
   public:
@@ -269,8 +269,8 @@ namespace Lightning
     HeapManager(ExecutableState* state);
     String GetName() override;
     void Allocate(BoundType* type, Handle& handleToInitialize, size_t customFlags) override;
-    byte* HandleToObject(const Handle& handle) override;
-    void ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize) override;
+    ::byte* HandleToObject(const Handle& handle) override;
+    void ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize) override;
     void DeleteAll(ExecutableState* state) override;
     void Delete(const Handle& handle) override;
     bool CanDelete(const Handle& handle) override;
@@ -287,7 +287,7 @@ namespace Lightning
     // then we also have to check the version stored in the handle against the version in the object's header
     // If the pointer given to 'ObjectToHandle' does not exist here, we implicitly allocate a new object and
     // invoke the copy constructor on the object
-    HashSet<const byte*> LiveObjects;
+    HashSet<const ::byte*> LiveObjects;
   };
 
   // The structure of our stack handle's inner data
@@ -296,7 +296,7 @@ namespace Lightning
   public:
     Uid           UniqueId;
     PerScopeData* Scope;
-    byte*         StackLocation;
+    ::byte*         StackLocation;
   };
   static_assert(sizeof(StackHandleData) <= HandleUserDataSize,
     "The StackHandleData class must fit within Handle::Data (make handle Data bigger)");
@@ -309,8 +309,8 @@ namespace Lightning
     StackManager(ExecutableState* state);
     String GetName() override;
     void Allocate(BoundType* type, Handle& handleToInitialize, size_t customFlags) override;
-    byte* HandleToObject(const Handle& handle) override;
-    void ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize) override;
+    ::byte* HandleToObject(const Handle& handle) override;
+    void ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize) override;
   };
 
   // This manages insertion of pointers into the language, which are assumed to be global
@@ -323,8 +323,8 @@ namespace Lightning
     void Allocate(BoundType* type, Handle& handleToInitialize, size_t customFlags) override;
     void Delete(const Handle& handle) override;
     bool CanDelete(const Handle& handle) override;
-    byte* HandleToObject(const Handle& handle) override;
-    void ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize) override;
+    ::byte* HandleToObject(const Handle& handle) override;
+    void ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize) override;
   };
 
   // This manages string nodes for the string class, which is always a reference type
@@ -336,16 +336,16 @@ namespace Lightning
     String GetName() override;
     size_t Hash(const Handle& handle) override;
     void Allocate(BoundType* type, Handle& handleToInitialize, size_t customFlags) override;
-    byte* HandleToObject(const Handle& handle) override;
-    void ObjectToHandle(const byte* object, BoundType* type, Handle& handleToInitialize) override;
+    ::byte* HandleToObject(const Handle& handle) override;
+    void ObjectToHandle(const ::byte* object, BoundType* type, Handle& handleToInitialize) override;
     void AddReference(const Handle& handle) override;
     ReleaseResult::Enum ReleaseReference(const Handle& handle) override;
     bool IsEqual
     (
       const Handle& handleLhs,
       const Handle& handleRhs,
-      const byte* objectLhs,
-      const byte* objectRhs
+      const ::byte* objectLhs,
+      const ::byte* objectRhs
     ) override;
   };
   static_assert(sizeof(String) <= HandleUserDataSize,

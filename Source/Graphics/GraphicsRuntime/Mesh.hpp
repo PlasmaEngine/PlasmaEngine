@@ -116,7 +116,7 @@ public:
   void Grow(uint minExtra);
   VertexAttribute GetAttribute(VertexSemantic::Enum semantic);
   uint GetElementSize(VertexElementType::Enum type);
-  void ReadVertexData(byte* vertexData, VertexAttribute& attribute, Vec4& output);
+  void ReadVertexData(::byte* vertexData, VertexAttribute& attribute, Vec4& output);
   void CopyTo(VertexBuffer& target);
 
   template <typename T>
@@ -126,7 +126,7 @@ public:
   T GetData(uint vertexIndex, VertexSemantic::Enum semantic);
 
   FixedVertexDescription mFixedDesc;
-  byte* mData;
+  ::byte* mData;
   uint mDataCapacity;
   uint mDataSize;
 };

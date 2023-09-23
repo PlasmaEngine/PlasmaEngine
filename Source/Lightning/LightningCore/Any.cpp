@@ -40,14 +40,14 @@ Any::Any(Type* type)
 
   // Allocate room to store this type (may store locally and not actually
   // allocate)
-  byte* destination = this->AllocateData(copyableSize);
+  ::byte* destination = this->AllocateData(copyableSize);
 
   // Store the type and default construct the data into us
   this->StoredType = type;
   type->GenericDefaultConstruct(destination);
 }
 
-Any::Any(const byte* data, Type* type)
+Any::Any(const ::byte* data, Type* type)
 {
   LightningErrorIfNotStarted(Any);
 
@@ -74,7 +74,7 @@ Any::Any(const byte* data, Type* type)
 
     // Allocate room to store this type (may store locally and not actually
     // allocate)
-    byte* destination = this->AllocateData(copyableSize);
+    ::byte* destination = this->AllocateData(copyableSize);
 
     // Store the type and copy construct the data into us
     this->StoredType = type;
@@ -96,7 +96,7 @@ Any::Any(const Any& other)
 
     // Allocate room to store this type (may store locally and not actually
     // allocate)
-    byte* destination = this->AllocateData(copyableSize);
+    ::byte* destination = this->AllocateData(copyableSize);
 
     // Copy the right hand data into our data
     this->StoredType->GenericCopyConstruct(destination, other.GetData());
@@ -117,7 +117,7 @@ Any::Any(const Handle& other)
   // Get the real type that this handle is referencing
   Type* type = other.GetBoundOrIndirectType();
   if (type != nullptr)
-    this->AssignFrom((const byte*)&other, type);
+    this->AssignFrom((const ::byte*)&other, type);
 }
 
 Any::Any(const Delegate& other)
@@ -129,7 +129,7 @@ Any::Any(const Delegate& other)
   if (other.BoundFunction != nullptr)
   {
     Type* type = other.BoundFunction->FunctionType;
-    this->AssignFrom((const byte*)&other, type);
+    this->AssignFrom((const ::byte*)&other, type);
   }
 }
 
@@ -139,27 +139,27 @@ Any::~Any()
   this->Clear();
 }
 
-byte* Any::AllocateData(size_t size)
+::byte* Any::AllocateData(size_t size)
 {
   // We assume that the size of the object will fit within our data section
-  byte* result = this->Data;
+  ::byte* result = this->Data;
 
   // If the type is bigger then we can store... (note than storing an 'any'
   // inside an 'any' will always hit this case!)
   if (size > sizeof(this->Data))
   {
     // Allocate memory to store the data
-    result = new byte[size];
+    result = new ::byte[size];
 
     // Store a pointer to our allocation inside the data field
-    *((byte**)this->Data) = result;
+    *((::byte**)this->Data) = result;
   }
 
   // Return data that will be large enough to store the object
   return result;
 }
 
-const byte* Any::GetData() const
+const ::byte* Any::GetData() const
 {
   if (this->StoredType == nullptr)
     return nullptr;
@@ -173,7 +173,7 @@ const byte* Any::GetData() const
   {
     // The size of the object was large, which meant we must be storing it by
     // pointer instead
-    return *((byte**)this->Data);
+    return *((::byte**)this->Data);
   }
 
   // Otherwise, it was small enough so we just stored it in our fixed data field
@@ -190,11 +190,11 @@ void Any::Clear()
     size_t copyableSize = this->StoredType->GetCopyableSize();
 
     // Memory that we need to free
-    byte* toBeDeleted = nullptr;
+    ::byte* toBeDeleted = nullptr;
 
     // Where we store the memory that needs to be destructed (via
     // GenericDestruct)
-    byte* data = this->Data;
+    ::byte* data = this->Data;
 
     // If the type is bigger then we can store... (note than storing an 'any'
     // inside an 'any' will always hit this case!)
@@ -202,7 +202,7 @@ void Any::Clear()
     {
       // The size of the object was large, which meant we must be storing it by
       // pointer instead
-      data = *((byte**)this->Data);
+      data = *((::byte**)this->Data);
 
       // Since we're clearing, we also want to free the data
       toBeDeleted = data;
@@ -244,7 +244,7 @@ Any& Any::operator=(const Any& other)
 
     // Allocate room to store this type (may store locally and not actually
     // allocate)
-    byte* destination = this->AllocateData(copyableSize);
+    ::byte* destination = this->AllocateData(copyableSize);
 
     // Copy the right hand data into our data
     this->StoredType->GenericCopyConstruct(destination, other.GetData());
@@ -322,10 +322,10 @@ Handle Any::ToHandle() const
   return Handle();
 }
 
-byte* Any::Dereference() const
+::byte* Any::Dereference() const
 {
   // If the value is a handle, then dereference it
-  const byte* data = this->GetData();
+  const ::byte* data = this->GetData();
   if (this->StoredType->IsHandle())
   {
     Handle& handle = *(Handle*)data;
@@ -333,10 +333,10 @@ byte* Any::Dereference() const
   }
 
   // Otherwise just return the data directly
-  return (byte*)data;
+  return (::byte*)data;
 }
 
-void Any::AssignFrom(const byte* data, Type* type)
+void Any::AssignFrom(const ::byte* data, Type* type)
 {
   ErrorIf(type == nullptr, "Cannot Assign the 'Any' to a null type, use Clear instead");
 
@@ -352,7 +352,7 @@ void Any::AssignFrom(const byte* data, Type* type)
 
   // Allocate room to store this type (may store locally and not actually
   // allocate)
-  byte* destination = this->AllocateData(copyableSize);
+  ::byte* destination = this->AllocateData(copyableSize);
 
   // Copy the right hand data into our data
   type->GenericCopyConstruct(destination, data);
@@ -376,19 +376,19 @@ void Any::DefaultConstruct(Type* type)
 
   // Allocate room to store this type (may store locally and not actually
   // allocate)
-  byte* destination = this->AllocateData(copyableSize);
+  ::byte* destination = this->AllocateData(copyableSize);
 
   // Default construct the value into our data
   // Typically makes handles null, delegates null, and value types cleared to 0
   this->StoredType->GenericDefaultConstruct(destination);
 }
 
-void Any::CopyStoredValueTo(byte* to) const
+void Any::CopyStoredValueTo(::byte* to) const
 {
   ErrorIf(this->StoredType == nullptr, "The any does not contain a type!");
 
   // Where we store the memory that needs to be copied from
-  const byte* data = this->GetData();
+  const ::byte* data = this->GetData();
 
   // Generically copy the stored value
   this->StoredType->GenericCopyConstruct(to, data);
@@ -424,7 +424,7 @@ bool Any::IsNotNull() const
 }
 
 template <>
-Any CopyToAnyOrActualType<Any>(byte* data, Type* dataType)
+Any CopyToAnyOrActualType<Any>(::byte* data, Type* dataType)
 {
   // If no data was provided, then default construct the type into the any
   if (data == nullptr)
@@ -435,7 +435,7 @@ Any CopyToAnyOrActualType<Any>(byte* data, Type* dataType)
 }
 
 template <>
-void CopyFromAnyOrActualType<Any>(const Any& any, byte* to)
+void CopyFromAnyOrActualType<Any>(const Any& any, ::byte* to)
 {
   // Generically copy the contained type to the destination
   any.CopyStoredValueTo(to);

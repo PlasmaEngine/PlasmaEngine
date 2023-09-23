@@ -118,16 +118,16 @@ public:
   // If the type does not support a null (such as value types) it will clear the
   // memory to plasmas This is mainly used for templating, and the concept of
   // 'default(T)'
-  virtual void GenericDefaultConstruct(byte* toConstruct) const = 0;
+  virtual void GenericDefaultConstruct(::byte* toConstruct) const = 0;
 
   // Copies a value at one place to another
   // If the given type is a reference / delegate type, a handle copy will be
   // performed All value types will be directly memory copied
-  virtual void GenericCopyConstruct(byte* to, const byte* from) const = 0;
+  virtual void GenericCopyConstruct(::byte* to, const ::byte* from) const = 0;
 
   // Performs a handle release in the case that the type is a reference /
   // delegate Otherwise in the case of value types, this does nothing
-  virtual void GenericDestruct(byte* value) const = 0;
+  virtual void GenericDestruct(::byte* value) const = 0;
 
   // Get the memory of the underlying object (only used for debugging)
   // For a reference/handle type, we will Dereference the handle (so this could
@@ -135,7 +135,7 @@ public:
   // in memory For delegate types, this will also directly return the memory For
   // the AnyType, this will recursively call GenericGetMemory on the value
   // stored inside the Any (if none, it will return itself)
-  virtual byte* GenericGetMemory(const byte* value) const;
+  virtual ::byte* GenericGetMemory(const ::byte* value) const;
 
   // Get the most derived type of whatever we're looking at
   // In all case that the values that the value is null of (whatever that means)
@@ -146,20 +146,20 @@ public:
   // AnyDelegateType) this will return the type of the function stored in the
   // delegate For the AnyType, this will recursively call GenericGetVirtualType
   // on the value stored within the Any (if none, it will return itself)
-  virtual Type* GenericGetVirtualType(const byte* value) const = 0;
+  virtual Type* GenericGetVirtualType(const ::byte* value) const = 0;
 
   // Same as the above, except we attempt to return the same type as ourselves
   // (except in the case of Any)
-  virtual Type* GenericGetSameVirtualTypeExceptAny(const byte* value) const;
+  virtual Type* GenericGetSameVirtualTypeExceptAny(const ::byte* value) const;
 
   // Hashes an object of this type
-  virtual Integer GenericHash(const byte* value) const = 0;
+  virtual Integer GenericHash(const ::byte* value) const = 0;
 
   // Converts the object or value into a human readable string
-  virtual String GenericToString(const byte* value) const = 0;
+  virtual String GenericToString(const ::byte* value) const = 0;
 
   // Tests equality of two objects of the exact same type
-  virtual Boolean GenericEquals(const byte* lhs, const byte* rhs) const = 0;
+  virtual Boolean GenericEquals(const ::byte* lhs, const ::byte* rhs) const = 0;
 
   // Check if a given type is ref struct (indirection)
   static bool IsIndirectionType(Type* type);
@@ -300,15 +300,15 @@ public:
   GuidType Hash() const override;
   String ToString() const override;
   String GetShortLowerCamelCaseName() const override;
-  void GenericDefaultConstruct(byte* toConstruct) const override;
-  void GenericCopyConstruct(byte* to, const byte* from) const override;
-  void GenericDestruct(byte* value) const override;
-  int GenericHash(const byte* value) const override;
-  String GenericToString(const byte* value) const override;
-  bool GenericEquals(const byte* lhs, const byte* rhs) const override;
-  byte* GenericGetMemory(const byte* value) const override;
-  Type* GenericGetVirtualType(const byte* value) const override;
-  Type* GenericGetSameVirtualTypeExceptAny(const byte* value) const override;
+  void GenericDefaultConstruct(::byte* toConstruct) const override;
+  void GenericCopyConstruct(::byte* to, const ::byte* from) const override;
+  void GenericDestruct(::byte* value) const override;
+  int GenericHash(const ::byte* value) const override;
+  String GenericToString(const ::byte* value) const override;
+  bool GenericEquals(const ::byte* lhs, const ::byte* rhs) const override;
+  ::byte* GenericGetMemory(const ::byte* value) const override;
+  Type* GenericGetVirtualType(const ::byte* value) const override;
+  Type* GenericGetSameVirtualTypeExceptAny(const ::byte* value) const override;
 
   // Composition interface
   Composition* GetBaseComposition() override;
@@ -335,14 +335,14 @@ public:
   GuidType Hash() const override;
   String ToString() const override;
   String GetShortLowerCamelCaseName() const override;
-  void GenericDefaultConstruct(byte* toConstruct) const override;
-  void GenericCopyConstruct(byte* to, const byte* from) const override;
-  void GenericDestruct(byte* value) const override;
-  int GenericHash(const byte* value) const override;
-  String GenericToString(const byte* value) const override;
-  bool GenericEquals(const byte* lhs, const byte* rhs) const override;
-  byte* GenericGetMemory(const byte* value) const override;
-  Type* GenericGetVirtualType(const byte* value) const override;
+  void GenericDefaultConstruct(::byte* toConstruct) const override;
+  void GenericCopyConstruct(::byte* to, const ::byte* from) const override;
+  void GenericDestruct(::byte* value) const override;
+  int GenericHash(const ::byte* value) const override;
+  String GenericToString(const ::byte* value) const override;
+  bool GenericEquals(const ::byte* lhs, const ::byte* rhs) const override;
+  ::byte* GenericGetMemory(const ::byte* value) const override;
+  Type* GenericGetVirtualType(const ::byte* value) const override;
 };
 
 // A special constant that means we haven't yet figured out the size of an
@@ -350,14 +350,14 @@ public:
 static const size_t UndeterminedSize = (size_t)-1;
 
 // A function used for converting a value or object to a string
-typedef String (*ToStringFn)(const BoundType* type, const byte* data);
+typedef String (*ToStringFn)(const BoundType* type, const ::byte* data);
 
 // Retrieves the event handler for an object (or null if this object cannot
 // send/receive events)
-typedef EventHandler* (*GetEventHandlerFn)(const BoundType* type, const byte* data);
+typedef EventHandler* (*GetEventHandlerFn)(const BoundType* type, const ::byte* data);
 
 // Get the virtual type of a direct object pointer
-typedef BoundType* (*BindingVirtualTypeFn)(const byte* memory);
+typedef BoundType* (*BindingVirtualTypeFn)(const ::byte* memory);
 
 namespace SpecialType
 {
@@ -538,14 +538,14 @@ public:
   bool IsCopyComplex() const override;
   size_t GetCopyableSize() const override;
   size_t GetAllocatedSize() const override;
-  void GenericDefaultConstruct(byte* toConstruct) const override;
-  void GenericCopyConstruct(byte* to, const byte* from) const override;
-  void GenericDestruct(byte* value) const override;
-  int GenericHash(const byte* value) const override;
-  String GenericToString(const byte* value) const override;
-  bool GenericEquals(const byte* lhs, const byte* rhs) const override;
-  byte* GenericGetMemory(const byte* value) const override;
-  Type* GenericGetVirtualType(const byte* value) const override;
+  void GenericDefaultConstruct(::byte* toConstruct) const override;
+  void GenericCopyConstruct(::byte* to, const ::byte* from) const override;
+  void GenericDestruct(::byte* value) const override;
+  int GenericHash(const ::byte* value) const override;
+  String GenericToString(const ::byte* value) const override;
+  bool GenericEquals(const ::byte* lhs, const ::byte* rhs) const override;
+  ::byte* GenericGetMemory(const ::byte* value) const override;
+  Type* GenericGetVirtualType(const ::byte* value) const override;
   GuidType Hash() const override;
   String ToString() const override;
   String GetShortLowerCamelCaseName() const override;
@@ -617,7 +617,7 @@ public:
   FunctionMultiMap& GetFunctionMap(bool isStatic);
 
   // Get an event handler from an instance of the object
-  EventHandler* GetEventHandler(const byte* data);
+  EventHandler* GetEventHandler(const ::byte* data);
 
   // Check if this type or any base type is a native type
   bool IsTypeOrBaseNative();
@@ -631,7 +631,7 @@ public:
 
   // By default, when our object is converted into
   // a string it simply prints out the type name
-  static String DefaultTypeToString(const BoundType* type, const byte* data);
+  static String DefaultTypeToString(const BoundType* type, const ::byte* data);
 
   // Creates an allocated instance of the current type and returns
   // Note that for value types, this will return a ref (indirection type)
@@ -901,13 +901,13 @@ public:
   GuidType Hash() const override;
   String ToString() const override;
   String GetShortLowerCamelCaseName() const override;
-  void GenericDefaultConstruct(byte* toConstruct) const override;
-  void GenericCopyConstruct(byte* to, const byte* from) const override;
-  void GenericDestruct(byte* value) const override;
-  int GenericHash(const byte* value) const override;
-  String GenericToString(const byte* value) const override;
-  bool GenericEquals(const byte* lhs, const byte* rhs) const override;
-  Type* GenericGetVirtualType(const byte* value) const override;
+  void GenericDefaultConstruct(::byte* toConstruct) const override;
+  void GenericCopyConstruct(::byte* to, const ::byte* from) const override;
+  void GenericDestruct(::byte* value) const override;
+  int GenericHash(const ::byte* value) const override;
+  String GenericToString(const ::byte* value) const override;
+  bool GenericEquals(const ::byte* lhs, const ::byte* rhs) const override;
+  Type* GenericGetVirtualType(const ::byte* value) const override;
 
   // Builds the just the parameter part of the string (used in overload
   // resolving)
@@ -954,7 +954,7 @@ public:
 // Helper template to set the ToStringFunction on BoundType.
 // Assumes a global ToString function exists for the given template type.
 template <typename T>
-String BoundTypeToGlobalToString(const BoundType* type, const byte* data)
+String BoundTypeToGlobalToString(const BoundType* type, const ::byte* data)
 {
   T& value = *(T*)data;
   return ToString(value);

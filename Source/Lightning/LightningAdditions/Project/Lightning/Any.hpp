@@ -11,7 +11,7 @@ namespace Lightning
   {
     // Remove the reference qualifier if it has one
     typedef typename Plasma::Decay<T>::Type TNonReference;
-    static byte InvalidBuffer[sizeof(TNonReference)] = { 0 };
+    static ::byte InvalidBuffer[sizeof(TNonReference)] = { 0 };
     
     // Clear out the buffer every time we request it
     memset(InvalidBuffer, 0, sizeof(InvalidBuffer));
@@ -47,7 +47,7 @@ namespace Lightning
       size_t copyableSize = type->GetCopyableSize();
 
       // Allocate room to store this type (may store locally and not actually allocate)
-      byte* destination = this->AllocateData(copyableSize);
+      ::byte* destination = this->AllocateData(copyableSize);
 
       // Store the type and copy construct the data into us
       this->StoredType = type;
@@ -93,7 +93,7 @@ namespace Lightning
         return GetInvalid<T>();
       }
 
-      byte* data = (byte*)this->GetData();
+      ::byte* data = (::byte*)this->GetData();
 
       // If the type is a reference type... (this is always a handle)
       if (toType->CopyMode == TypeCopyMode::ReferenceType)
@@ -124,7 +124,7 @@ namespace Lightning
     Any(const Delegate& other);
 
     // Constructor that initializes to the given data and type (the data is copied in using GenericCopyConstruct)
-    Any(const byte* data, Type* type);
+    Any(const ::byte* data, Type* type);
 
     // Construct a default instance of a particular type (equivalent of default(T))
     explicit Any(Type* type);
@@ -160,21 +160,21 @@ namespace Lightning
 
     // If the type stored internally is a Handle then this will invoke Dereference on the handle
     // Otherwise this will return the same value as GetData
-    byte* Dereference() const;
+    ::byte* Dereference() const;
 
     // Destruct any data stored by the any
     // This also clears the entire any out to zero
     void Clear();
 
     // Allocates data if the size goes past the sizeof(this->Data), or returns a pointer to this->Data
-    byte* AllocateData(size_t size);
+    ::byte* AllocateData(size_t size);
 
     // Get the raw type data that we point at (may be our internal Data, or may be allocated)
-    const byte* GetData() const;
+    const ::byte* GetData() const;
 
     // Much like the copy constructor or assignment of an any, except it avoids
     // creating an extra 'any' in cases where we just have the memory and the type
-    void AssignFrom(const byte* data, Type* type);
+    void AssignFrom(const ::byte* data, Type* type);
 
     // Replaces our stored definition with a default constructed version of the given type (equivalent of default(T))
     // Typically makes handles null, delegates null, and value types cleared to 0
@@ -183,7 +183,7 @@ namespace Lightning
     // Generically copies the value of this any to another location
     // This will NOT copy the 'Any' but rather the stored type
     // Make sure the size and type of destination matches!
-    void CopyStoredValueTo(byte* to) const;
+    void CopyStoredValueTo(::byte* to) const;
 
     // Checks if the any is currently holding a value
     // Note that the value MAY be null, which is still technically a value stored within the any
@@ -195,7 +195,7 @@ namespace Lightning
     // We want to store the largest type (the delegate, handle, etc)
     // The delegate stores the handle, so we know delegate is the biggest
     // If the size of the type is bigger then can fit here, then we allocate a pointer instead
-    byte Data[sizeof(Delegate)];
+    ::byte Data[sizeof(Delegate)];
 
     // The type that we're storing inside the data
     Type* StoredType;
@@ -208,13 +208,13 @@ namespace Lightning
   // If the data is not given, this will default construct the type
   // This is specialized by the Any type to return an Any that encapsulates the value
   template <typename T>
-  T CopyToAnyOrActualType(byte* data, Type* dataType)
+  T CopyToAnyOrActualType(::byte* data, Type* dataType)
   {
     // If no data was provided, then return the default value for T
     if (data == nullptr)
     {
       // Not all primitive constructors zero out the memory, so do that first
-      byte memory[sizeof(T)] = {0};
+      ::byte memory[sizeof(T)] = {0};
       new (memory) T();
       return *(T*)memory;
     }
@@ -225,12 +225,12 @@ namespace Lightning
 
   // Specialization for the Any type, which will copy the value into an Any
   template <>
-  PlasmaShared Any CopyToAnyOrActualType<Any>(byte* data, Type* dataType);
+  PlasmaShared Any CopyToAnyOrActualType<Any>(::byte* data, Type* dataType);
 
   // Given a type we know natively, just directly copy it to a location
   // This is specialized by the Any type to only copy its inner value
   template <typename T>
-  PlasmaSharedTemplate void CopyFromAnyOrActualType(const T& value, byte* to)
+  PlasmaSharedTemplate void CopyFromAnyOrActualType(const T& value, ::byte* to)
   {
     // Just directly construct the value
     new (to) T(value);
@@ -238,7 +238,7 @@ namespace Lightning
 
   // Specialization for the Any type, which will copy the value out of an Any
   template <>
-  PlasmaShared void CopyFromAnyOrActualType<Any>(const Any& any, byte* to);
+  PlasmaShared void CopyFromAnyOrActualType<Any>(const Any& any, ::byte* to);
 }
 
 #endif

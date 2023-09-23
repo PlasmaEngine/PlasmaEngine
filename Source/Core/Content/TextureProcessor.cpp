@@ -52,7 +52,7 @@ void TextureProcessor::CreateTexture(aiTexture* texture, uint textureIndex, Stri
   // The member pcData holds the entire file data in memory, where mWidth is the
   // full length in bytes of pcData.
   String filePath = FilePath::CombineWithExtension(mOutputPath, filename, BuildString(".", extension));
-  WriteToFile(filePath.c_str(), (byte*)texture->pcData, texture->mWidth);
+  WriteToFile(filePath.c_str(), (::byte*)texture->pcData, texture->mWidth);
 }
 
 } // namespace Plasma

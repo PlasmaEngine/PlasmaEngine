@@ -698,12 +698,12 @@ void AudioMixer::DispatchMicrophoneInput()
       PreviousInputSamples.Erase(PreviousInputSamples.SubRange(0, totalPacketSamples));
 
       // Encode the packet
-      Plasma::Array<byte> dataArray;
+      Plasma::Array<::byte> dataArray;
       Encoder.EncodePacket(monoSamples.Data(), AudioFileEncoder::cPacketFrames, dataArray);
 
       // Send the event with the encoded data
       AudioByteDataEvent event;
-      event.AudioData = LightningAllocate(ArrayClass<byte>);
+      event.AudioData = LightningAllocate(ArrayClass<::byte>);
       event.AudioData->NativeArray = dataArray;
       PL::gSound->DispatchEvent(Events::MicrophoneCompressedByteData, &event);
     }

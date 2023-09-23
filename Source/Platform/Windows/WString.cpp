@@ -15,7 +15,7 @@ WString::WString(const wchar_t* str) : mSize(0)
   mSize = wcslen(str) + 1;
   wchar_t* wstr = (wchar_t*)plAllocate(mSize * sizeof(wchar_t));
   wcscpy(wstr, str);
-  mData.SetData((byte*)wstr, mSize * sizeof(wchar_t), true);
+  mData.SetData((::byte*)wstr, mSize * sizeof(wchar_t), true);
 }
 
 WString::WString(const wchar_t* str, size_t lengthInWChars) :
@@ -32,7 +32,7 @@ WString::WString(const wchar_t* str, size_t lengthInWChars) :
   wchar_t* wstr = (wchar_t*)plAllocate(mSize * sizeof(wchar_t));
   memcpy(wstr, str, lengthInWChars * sizeof(wchar_t));
   wstr[lengthInWChars] = 0;
-  mData.SetData((byte*)wstr, mSize * sizeof(wchar_t), true);
+  mData.SetData((::byte*)wstr, mSize * sizeof(wchar_t), true);
 }
 
 WString::WString(StringParam str) : mSize(0)
@@ -47,7 +47,7 @@ WString::WString(StringParam str) : mSize(0)
   // using the acquired information needed allocate a destination buffer and
   // covert the utf8 encoded character string to a wide string
   MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, wstr, mSize);
-  mData.SetData((byte*)wstr, mSize * sizeof(wchar_t), true);
+  mData.SetData((::byte*)wstr, mSize * sizeof(wchar_t), true);
 }
 
 WString::WString(const WString& rhs)
@@ -94,7 +94,7 @@ size_t WString::SizeInBytes() const
   return mSize * sizeof(wchar_t);
 }
 
-byte* WString::Data()
+::byte* WString::Data()
 {
   return mData.GetBegin();
 }
@@ -112,7 +112,7 @@ void WString::InternalDeepCopy(const WString& rhs)
 
   Status status;
   size_t sizeInBytes = rhs.SizeInBytes();
-  byte* data = (byte*)plAllocate(sizeInBytes);
+  ::byte* data = (::byte*)plAllocate(sizeInBytes);
   rhs.mData.Read(status, data, sizeInBytes);
 
   mData.SetData(data, sizeInBytes, true);

@@ -6,15 +6,15 @@ namespace Plasma
 {
 
 void ResizeImage(TextureFormat::Enum format,
-                 const byte* srcImage,
+                 const ::byte* srcImage,
                  uint srcWidth,
                  uint srcHeight,
-                 byte* dstImage,
+                 ::byte* dstImage,
                  uint dstWidth,
                  uint dstHeight);
 
-void ToNvttSurface(nvtt::Surface& surface, uint width, uint height, TextureFormat::Enum format, const byte* image);
-void FromNvttSurface(const nvtt::Surface& surface, uint& width, uint& height, TextureFormat::Enum format, byte*& image);
+void ToNvttSurface(nvtt::Surface& surface, uint width, uint height, TextureFormat::Enum format, const ::byte* image);
+void FromNvttSurface(const nvtt::Surface& surface, uint& width, uint& height, TextureFormat::Enum format, ::byte*& image);
 
 class TextureImporter
 {
@@ -29,7 +29,7 @@ public:
   void WriteTextureFile(Status& status);
 
   // Internal
-  void AddImageData(byte* imageData, uint width, uint height);
+  void AddImageData(::byte* imageData, uint width, uint height);
 
   String mInputFile;
   String mOutputFile;
@@ -40,10 +40,10 @@ public:
 
   TextureFormat::Enum mLoadFormat;
   Array<MipHeader> mMipHeaders;
-  Array<byte*> mImageData;
+  Array<::byte*> mImageData;
 
   Array<MipHeader> mBackupMipHeaders;
-  Array<byte*> mBackupImageData;
+  Array<::byte*> mBackupImageData;
 
   bool mMetaChanged;
 };

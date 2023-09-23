@@ -71,7 +71,7 @@ SerializerClass::Enum TextSaver::GetClass()
   return SerializerClass::TextSaver;
 }
 
-void TextSaver::ExtractInto(byte* data, uint size)
+void TextSaver::ExtractInto(::byte* data, uint size)
 {
   mStream.ExtractInto(data, size);
 }
@@ -484,7 +484,7 @@ bool WriteArrayText(StringBuilder& os, type* data, uint numberOfElements)
 }
 
 bool TextSaver::ArrayField(
-    cstr typeName, cstr fieldName, byte* data, ArrayType arrayType, uint numberOfElements, uint sizeOftype)
+    cstr typeName, cstr fieldName, ::byte* data, ArrayType arrayType, uint numberOfElements, uint sizeOftype)
 {
   bool result = true;
 

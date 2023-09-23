@@ -457,7 +457,7 @@ public:
     // Convert the list index to the enum index value
     uint enumIndex = mEnumIndexes[selectedIndex];
 
-    Any newValue((byte*)&enumIndex, mProperty->PropertyType);
+    Any newValue((::byte*)&enumIndex, mProperty->PropertyType);
     CommitValue(newValue);
     if (mProperty->HasAttribute(PropertyAttributes::cInvalidatesObject))
       mGrid->Invalidate();
