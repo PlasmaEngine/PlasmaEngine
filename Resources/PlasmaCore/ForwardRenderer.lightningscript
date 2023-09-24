@@ -42,7 +42,9 @@ class ForwardRenderer : LightningComponent
   [Group("Tonemapping")]
   [Property] var WhitePoint : Real = 6;
   
-    [Group("Transparancy")]
+  [Group("Transparancy")]
+  [Property] var RenderOIT : Boolean = false;
+  [Group("Transparancy")]
   // [100-300] Decrease if high opacity surface seem too transparent.
   [Property][Slider(100,300,1)] var DepthRangeOIT : Real = 200.0;
 
@@ -200,9 +202,9 @@ class ForwardRenderer : LightningComponent
     AlphaRenderPass.OnAlphaNoPostFX(event, this.Skybox, alphaForwardSettigns, alphaSettings, this.DirectionalLight.Cog);
     
     // Order Independent Transparancy
-    AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, depthTarget, colorTarget, this.Skybox, alphaForwardSettigns, this.DirectionalLight.Cog);
-    
-    
+    if(this.RenderOIT)
+      AlphaRenderPass.OnOIT(event, this.DepthRangeOIT, depthTarget, colorTarget, this.Skybox, alphaForwardSettigns, this.DirectionalLight.Cog);
+      
     var spriteSettings = RenderSettings();
     spriteSettings.ColorTarget = colorTarget;
     spriteSettings.DepthTarget = depthTarget;

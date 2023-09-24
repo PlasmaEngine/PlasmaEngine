@@ -45,6 +45,8 @@ class DeferredRenderer : LightningComponent
   [Property] var WhitePoint : Real = 6;
   
   [Group("Transparancy")]
+  [Property] var RenderOIT : Boolean = false;
+  [Group("Transparancy")]
   // [100-300] Decrease if high opacity surface seem too transparent.
   [Property][Slider(100,300,1)] var DepthRangeOIT : Real = 200.0;
   
