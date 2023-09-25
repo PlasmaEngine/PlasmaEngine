@@ -74,6 +74,7 @@ public:
   bool mImportAnimations;
   bool mCreateArchetype;
   bool mImportTextures;
+  bool mImportMaterials;
 
   Vec3 mOriginOffset;
   ScaleConversion::Enum mScaleConversion;

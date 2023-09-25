@@ -49,6 +49,8 @@ target_sources(Content
     ${CMAKE_CURRENT_LIST_DIR}/ImageContent.hpp
     ${CMAKE_CURRENT_LIST_DIR}/ImportOptions.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ImportOptions.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/MaterialProcessor.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/MaterialProcessor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MeshBuilder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MeshBuilder.hpp
     ${CMAKE_CURRENT_LIST_DIR}/MeshProcessor.cpp
@@ -92,6 +94,7 @@ plasma_target_includes(Content
   PUBLIC
     Common
     LightningCore
+    GraphicsRuntime
     assimp
     ZLib
     Opus

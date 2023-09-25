@@ -165,6 +165,13 @@ GeometryProcessorCodes::Enum GeometryImporter::ProcessModelFiles()
     textureProcessor.ExtractAndImportTextures(mScene);
   }
 
+  MaterialContent* materialContent = mGeometryContent->has(MaterialContent);
+  if (mScene->HasMaterials() && materialContent)
+  {
+      MaterialProcessor materialProcessor(materialContent, mOutputPath, mInputFile);
+      materialProcessor.ExtractAndImportMaterials(mScene);
+  }
+
   AnimationBuilder* animationBuilder = mGeometryContent->has(AnimationBuilder);
   if (animationBuilder && mScene->HasAnimations())
   {
@@ -564,6 +571,39 @@ bool GeometryImporter::UpdateBuilderMetaData()
       textureContent->mTextures = textureEntries;
       metaChanges = true;
     }
+  }
+
+  MaterialContent* materialContent = mGeometryContent->has(MaterialContent);
+  if (mScene->HasMaterials() && materialContent != nullptr)
+  {
+      aiMaterial** materials = mScene->mMaterials;
+      uint materialCount = mScene->mNumMaterials;
+
+      Array<GeometryResourceEntry> materialEntries;
+
+      for (uint i = 0; i < materialCount; ++i)
+      {
+          aiMaterial* material = materials[i];
+          String name = String(material->GetName().C_Str());
+
+          GeometryResourceEntry entry;
+          entry.mName = BuildString(FilePath::GetFileNameWithoutExtension(mInputFile), "_", CleanAssetName(name));
+
+          // Get resource id if this name already had one, otherwise make a new
+          // one.
+          if (GeometryResourceEntry* previousEntry = materialContent->mMaterials.FindPointer(entry))
+              entry.mResourceId = previousEntry->mResourceId;
+          else
+              entry.mResourceId = GenerateUniqueId64();
+
+          materialEntries.PushBack(entry);
+      }
+
+      if (materialContent->mMaterials != materialEntries)
+      {
+          materialContent->mMaterials = materialEntries;
+          metaChanges = true;
+      }
   }
 
   if (metaChanges)
