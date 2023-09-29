@@ -395,7 +395,7 @@ void LightningDocumentResource::GetAutoCompleteInfo(ICodeEditor* editor, AutoCom
   for (uint i = info.CompletionEntries.Size() - 1; i < info.CompletionEntries.Size(); --i)
   {
     BoundType* type = MetaDatabase::FindType(info.CompletionEntries[i].Type);
-    if (type->HasAttributeInherited(ObjectAttributes::cHidden))
+    if (type && type->HasAttributeInherited(ObjectAttributes::cHidden))
       info.CompletionEntries.EraseAt(i);
   }
 }
