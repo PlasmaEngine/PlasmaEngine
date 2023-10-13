@@ -152,6 +152,7 @@ public:
 #include "WatchView.hpp"
 #include "Scratchboard.hpp"
 #include "SelectionHistory.hpp"
+#include "ProjectUi.hpp"
 #include "ObjectView.hpp"
 #include "HotKeyEditor.hpp"
 #include "EditorHotspots.hpp"

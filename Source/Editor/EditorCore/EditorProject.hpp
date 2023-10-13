@@ -21,6 +21,8 @@ void BindProjectCommands(Cog* config, CommandManager* commands);
 /// Returns false when the project file couldn't be opened.
 bool OpenProjectFile(StringParam filename);
 
+Cog* CreateProject(Editor* editor, StringParam name, StringParam path, EditorMode::Enum editorMode);
+
 void NewProject();
 void OpenProject();
 
@@ -42,6 +44,7 @@ public:
   /// Sends the given event name to the launcher
   void SendEvent(StringParam eventType);
 
+  void RunOldDialog();
   void FailedToOpenLauncher();
   bool RunLauncherExe(StringParam exePath);
   bool RunFromInstalledPath();

@@ -182,8 +182,8 @@ target_sources(EditorCore
     ${CMAKE_CURRENT_LIST_DIR}/OrientationGizmoViewport.hpp
     ${CMAKE_CURRENT_LIST_DIR}/Precompiled.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Precompiled.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/Precompiled.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/Precompiled.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/ProjectUi.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ProjectUi.hpp
     ${CMAKE_CURRENT_LIST_DIR}/PreviewWidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/PreviewWidget.hpp
     ${CMAKE_CURRENT_LIST_DIR}/PreviewWidgets.cpp

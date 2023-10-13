@@ -1,0 +1,15 @@
+Cog = 
+{
+	Project = 
+	{
+		string ProjectName = "Template",
+		string ProjectOwner = "",
+		string DefaultLevel = "Level",
+		string ProjectSpace = "Space"
+	},
+	
+	EditorSettings = 
+	{
+		string EditMode = "Mode3D",
+	},
+}
