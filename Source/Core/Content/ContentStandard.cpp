@@ -111,7 +111,6 @@ LightningDefineStaticLibrary(ContentMetaLibrary)
   LightningInitializeType(AnimationClip);
   LightningInitializeType(AnimationBuilder);
   LightningInitializeType(TextureContent);
-  LightningInitializeType(MaterialContent);
   LightningInitializeType(GeometryContent);
   LightningInitializeType(AudioContent);
   LightningInitializeType(TextureInfo);

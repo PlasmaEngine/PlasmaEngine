@@ -129,19 +129,6 @@ public:
   Array<GeometryResourceEntry> mTextures;
 };
 
-// Material Content
-// Materials imported from each mesh file
-class MaterialContent : public ContentComponent
-{
-public:
-    LightningDeclareType(MaterialContent, TypeCopyMode::ReferenceType);
-
-    void Serialize(Serializer& stream) override;
-    void Generate(ContentInitializer& initializer) override;
-
-    Array<GeometryResourceEntry> mMaterials;
-};
-
 // Geometry Content
 class GeometryContent : public ContentComposition
 {

@@ -52,7 +52,6 @@ LightningDefineType(GeometryOptions, builder, type)
   LightningBindFieldProperty(mImportAnimations);
   LightningBindFieldProperty(mCreateArchetype);
   LightningBindFieldProperty(mImportTextures);
-  LightningBindFieldProperty(mImportMaterials);
 
   LightningBindFieldProperty(mOriginOffset);
   LightningBindFieldProperty(mScaleConversion)->AddAttribute(PropertyAttributes::cInvalidatesObject);
@@ -85,8 +84,7 @@ GeometryOptions::GeometryOptions(ImportOptions* owner) :
     mCollapsePivots(false),
     mImportAnimations(false),
     mCreateArchetype(true),
-    mImportTextures(false),
-    mImportMaterials(false)
+    mImportTextures(false)
 {
 }
 

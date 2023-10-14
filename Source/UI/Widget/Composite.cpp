@@ -254,7 +254,7 @@ void Composite::UpdateChildTransforms()
 {
   ZoneScoped;
   DebugValidate();
-  static const size_t MaxIterations = 1000;
+  static const size_t MaxIterations = 2000;
   size_t counter = 0;
   forRange (auto& child, GetChildren())
   {

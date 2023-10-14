@@ -73,6 +73,15 @@ public:
 
 typedef HashMap<uint, MeshData> MeshDataMap;
 
+class MaterialData
+{
+public:
+    String mMaterialName;
+    HashMap<String, Variant> mMaterialProperties;
+};
+
+typedef HashMap<uint, MaterialData> MaterialDataMap;
+
 // for archetypes
 class HierarchyData
 {
@@ -85,7 +94,8 @@ public:
       mIsAnimatedPivot(false),
       mPreAnimationCorrection(Mat4::cIdentity),
       mPostAnimationCorrection(Mat4::cIdentity),
-      mAnimationNode(nullptr){};
+      mAnimationNode(nullptr),
+      mMaterialIndex(-1) {};
 
   String mParentNodeName;
   // The node name is needed for data processing despite it also being the key
@@ -116,6 +126,8 @@ public:
   Mat4 mPostAnimationCorrection;
   // This nodes animation node data, only used when collapsing pivots
   aiNodeAnim* mAnimationNode;
+
+  int mMaterialIndex;
 };
 
 // animation data is keyed by node name

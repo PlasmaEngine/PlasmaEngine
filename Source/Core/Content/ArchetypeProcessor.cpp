@@ -4,70 +4,86 @@
 namespace Plasma
 {
 
-ArchetypeProcessor::ArchetypeProcessor(GeneratedArchetype* generatedArchetype, HierarchyDataMap& hierarchyData) :
-    mGeneratedArchetype(generatedArchetype),
-    mHierarchyDataMap(hierarchyData)
-{
-}
+    ArchetypeProcessor::ArchetypeProcessor(GeneratedArchetype* generatedArchetype,
+        HierarchyDataMap& hierarchyData,
+        MaterialDataMap& materialDataMap) :
+        mGeneratedArchetype(generatedArchetype),
+        mHierarchyDataMap(hierarchyData),
+        mMaterialDataMap(materialDataMap)
+    {
+    }
 
-void ArchetypeProcessor::BuildSceneGraph(String rootNode)
-{
-  // We will go through the hierarchy building our scene graph starting with the
-  // root All assimp scenes have their root named RootNode
-  HierarchyData nodeData = mHierarchyDataMap[rootNode];
+    void ArchetypeProcessor::BuildSceneGraph(String rootNode)
+    {
+        // We will go through the hierarchy building our scene graph starting with the
+        // root All assimp scenes have their root named RootNode
+        HierarchyData nodeData = mHierarchyDataMap[rootNode];
 
-  // these nodes represent the hierarchy of the cogs that will construct an
-  // archetype on import
-  mSceneSource.Name = rootNode;
-  mSceneSource.Root = BuildSceneNodes(nodeData);
-}
+        // these nodes represent the hierarchy of the cogs that will construct an
+        // archetype on import
+        mSceneSource.Name = rootNode;
+        mSceneSource.Root = BuildSceneNodes(nodeData);
+    }
 
-SceneGraphNode* ArchetypeProcessor::BuildSceneNodes(HierarchyData nodeData)
-{
-  GeometryImport* geoImport = mGeneratedArchetype->mOwner->has(GeometryImport);
-  Mat4 transform = geoImport->mTransform;
-  Quat changeOfBasis = Math::ToQuaternion(geoImport->mChangeOfBasis);
+    SceneGraphNode* ArchetypeProcessor::BuildSceneNodes(HierarchyData nodeData)
+    {
+        GeometryImport* geoImport = mGeneratedArchetype->mOwner->has(GeometryImport);
+        Mat4 transform = geoImport->mTransform;
+        Quat changeOfBasis = Math::ToQuaternion(geoImport->mChangeOfBasis);
 
-  size_t numChildren = nodeData.mChildren.Size();
+        size_t numChildren = nodeData.mChildren.Size();
 
-  SceneGraphNode* graphNode = new SceneGraphNode();
-  graphNode->NodeName = nodeData.mNodeName;
+        SceneGraphNode* graphNode = new SceneGraphNode();
+        graphNode->NodeName = nodeData.mNodeName;
 
-  Mat3 rotation;
-  nodeData.mLocalTransform.Decompose(&(graphNode->Scale), &rotation, &(graphNode->Translation));
-  graphNode->Rotation = Math::ToQuaternion(rotation);
+        Mat3 rotation;
+        nodeData.mLocalTransform.Decompose(&(graphNode->Scale), &rotation, &(graphNode->Translation));
+        graphNode->Rotation = Math::ToQuaternion(rotation);
 
-  graphNode->Translation = Math::TransformPoint(transform, graphNode->Translation);
-  graphNode->Rotation = changeOfBasis * graphNode->Rotation * changeOfBasis.Inverted();
+        graphNode->Translation = Math::TransformPoint(transform, graphNode->Translation);
+        graphNode->Rotation = changeOfBasis * graphNode->Rotation * changeOfBasis.Inverted();
 
-  graphNode->IsSkeletonRoot = nodeData.mIsSkeletonRoot;
+        graphNode->IsSkeletonRoot = nodeData.mIsSkeletonRoot;
 
-  if (nodeData.mHasMesh)
-  {
-    if(!nodeData.mMeshName.Contains("_phys"))
-        graphNode->MeshName = nodeData.mMeshName;
-    graphNode->PhysicsMeshName = nodeData.mPhysicsMeshName;
-    graphNode->SkeletonRootNodePath = nodeData.mSkeletonRootNodePath;
-  }
+        if (nodeData.mHasMesh)
+        {
+            graphNode->MeshName = nodeData.mMeshName;
+            graphNode->PhysicsMeshName = nodeData.mPhysicsMeshName;
+            graphNode->SkeletonRootNodePath = nodeData.mSkeletonRootNodePath;
+            MaterialData materialData;
+            if (nodeData.mMaterialIndex >= 0 && mMaterialDataMap.TryGetValue((uint)nodeData.mMaterialIndex, materialData))
+            {
+                graphNode->Materials.Append(materialData.mMaterialName);
 
-  for (size_t i = 0; i < numChildren; ++i)
-  {
-    String childNodeName = nodeData.mChildren[i];
-    HierarchyData childNode = mHierarchyDataMap[childNodeName];
+                SceneGraphMaterial* sgMaterial = new SceneGraphMaterial();
+                sgMaterial->Name = materialData.mMaterialName;
+                sgMaterial->Attributes = materialData.mMaterialProperties;
 
-    SceneGraphNode* childGraphNode = BuildSceneNodes(childNode);
-    childGraphNode->NodeName = childNodeName;
+                mSceneSource.Materials.Append(sgMaterial);
+                // todo:
+                // graphNode->Materials = ...;
+                // graphNode->Attributes = ...;
+            }
+        }
 
-    graphNode->Children.PushBack(childGraphNode);
-  }
+        for (size_t i = 0; i < numChildren; ++i)
+        {
+            String childNodeName = nodeData.mChildren[i];
+            HierarchyData childNode = mHierarchyDataMap[childNodeName];
 
-  return graphNode;
-}
+            SceneGraphNode* childGraphNode = BuildSceneNodes(childNode);
+            childGraphNode->NodeName = childNodeName;
 
-void ArchetypeProcessor::ExportSceneGraph(String filename, String outputPath)
-{
-  String graphFile = FilePath::CombineWithExtension(outputPath, filename, ".graph.data");
-  SaveToDataFile(mSceneSource, graphFile);
-}
+            graphNode->Children.PushBack(childGraphNode);
+        }
+
+        return graphNode;
+    }
+
+    void ArchetypeProcessor::ExportSceneGraph(String filename, String outputPath)
+    {
+        String graphFile = FilePath::CombineWithExtension(outputPath, filename, ".graph.data");
+        SaveToDataFile(mSceneSource, graphFile);
+    }
 
 } // namespace Plasma
