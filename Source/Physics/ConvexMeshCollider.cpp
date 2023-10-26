@@ -75,19 +75,28 @@ void ConvexMeshCollider::ComputeWorldAabbInternal()
 real ConvexMeshCollider::ComputeWorldVolumeInternal()
 {
   Vec3 worldScale = GetWorldScale();
-  return mConvexMesh->ComputeScaledVolume(worldScale);
+  if(mConvexMesh)
+      return mConvexMesh->ComputeScaledVolume(worldScale);
+
+  return 1.0f;
 }
 
 void ConvexMeshCollider::ComputeLocalInverseInertiaTensor(real mass, Mat3Ref localInvInertia)
 {
-  Vec3 worldScale = GetWorldScale();
-  localInvInertia = mConvexMesh->ComputeScaledInvInertiaTensor(worldScale, mass);
+    if (mConvexMesh)
+    {
+        Vec3 worldScale = GetWorldScale();
+        localInvInertia = mConvexMesh->ComputeScaledInvInertiaTensor(worldScale, mass);
+    }
 }
 
 void ConvexMeshCollider::RebuildModifiedResources()
 {
-  Collider::RebuildModifiedResources();
-  mConvexMesh->UpdateAndNotifyIfModified();
+    if (mConvexMesh)
+    {
+        Collider::RebuildModifiedResources();
+        mConvexMesh->UpdateAndNotifyIfModified();
+    }
 }
 
 Vec3 ConvexMeshCollider::GetColliderLocalCenterOfMass(void) const
@@ -95,7 +104,10 @@ Vec3 ConvexMeshCollider::GetColliderLocalCenterOfMass(void) const
   // We currently need true world-space as the caller of this will transform to world space.
   // To do this we must return the local space center of mass.
   // Refactor later to remove this?
-  return mConvexMesh->mLocalCenterOfMass;
+  if(mConvexMesh)
+    return mConvexMesh->mLocalCenterOfMass;
+
+  return Vec3::cZero;
 }
 
 void ConvexMeshCollider::Support(Vec3Param direction, Vec3Ptr support) const
@@ -104,14 +116,20 @@ void ConvexMeshCollider::Support(Vec3Param direction, Vec3Ptr support) const
   // call the local-space support function then transform the result back into world space
   Vec3 localSpaceDir = TransformSupportDirectionToLocal(direction);
   localSpaceDir.Normalize();
-  mConvexMesh->Support(localSpaceDir, support);
-  *support = TransformSupportPointToWorld(*support);
+  if (mConvexMesh)
+  {
+      mConvexMesh->Support(localSpaceDir, support);
+      *support = TransformSupportPointToWorld(*support);
+  }
 }
 
 void ConvexMeshCollider::GetCenter(Vec3Ref center) const
 {
-  Vec3 localCenterOfMass = mConvexMesh->mLocalCenterOfMass;
-  center = GetWorldTransform()->TransformPoint(localCenterOfMass);
+    if (mConvexMesh)
+    {
+        Vec3 localCenterOfMass = mConvexMesh->mLocalCenterOfMass;
+        center = GetWorldTransform()->TransformPoint(localCenterOfMass);
+    }
 }
 
 ConvexMesh* ConvexMeshCollider::GetConvexMesh()
