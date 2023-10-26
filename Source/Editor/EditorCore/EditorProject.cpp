@@ -408,22 +408,20 @@ String GetLauncherLocationFromLauncherConfig()
 
 void LauncherOpenProjectComposite::OnConnectionFailed(Event* e)
 {
-  PlasmaTodo("(Matt, 2021-8-29): should we switch the order of this? Open last-opened launcher, then fall back to installed path? Possibly better for launcher dev...");
 
-  // Try to run from the installed location
-  if (!RunFromInstalledPath())
+  // Try to run the last known launcher (allows for editor-launcher workflow development)
+  String lastLaunchedLauncherPath = GetLauncherLocationFromLauncherConfig();
+  if (lastLaunchedLauncherPath.Empty() || !RunLauncherExe(lastLaunchedLauncherPath))
   {
-    // fall back to last-opened 
-    String launcherPath = GetLauncherLocationFromLauncherConfig();
-    if (!launcherPath.Empty() && RunLauncherExe(launcherPath))
-      return;
+      // Try to run from the installed location
+      if (!RunFromInstalledPath())
+      {
+          // If no installer is avalible then run the in editor project window
+          RunOldDialog();
+      }
 
-    // If no installer is avalible then run the in editor project window
-    RunOldDialog();
+      mSocket->Close();
   }
-
-  
-  mSocket->Close();
 }
 
 LightningDefineType(LauncherSingletonCommunication, builder, type)
