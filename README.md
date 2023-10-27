@@ -31,8 +31,9 @@ git clone --recursive https://github.com/PlasmaEngine/PlasmaEngine.git
 
 ### Building on Linux:
    - In Development
-   - You can grab on older build that sucseeded for linux https://github.com/PlasmaEngine/PlasmaEngine/releases/tag/0.1.5
-   - Treat as a Zip archive
+     
+### Building on Mac:
+   - In Development
 
 ## Screenshots
 ![Image of Plasma Engine 3D](https://raw.githubusercontent.com/PlasmaEngine/PlasmaEngine/master/GithubMedia/PlasmaEngine1.PNG)
