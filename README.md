@@ -43,6 +43,10 @@ git clone --recursive https://github.com/PlasmaEngine/PlasmaEngine.git
   - Josh (Engine Developer)
   - Jesco (Engine Developer)
   - Dave (Engine Contributer)
+  - ad3m3r5 (Engine Contributer)
+  - theLemon505 (Engine Contributer)
+  - Konfus-dev (Engine Contributer)
+  - jayrulez (Engine Contributer)
   - [AdvancedInstaller](https://www.advancedinstaller.com/) (Providing open source license for launcher installer)
   - Digipen and everyone who worked on Zero
   - WelderFoundation (Useful addition to Zero and thirdparty repos)
