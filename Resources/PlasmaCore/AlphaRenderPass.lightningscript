@@ -114,7 +114,7 @@ class AlphaRenderPass : LightningComponent
     
     //Set the revealage target's blend settings.
     wPSetting.MultiRenderTarget.BlendSettings1.BlendMode = BlendMode.Separate;
-    wPSetting.MultiRenderTarget.BlendSettings1.SourceFactor = BlendFactor.Plasma;
+    wPSetting.MultiRenderTarget.BlendSettings1.SourceFactor = BlendFactor.Zero;
     wPSetting.MultiRenderTarget.BlendSettings1.DestFactor = BlendFactor.InvSourceColor;
     wPSetting.MultiRenderTarget.BlendSettings1.SourceFactorAlpha = BlendFactor.One;
     wPSetting.MultiRenderTarget.BlendSettings1.DestFactorAlpha = BlendFactor.One;

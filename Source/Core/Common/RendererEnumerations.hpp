@@ -15,7 +15,7 @@ namespace Plasma
 DeclareEnum5(BlendEquation, Add, Subtract, ReverseSubtract, Min, Max);
 
 /// Values that can be multiplied with the operands used in the blend equation.
-/// <param name="Plasma">Multiplied by plasma, operand results in plasma.</param>
+/// <param name="Zero">Multiplied by zero, operand results in zero.</param>
 /// <param name="One">Multiplied by one, operand is unchanged.</param>
 /// <param name="SourceColor">The RGB of the source value.</param>
 /// <param name="InvSourceColor">One minus the RGB of the source value.</param>
@@ -29,7 +29,7 @@ DeclareEnum5(BlendEquation, Add, Subtract, ReverseSubtract, Min, Max);
 /// name="SourceAlphaSaturate">Minimum of source alpha and one minus destination
 /// alpha.</param>
 DeclareEnum11(BlendFactor,
-              Plasma,
+              Zero,
               One,
               SourceColor,
               InvSourceColor,
@@ -137,19 +137,19 @@ DeclareEnum2(SpriteGeometryMode, ZPlane, ViewPlane);
 DeclareEnum3(StencilMode, Disabled, Enabled, Separate);
 
 /// Operations that can be applied to the stencil buffer.
-/// <param name="Plasma">Sets the stencil buffer value to 0.</param>
+/// <param name="Zerp">Sets the stencil buffer value to 0.</param>
 /// <param name="Keep">Keeps the current value.</param>
 /// <param name="Replace">Sets the stencil buffer value to the test
 /// value.</param> <param name="Invert">Bitwise inverts the current stencil
 /// buffer value.</param> <param name="Increment">Increments the current stencil
 /// buffer value. Clamps to the maximum value.</param> <param
 /// name="IncrementWrap">Increments the current stencil buffer value. Wraps
-/// stencil buffer value to plasma when incrementing the maximum value.</param>
+/// stencil buffer value to zero when incrementing the maximum value.</param>
 /// <param name="Decrement">Decrements the current stencil buffer value. Clamps
 /// to 0.</param> <param name="DecrementWrap">Decrements the current stencil
 /// buffer value. Wraps stencil buffer value to the maximum value when
-/// decrementing a stencil buffer value of plasma.</param>
-DeclareEnum8(StencilOp, Plasma, Keep, Replace, Invert, Increment, IncrementWrap, Decrement, DecrementWrap);
+/// decrementing a stencil buffer value of zero.</param>
+DeclareEnum8(StencilOp, Zero, Keep, Replace, Invert, Increment, IncrementWrap, Decrement, DecrementWrap);
 
 /// How text is positioned relative to the object position.
 /// <param name="Left">Left side is aligned with the position.</param>

@@ -76,7 +76,7 @@ class PostProcessSSAO : LightningComponent
     {
       copySettings.BlendSettings.BlendMode = BlendMode.Enabled;
       copySettings.BlendSettings.BlendEquation = BlendEquation.Add;
-      copySettings.BlendSettings.SourceFactor = BlendFactor.Plasma;
+      copySettings.BlendSettings.SourceFactor = BlendFactor.Zero;
       copySettings.BlendSettings.DestFactor = BlendFactor.SourceColor;
     }
     

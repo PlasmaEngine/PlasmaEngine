@@ -1127,11 +1127,11 @@ BlendSettings::BlendSettings()
 
   mBlendMode = BlendMode::Disabled;
   mBlendEquation = BlendEquation::Add;
-  mSourceFactor = BlendFactor::Plasma;
-  mDestFactor = BlendFactor::Plasma;
+  mSourceFactor = BlendFactor::Zero;
+  mDestFactor = BlendFactor::Zero;
   mBlendEquationAlpha = BlendEquation::Add;
-  mSourceFactorAlpha = BlendFactor::Plasma;
-  mDestFactorAlpha = BlendFactor::Plasma;
+  mSourceFactorAlpha = BlendFactor::Zero;
+  mDestFactorAlpha = BlendFactor::Zero;
 
   if (Constructed)
     Constructed(this);
@@ -1195,17 +1195,17 @@ DepthSettings::DepthSettings()
 
   mStencilMode = StencilMode::Disabled;
   mStencilCompareFunc = TextureCompareFunc::Never;
-  mStencilFailOp = StencilOp::Plasma;
-  mDepthFailOp = StencilOp::Plasma;
-  mDepthPassOp = StencilOp::Plasma;
+  mStencilFailOp = StencilOp::Zero;
+  mDepthFailOp = StencilOp::Zero;
+  mDepthPassOp = StencilOp::Zero;
   mStencilReadMask = 0xFF;
   mStencilWriteMask = 0xFF;
   mStencilTestValue = 0;
 
   mStencilCompareFuncBackFace = TextureCompareFunc::Never;
-  mStencilFailOpBackFace = StencilOp::Plasma;
-  mDepthFailOpBackFace = StencilOp::Plasma;
-  mDepthPassOpBackFace = StencilOp::Plasma;
+  mStencilFailOpBackFace = StencilOp::Zero;
+  mDepthFailOpBackFace = StencilOp::Zero;
+  mDepthPassOpBackFace = StencilOp::Zero;
   mStencilReadMaskBackFace = 0xFF;
   mStencilWriteMaskBackFace = 0xFF;
   mStencilTestValueBackFace = 0;

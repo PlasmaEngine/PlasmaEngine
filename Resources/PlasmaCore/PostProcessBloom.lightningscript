@@ -155,7 +155,7 @@ class PostProcessBloom : LightningComponent
     upsampleSettings.BlendSettings.BlendEquation = BlendEquation.Add;
     upsampleSettings.BlendSettings.SourceFactor = BlendFactor.One;
     upsampleSettings.BlendSettings.DestFactor = BlendFactor.One;
-    upsampleSettings.BlendSettings.SourceFactorAlpha = BlendFactor.Plasma;
+    upsampleSettings.BlendSettings.SourceFactorAlpha = BlendFactor.Zero;
     upsampleSettings.BlendSettings.DestFactorAlpha = BlendFactor.One;
     
     var copyTarget = CopyTarget();    

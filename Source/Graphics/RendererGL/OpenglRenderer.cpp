@@ -439,7 +439,7 @@ namespace Plasma
     {
         switch (value)
         {
-        case BlendFactor::Plasma:
+        case BlendFactor::Zero:
             return GL_ZERO;
         case BlendFactor::One:
             return GL_ONE;
@@ -502,7 +502,7 @@ namespace Plasma
     {
         switch (value)
         {
-        case StencilOp::Plasma:
+        case StencilOp::Zero:
             return GL_ZERO;
         case StencilOp::Keep:
             return GL_KEEP;
