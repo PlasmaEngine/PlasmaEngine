@@ -437,12 +437,6 @@ ContentItem* ContentSystem::AddContentItemToLibrary(Status& status, AddContentIt
 
   if (FileExists(metaFile))
   {
-    if (!contentFileExists)
-    {
-      // Meta file but no content item
-      status.SetFailed(String::Format("File '%s' not found but meta file exists.", info.FullPath.c_str()));
-      return nullptr;
-    }
 
     ContentTypeEntry entry = CreatorsByExtension.FindValue(extension, ContentTypeEntry());
     if (entry.MakeItem == 0)

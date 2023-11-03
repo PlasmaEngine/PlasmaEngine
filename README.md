@@ -31,8 +31,9 @@ git clone --recursive https://github.com/PlasmaEngine/PlasmaEngine.git
 
 ### Building on Linux:
    - In Development
-   - You can grab on older build that sucseeded for linux https://github.com/PlasmaEngine/PlasmaEngine/releases/tag/0.1.5
-   - Treat as a Zip archive
+     
+### Building on Mac:
+   - In Development
 
 ## Screenshots
 ![Image of Plasma Engine 3D](https://raw.githubusercontent.com/PlasmaEngine/PlasmaEngine/master/GithubMedia/PlasmaEngine1.PNG)
@@ -42,6 +43,10 @@ git clone --recursive https://github.com/PlasmaEngine/PlasmaEngine.git
   - Josh (Engine Developer)
   - Jesco (Engine Developer)
   - Dave (Engine Contributer)
+  - ad3m3r5 (Engine Contributer)
+  - theLemon505 (Engine Contributer)
+  - Konfus-dev (Engine Contributer)
+  - jayrulez (Engine Contributer)
   - [AdvancedInstaller](https://www.advancedinstaller.com/) (Providing open source license for launcher installer)
   - Digipen and everyone who worked on Zero
   - WelderFoundation (Useful addition to Zero and thirdparty repos)
