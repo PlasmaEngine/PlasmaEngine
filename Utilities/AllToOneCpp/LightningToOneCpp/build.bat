@@ -1,0 +1,1 @@
+dotnet publish -r win-x64 -p:PublishSingleFile=true --configuration Release --self-contained true -o ../../../Tools/Windows/

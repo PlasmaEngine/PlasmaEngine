@@ -291,7 +291,7 @@ private:
 // This is a common macro for implementing a single static library and plugin in
 // one
 #  define LightningDeclareStaticLibraryAndPlugin(LibraryName, PluginName, ...)                                             \
-    LightningDeclareStaticLibrary(LibraryName, LightningNoNamespace, PlasmaNoImportExport, __VA_ARGS__);                         \
+    LightningDeclareStaticLibrary(LibraryName, LightningNoNamespace, PlasmaNoImportExport, ##__VA_ARGS__);                         \
     class PluginName : public LS::Plugin                                                                               \
     {                                                                                                                  \
     public:                                                                                                            \

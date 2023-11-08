@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LightningToOneCpp": {
+      "commandName": "Project",
+      "workingDirectory": "F:\\PlasmaEngine\\PlasmaEngine"
+    }
+  }
+}
