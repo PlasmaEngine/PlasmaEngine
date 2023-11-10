@@ -69,6 +69,8 @@ plasma_copy_from_linked_libraries(PlasmaEditor)
 set_target_properties(PlasmaEditor PROPERTIES ENABLE_EXPORTS TRUE)
 set(platform_plugin_lib_dir ${PLASMA_LIGHTNING_CUSTOM_PLUGIN_SHARED_DIR}${PLASMA_PLATFORM}-${PLASMA_ARCHITECTURE}/)
 add_custom_command(TARGET PlasmaEditor POST_BUILD COMMAND
+    ${CMAKE_COMMAND} -E make_directory ${platform_plugin_lib_dir})
+add_custom_command(TARGET PlasmaEditor POST_BUILD COMMAND
     ${CMAKE_COMMAND} -E copy $<TARGET_LINKER_IMPORT_FILE:PlasmaEditor> ${platform_plugin_lib_dir})
     
 add_custom_command(TARGET PlasmaEditor POST_BUILD COMMAND

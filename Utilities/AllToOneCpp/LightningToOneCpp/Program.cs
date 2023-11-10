@@ -24,30 +24,32 @@ namespace LightningToOneCpp
 
 			if (args.Length == 3 || args.Length == 4)
 			{
-				var target = args[0];
-				var directoryPath = args[1];
+                var target = args[0];
+                var directoryPath = args[1];
 
-				var forLightning = (target == "-Lightning");
-				var forPlasma = !forLightning;
+                var forLightning = (target == "-Lightning");
+                var forPlasma = !forLightning;
 
-				var plasmaPath = directoryPath;
-				var lightningPath = directoryPath;
+                var plasmaPath = directoryPath;
+                var lightningPath = directoryPath;
 
-				if (forPlasma)
-					lightningPath = Path.Combine(directoryPath, @"Source\Lightning\LightningCore");
 
-				compactor.FilesToProcess.AddFilesFromDirectory(lightningPath, "*.cpp");
+                if (forPlasma)
+                    lightningPath = Path.Combine(directoryPath, @"Source\Lightning");
 
-				var standardLibraries = Path.Combine(lightningPath, @"Project\StandardLibraries");
+                compactor.FilesToProcess.AddFilesFromDirectory(Path.Combine(lightningPath, @"LightningCore"), "*.cpp");
 
-				if (forPlasma)
-					standardLibraries = Path.Combine(plasmaPath, @"Source");
+                var standardLibraries = Path.Combine(lightningPath, @"Project\StandardLibraries");
 
-				compactor.FilesToProcess.AddFilesFromDirectory(Path.Combine(standardLibraries, @"Core/Common"), "*.cpp");
+                if (forPlasma)
+                    standardLibraries = Path.Combine(plasmaPath, @"Source");
 
-				// Windows platform
-				{
-					compactor.DirectoryDirectives.Add(Compactor.NormalizePath(Path.Combine(standardLibraries, @"Platform\Windows")), new CompacterDirectives()
+                compactor.FilesToProcess.AddFilesFromDirectory(Path.Combine(standardLibraries, @"Core\Common"), "*.cpp");
+
+
+                // Windows platform
+                {
+                    compactor.DirectoryDirectives.Add(Compactor.NormalizePath(Path.Combine(standardLibraries, @"Platform\Windows")), new CompacterDirectives()
 					{
 						PreprocessorCondition = "defined(PlasmaTargetOsWindows)",
 						CppOnly = true,

@@ -1,6 +1,6 @@
 // MIT Licensed (see LICENSE.md).
 #include "Precompiled.hpp"
-#include "String.hpp"
+#include "Core\Common\String.hpp"
 
 namespace Plasma
 {

@@ -713,14 +713,14 @@ public:
 
 // These helpers exist to fix template order issues by forcing implementation in the cpp files.
 bool BoundTypeHelperIsRawCastable(BoundType* fromType, BoundType* toType);
-bool BoundTypeHelperIsInitialized(BoundType* type);
+PlasmaShared bool BoundTypeHelperIsInitialized(BoundType* type);
 bool BoundTypeHelperIsInitializedAssert(BoundType* type);
 String BoundTypeHelperGetName(BoundType* type);
-void LibraryBuilderHelperAddNativeBoundType(LibraryBuilder& builder,
+PlasmaShared void LibraryBuilderHelperAddNativeBoundType(LibraryBuilder& builder,
                                             BoundType* type,
                                             BoundType* base,
                                             TypeCopyMode::Enum mode);
-void InitializeTypeHelper(StringParam originalName, BoundType* type, size_t size, size_t rawVirtualcount);
+PlasmaShared void InitializeTypeHelper(StringParam originalName, BoundType* type, size_t size, size_t rawVirtualcount);
 template <typename T>
 PlasmaSharedTemplate T InternalReadRef(::byte* stackFrame);
 

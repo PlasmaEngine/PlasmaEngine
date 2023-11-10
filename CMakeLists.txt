@@ -47,7 +47,7 @@ set(PLASMA_ALL_TO_ONE_TOOL ${PLASMA_CORE_DIR}/Tools/${PLASMA_PLATFORM}/Lightning
 set(PLASMA_ARCHITECTURE "x64")
 
 add_definitions(-DPlasmaConfigName="${PLASMA_CONFIG}")
-add_definitions(-DPlasmaArchitectureName=${PLASMA_ARCHITECTURE})
+add_definitions(-DPlasmaArchitectureName="x64")
 
 
 include(${PLASMA_CMAKE_DIR}/PlasmaFunctions.cmake)

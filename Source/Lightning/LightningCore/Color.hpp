@@ -42,7 +42,7 @@ public:
   LightningDeclareType(ColorsClass, TypeCopyMode::ReferenceType);
 
 #  define DefineColor(name, r, g, b, a) static const Real4 name;
-#  include "ColorDefinitions.hpp"
+#  include "Core\Common\ColorDefinitions.hpp"
 #  undef DefineColor
 };
 } // namespace Lightning

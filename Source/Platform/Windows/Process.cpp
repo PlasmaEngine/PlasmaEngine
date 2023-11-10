@@ -1,8 +1,8 @@
 // MIT Licensed (see LICENSE.md).
 
 #include "Precompiled.hpp"
-#include "Process.hpp"
-#include "FilePath.hpp"
+#include "Core\Common\Process.hpp"
+#include "Core\Common\FilePath.hpp"
 
 namespace Plasma
 {

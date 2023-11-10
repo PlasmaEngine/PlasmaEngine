@@ -7,7 +7,7 @@
 
 // Plasma includes
 #  include "Core/Common/CommonStandard.hpp"
-#  include "PlatformStandard.hpp"
+#  include "Core/Common/PlatformStandard.hpp"
 
 // This needs to be included before anything else
 // since it disables warnings and defines macros we use

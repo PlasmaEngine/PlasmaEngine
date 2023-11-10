@@ -114,11 +114,7 @@ bool FileWritable(StringParam filePath)
 bool DirectoryExists(StringParam filePath)
 {
   DWORD attributes = GetFileAttributes(Widen(filePath).c_str());
-  if (attributes == INVALID_FILE_ATTRIBUTES) {
-      Warn("%s is an invalid directory.", filePath.c_str());
-      return false;
-  }
-  return (attributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+  return attributes != INVALID_FILE_ATTRIBUTES && (attributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
 String CanonicalizePath(StringParam directoryPath)

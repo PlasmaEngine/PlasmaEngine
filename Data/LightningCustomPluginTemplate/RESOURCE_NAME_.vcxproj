@@ -70,7 +70,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Versions\Windows-$(PlatformShortName)-$(PlasmaVersion)\WelderEditor.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Versions\Windows-$(PlatformShortName)-$(PlasmaVersion)\PlasmaEditor.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>COPY /Y "$(TargetPath)" "$(ProjectDir)..\$(TargetFileName)"
@@ -107,7 +107,7 @@ EXIT 0
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Versions\Windows-$(PlatformShortName)-$(PlasmaVersion)\WelderEditor.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Versions\Windows-$(PlatformShortName)-$(PlasmaVersion)\PlasmaEditor.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>COPY /Y "$(TargetPath)" "$(ProjectDir)..\$(TargetFileName)"
