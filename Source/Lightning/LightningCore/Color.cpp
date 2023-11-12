@@ -408,11 +408,11 @@ LightningDefineType(ColorsClass, builder, type)
     prop->Description = LightningDocumentString(String::Format(                                                            \
         description, r * CC::InvFactor, g * CC::InvFactor, b * CC::InvFactor, a * CC::InvFactor, r, g, b, a));         \
   }
-#include "ColorDefinitions.hpp"
+#include "Core\Common\ColorDefinitions.hpp"
 #undef DefineColor
 }
 
 #define DefineColor(name, r, g, b, a) const Real4 ColorsClass::name = FloatColorRGBA(r, g, b, a);
-#include "ColorDefinitions.hpp"
+#include "Core\Common\ColorDefinitions.hpp"
 #undef DefineColor
 } // namespace Lightning

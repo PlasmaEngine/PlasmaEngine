@@ -4,7 +4,7 @@
 class RESOURCE_NAME_ : public PlasmaEngine::LightningComponent
 {
 public:
-  LightningDeclareType(Lightning::TypeCopyMode::ReferenceType);
+  LightningDeclareType(RESOURCE_NAME_, Lightning::TypeCopyMode::ReferenceType);
   
   RESOURCE_NAME_();
   ~RESOURCE_NAME_();
@@ -31,7 +31,7 @@ private:
 class RESOURCE_NAME_Event : public PlasmaEngine::LightningEvent
 {
 public:
-  LightningDeclareType(Lightning::TypeCopyMode::ReferenceType);
+  LightningDeclareType(RESOURCE_NAME_Event, Lightning::TypeCopyMode::ReferenceType);
   
   int mLives;
 };

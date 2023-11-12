@@ -36,11 +36,15 @@ set(PLASMA_TOOLCHAIN_DIR ${PLASMA_CMAKE_DIR}/Toolchain/)
 set(PLASMA_TARGETOS_DIR ${PLASMA_CMAKE_DIR}/TargetOs/)
 set(PLASMA_LIBRARIES_DIR ${PLASMA_CORE_DIR}/Source/)
 set(PLASMA_PLATFORM_DATA_DIR ${PLASMA_CORE_DIR}/PlatformData/${PLASMA_TOOLCHAIN})
+ 
 
 include(${PLASMA_CMAKE_DIR}/PlasmaGit.cmake)
 include(${PLASMA_CMAKE_DIR}/PlasmaVersion.cmake)
 include(${PLASMA_CMAKE_DIR}/PlasmaPlatform.cmake)
 
+set(PLASMA_LIGHTNING_CUSTOM_PLUGIN_SHARED_DIR ${PLASMA_CORE_DIR}/Data/LightningCustomPluginShared/) 
+set(PLASMA_ALL_TO_ONE_TOOL ${PLASMA_CORE_DIR}/Tools/${PLASMA_PLATFORM}/LightningToOneCpp) 
+set(PLASMA_ARCHITECTURE "x64")
 
 add_definitions(-DPlasmaConfigName="${PLASMA_CONFIG}")
 add_definitions(-DPlasmaArchitectureName="x64")

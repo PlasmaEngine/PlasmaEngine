@@ -87,7 +87,7 @@ void RESOURCE_NAME_::SetHealth(float value)
 }
 
 //***************************************************************************
-LightninghDefineType(RESOURCE_NAME_Event, builder, type)
+LightningDefineType(RESOURCE_NAME_Event, builder, type)
 {
   // This is required for event binding
   LightningBindDestructor();

@@ -1,7 +1,7 @@
 #include "RESOURCE_NAME_Precompiled.hpp"
 
 //***************************************************************************
-LightningDefineStaticLibraryAndPlugin(RESOURCE_NAME_Library, RESOURCE_NAME_Plugin, LightningDependencyStub(Core) LightninghDependencyStub(PlasmaEngine))
+LightningDefineStaticLibraryAndPlugin(RESOURCE_NAME_Library, RESOURCE_NAME_Plugin, LightningDependencyStub(Core) LightningDependencyStub(PlasmaEngine))
 {
   LightningInitializeType(RESOURCE_NAME_);
   LightningInitializeType(RESOURCE_NAME_Event);

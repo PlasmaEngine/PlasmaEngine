@@ -1,8 +1,8 @@
 // MIT Licensed (see LICENSE.md).
 #pragma once
 
-#include "CommonStandard.hpp"
-#include "PlatformStandard.hpp"
+#include "Core\Common\CommonStandard.hpp"
+#include "Core\Common\PlatformStandard.hpp"
 
 // Prevent including winsock1.
 #define _WINSOCKAPI_

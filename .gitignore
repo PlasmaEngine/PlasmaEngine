@@ -45,3 +45,5 @@ CMakeSettings.json
 cmake-build-**/
 
 CMakeFiles/
+
+Data/LightningCustomPluginShared/

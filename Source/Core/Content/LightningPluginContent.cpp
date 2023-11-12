@@ -166,7 +166,8 @@ ContentItem* MakeLightningPluginContent(ContentInitializer& initializer)
   builder->LoaderType = "LightningPluginSource";
   content->AddComponent(builder);
 
-  String pluginName = initializer.Name;
+  String pluginName = FilePath::GetFileNameWithoutExtension(initializer.Name);
+  initializer.Name = pluginName;
   String codeDir = GetCodeDirectory(initializer.Library, pluginName);
 
   //// If the directory already exists
