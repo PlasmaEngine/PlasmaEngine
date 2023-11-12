@@ -36,8 +36,9 @@ git clone --recursive https://github.com/PlasmaEngine/PlasmaEngine.git
    - In Development
 
 ## Screenshots
-![Image of Plasma Engine 3D](https://raw.githubusercontent.com/PlasmaEngine/PlasmaEngine/master/GithubMedia/PlasmaEngine1.PNG)
-![Image of Plasma Engine 2D](https://raw.githubusercontent.com/PlasmaEngine/PlasmaEngine/master/GithubMedia/PlasmaEngine2.PNG)
+![Image of Plasma Engine 3D](https://raw.githubusercontent.com/PlasmaEngine/PlasmaEngine/master/GithubMedia/PlasmaEngine1.png)
+![Image of Plasma Engine 2D](https://raw.githubusercontent.com/PlasmaEngine/PlasmaEngine/master/GithubMedia/PlasmaEngine2.png)
+![Image of Plasma Engine 2D](https://raw.githubusercontent.com/PlasmaEngine/PlasmaEngine/master/GithubMedia/PlasmaEngine3.png)
 
 ## Credits
   - Josh (Engine Developer)
