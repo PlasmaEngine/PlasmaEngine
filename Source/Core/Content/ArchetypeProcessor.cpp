@@ -4,11 +4,14 @@
 namespace Plasma
 {
 
-ArchetypeProcessor::ArchetypeProcessor(GeneratedArchetype* generatedArchetype, HierarchyDataMap& hierarchyData) :
-    mGeneratedArchetype(generatedArchetype),
-    mHierarchyDataMap(hierarchyData)
-{
-}
+  ArchetypeProcessor::ArchetypeProcessor(GeneratedArchetype* generatedArchetype,
+                                         HierarchyDataMap& hierarchyData,
+                                         MaterialDataMap& materialDataMap) :
+      mGeneratedArchetype(generatedArchetype),
+      mHierarchyDataMap(hierarchyData),
+      mMaterialDataMap(materialDataMap)
+  {
+  }
 
 void ArchetypeProcessor::BuildSceneGraph(String rootNode)
 {
@@ -48,6 +51,21 @@ SceneGraphNode* ArchetypeProcessor::BuildSceneNodes(HierarchyData nodeData)
         graphNode->MeshName = nodeData.mMeshName;
     graphNode->PhysicsMeshName = nodeData.mPhysicsMeshName;
     graphNode->SkeletonRootNodePath = nodeData.mSkeletonRootNodePath;
+
+    MaterialData materialData;
+    if (nodeData.mMaterialIndex >= 0 && mMaterialDataMap.TryGetValue((uint)nodeData.mMaterialIndex, materialData))
+    {
+      graphNode->Materials.Append(materialData.mMaterialName);
+
+      SceneGraphMaterial* sgMaterial = new SceneGraphMaterial();
+      sgMaterial->Name = materialData.mMaterialName;
+      sgMaterial->Attributes = materialData.mMaterialProperties;
+
+      mSceneSource.Materials.Append(sgMaterial);
+      // todo:
+      // graphNode->Materials = ...;
+      // graphNode->Attributes = ...;
+    }
   }
 
   for (size_t i = 0; i < numChildren; ++i)

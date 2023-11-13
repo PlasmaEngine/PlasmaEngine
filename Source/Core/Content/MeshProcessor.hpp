@@ -7,10 +7,14 @@ namespace Plasma
 class MeshProcessor
 {
 public:
-  MeshProcessor(MeshBuilder* meshBuilder, MeshDataMap& meshDataMap);
+  MeshProcessor(MeshBuilder* meshBuilder,
+              MeshDataMap& meshDataMap,
+              MaterialDataMap& materialDataMap,
+              HashMap<uint, String>& textureDataMap);
   ~MeshProcessor();
 
   void SetupTransformationMatricies();
+  void ExtractMaterialData(const aiScene* scene);
   void ExtractAndProcessMeshData(const aiScene* scene);
   void ExportMeshData(String outputPath);
 
@@ -20,6 +24,10 @@ public:
   MeshBuilder* mBuilder;
 
   MeshDataMap& mMeshDataMap;
+
+  MaterialDataMap& mMaterialDataMap;
+
+  HashMap<uint, String>& mTextureDataMap;
 };
 
 } // namespace Plasma

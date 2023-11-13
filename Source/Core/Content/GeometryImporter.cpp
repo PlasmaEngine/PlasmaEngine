@@ -33,8 +33,6 @@ uint GeometryImporter::SetupAssimpPostProcess()
   // always generate normals if none are present
   flags |= aiProcess_GenSmoothNormals;
 
-  flags |= aiProcess_OptimizeMeshes;
-
   int removeFlags = 0;
 
   if (meshBuilder->mInvertUvYAxis)
@@ -56,7 +54,6 @@ uint GeometryImporter::SetupAssimpPostProcess()
     flags |= aiProcess_CalcTangentSpace;
     flags |= aiProcess_RemoveComponent;
     removeFlags |= aiComponent_TANGENTS_AND_BITANGENTS;
-    mAssetImporter.SetPropertyFloat(AI_CONFIG_PP_CT_MAX_SMOOTHING_ANGLE, meshBuilder->mTangentSmoothAngle);
   }
 
   if (meshBuilder->mFlipWindingOrder)
@@ -90,21 +87,18 @@ GeometryProcessorCodes::Enum GeometryImporter::ProcessModelFiles()
   // Set the flags for post process we want to run
   uint flags = SetupAssimpPostProcess();
 
-  // Currently Assimp does not look to be able to load additonal data
-  // when doing ReadFileFromMemory, until this is fixed we can not depend
-  // on internal file loading for this file type.
-  if (FilePath::GetExtension(mInputFile) == "gltf")
-      mScene = mAssetImporter.ReadFile(mInputFile.c_str(), flags);
-  else
+  // Load the file into Assimp. We must use memory because their
+  // file functions do not call into our File wrappers. Also
+  // when file paths contain unicode characters Assimp fails to
+  // read the file.
+  DataBlock block = ReadFileIntoDataBlock(mInputFile.c_str());
+  mScene = mAssetImporter.ReadFileFromMemory(block.Data, block.Size, flags);
+  if (!mScene)
   {
-      // Load the file into Assimp. We must use memory because their
-      // file functions do not call into our File wrappers. Also
-      // when file paths contain unicode characters Assimp fails to
-      // read the file.
-      DataBlock block = ReadFileIntoDataBlock(mInputFile.c_str());
-      mScene = mAssetImporter.ReadFileFromMemory(block.Data, block.Size, flags);
-      plDeallocate(block.Data);
+    String extension = FilePath::GetExtension(mInputFile);
+    mScene = mAssetImporter.ReadFileFromMemory(block.Data, block.Size, flags, extension.c_str());
   }
+  plDeallocate(block.Data);
   PlasmaPrint("Processing model: %s\n", FilePath::GetFileNameWithoutExtension(mInputFile).Data());
 
   // An error has occurred, no scene imported
@@ -142,11 +136,19 @@ GeometryProcessorCodes::Enum GeometryImporter::ProcessModelFiles()
     pivotProcessor.ProccessAndCollapsePivots();
   }
 
+  TextureContent* textureContent = mGeometryContent->has(TextureContent);
+  if (mScene->HasTextures() && textureContent)
+  {
+    TextureProcessor textureProcessor(textureContent, mOutputPath, mInputFile);
+    textureProcessor.ExtractAndImportTextures(mScene, mTextureDataMap);
+  }
+
   // process the data into our format and export the files
   MeshBuilder* meshBuilder = mGeometryContent->has(MeshBuilder);
   if (meshBuilder && mScene->HasMeshes())
   {
-    MeshProcessor meshProcessor(meshBuilder, mMeshDataMap);
+    MeshProcessor meshProcessor(meshBuilder, mMeshDataMap, mMaterialDataMap, mTextureDataMap);
+    meshProcessor.ExtractMaterialData(mScene);
     meshProcessor.ExtractAndProcessMeshData(mScene);
     meshProcessor.ExportMeshData(mOutputPath);
   }
@@ -156,13 +158,6 @@ GeometryProcessorCodes::Enum GeometryImporter::ProcessModelFiles()
   {
     PhysicsMeshProcessor physicsMeshProcessor(physicsMeshBuilder, mMeshDataMap);
     physicsMeshProcessor.BuildPhysicsMesh(mOutputPath);
-  }
-
-  TextureContent* textureContent = mGeometryContent->has(TextureContent);
-  if (mScene->HasTextures() && textureContent)
-  {
-    TextureProcessor textureProcessor(textureContent, mOutputPath, mInputFile);
-    textureProcessor.ExtractAndImportTextures(mScene);
   }
 
   AnimationBuilder* animationBuilder = mGeometryContent->has(AnimationBuilder);
@@ -180,7 +175,7 @@ GeometryProcessorCodes::Enum GeometryImporter::ProcessModelFiles()
   GeneratedArchetype* generatedArchetype = mGeometryContent->has(GeneratedArchetype);
   if (generatedArchetype)
   {
-    ArchetypeProcessor archetypeProcessor(generatedArchetype, mHierarchyDataMap);
+    ArchetypeProcessor archetypeProcessor(generatedArchetype, mHierarchyDataMap, mMaterialDataMap);
     archetypeProcessor.BuildSceneGraph(mRootNodeName);
     archetypeProcessor.ExportSceneGraph(FilePath::GetFileName(mInputFile), mOutputPath);
   }
@@ -286,6 +281,7 @@ String GeometryImporter::ExtractDataFromNodesRescursive(aiNode* node, String par
 void GeometryImporter::SingleMeshHierarchyEntry(HierarchyData& hierarchyData, uint meshIndex)
 {
   hierarchyData.mHasMesh = true;
+  hierarchyData.mMaterialIndex = mScene->mMeshes[meshIndex]->mMaterialIndex;
 
   if (mMeshDataMap.ContainsKey(meshIndex))
   {
@@ -546,7 +542,15 @@ bool GeometryImporter::UpdateBuilderMetaData()
       if (IsSupportedImageLoadExtension(extension))
       {
         GeometryResourceEntry entry;
-        entry.mName = BuildString(FilePath::GetFileNameWithoutExtension(mInputFile), ToString(i), ".", extension);
+        if (texture->mFilename.length == 0)
+        {
+          entry.mName = BuildString(FilePath::GetFileNameWithoutExtension(mInputFile), ToString(i), ".", extension);
+        }
+        else
+        {
+          entry.mName = BuildString(FilePath::GetFileNameWithoutExtension(texture->mFilename.C_Str()), ".", extension);
+        }
+        //entry.mName = BuildString(FilePath::GetFileNameWithoutExtension(mInputFile), ToString(i), ".", extension);
 
         // Get resource id if this name already had one, otherwise make a new
         // one.
@@ -577,7 +581,8 @@ String GeometryImporter::ProcessAssimpErrorMessage(StringParam errorMessage)
   // likely a result of the format but assimp attempts to parse the entire FBX
   // DOM before checking if the format is supported
   if (errorMessage.Contains("FBX-Tokenize"))
-    return String("FBX Parsing Error. Supported formats are FBX 2011+.");
+    return String("FBX Parsing Error. Supported formats are FBX 2011, FBX 2012 "
+                  "and FBX 2013.");
 
   return errorMessage;
 }

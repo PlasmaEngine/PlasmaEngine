@@ -9,8 +9,8 @@ class TextureProcessor
 public:
   TextureProcessor(TextureContent* textureContent, String outputPath, String inputFile);
 
-  void ExtractAndImportTextures(const aiScene* scene);
-  void CreateTexture(aiTexture* texture, uint textureIndex, StringParam extension);
+  void ExtractAndImportTextures(const aiScene* scene, HashMap<uint, String>& textureDataMap);
+  void CreateTexture(aiTexture* texture, StringParam fileName, StringParam extension);
 
   TextureContent* mTextureContent;
   String mOutputPath;

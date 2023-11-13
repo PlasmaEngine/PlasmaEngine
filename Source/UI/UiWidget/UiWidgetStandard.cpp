@@ -42,7 +42,7 @@ LightningDefineStaticLibrary(UiWidgetLibrary)
   LightningInitializeType(UiWidgetCastResultsRange);
   LightningInitializeType(UiWidgetComponentHierarchy);
   LightningInitializeType(UiWidget);
-  LightningInitializeType(UiButton);
+  //LightningInitializeType(UiButton);
   LightningInitializeType(UiRootWidget);
   LightningInitializeType(UiLayout);
   LightningInitializeType(UiStackLayout);

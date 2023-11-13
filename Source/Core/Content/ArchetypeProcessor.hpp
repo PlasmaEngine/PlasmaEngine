@@ -7,7 +7,9 @@ namespace Plasma
 class ArchetypeProcessor
 {
 public:
-  ArchetypeProcessor(GeneratedArchetype* generatedArchetype, HierarchyDataMap& hierarchyData);
+  ArchetypeProcessor(GeneratedArchetype* generatedArchetype,
+                     HierarchyDataMap& hierarchyData,
+                     MaterialDataMap& materialDataMap);
 
   void BuildSceneGraph(String rootNode);
   SceneGraphNode* BuildSceneNodes(HierarchyData nodeData);
@@ -16,6 +18,7 @@ public:
   SceneGraphSource mSceneSource;
   GeneratedArchetype* mGeneratedArchetype;
   HierarchyDataMap& mHierarchyDataMap;
+  MaterialDataMap& mMaterialDataMap;
 };
 
 } // namespace Plasma

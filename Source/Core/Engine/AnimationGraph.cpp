@@ -15,7 +15,6 @@ LightningDefineType(AnimationGraph, builder, type)
 
   LightningBindGetterSetter(ActiveNode);
   LightningBindMethod(IsPlayingInGraph);
-  LightningBindMethod(PrintGraph);
   LightningBindMethod(Update);
 
   LightningBindGetterSetterProperty(Active);
